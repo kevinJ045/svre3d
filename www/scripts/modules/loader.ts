@@ -104,7 +104,11 @@ export const toload = () : Record<string, Record<string, item> | any> => {
 					void main() {
 							vUv = uv;
 							gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-					}`
+					}`,
+					materialOptions: {
+						reflectivity: 0,
+						// color: 0x666666
+					}
 				}
 			}
 		},

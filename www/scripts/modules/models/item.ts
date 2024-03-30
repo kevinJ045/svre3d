@@ -9,6 +9,7 @@ export type item = {
 		type: "shader",
 		vertex: string,
 		fragment: string,
+		materialOptions?: Record<string, any>,
 		sources?: string[],
 		src?: string
 	} | {

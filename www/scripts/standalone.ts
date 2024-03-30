@@ -1,4 +1,4 @@
-import { Project, Scene3D, PhysicsLoader, THREE, ExtendedObject3D, PointerLock, PointerDrag, ThirdPersonControls, ExtendedGroup } from 'enable3d'
+import { Project, Scene3D, PhysicsLoader, THREE, ExtendedObject3D, PointerLock, PointerDrag, ThirdPersonControls, ExtendedGroup, ExtendedMesh } from 'enable3d'
 import { preload } from './modules/preload'
 import { item } from './modules/models/item'
 import { CustomScene } from './modules/models/scene'
@@ -94,6 +94,9 @@ class MainScene extends CustomScene {
     o.body.setFriction(0.8)
     o.body.setAngularFactor(0, 0, 0)
     // this.physics.add.box(pmesh.children[0].children[0].children[0], { y: 5 });
+
+    o.body.applyForceY(5);
+
     return new Player(this.physics, o, player);
   }
 
@@ -120,8 +123,7 @@ class MainScene extends CustomScene {
     (world as any).physics = this.physics;
     (world as any).player = this.player;
 
-    world.receiveShadow = true;
-
+    // world.receiveShadow = true;
 
     this.add.existing(world);
 
@@ -157,18 +159,24 @@ class MainScene extends CustomScene {
 
     // set up scene (light, ground, grid, sky, orbitControls)
     // this.warpSpeed('-ground');
-    this.warpSpeed();
+    const { lights, ground } = await this.warpSpeed('camera', 'light', 'ground');
+    
+    this.lightSet = lights!;
+
+    // lights?.directionalLight.distance = 200000;
+
+    // this.scene.remove(lights!.directionalLight)
+
+    // this.lightSet.hemisphereLight.intensity -= 100;
+
+    // lights?.directionalLight.
 
     // enable physics debug
     // this.physics.debug?.enable();
 
-    const box = this.physics.add.box(
-      { x: 1, y: 2, z: -10, width: 5, height: 3, depth: 1, mass: 0, collisionFlags: 0 },
-      { lambert: { color: 'red', transparent: true, opacity: 0.5 } }
-    )
-
     this.controls = new ThirdPersonControls(this.camera, this.player.player, {
       offset: new THREE.Vector3(0, 2.5, 0),
+      radius: 5,
       targetRadius: 15
     })
 
@@ -201,6 +209,18 @@ class MainScene extends CustomScene {
     });
 
   
+  }
+
+  updateLightPosition(){
+    for(let i in this.lightSet){
+      const diffX = this.player.player.position.x - this.lightSet[i].position.x;
+      const diffZ = this.player.player.position.z - this.lightSet[i].position.z;
+      this.lightSet[i].position.set(
+        this.player.player.position.x,
+        this.lightSet[i].position.y,
+        this.player.player.position.z
+      )
+    }
   }
 
   update() {
@@ -288,6 +308,7 @@ class MainScene extends CustomScene {
     
     updateChunks(this.player.player, this.world, this.chunkSize, this.maxWorldHeight, this.loadedChunks, this.renderDistance, this.seed);
     // updateChunkss(this.player.player.position, this.world, this.chunkSize, this.maxWorldHeight, new Set(), this.seed);
+    // this.updateLightPosition();
   }
 }
 

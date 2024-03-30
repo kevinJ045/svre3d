@@ -319,24 +319,24 @@ export class ChunkSet {
 	}
 
 	addChunk(chunk: any){
-		const chunkContainer = new ExtendedObject3D();
-		chunkContainer.add(chunk);
-		chunkContainer.position.y = -10;
-		chunkContainer.name = 'chunk';
-		chunkContainer.receiveShadow = true;
-		chunkContainer.castShadow = true;
-		this.scene.world.add(chunkContainer);
-		this.scene.physics.add.existing(chunkContainer, {
-			shape: 'convex',
+		chunk.name = 'chunk';
+		chunk.position.y -= 10;
+		this.scene.scene.add(chunk);
+		this.scene.physics.add.existing(chunk, {
+			shape: 'box',
 			mass: 0,
 			collisionFlags: 1,
-			autoCenter: false
+			autoCenter: false,
+			
+			width: this.scene.chunkSize,
+			depth: this.scene.chunkSize,
+			height: 2
 		});
 	}
 
 	removeChunk(chunk: any){
-		this.scene.physics.destroy(chunk.parent.body)
-		this.scene.scene.remove(chunk.parent);
+		this.scene.physics.destroy(chunk.body)
+		this.scene.scene.remove(chunk);
 	}
 
 	clear(){
@@ -384,17 +384,32 @@ function getChunkType(noiseValue, loadedChunks: ChunkSet){
 	return loadedChunks.chunkTypes[0];
 }
 
+function parseMaterialOptions(options){
+	const o = {};
+	const keys = ['emissive', 'emissiveIntensity', 'metalness', 'opacity', 'color', 'roughness', 'wireframe'];
+	for(let i of keys) if(i in options) o[i] = options[i];
+	return o;
+}
+
 function makeSegmentMaterial(texture: THREE.Texture, chunkType: chunktype, scene: CustomScene){
 	
-	const { fragment, vertex } = (scene.findLoadedResource(chunkType.shader ? chunkType.shader+'.shader' : 'm:segment.shader', 'm:segment.shader') || {}).resource as any;
+	const { fragment, vertex, materialOptions } = (scene.findLoadedResource(chunkType.shader ? chunkType.shader+'.shader' : 'm:segment.shader', 'm:segment.shader') || {}).resource as any;
 
-	return new THREE.ShaderMaterial({
+	const uniforms = {
+		textureMap: { value: texture },
+		// shadowMap: { value: scene.lightSet.directionalLight.shadow.map }
+	};
+
+	const mat = materialOptions ? new THREE.MeshStandardMaterial({
+		...parseMaterialOptions(materialOptions),
+		map: texture
+	}) : new THREE.ShaderMaterial({
 		fragmentShader: fragment,
 		vertexShader: vertex,
-		uniforms: {
-			textureMap: { value: texture }
-		}
-	})
+		uniforms
+	});
+	
+	return mat;
 }
 
 // Function to load a chunk
@@ -402,15 +417,13 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 	
 	const noiseValue = loadedChunks.noise.perlin3(chunkPosition.x * 0.1, 0, chunkPosition.z * 0.1);
 	
+	const geometry = new THREE.BoxGeometry(chunkSize, 2, chunkSize);
+
 	const chunkType = getChunkType(noiseValue, loadedChunks);	
 
 	const materials = 'textures' in chunkType ? chunkType.textures!.map(i => makeSegmentMaterial(chunkType.item.texture[i], chunkType, loadedChunks.scene)) : makeSegmentMaterial(chunkType.item.texture, chunkType, loadedChunks.scene);
 
-	const chunk = loadedChunks.scene.add.box({
-		width: chunkSize,
-		height: 2,
-		depth: chunkSize
-	}, {custom: materials})
+	const chunk = new ExtendedMesh(geometry, materials);
 
 	chunk.receiveShadow = true;
 	chunk.castShadow = true;

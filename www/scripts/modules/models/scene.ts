@@ -7,9 +7,16 @@ export class CustomScene extends Scene3D {
   controls!: ThirdPersonControls;
   world!: ExtendedGroup;
 
+
+  lightSet!: {
+    ambientLight: THREE.AmbientLight;
+    directionalLight: THREE.DirectionalLight;
+    hemisphereLight: THREE.HemisphereLight;
+  };
+
   chunkSize = 5;
   maxWorldHeight = 4;
-  renderDistance = 4;
+  renderDistance = 8;
   seed = "joeman";
 
   loadedChunks!: ChunkSet;

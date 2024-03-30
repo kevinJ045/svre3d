@@ -80,8 +80,8 @@ export const toload = () : Record<string, Record<string, item> | any> => {
 				resource: {
 					type: "texture",
 					sources: [
-						"/res/tex/segment_grass_top.png",
-						"/res/tex/segment_grass_side.png"
+						"/res/tex/segment_grass_top_blue.png",
+						"/res/tex/segment_grass_side_blue.png"
 					]
 				}
 			},
@@ -106,7 +106,7 @@ export const toload = () : Record<string, Record<string, item> | any> => {
 							gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 					}`,
 					materialOptions: {
-						reflectivity: 0,
+						roughness: 0,
 						// color: 0x666666
 					}
 				}

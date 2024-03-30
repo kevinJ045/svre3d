@@ -159,9 +159,20 @@ class MainScene extends CustomScene {
 
     // set up scene (light, ground, grid, sky, orbitControls)
     // this.warpSpeed('-ground');
-    const { lights, ground } = await this.warpSpeed('camera', 'light', 'ground');
-    
+    const { lights } = await this.warpSpeed('camera', 'light');
+
     this.lightSet = lights!;
+
+    const { directionalLight } = lights!;
+
+    var d = 100;
+    directionalLight.shadow.camera.left = - d;
+    directionalLight.shadow.camera.right = d;
+    directionalLight.shadow.camera.top = d;
+    directionalLight.shadow.camera.bottom = - d;
+    
+    directionalLight.shadow.camera.near = 1;
+    directionalLight.shadow.camera.far = 1000000;
 
     // lights?.directionalLight.distance = 200000;
 

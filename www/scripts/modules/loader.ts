@@ -1,6 +1,7 @@
 import { item } from "./models/item"
+import { chunktype } from "./world";
 
-export const toload = () : Record<string, Record<string, item>> => {
+export const toload = () : Record<string, Record<string, item> | any> => {
 	return {
 		
 		objects: {
@@ -78,7 +79,6 @@ export const toload = () : Record<string, Record<string, item>> => {
 				type: "texture_map",
 				resource: {
 					type: "texture",
-					src: "",
 					sources: [
 						"/res/tex/segment_grass_top.png",
 						"/res/tex/segment_grass_side.png"
@@ -86,6 +86,34 @@ export const toload = () : Record<string, Record<string, item>> => {
 				}
 			},
 		},
+
+
+		shaders: {
+			"m:segment": {
+				type: "shader",
+				resource: {
+					type: "shader",
+					fragment: `uniform sampler2D textureMap;
+					varying vec2 vUv;
+					
+					void main() {
+							gl_FragColor = texture2D(textureMap, vUv);
+					}`,
+					vertex: `varying vec2 vUv;
+        
+					void main() {
+							vUv = uv;
+							gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+					}`
+				}
+			}
+		},
+
+		chunkTypes: [{
+			name: "grass",
+			item: "m:grass_segment",
+			textures: [1, 1, 0, 1, 1, 1]
+		}]
 
 	};
 }

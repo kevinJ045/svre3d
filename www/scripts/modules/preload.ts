@@ -47,7 +47,26 @@ export const preload = async (scene: CustomScene) => {
 		else scene.loaded[i] = item_full as any;
 	}
 
+	for(let i in loads.shaders){
 
+		const item = loads.shaders[i];
+
+		const item_full = {
+			...item
+		}
+
+		const name = i+'.shader';
+
+		if(specific_load[name]) scene.loaded[name] = specific_load[name](item_full);
+		else scene.loaded[name] = item_full as any;
+	}
+
+	loads.chunkTypes.forEach(type => {
+		scene.loadedChunks.chunkTypes.push({
+			...type,
+			item: scene.findLoadedResource(type.item)
+		})
+	});
 	
 	
 };

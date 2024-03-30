@@ -9,15 +9,6 @@ class MainScene extends CustomScene {
   loader!: Promise<any>
   player!: Player
   keys: Record<string, boolean> = {};
-  controls!: ThirdPersonControls;
-  world!: ExtendedGroup;
-
-  chunkSize = 10;
-  maxWorldHeight = 1;
-  renderDistance = 4;
-  seed = "joeman";
-
-  loadedChunks!: ChunkSet;
 
   constructor() {
     super({ key: 'MainScene' })
@@ -117,9 +108,9 @@ class MainScene extends CustomScene {
 
     // console.log(this.loaded['m:segment']);
 
-    this.loadedChunks.chunkTextures.push(
-      this.loaded['m:grass_segment']
-    )
+    // this.loadedChunks.chunkTypes.push(
+    //   this.loaded['m:grass_segment']
+    // )
 
     const world = new ExtendedGroup();
 
@@ -128,6 +119,8 @@ class MainScene extends CustomScene {
     this.world = world;
     (world as any).physics = this.physics;
     (world as any).player = this.player;
+
+    world.receiveShadow = true;
 
 
     this.add.existing(world);

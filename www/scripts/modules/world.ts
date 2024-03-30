@@ -4,6 +4,7 @@ import seedrandom from "seedrandom";
 import { ImprovedNoise } from '../lib/ImprovedNoise';
 import * as BufferGeometryUtils from "../lib/BufferGeometryUtils"
 import { item } from './models/item';
+import { CustomScene } from './models/scene';
 
 export function getDistance(object, object2) {
 	// Calculate the distance between object's position and playerPosition
@@ -287,19 +288,25 @@ export function updateChunkss(playerPosition, worldGroup, chunkSize, maxHeight, 
 }
 
 
+export type chunktype = {
+	item: item,
+	name: string,
+	textures?: number[],
+	shader?: string
+};
 
 export class ChunkSet {
-	scene: Scene3D;
+	scene: CustomScene;
 	noise: Noise;
 	rng: () => number;
 
 	chunks: any[] = [];
 
-	chunkTextures: item[] = [];
+	chunkTypes: chunktype[] = [];
 
 	segment_object!: THREE.Object3D;
 
-	constructor(scene: Scene3D, seed: string){
+	constructor(scene: CustomScene, seed: string){
 		this.scene = scene;
 		this.rng = seedrandom(seed);
 		this.noise = new Noise.Noise(this.rng());
@@ -317,7 +324,8 @@ export class ChunkSet {
 		chunkContainer.position.y = -10;
 		chunkContainer.name = 'chunk';
 		chunkContainer.receiveShadow = true;
-		this.scene.add.existing(chunkContainer);
+		chunkContainer.castShadow = true;
+		this.scene.world.add(chunkContainer);
 		this.scene.physics.add.existing(chunkContainer, {
 			shape: 'convex',
 			mass: 0,
@@ -371,9 +379,22 @@ function stringifyChunkPosition(pos){
 	return pos.x+', '+pos.y+', '+pos.z;
 }
 
-function getChunkColor(noiseValue, loadedChunks: ChunkSet){
-	const noiseColorIndex = Math.floor((noiseValue / 2 + 0.5) * (loadedChunks.chunkTextures.length - 1));
-	return loadedChunks.chunkTextures[0];
+function getChunkType(noiseValue, loadedChunks: ChunkSet){
+	const noiseColorIndex = Math.floor((noiseValue / 2 + 0.5) * (loadedChunks.chunkTypes.length - 1));
+	return loadedChunks.chunkTypes[0];
+}
+
+function makeSegmentMaterial(texture: THREE.Texture, chunkType: chunktype, scene: CustomScene){
+	
+	const { fragment, vertex } = (scene.findLoadedResource(chunkType.shader ? chunkType.shader+'.shader' : 'm:segment.shader', 'm:segment.shader') || {}).resource as any;
+
+	return new THREE.ShaderMaterial({
+		fragmentShader: fragment,
+		vertexShader: vertex,
+		uniforms: {
+			textureMap: { value: texture }
+		}
+	})
 }
 
 // Function to load a chunk
@@ -381,119 +402,20 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 	
 	const noiseValue = loadedChunks.noise.perlin3(chunkPosition.x * 0.1, 0, chunkPosition.z * 0.1);
 	
-	const geometry = new THREE.BoxGeometry(chunkSize, 1, chunkSize);
+	const chunkType = getChunkType(noiseValue, loadedChunks);	
 
+	const materials = 'textures' in chunkType ? chunkType.textures!.map(i => makeSegmentMaterial(chunkType.item.texture[i], chunkType, loadedChunks.scene)) : makeSegmentMaterial(chunkType.item.texture, chunkType, loadedChunks.scene);
 
-	
-	const textureItem = getChunkColor(noiseValue, loadedChunks);
+	const chunk = loadedChunks.scene.add.box({
+		width: chunkSize,
+		height: 2,
+		depth: chunkSize
+	}, {custom: materials})
 
-	// var positionAttribute = geometry.getAttribute('position');
-	// var uvAttribute = new THREE.Float32BufferAttribute(positionAttribute.count * 4, 2); // Two components (U and V) per vertex
-
-	// for (var i = 0; i < positionAttribute.count; i++) {
-	// 	var vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, i);
-		
-	// 	// Example: Use x and z coordinates for UVs
-	// 	uvAttribute.setXY(i, vertex.x - 2, vertex.z - 2);
-	// }
-
-	// geometry.setAttribute('uv', uvAttribute);
-
-	const chunk = new THREE.Mesh(geometry, new THREE.ShaderMaterial({
-		vertexShader: `
-		varying vec2 vUv;
-
-		void main() {
-			vUv = uv;
-			gl_Position = projectionMatrix * vec4(position, 1.0);
-		}`,
-		fragmentShader: `
-		varying vec2 vUv;
-
-		float rand(vec2 co) {
-				return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
-		}
-
-		void main() {
-				float randValue = rand(vUv * 100.0); // Adjust the multiplier for density
-				float threshold = 0.98; // Adjust this threshold to control the density of squares
-				if (randValue > threshold) {
-						gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0); // Blue square color
-				} else {
-						gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0); // Green background color
-				}
-		}
-
-
-		`,
-		uniforms: {
-			grassColor: { value: new THREE.Color(0x00ffff) }, // Green color
-			opacity: { value: 1.0 },
-			time: { value: 0.0 } // Initialize time
-		},
-	}));
-
-	// chunk.material.map!.repeat.set(1 / 1, 1);
-	// chunk.material.map!.offset.set(0.5 - 0.5 * chunk.material.map!.repeat.x, 0.5 - 0.5 * chunk.material.map!.repeat.y);
-
-	//jj
-
-	// const chunk = loadedChunks.segment_object.clone();
-	// (chunk as any).material.map = texture;
-	// chunk.scale.set(0.5, 0.5, 0.5);
-
-	// chunk.children.forEach((part, ind) => {
-	// 	if(ind == 0) (part as any).material = new THREE.ShaderMaterial({
-	// 		vertexShader: `attribute vec3 position;
-	// 		attribute vec3 normal;
-	// 		attribute vec2 uv;
-			
-	// 		uniform mat4 modelViewMatrix;
-	// 		uniform mat4 projectionMatrix;
-	// 		uniform float time; // Time uniform for animation
-			
-	// 		varying vec2 vUv;
-			
-	// 		void main() {
-	// 				vUv = uv;
-			
-	// 				// Displace vertices along the normal direction for waving effect
-	// 				vec3 displacedPosition = position + normal * sin(position.x * 10.0 + time);
-			
-	// 				gl_Position = projectionMatrix * modelViewMatrix * vec4(displacedPosition, 1.0);
-	// 		}`,
-	// 		fragmentShader: `precision highp float;
-
-	// 		uniform sampler2D texture;
-	// 		uniform vec3 color;
-	// 		uniform float opacity;
-			
-	// 		varying vec2 vUv;
-			
-	// 		void main() {
-	// 				// Sample texture
-	// 				vec4 texColor = texture2D(texture, vUv);
-			
-	// 				// Apply color and opacity
-	// 				vec4 finalColor = vec4(texColor.rgb * color, texColor.a * opacity);
-			
-	// 				gl_FragColor = finalColor;
-	// 		}`,
-	// 		uniforms: {
-  //       texture: { value: textureItem.texture[0] },
-  //       color: { value: new THREE.Color(0x00ff00) }, // Green color
-  //       opacity: { value: 1.0 },
-  //       time: { value: 0.0 } // Initialize time
-	//     },
-	// 	});
-	// 	else (part as any).material.map = textureItem.texture[1];
-	// 	// (part as any).material.map.repeat.set(10, 10);
-	// });
+	chunk.receiveShadow = true;
+	chunk.castShadow = true;
 
 	chunk.position.copy(chunkPosition).multiplyScalar(chunkSize);
-	// scene.add(chunk);
-
-	// console.log(chunkPosition);
 
 	loadedChunks.add(stringifyChunkPosition(chunkPosition), chunk);
 }
@@ -508,7 +430,7 @@ function unloadChunk(chunkPosition, { loadedChunks }) {
 	}
 }
 
-function generateChunkHeight(x, z, maxHeight, loadedChunks) {
+function generateChunkHeight(x, z, maxHeight, chunkSize, loadedChunks) {
 	// Scale the coordinates to control the frequency of the noise
 	const frequency = 0.1; // Adjust as needed
 	const scaledX = x * frequency;
@@ -518,7 +440,7 @@ function generateChunkHeight(x, z, maxHeight, loadedChunks) {
 	const noiseValue = loadedChunks.noise.perlin3(scaledX, 0, scaledZ);
 
 	// Map the noise value to the desired height range
-	return noiseValue * maxHeight;
+	return Math.round(noiseValue * maxHeight) / 2.5;
 }
 
 // Function to update loaded chunks based on player position
@@ -538,7 +460,7 @@ export function updateChunks(player, worldGroup, chunkSize, maxHeight, loadedChu
 	// Load chunks around the player
 	for (let x = playerChunkPosition.x - renderDistance; x <= playerChunkPosition.x + renderDistance; x++) {
 		for (let z = playerChunkPosition.z - renderDistance; z <= playerChunkPosition.z + renderDistance; z++) {
-			const y = generateChunkHeight(x, z, maxHeight, loadedChunks);
+			const y = generateChunkHeight(x, z, maxHeight, chunkSize, loadedChunks);
 			const chunkPosition = new THREE.Vector3(x, y, z);
 			if (!loadedChunks.has(stringifyChunkPosition(chunkPosition))) {
 				loadChunk(chunkPosition, { loadedChunks, chunkSize });

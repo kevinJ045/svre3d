@@ -372,6 +372,10 @@ export class ChunkSet {
 		}
 		return this;
 	}
+	
+	chunkObjects(){
+		return this.chunks.map(i => i.chunk);
+	}
 
 }
 

@@ -1,4 +1,4 @@
-import { ExtendedObject3D, Scene3D } from "enable3d";
+import { ExtendedObject3D, Scene3D, THREE } from "enable3d";
 import { item } from "./models/item";
 
 
@@ -43,14 +43,18 @@ export class Player {
 
 	speed = 10;
 	speedBoost = 0;
+	rotationSpeed = 10;
 
 	canJump = true;
+
+	targetLocation : null | THREE.Vector3 = null;
 
 	run(direction: {x?:number,y?:number,z?:number}, speed = false){
 		if('x' in direction) this.runDirection.x = direction.x!;
 		if('y' in direction) this.runDirection.y = direction.y!;
 		if('z' in direction) this.runDirection.z = direction.z!;
 		if(this.isRunning && (this.fast == speed)) return this;
+		console.log('running');
 		this._playAnimation(speed ? 2 : 4);
 		this.isRunning = true;
 		this.fast = speed;
@@ -60,6 +64,12 @@ export class Player {
 	rotate(degrees: number){
 		this.physics.destroy(this.player.body);
 		this.player.rotation.y += degrees;
+		this.physics.add.existing(this.player);
+	}
+
+	lookAt(position: THREE.Vector3){
+		this.physics.destroy(this.player.body);
+		this.player.lookAt(position);
 		this.physics.add.existing(this.player);
 	}
 
@@ -101,4 +111,69 @@ export class Player {
 		this.isJumping = false;
 		this.idle();
 	}
+
+	rotateTowardsTarget() {
+    if (this.targetLocation) {
+			const rotationSpeed = this.rotationSpeed;
+			const maxRotation = Math.PI / 24; // Maximum rotation angle per frame
+
+			// Calculate the direction vector towards the target location
+			const direction = new THREE.Vector3();
+			direction.subVectors(this.targetLocation, this.player.position);
+			// direction.x = 0; // Assuming movement is only along x and z axes
+			direction.y = 0; // Assuming movement is only along x and z axes
+			// direction.z = 0; // Assuming movement is only along x and z axes
+
+			var quaternion = new THREE.Quaternion().setFromEuler(this.player.rotation);
+
+			const currentDirection = new THREE.Vector3(0, 0, -1).applyQuaternion(quaternion);
+			let theta = Math.atan2(direction.x, direction.z) - Math.atan2(currentDirection.x, currentDirection.z);
+
+			if (theta > Math.PI) {
+				theta -= 2 * Math.PI;
+			} else if (theta < -Math.PI) {
+				theta += 2 * Math.PI;
+			}
+
+			const deltaTheta = THREE.MathUtils.clamp(theta, -maxRotation, maxRotation);
+
+			// console.log(deltaTheta, Math.abs(deltaTheta), deltaTheta * rotationSpeed);
+
+			if (Math.abs(deltaTheta * rotationSpeed) < 1) {
+				this.player.body.setAngularVelocityY(0);
+				return true;
+			} else {
+				this.player.body.setAngularVelocityY(deltaTheta * rotationSpeed);
+			}
+    }
+		return false;
+	}
+
+	moveTowardsTarget() {
+    if (this.targetLocation) {
+			const direction = new THREE.Vector3();
+			direction.subVectors(this.targetLocation, this.player.position);
+			direction.y = 0; 
+
+			direction.normalize();
+
+			const speed = this.speed + this.speedBoost; // Adjust as needed
+
+			const distanceToTarget = this.player.position.distanceTo(this.targetLocation);
+			
+			if (distanceToTarget < 1) {
+					this.targetLocation = null;
+					this.idle();
+					this.player.body.setAngularVelocityY(0);
+			} else {
+        const looking = this.rotateTowardsTarget();
+
+				if(looking) this.run({
+					x: direction.x * speed,
+					z: direction.z * speed
+				});
+			}
+    }
+	}
+
 }

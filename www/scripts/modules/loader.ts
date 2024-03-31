@@ -25,7 +25,7 @@ export const toload = () : Record<string, Record<string, item> | any> => {
 				config: {
 					position: {
 						x: 0.05,
-						y: 0.37,
+						y: 0.45,
 						z: -0.12
 					},
 					scale: {

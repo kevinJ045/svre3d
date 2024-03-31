@@ -1,0 +1,68 @@
+[Player: 80]
+	+ Player Model Load [X]
+	+ Player Movement [X]
+	+ Camera Position Set [-]
+	+ Player Animations [-]
+
+[World Generation: 50]
+	+ Chunk Load/Unload [X]
+	+ Chunk HeightMap [X]
+	+ Biome Generation [-]
+	+ Biome Elements [ ]
+	+ Biome Liquids [ ]
+
+[UI: 0]
+	+ Inventory UI [ ]
+	+ 3D Preview [ ]
+	+ Main Menu [ ]
+	+ Trade UI [ ]
+	+ Crafting UI [ ]
+
+[Effects: 0]
+	+ Emission Effects [ ]
+	+ Fog Effect [ ]
+	+ Bloom Effect [ ]
+
+[Creatures: 0]
+	+ Biome Creatures [ ]
+	+ Creature AI [ ]
+
+[Mines: 0]
+	+ Mining Biome [ ]
+	+ Ores [ ]
+	+ Ore Logic [ ]
+
+[Items: 0]
+	+ 121 Items [ ]
+	+ Item Logic [ ]
+	+ Item Loot [ ]
+
+[Crafting: 0]
+	+ Crafting Logic [ ]
+
+[Pets: 0]
+	+ Pets Logic [ ]
+	+ Pets AI [ ]
+
+[Trader: 0]
+	+ Trader AI [ ]
+	+ Trader Logic [ ]
+
+[Loots: 0]
+	+ Looting Logic [ ]
+	+ Lootbags [ ]
+	+ Lootchests [ ]
+	+ Lootcarts [ ]
+
+[Currency: 0]
+	+ Normal Currency [ ]
+	+ Currency Logic [ ]
+	+ Special Currency [ ]
+
+[Extensive Modding: 1]
+	+ Extensible Item Management Model [-]
+	+ Mod Loader [ ]
+
+[Async Loadings: 0]
+	+ Async Loading Logic [ ]
+

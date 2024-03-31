@@ -123,6 +123,25 @@
     .player-menu .inventory .inventory-slot.wearable{
       background-color: rgba(48, 91, 184, 0.4);
     }
+
+    .player-menu .inventory .item{
+      width: 28px;
+      height: 28px;
+      display: inline-block;
+      background: #70c70d;
+      position: relative;
+    }
+
+    .player-menu .inventory .item .item-name{
+      display: none;
+      color: white;
+      position: absolute;
+      bottom: -10px;
+      right: -10px;
+    }
+    .player-menu .inventory .item:hover .item-name{
+      display: block;
+    }
   </style>
   <body>
     <div class="player-menu" id="full-menu">
@@ -170,11 +189,13 @@
               </div>
     
               <div class="inventory-group" style="width: 45px;">
-                <div class="inventory-slot wearable"></div>
+                <div class="inventory-slot wearable hat"></div>
                 
-                <div class="inventory-slot wearable"></div>
+                <div class="inventory-slot wearable eye"></div>
                 
-                <div class="inventory-slot wearable"></div>
+                <div class="inventory-slot wearable armor"></div>
+                
+                <div class="inventory-slot wearable attachment"></div>
               </div>
     
             </div>

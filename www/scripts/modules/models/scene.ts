@@ -1,6 +1,7 @@
 import { ExtendedGroup, Scene3D, ThirdPersonControls } from "enable3d";
 import { item } from "./item";
 import { ChunkSet } from "../world";
+import { UI } from "../ui";
 
 export class CustomScene extends Scene3D {
   loaded: Record<string, item> = {};
@@ -20,6 +21,8 @@ export class CustomScene extends Scene3D {
   seed = "joeman";
 
   loadedChunks!: ChunkSet;
+
+  UI = new UI;
 
 
   findLoadedResource(name: string, defaultResource = "none"){

@@ -9,8 +9,7 @@ export const toload = () : Record<string, Record<string, item> | any> => {
 				type: "player",
 				config: {
 					brow: "m:brow-1",
-					color: "#09D0D0",
-					hat: "m:horn-1"
+					color: "#09D0D0"
 				},
 				resource: {
 					type: "gltf",

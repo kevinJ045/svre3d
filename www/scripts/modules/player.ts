@@ -1,5 +1,6 @@
 import { ExtendedObject3D, Scene3D, THREE } from "enable3d";
 import { item } from "./models/item";
+import { Item } from "./models/item2";
 
 
 
@@ -7,6 +8,16 @@ export class Player {
 	player!: ExtendedObject3D;
 	playerData!: item;
 	physics!: typeof Scene3D.prototype.physics;
+	items = 0;
+
+	inventory: Item[] = [];
+
+	wearables : Record<string, Item | null> = {
+		hat: null,
+		eye: null,
+		armor: null,
+		attachment: null,
+	};
 
 	constructor(physics: typeof Scene3D.prototype.physics, player: ExtendedObject3D, playerItem: item){
 		this.player = player;
@@ -175,5 +186,104 @@ export class Player {
 			}
     }
 	}
+
+	inInventory(item: Item){
+		return this.inventory.find(i => i.id == item.id);
+	}
+
+	fromName(name: string){
+		// const item = new Item("");
+	}
+
+	ownItem(item: Item){
+		if(item.player?.player.uuid == this.player.uuid) return true;
+		item.setParentPlayer(this);
+		return true;
+	}
+
+	toInventory(item: Item){
+		if(this.inInventory(item)) return true;
+		else {
+			this.ownItem(item);
+			this.inventory.push(item);
+			this.updateInventory(item, 'add');
+			return true;
+		}
+	}
+
+	fromInventory(item: Item){
+		const ini = this.inInventory(item);
+		if(!ini) return false;
+		this.inventory.splice(this.inventory.indexOf(ini), 1);
+		this.updateInventory(ini, 'remove');
+		return true;
+	}
+
+	unwearAccessory(wearable: Item){
+		const { item } = wearable;
+    if(item.type !== "accessory" || !item) return;
+		const head = this.player.children[0].children[0].children[0].children[0];
+		head.remove(wearable?.mesh!);
+		wearable.mesh = undefined;
+		this.toInventory(wearable);
+		this.wearables[item.accessory.type] = null;
+	}
+
+	wearAccessory(wearable: Item){
+		const { item } = wearable;
+    if(item.type !== "accessory" || !item) return;
+
+		if(!this.inInventory(wearable)) return false;
+
+    const item_mesh = item.mesh!.clone();
+    (item_mesh as any).details = item;
+
+		wearable.mesh = item_mesh;
+
+    const head = this.player.children[0].children[0].children[0].children[0];
+
+		if(this.wearables[item.accessory.type]) {
+			const w = this.wearables[item.accessory.type];
+			this.unwearAccessory(w!);
+		}
+		
+    head.add(item_mesh);
+		this.wearables[item.accessory.type] = wearable;
+
+		this.fromInventory(wearable);
+
+		this.updateInventory(wearable, 'wear');
+
+    item_mesh.position.x += item.config!.position.x;
+    item_mesh.position.y += item.config!.position.y;
+    item_mesh.position.z += item.config!.position.z;
+
+    if(item.config!.scale){
+      item_mesh.scale.x = item.config!.scale.x;
+      item_mesh.scale.y = item.config!.scale.y;
+      item_mesh.scale.z = item.config!.scale.z;
+    }
+
+		return true;
+  }
+
+	_inventoryListeners: ({
+		f: (item: Item, type?: string) => any,
+		type
+	})[] = [];
+	updateInventory(item:Item, type: string){
+		this._inventoryListeners.filter(f => f.type == type || f.type == 'all').forEach(c => {
+			c.f(item, type);
+		});
+	};
+
+	onInventory(type, f: (item: Item, type?: string) => any){
+		this._inventoryListeners.push({
+			f,
+			type
+		});
+		return true;
+	}
+
 
 }

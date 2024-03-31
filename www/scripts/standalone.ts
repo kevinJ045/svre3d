@@ -4,6 +4,7 @@ import { item } from './modules/models/item'
 import { CustomScene } from './modules/models/scene'
 import { Player } from './modules/player'
 import { ChunkSet, generateWorldChunk, getDistance, loadChunksAroundPlayer, updateChunks, updateChunkss } from './modules/world'
+import { Item } from './modules/models/item2'
 
 class MainScene extends CustomScene {
   loader!: Promise<any>
@@ -32,29 +33,10 @@ class MainScene extends CustomScene {
     return this.loaded[name];
   }
 
-  wearAccessory(player: ExtendedObject3D, accessoryName: string){
-    const item = this.loadedObject(accessoryName);
-    if(item.type !== "accessory" || !item) return;
-
-    const item_mesh = item.mesh!.clone();
-    (item_mesh as any).details = item;
-
-    const head = player.children[0].children[0].children[0].children[0];
-
-    if((player as any)[item.accessory.type]) head.remove((player as any)[item.accessory.type]);
-
-    head.add(item_mesh);
-    (player as any)[item.accessory.type] = item_mesh;
-    
-    item_mesh.position.x += item.config!.position.x;
-    item_mesh.position.y += item.config!.position.y;
-    item_mesh.position.z += item.config!.position.z;
-
-    if(item.config!.scale){
-      item_mesh.scale.x = item.config!.scale.x;
-      item_mesh.scale.y = item.config!.scale.y;
-      item_mesh.scale.z = item.config!.scale.z;
-    }
+  itemFromName(name: string) {
+    let item = this.loadedObject(name);
+    if(!item) return null;
+    return new Item(item);
   }
 
   playerCharacter(){
@@ -82,8 +64,8 @@ class MainScene extends CustomScene {
 
     o.anims.mixer.clipAction(player.load.animations[0]).reset().play()
 
-    this.wearAccessory(o, player.config!.brow);
-    this.wearAccessory(o, player.config!.hat);
+    // this.wearAccessory(o, player.config!.brow);
+    // this.wearAccessory(o, player.config!.hat);
 
     // o.rotation.y = Math.PI;
     o.position.y = -8;
@@ -147,6 +129,12 @@ class MainScene extends CustomScene {
     const player = this.playerCharacter();
     this.player = player;
     player.idle();
+
+    // console.log(this.itemFromName('m:horn-1'));
+
+    player.toInventory(this.itemFromName('m:horn-1')!);
+
+    this.UI.setPlayer(player);
 
     // const physics = this.physics;
     // world.children[0].traverse(child => {
@@ -253,8 +241,7 @@ class MainScene extends CustomScene {
     this.cameraPosition.lookat = pt;
 
 
-    document.getElementById('full-menu')?.classList.add('active');
-
+    this.UI.show();
   }
 
   closeInventory(){
@@ -263,7 +250,7 @@ class MainScene extends CustomScene {
     this.cameraPosition.offset = new THREE.Vector3(-15, 15, -15);
     this.cameraPosition.diagonal = 10;
 
-    document.getElementById('full-menu')?.classList.remove('active');
+    this.UI.hide();
   }
 
   setupControls(){

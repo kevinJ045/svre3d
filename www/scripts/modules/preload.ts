@@ -17,7 +17,8 @@ export const preload = async (scene: CustomScene) => {
 		const item_full = {
 			mesh: item.resource.type == "gltf" ? load.scene : load,
 			load,
-			...item
+			...item,
+			_id: i
 		};
 
 		if(specific_load[i]) scene.loaded[i] = specific_load[i](item_full);
@@ -31,7 +32,8 @@ export const preload = async (scene: CustomScene) => {
 		
 		const item_full: { texture: any } = {
 			texture: null,
-			...item
+			...item,
+			_id: i
 		};
 
 		if(item.type == "texture_map"){
@@ -52,7 +54,8 @@ export const preload = async (scene: CustomScene) => {
 		const item = loads.shaders[i];
 
 		const item_full = {
-			...item
+			...item,
+			_id: i
 		}
 
 		const name = i+'.shader';

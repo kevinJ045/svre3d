@@ -7,7 +7,7 @@
 	},
 	"resource": {
 		"type": "gltf",
-		"src": "/res/obj/player5.glb"
+		"src": "/res/obj/cubixc2.glb"
 	},
 	"loader": {
 		"group": "objects"

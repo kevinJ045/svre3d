@@ -45,6 +45,8 @@ class MainScene extends CustomScene {
     const player = this.loadedObject('m:player');
     const pmesh = player.mesh!.copy(new THREE.Object3D(), true);
 
+    console.log(player.load);
+
     this.animationMixers.add(o.anims.mixer);
     o.anims.mixer.timeScale = 1;
 
@@ -84,7 +86,7 @@ class MainScene extends CustomScene {
     // o.body.applyForceY(5);
     o.body.setGravity(0, -20, 0)
 
-    return new Player(this.physics, o, player);
+    return new Player(this, o, player);
   }
 
   async create() {
@@ -132,7 +134,12 @@ class MainScene extends CustomScene {
 
     // console.log(this.itemFromName('m:horn-1'));
 
-    player.toInventory(this.itemFromName('m:horn-1')!);
+    const brow = this.itemFromName('m:brow-1')!;
+    const horn = this.itemFromName('m:horn-1')!
+    player.toInventory(horn);
+    player.toInventory(brow);
+
+    player.wearAccessory(brow);
 
     this.UI.setPlayer(player);
 
@@ -197,7 +204,9 @@ class MainScene extends CustomScene {
       // On Space Key Down
       'Down ': () => this.player.jump(),
       'Upe': () => this.toggleInventory(),
-      'Downv': () => this.changeCameraAngle()
+      'Downv': () => this.changeCameraAngle(),
+      'DownShift': () => player.sneak('start'),
+      'UpShift': () => player.sneak('stop'),
     }
 
     window.addEventListener('keydown', (e) => {
@@ -232,12 +241,13 @@ class MainScene extends CustomScene {
   openInventory(){
     this.inventoryOpen = true;
 
-    this.cameraPosition.offset = new THREE.Vector3(-5, 3, -8);
-    this.cameraPosition.diagonal = 4;
+    this.cameraPosition.offset = new THREE.Vector3(4, 2, -8);
 
     const pt = this.player.player.position.clone();
 
     pt.x += 4;
+
+    pt.applyEuler(this.player.player.rotation);
 
     this.cameraPosition.lookat = pt;
 
@@ -248,8 +258,7 @@ class MainScene extends CustomScene {
   closeInventory(){
     this.cameraPosition.lookat = false;
     this.inventoryOpen = false;
-    this.cameraPosition.offset = new THREE.Vector3(-15, 15, -15);
-    this.cameraPosition.diagonal = 10;
+    this.cameraPosition.offset = this.cameraPosition.angles[this.cameraPosition.current];
 
     this.UI.hide();
   }
@@ -269,10 +278,14 @@ class MainScene extends CustomScene {
       // Update the picking ray with the camera and mouse position
       raycaster.setFromCamera(mouse, this.camera);
 
+      const intersectsplayer = raycaster.intersectObjects([this.player.player]);
+
+      if(intersectsplayer.length > 0){
+        return this.openInventory();
+      }
+
       // Calculate objects intersecting the picking ray
       const intersects = raycaster.intersectObjects(this.loadedChunks.chunkObjects());
-
-      console.log(intersects);
 
       if (intersects.length > 0) {
         // Move the cube to the position where the ground is clicked
@@ -283,24 +296,40 @@ class MainScene extends CustomScene {
 
     const pos = new THREE.Vector2();
 
+    this.canvas.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+
     this.canvas.addEventListener('mousedown', (event) => {
-      mousedowninterval = setTimeout(() => isClick = 0, 300);
-      pos.x = event.clientX;
-      pos.y = event.clientY;
+      if(event.button == 0){
+        mousedowninterval = setTimeout(() => isClick = 0, 300);
+        pos.x = event.clientX;
+        pos.y = event.clientY;
+      } else {
+        event.preventDefault();
+      }
     });
   
   
     this.canvas.addEventListener('mouseup', (event) => {
-      clearTimeout(mousedowninterval);
-      if(isClick == 0 || (event.clientX !== pos.x && event.clientY !== pos.y)) return isClick = 1;
+      if(event.button == 0){
+        clearTimeout(mousedowninterval);
+        if(isClick == 0 || (event.clientX !== pos.x && event.clientY !== pos.y)) return isClick = 1;
+  
+        isClick = 1;
+        onMouseClick(event);
+      } else {
+        event.preventDefault();
 
-      isClick = 1;
-      onMouseClick(event);
+        this.player.attack();
+
+      }
     });
+
   }
 
   cameraPosition : { offset: THREE.Vector3, diagonal: number, lookat: THREE.Vector3 | false, angles: THREE.Vector3[], current: number } = {
-    offset: new THREE.Vector3(-15, 15, -15),
+    offset: new THREE.Vector3(15, 15, -15),
     diagonal: 10,
     lookat: false,
     angles: [
@@ -323,15 +352,15 @@ class MainScene extends CustomScene {
 
   updateCameraLocation() {
     const playerPosition = this.player.player.position;
-    const playerDirection = this.player.player.getWorldDirection(new THREE.Vector3());
+    const playerRotation = this.player.player.rotation;
 
-    // Set camera offsets based on player's forward direction
-    const offsetX = playerDirection.x * this.cameraPosition.offset.x; // Offset in X axis
-    const offsetY = this.cameraPosition.offset.y; // Offset in Y axis
-    const offsetZ = playerDirection.z * this.cameraPosition.offset.z; // Offset in Z axis
+    // Convert offsets to a Vector3 based on player's rotation
+    const offsetVector = this.cameraPosition.offset.clone();
+    offsetVector.applyEuler(playerRotation);
 
     // Set camera position
-    this.camera.position.set(playerPosition.x + offsetX, playerPosition.y + offsetY, playerPosition.z + offsetZ);
+    const cameraPosition = new THREE.Vector3().copy(playerPosition).add(offsetVector);
+    this.camera.position.copy(cameraPosition);
 
     // Make the camera look at the player
     if(this.cameraPosition.lookat) this.camera.lookAt(this.cameraPosition.lookat);
@@ -414,13 +443,12 @@ class MainScene extends CustomScene {
     //   if(this.player.isRunning) this.player.idle();
     // }
 
-    if(this.player.isRunning){
+    if(this.player.targetLocation){
+      this.player.moveTowardsTarget();
       this.player.player.body.setVelocity(this.player.runDirection.x, this.player.player.body.velocity.y, this.player.runDirection.z);
     } else {
       this.player.player.body.setVelocity(0, this.player.player.body.velocity.y, 0);
     }
-
-    if(this.player.targetLocation) this.player.moveTowardsTarget();
 
     this.updateCameraLocation();
 

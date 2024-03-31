@@ -7,8 +7,8 @@
 	"config": {
 		"position": {
 			"x": 0.05,
-			"y": 0.45,
-			"z": -0.12
+			"y": -1.55,
+			"z": -2.25
 		},
 		"scale": {
 			"x": 1,
@@ -18,7 +18,7 @@
 	},
 	"resource": {
 		"type": "gltf",
-		"src": "/res/obj/brow-1.glb"
+		"src": "/res/obj/brow-1.1.glb"
 	},
 	"loader": {
 		"group": "objects"

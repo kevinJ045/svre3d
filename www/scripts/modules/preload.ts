@@ -2,74 +2,60 @@ import { Scene3D } from "enable3d";
 import { toload } from "./loader";
 import { CustomScene } from "./models/scene";
 import { specific_load } from "./specific_load";
+import { Utils } from "./utils";
 
 
 export const preload = async (scene: CustomScene) => {
 
-	const loads = toload();
+	const loads = await toload();
 
-	for(let i in loads.objects){
+	for(let undefinedItem of loads){
+		let load: any = null;
 
-		const item = loads.objects[i];
+		const item = {...undefinedItem};
 
-		const load = (await scene.load[item.resource.type](item.resource.src));
+		if(item.resource){
 
-		const item_full = {
-			mesh: item.resource.type == "gltf" ? load.scene : load,
-			load,
-			...item,
-			_id: i
-		};
-
-		if(specific_load[i]) scene.loaded[i] = specific_load[i](item_full);
-		else scene.loaded[i] = item_full;
-	};
-
-	for(let i in loads.textures){
-		const item = loads.textures[i];
-
-		
-		
-		const item_full: { texture: any } = {
-			texture: null,
-			...item,
-			_id: i
-		};
-
-		if(item.type == "texture_map"){
-			item_full.texture = [];
-			for(let src of item.resource.sources!){
-				item_full.texture.push(await scene.load[item.resource.type](src));
+			const type = item.resource.type;
+			
+			if(item.type.endsWith("_map")){
+				load = [];
+				for(let src of item.resource.sources!){
+					load.push(await scene.load[type](src));
+				}
+			} else if(type in scene.load) {
+				load = (await scene.load[type](item.resource.src));
 			}
+
+
+			if(type == "texture") {
+				item.texture = load;
+			} else if(type == "gltf" || type == "object" || type == "fbx") {
+				item.mesh = type == "gltf" ? load.scene : load;
+			} else if(item.type == "shader"){
+				item.id = item.id+'.shader';
+				item['vertex'] = await Utils.loadText(item.resource.sources![0]);
+				item['fragment'] = await Utils.loadText(item.resource.sources![1]);
+			}
+
+
+			item.load = load;
+		}
+
+		const group = item.loader ? item.loader.group : item.type;
+
+		if(item.type == "biome"){
+			scene.loadedChunks.chunkTypes.push({
+				...item,
+				item: scene.findLoadedResource(item.item, 'textures')
+			} as any);
 		} else {
-			item_full.texture = (await scene.load[item.resource.type](item.resource.src));
+			if(!scene.loaded[group]) scene.loaded[group] = [];
+			scene.loaded[group].push(item);
 		}
-
-		if(specific_load[i]) scene.loaded[i] = specific_load[i](item_full);
-		else scene.loaded[i] = item_full as any;
 	}
 
-	for(let i in loads.shaders){
+	console.log(scene.loaded);
 
-		const item = loads.shaders[i];
-
-		const item_full = {
-			...item,
-			_id: i
-		}
-
-		const name = i+'.shader';
-
-		if(specific_load[name]) scene.loaded[name] = specific_load[name](item_full);
-		else scene.loaded[name] = item_full as any;
-	}
-
-	loads.chunkTypes.forEach(type => {
-		scene.loadedChunks.chunkTypes.push({
-			...type,
-			item: scene.findLoadedResource(type.item)
-		})
-	});
-	
 	
 };

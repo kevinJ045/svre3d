@@ -397,7 +397,7 @@ function parseMaterialOptions(options){
 
 function makeSegmentMaterial(texture: THREE.Texture, chunkType: chunktype, scene: CustomScene){
 	
-	const { fragment, vertex, materialOptions } = (scene.findLoadedResource(chunkType.shader ? chunkType.shader+'.shader' : 'm:segment.shader', 'm:segment.shader') || {}).resource as any;
+	const { fragment, vertex, materialOptions } = (scene.findLoadedResource(chunkType.shader ? chunkType.shader+'.shader' : 'm:segment.shader', 'shaders', 'm:segment.shader') || {}) as any;
 
 	const uniforms = {
 		textureMap: { value: texture },

@@ -18,6 +18,6 @@ export type item = {
 		sources?: string[]
 	},
 	mesh?: THREE.Object3D,
-	_id?: string,
+	id: string,
 	[key: string]: any
 }

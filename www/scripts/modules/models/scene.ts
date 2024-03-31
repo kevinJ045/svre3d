@@ -4,7 +4,7 @@ import { ChunkSet } from "../world";
 import { UI } from "../ui";
 
 export class CustomScene extends Scene3D {
-  loaded: Record<string, item> = {};
+  loaded: Record<string, item[]> = {};
   controls!: ThirdPersonControls;
   world!: ExtendedGroup;
 
@@ -25,7 +25,7 @@ export class CustomScene extends Scene3D {
   UI = new UI;
 
 
-  findLoadedResource(name: string, defaultResource = "none"){
-    return this.loaded[name] || this.loaded[defaultResource];
+  findLoadedResource(name: string, type = "", defaultResource = "none"){
+    return this.loaded[type].find(i => i.id == name) || this.loaded[type].find(i => i.id == name);
   }
 }

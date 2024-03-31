@@ -30,7 +30,7 @@ class MainScene extends CustomScene {
   }
 
   loadedObject(name: string) : item {
-    return this.loaded[name];
+    return this.findLoadedResource(name, 'objects')!;
   }
 
   itemFromName(name: string) {
@@ -94,7 +94,7 @@ class MainScene extends CustomScene {
 
     // console.log(this.loaded['m:base_segment']);
 
-    this.loadedChunks.segment_object = this.loaded['m:segment'].mesh!;
+    // this.loadedChunks.segment_object = this.loaded['m:segment'].mesh!;
 
     // console.log(this.loaded['m:segment']);
 
@@ -197,6 +197,7 @@ class MainScene extends CustomScene {
       // On Space Key Down
       'Down ': () => this.player.jump(),
       'Upe': () => this.toggleInventory(),
+      'Downv': () => this.changeCameraAngle()
     }
 
     window.addEventListener('keydown', (e) => {
@@ -298,18 +299,34 @@ class MainScene extends CustomScene {
     });
   }
 
-  cameraPosition : { offset: THREE.Vector3, diagonal: number, lookat: THREE.Vector3 | false } = {
+  cameraPosition : { offset: THREE.Vector3, diagonal: number, lookat: THREE.Vector3 | false, angles: THREE.Vector3[], current: number } = {
     offset: new THREE.Vector3(-15, 15, -15),
     diagonal: 10,
-    lookat: false 
+    lookat: false,
+    angles: [
+      new THREE.Vector3(15, 15, -15),
+      new THREE.Vector3(15, 15, 15),
+      new THREE.Vector3(-15, 15, 15),
+      new THREE.Vector3(-15, 15, -15),
+      new THREE.Vector3(15, 15, 0),
+      new THREE.Vector3(-15, 15, 0),
+    ],
+    current: 0
   };
+
+  changeCameraAngle(){
+    if(this.cameraPosition.lookat) return;
+    this.cameraPosition.current++;
+    if(this.cameraPosition.current >= this.cameraPosition.angles.length) this.cameraPosition.current = 0;
+    this.cameraPosition.offset = this.cameraPosition.angles[this.cameraPosition.current];
+  }
 
   updateCameraLocation() {
     const playerPosition = this.player.player.position;
     const playerDirection = this.player.player.getWorldDirection(new THREE.Vector3());
 
     // Set camera offsets based on player's forward direction
-    const offsetX = this.cameraPosition.diagonal + playerDirection.x * this.cameraPosition.offset.x; // Offset in X axis
+    const offsetX = playerDirection.x * this.cameraPosition.offset.x; // Offset in X axis
     const offsetY = this.cameraPosition.offset.y; // Offset in Y axis
     const offsetZ = playerDirection.z * this.cameraPosition.offset.z; // Offset in Z axis
 

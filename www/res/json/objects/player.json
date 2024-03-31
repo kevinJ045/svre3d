@@ -1,0 +1,15 @@
+{
+	"id": "m:player",
+	"type": "player",
+	"config": {
+		"brow": "m:brow-1",
+		"color": "#09D0D0"
+	},
+	"resource": {
+		"type": "gltf",
+		"src": "/res/obj/player5.glb"
+	},
+	"loader": {
+		"group": "objects"
+	}
+}

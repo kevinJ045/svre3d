@@ -3,6 +3,7 @@
 	+ Player Movement [X]
 	+ Camera Position Set [-]
 	+ Player Animations [-]
+	+ Player HP [ ]
 
 [World Generation: 50]
 	+ Chunk Load/Unload [X]
@@ -26,6 +27,7 @@
 [Creatures: 0]
 	+ Biome Creatures [ ]
 	+ Creature AI [ ]
+	+ Creature HP [ ]
 
 [Mines: 0]
 	+ Mining Biome [ ]
@@ -36,6 +38,7 @@
 	+ 121 Items [ ]
 	+ Item Logic [-]
 	+ Item Loot [ ]
+	+ Item Tier
 
 [Crafting: 0]
 	+ Crafting Logic [ ]

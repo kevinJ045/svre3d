@@ -113,11 +113,13 @@
 		}
 
 		.player-menu .inventory .inventory-slot{
-			width: 34px;
-			height: 34px;
+			width: 35px;
+			height: 35px;
 			background-color: rgba(0, 0, 0, 0.4);
-			border: 3px solid black;
+			border: 1px solid black;
 			display: block;
+      text-align: center;
+      line-height: 35px;
 		}
 
     .player-menu .inventory .inventory-slot.wearable{
@@ -125,8 +127,8 @@
     }
 
     .player-menu .inventory .item{
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       display: inline-block;
       background: #70c70d;
       position: relative;
@@ -223,5 +225,7 @@
 
 
   </body>
-  <script src="./bundle.js"></script>
+  <!-- <script src="./bundle.js"></script> -->
+  <script type="module" src="/@vite/client"></script>
+  <script type="module" src="./scripts/index.ts"></script>
 </html>

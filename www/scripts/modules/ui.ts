@@ -37,7 +37,6 @@ export class UI {
 		
 		if(item.item.config?.icon) {
 			const { src, width, height, offset } = item.item.config?.icon;
-			console.log(src);
 			i.style.setProperty('--item-url', `url("${src}")`);
 			i.style.backgroundSize = `${width || '100%'} ${height || '100%'}`;
 			if(offset){
@@ -47,7 +46,7 @@ export class UI {
 		}
 		const t = document.createElement('span');
 		t.className = 'item-name';
-		t.innerText = item.item.config?.name || item.item._id || 'item';
+		t.innerText = item.item.config?.name || item.item.id || 'item';
 		i.appendChild(t);
 		return i;
 	}

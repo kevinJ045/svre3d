@@ -50,6 +50,16 @@ export const toload = () : Record<string, Record<string, item> | any> => {
 						y: 1,
 						z: 0
 					},
+					name: "Normal Horn",
+					icon: {
+						src: "/res/tex/horn-1.icon.png",
+						width: "28px",
+						height: "21.270531400966185px",
+						offset: {
+							top: "50%",
+							left: "0"
+						}
+					}
 				},
 				resource: {
 					type: "gltf",

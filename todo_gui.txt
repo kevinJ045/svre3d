@@ -12,8 +12,8 @@
 	+ Biome Liquids [ ]
 
 [UI: 0]
-	+ Inventory UI [ ]
-	+ 3D Preview [ ]
+	+ Inventory UI [X]
+	+ 3D Preview [-]
 	+ Main Menu [ ]
 	+ Trade UI [ ]
 	+ Crafting UI [ ]
@@ -34,7 +34,7 @@
 
 [Items: 0]
 	+ 121 Items [ ]
-	+ Item Logic [ ]
+	+ Item Logic [-]
 	+ Item Loot [ ]
 
 [Crafting: 0]

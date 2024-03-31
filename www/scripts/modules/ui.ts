@@ -36,7 +36,13 @@ export class UI {
 		i.className = 'item';
 		
 		if(item.item.config?.icon) {
-			i.style.setProperty('--item-url', item.item.config?.icon);
+			const { src, width, height, offset } = item.item.config?.icon;
+			console.log(src);
+			i.style.setProperty('--item-url', `url("${src}")`);
+			i.style.backgroundSize = `${width || '100%'} ${height || '100%'}`;
+			if(offset){
+				i.style.backgroundPosition = `${offset.left} ${offset.top}`
+			}
 			i.className += ' with-icon';
 		}
 		const t = document.createElement('span');

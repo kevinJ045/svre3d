@@ -8,7 +8,8 @@
     "build": "npm run bundle",
     "serve": "five-server",
     "bundle": "webpack --config webpack.config.cjs",
-    "webpack": "webpack --config webpack.config.cjs --watch"
+    "webpack": "webpack --config webpack.config.cjs --watch",
+    "dev": "vite"
   },
   "keywords": [],
   "author": "",

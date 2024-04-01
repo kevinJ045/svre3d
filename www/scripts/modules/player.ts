@@ -2,18 +2,11 @@ import { ExtendedObject3D, THREE } from "enable3d";
 import { item } from "./models/item";
 import { Item } from "./models/item2";
 import { CustomScene } from "./models/scene";
+import { Entity } from "./entity";
 
 
 
-export class Player {
-	player!: ExtendedObject3D;
-	playerData!: item;
-	physics!: typeof CustomScene.prototype.physics;
-	items = 0;
-
-	scene!: CustomScene;
-
-	inventory: Item[] = [];
+export class Player extends Entity {
 
 	wearables : Record<string, Item | null> = {
 		hat: null,
@@ -23,273 +16,53 @@ export class Player {
 	};
 
 	constructor(scene: CustomScene, player: ExtendedObject3D, playerItem: item){
-		this.player = player;
-		this.playerData = playerItem;
-		this.physics = scene.physics;
-		this.scene = scene;
-
-
-		this.player.body.on.collision((otherObjecr) => {
-			if(otherObjecr.name == 'chunk' && this.canJump == false){
-				this.canJump = true;
-			}
-		});
+		super(scene, player, playerItem);
 	}
 
-	// idletimeout: any;
-	
-	private _playAnimation(name: string){
-		this.player.anims.mixer.stopAllAction();
-		const p = this.player.anims.mixer
-			.clipAction(this.playerData.load.animations.find(anim => anim.name == name))
-			.reset()
-			.play();
-		// clearTimeout(this.idletimeout);
-		// if(name == 'Idle') this.idletimeout = setTimeout(() => {
-		// 	this._playAnimation('Turn');
-		// }, 5000);
-		// if(name == 'Turn') this.idletimeout = setTimeout(() => {
-		// 	this._playAnimation('Idle');
-		// }, 1000);
-	}
-
-	isRunning = false;
-	isJumping = false;
-	isSneaking = false;
-	fast = false;
-	move = false;
-  moveTop = 0;
-  moveRight = 0;
-	runDirection = {
-		x: 0,
-		y: 0,
-		z: 0
-	};
-
-	speed = 10;
-	speedBoost = 0;
-	rotationSpeed = 10;
-
-	canJump = true;
-
-	targetLocation : null | THREE.Vector3 = null;
-
-	run(direction: {x?:number,y?:number,z?:number}, speed = false){
-		if('x' in direction) this.runDirection.x = direction.x!;
-		if('y' in direction) this.runDirection.y = direction.y!;
-		if('z' in direction) this.runDirection.z = direction.z!;
-		if(this.isRunning && (this.fast == speed)) return this;
-		console.log('running');
-		this._playAnimation('Walk');
-		this.isRunning = true;
-		this.fast = speed;
-		return this;
-	}
-
-	rotate(degrees: number){
-		this.physics.destroy(this.player.body);
-		this.player.rotation.y += degrees;
-		this.physics.add.existing(this.player);
-	}
-
-	lookAt(position: THREE.Vector3){
-		this.physics.destroy(this.player.body);
-		this.player.lookAt(position);
-		this.physics.add.existing(this.player);
-	}
-
-	idle(){
-		this.isRunning = false;
-		this._playAnimation('Idle');
-		console.log('idling')
-		return this;
-	}
-
-	normal(){
-		if(!this.isRunning) return this;
-		this.isRunning = false;
-		this._playAnimation('Normal');
-		return this;
-	}
-
-	jump(){
-		console.log('jumping');
-		if(!this.canJump) return;
-		this.isJumping = true;
-		this.canJump = false;
-		this.player.body.applyForceY(10);
-		this.idle();
-		this.isJumping = false;
-	}
-
-	sneak(act: string){
-		if(act == 'start') {
-			this.isSneaking = true;
-			this._playAnimation('Sneak');
-		} else {
-			this.isSneaking = false;
-			if(this.isRunning) this._playAnimation('Walk');
-			else this.idle();
-		}
-	}
-
-
-	attackTimeout: any;
-	attack(){
-		clearTimeout(this.attackTimeout);
-		this._playAnimation('Attack');
-		this.attackTimeout = setTimeout(() => {
-			if(this.isRunning) this._playAnimation('Walk');
-			else this.idle();
-		}, 500);
-	}
-
-	rotateTowardsTarget() {
-    if (this.targetLocation) {
-			const rotationSpeed = this.rotationSpeed;
-			const maxRotation = Math.PI / 24; // Maximum rotation angle per frame
-
-			// Calculate the direction vector towards the target location
-			const direction = new THREE.Vector3();
-			direction.subVectors(this.targetLocation, this.player.position);
-			// direction.x = 0; // Assuming movement is only along x and z axes
-			direction.y = 0; // Assuming movement is only along x and z axes
-			// direction.z = 0; // Assuming movement is only along x and z axes
-
-			var quaternion = new THREE.Quaternion().setFromEuler(this.player.rotation);
-
-			const currentDirection = new THREE.Vector3(0, 0, -1).applyQuaternion(quaternion);
-			let theta = Math.atan2(direction.x, direction.z) - Math.atan2(currentDirection.x, currentDirection.z);
-
-			if (theta > Math.PI) {
-				theta -= 2 * Math.PI;
-			} else if (theta < -Math.PI) {
-				theta += 2 * Math.PI;
-			}
-
-			const deltaTheta = THREE.MathUtils.clamp(theta, -maxRotation, maxRotation);
-
-			// console.log(deltaTheta, Math.abs(deltaTheta), deltaTheta * rotationSpeed);
-
-			// console.log(Math.abs(deltaTheta * rotationSpeed));
-
-			if (Math.abs(deltaTheta * rotationSpeed) < 1) {
-				this.player.body.setAngularVelocityY(0);
-				return true;
-			} else {
-				this.player.body.setAngularVelocityY(deltaTheta * rotationSpeed);
-			}
-    }
-		return false;
-	}
-
-	moveTowardsTarget() {
-    if (this.targetLocation) {
-			const direction = new THREE.Vector3();
-			direction.subVectors(this.targetLocation, this.player.position);
-			direction.y = 0; 
-
-			direction.normalize();
-
-			const speed = (this.speed + this.speedBoost) / (this.isSneaking ? 2 : 1); // Adjust as needed
-
-			const distanceToTarget = this.player.position.distanceTo(this.targetLocation);
-
-			if (distanceToTarget < 1.5) {
-					this.targetLocation = null;
-					this.player.body.setAngularVelocityY(0);
-					this.idle();
-			} else {
-				// here implement a way to jump the player if there is a chunk in front of it
-				const front = new THREE.Vector3().copy(direction).add(this.player.position).addScalar(4);
-
-				front.y += 1;
-
-				const playerpos = this.player.position.clone();
-
-
-
-				// Perform raycast to detect obstacles in front of the player
-				const raycaster = new THREE.Raycaster(playerpos, front);
-				const intersects = raycaster.intersectObjects(this.scene.loadedChunks.chunkObjects(), true);
-
-				// console.log(intersects);
-
-				if (intersects.length > 0) {
-					// intersects[0].object.material = new THREE.MeshBasicMaterial({ color: 0x09d0d0 });
-					const chunkY = intersects[0].object.position.y; // Y position of the chunk below next step
-					const playerY = this.player.position.y; // Y position of the player
-					const heightDifference = chunkY - playerY;
-
-					// console.log(heightDifference)
-
-					// If the height difference is exactly 1, make the player jump
-					if (heightDifference > -1) {
-						this.jump();
-					}
-				}
-				const looking = this.rotateTowardsTarget();
-
-				if(looking) this.run({
-					x: direction.x * speed,
-					z: direction.z * speed
-				});
-			}
-    }
-	}
-
-	inInventory(item: Item){
-		return this.inventory.find(i => i.id == item.id);
-	}
-
-	fromName(name: string){
-		// const item = new Item("");
-	}
 
 	ownItem(item: Item){
-		if(item.player?.player.uuid == this.player.uuid) return true;
+		if(item.player?.mesh.uuid == this.mesh.uuid) return true;
 		item.setParentPlayer(this);
 		return true;
 	}
 
-	toInventory(item: Item){
-		if(this.inInventory(item)) return true;
-		else {
-			this.ownItem(item);
-			this.inventory.push(item);
-			this.updateInventory(item, 'add');
-			return true;
-		}
+	removeAttachment(mesh: any){
+		const { attachment } = this.bone().userData;
+		const index = attachment.indexOf(mesh);
+		if(index > -1) attachment.splice(index, 1);
+	}
+	addAttachment(mesh: any){
+		this.bone().userData.attachment.push(mesh);
 	}
 
-	fromInventory(item: Item){
-		const ini = this.inInventory(item);
-		if(!ini) return false;
-		this.inventory.splice(this.inventory.indexOf(ini), 1);
-		this.updateInventory(ini, 'remove');
-		return true;
-	}
 
 	unwearAccessory(wearable: Item){
 		const { item } = wearable;
     if(item.type !== "accessory" || !item) return;
-		const head = this.player.children[0].children[0].children[0].children[0];
+		const head = this.mesh.children[0].children[0].children[0].children[0];
+		this.removeAttachment(wearable.mesh);
 		head.remove(wearable?.mesh!);
 		wearable.mesh = undefined;
 		this.toInventory(wearable);
 		this.wearables[item.accessory.type] = null;
 	}
 
+	bone(){
+		const bone = this.mesh.children[0].children[0].children[1];
+		if(!bone.userData.attachment) bone.userData.attachment = [];
+		return bone;
+	}
+
 	head(){
-		return this.player.children[0].children[0].children[0].children[0];
+		return this.mesh.children[0].children[0].children[0].children[0];
 	}
 
 	eye(){
-		return this.player.children[0].children[0].children[0].children[1];
+		return this.mesh.children[0].children[0].children[0].children[1];
 	}
 
 	eyePupil(){
-		return this.player.children[0].children[0].children[0].children[2];
+		return this.mesh.children[0].children[0].children[0].children[2];
 	}
 
 	wearAccessory(wearable: Item){
@@ -301,10 +74,12 @@ export class Player {
     const item_mesh = item.mesh!.clone();
     (item_mesh as any).details = item;
 
+
 		wearable.mesh = item_mesh;
 
     const head = this.head();
 		// head.material = new THREE.MeshBasicMaterial({ color: , opacity: 0.1 })
+
 
 		if(this.wearables[item.accessory.type]) {
 			const w = this.wearables[item.accessory.type];
@@ -313,6 +88,7 @@ export class Player {
 		
     head.add(item_mesh);
 		this.wearables[item.accessory.type] = wearable;
+		this.addAttachment(item_mesh);
 
 		this.fromInventory(wearable);
 
@@ -328,26 +104,98 @@ export class Player {
       item_mesh.scale.z = item.config!.scale.z;
     }
 
+		item_mesh.userData.defaultPosition = item.config!.position;
+
 		return true;
   }
+	
+	think(){
+		super.think();
 
-	_inventoryListeners: ({
-		f: (item: Item, type?: string) => any,
-		type
-	})[] = [];
-	updateInventory(item:Item, type: string){
-		this._inventoryListeners.filter(f => f.type == type || f.type == 'all').forEach(c => {
-			c.f(item, type);
-		});
-	};
+		this.mesh.traverse(node => {
+			if ((node as any).isBone && node.userData.attachment) {
+				const attachment = node.userData.attachment;
 
-	onInventory(type, f: (item: Item, type?: string) => any){
-		this._inventoryListeners.push({
-			f,
-			type
+				attachment.forEach((attachment) => {
+					const parentBoneMatrix = new THREE.Matrix4().copy(attachment.parent.matrixWorld);
+					const attachmentMatrix = new THREE.Matrix4().copy(node.matrix);
+					const parentPos = new THREE.Vector3();
+					parentPos.setFromMatrixPosition(parentBoneMatrix);
+
+					// Get the attachment's position relative to its parent bone
+					const attachmentMatrixInWorldSpace = attachmentMatrix.multiply(parentBoneMatrix);
+					const position = new THREE.Vector3();
+					position.setFromMatrixPosition(attachmentMatrixInWorldSpace);
+
+					// Get the z offset from attachment's user data
+					const defaultZOffset = attachment.userData?.defaultPosition?.z || 0;
+
+					// Calculate the z position with the offset relative to the parent bone
+					let z = position.y - (parentPos.y + defaultZOffset);
+
+					// Ensure z position doesn't go below the specified default position
+					if (z < defaultZOffset) {
+						z = defaultZOffset;
+					}
+
+					if(z > 0) z = -z;
+
+					attachment.position.z = z;
+				});
+				
+			}
 		});
-		return true;
+
 	}
 
+	static entityMeshLoader(scene: CustomScene) {
+		const o = new ExtendedObject3D();
+
+    const player = scene.findLoadedResource('m:player', 'objects')!;
+    const pmesh = player.mesh!.copy(new THREE.Object3D(), true);
+
+    console.log(player.load);
+
+    scene.animationMixers.add(o.anims.mixer);
+    o.anims.mixer.timeScale = 1;
+
+    pmesh.traverse(child => {
+      child.castShadow = true
+      child.receiveShadow = false
+    });
+
+    // pmesh.rotation.y = Math.PI;
+    pmesh.position.set(0, -0.8, 0);
+
+    (pmesh.children[0].children[0].children[0] as any).material = new THREE.MeshPhongMaterial({
+      color: player.config!.color
+    });
+
+    o.add(pmesh);
+
+    o.anims.mixer.clipAction(player.load.animations[0]).reset().play()
+
+    // this.wearAccessory(o, player.config!.brow);
+    // this.wearAccessory(o, player.config!.hat);
+
+    // o.rotation.y = Math.PI;
+    o.position.y = -8;
+
+
+    scene.add.existing(o);
+    scene.physics.add.existing(o, { 
+      shape: 'concave',
+      offset: { y: -0.2 },
+      collisionFlags: 0
+    });
+    o.body.setFriction(0.8)
+    o.body.setAngularFactor(0, 0, 0)
+    // this.physics.add.box(pmesh.children[0].children[0].children[0], { y: 5 });
+
+    // o.body.applyForceY(5);
+    o.body.setGravity(0, -20, 0)
+
+    return new this(scene, o, player);
+	}
 
 }

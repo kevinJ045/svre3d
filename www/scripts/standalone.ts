@@ -39,56 +39,6 @@ class MainScene extends CustomScene {
     return new Item(item);
   }
 
-  playerCharacter(){
-    const o = new ExtendedObject3D();
-
-    const player = this.loadedObject('m:player');
-    const pmesh = player.mesh!.copy(new THREE.Object3D(), true);
-
-    console.log(player.load);
-
-    this.animationMixers.add(o.anims.mixer);
-    o.anims.mixer.timeScale = 1;
-
-    pmesh.traverse(child => {
-      child.castShadow = true
-      child.receiveShadow = false
-    });
-
-    // pmesh.rotation.y = Math.PI;
-    pmesh.position.set(0, -0.4, 0);
-
-    (pmesh.children[0].children[0].children[0] as any).material = new THREE.MeshPhongMaterial({
-      color: player.config!.color
-    });
-
-    o.add(pmesh);
-
-    o.anims.mixer.clipAction(player.load.animations[0]).reset().play()
-
-    // this.wearAccessory(o, player.config!.brow);
-    // this.wearAccessory(o, player.config!.hat);
-
-    // o.rotation.y = Math.PI;
-    o.position.y = -8;
-
-
-    this.add.existing(o);
-    this.physics.add.existing(o, { 
-      shape: 'concave',
-      offset: { y: -0.2 },
-      collisionFlags: 0
-    });
-    o.body.setFriction(0.8)
-    o.body.setAngularFactor(0, 0, 0)
-    // this.physics.add.box(pmesh.children[0].children[0].children[0], { y: 5 });
-
-    // o.body.applyForceY(5);
-    o.body.setGravity(0, -20, 0)
-
-    return new Player(this, o, player);
-  }
-
   async create() {
     console.log('create')
   
@@ -128,7 +78,7 @@ class MainScene extends CustomScene {
     // console.log(this.loadedChunks.keys())
 
 
-    const player = this.playerCharacter();
+    const player = Player.entityMeshLoader(this);
     this.player = player;
     player.idle();
 
@@ -225,7 +175,7 @@ class MainScene extends CustomScene {
 
     this.camera.position.set(0, -1, 5);
     this.setupControls();
-    this.camera.lookAt(this.player.player.position);
+    this.camera.lookAt(this.player.mesh.position);
   }
 
   inventoryOpen = false;
@@ -243,11 +193,11 @@ class MainScene extends CustomScene {
 
     this.cameraPosition.offset = new THREE.Vector3(4, 2, -8);
 
-    const pt = this.player.player.position.clone();
+    const pt = this.player.mesh.position.clone();
 
     pt.x += 4;
 
-    pt.applyEuler(this.player.player.rotation);
+    pt.applyEuler(this.player.mesh.rotation);
 
     this.cameraPosition.lookat = pt;
 
@@ -278,7 +228,7 @@ class MainScene extends CustomScene {
       // Update the picking ray with the camera and mouse position
       raycaster.setFromCamera(mouse, this.camera);
 
-      const intersectsplayer = raycaster.intersectObjects([this.player.player]);
+      const intersectsplayer = raycaster.intersectObjects([this.player.mesh]);
 
       if(intersectsplayer.length > 0){
         return this.openInventory();
@@ -351,8 +301,8 @@ class MainScene extends CustomScene {
   }
 
   updateCameraLocation() {
-    const playerPosition = this.player.player.position;
-    const playerRotation = this.player.player.rotation;
+    const playerPosition = this.player.mesh.position;
+    const playerRotation = this.player.mesh.rotation;
 
     // Convert offsets to a Vector3 based on player's rotation
     const offsetVector = this.cameraPosition.offset.clone();
@@ -373,88 +323,16 @@ class MainScene extends CustomScene {
     // this.controls.update(this.player.moveRight * 3, -this.player.moveTop * 3)
     this.player.moveRight = this.player.moveTop = 0
 
-    // var quaternion = new THREE.Quaternion().setFromEuler(this.player.player.rotation);
+    this.entities.forEach((entity) => {
+      entity.think();
+    });
 
-    // // Get the forward direction vector based on the player's rotation
-    // var movementDirection = new THREE.Vector3(0, 0, -1).applyQuaternion(quaternion);
-    // var rightDirection = new THREE.Vector3().crossVectors(movementDirection, new THREE.Vector3(0, 1, 0));
-
-    // let speed = this.player.speed + this.player.speedBoost;
-
-    // if(this.keys.shift === true) speed += 2;
-
-    // const v3 = new THREE.Vector3()
-
-    // const rotation = this.camera.getWorldDirection(v3)
-    // const theta = Math.atan2(rotation.x, rotation.z)
-    // const rotationMan = this.player.player.getWorldDirection(v3)
-    // const thetaMan = Math.atan2(rotationMan.x, rotationMan.z)
-    // this.player.player.body.setAngularVelocityY(0)
-
-    // const l = Math.abs(theta - thetaMan)
-    // let rotationSpeed = 4
-    // let d = Math.PI / 24
-
-    // if (l > d) {
-    //   if (l > Math.PI - d) rotationSpeed *= -1
-    //   if (theta < thetaMan) rotationSpeed *= -1
-    //   this.player.player.body.setAngularVelocityY(rotationSpeed)
-    // }
-
-
-    // if(this.player.isJumping){
-
-    // } else if(this.keys.w == true && !this.keys.s){
-    //   this.player.run({
-    //     x: movementDirection.x * -speed,
-    //     z: movementDirection.z * -speed
-    //   }, this.keys.shift === true);
-    // } else if(this.keys.s == true && !this.keys.w){
-    //   this.player.run({
-    //     x: movementDirection.x * speed/1.5,
-    //     z: movementDirection.z * speed/1.5
-    //   }, this.keys.shift === true);
-    // } else {
-    //   if(this.player.isRunning) this.player.run({
-    //     x: 0,
-    //     z: 0
-    //   });
-    // }
-
-    // if(this.player.isJumping){
-
-    // } else if(this.keys.a == true && !this.keys.d){
-    //   this.player.run({
-    //     x: rightDirection.x * speed/1.5,
-    //     z: rightDirection.z * speed/1.5
-    //   });
-    // } else if(this.keys.d == true && !this.keys.a){
-    //   this.player.run({
-    //     x: rightDirection.x * -speed/1.5,
-    //     z: rightDirection.z * -speed/1.5
-    //   });
-    // } else {
-    //   // if(this.player.isRunning) this.player.run({
-    //   //   x: 0
-    //   // });
-    // }
-
-    // if(!this.keys.d && !this.keys.a && !this.keys.s && !this.keys.w) {
-    //   if(this.player.isRunning) this.player.idle();
-    // }
-
-    if(this.player.targetLocation){
-      this.player.moveTowardsTarget();
-      this.player.player.body.setVelocity(this.player.runDirection.x, this.player.player.body.velocity.y, this.player.runDirection.z);
-    } else {
-      this.player.player.body.setVelocity(0, this.player.player.body.velocity.y, 0);
-    }
 
     this.updateCameraLocation();
 
     // updateChunks(this.player.player.position, this.world, this.chunkSize, this.maxWorldHeight, this.loadedChunks, this.seed);
     
-    updateChunks(this.player.player, this.world, this.chunkSize, this.maxWorldHeight, this.loadedChunks, this.renderDistance, this.seed);
+    updateChunks(this.player.mesh, this.world, this.chunkSize, this.maxWorldHeight, this.loadedChunks, this.renderDistance, this.seed);
     // updateChunkss(this.player.player.position, this.world, this.chunkSize, this.maxWorldHeight, new Set(), this.seed);
     // this.updateLightPosition();
   }

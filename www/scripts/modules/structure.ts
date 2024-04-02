@@ -1,64 +1,81 @@
-function generateTree(scene, rule) {
+import { THREE } from "enable3d";
+
+export function generateWithRule(item, rule) {
 	const generationRule = rule.generation_rule;
 
+	const group = new THREE.Group();
+
 	for (let key in generationRule) {
-			if (generationRule.hasOwnProperty(key)) {
-					const currentRule = generationRule[key];
+		if (generationRule.hasOwnProperty(key)) {
+			const currentRule = generationRule[key];
 
-					// Generate objects based on current rule
-					const objects = generateObjects(currentRule);
+			// Generate objects based on current rule
+			const objects = generateObjects(currentRule, item);
 
-					// Add generated objects to the scene
-					objects.forEach(object => {
-							scene.add(object);
-					});
-			}
+			// Add generated objects to the scene
+			objects.forEach(object => {
+				if(object) group.add(object);
+			});
+		}
 	}
+
+	return group;
 }
 
-function generateObjects(rule) {
-	const objects = [];
+export function generateObjects(rule, item) {
+	const objects: any = [];
 	const count = Array.isArray(rule.count) ? getRandomInt(rule.count[0], rule.count[1]) : rule.count;
 	for (let i = 0; i < count; i++) {
-			const object = createObject(rule);
-			objects.push(object);
+		const object = createObject(rule, item);
+		objects.push(object);
 
-			// Handle forEach rule
-			if (rule.forEach) {
-					for (let key in rule.forEach) {
-							if (rule.forEach.hasOwnProperty(key)) {
-									const childRuleName = rule.forEach[key];
-									const childRule = rule.generation_rule[childRuleName];
-									if (childRule) {
-											// Set position for child object based on key
-											const position = getPositionForKey(key, object, childRule);
-											childRule.position = position;
-											// Generate child objects recursively
-											objects.push(...generateObjects(childRule));
-									}
-							}
+		// Handle forEach rule
+		if (rule.forEach) {
+			for (let key in rule.forEach) {
+				if (rule.forEach.hasOwnProperty(key)) {
+					const childRuleName = rule.forEach[key];
+					const childRule = rule[childRuleName];
+					if (childRule) {
+						// Set position for child object based on key
+						const position = getPositionForKey(key, object, childRule);
+						childRule.position = position;
+						// Generate child objects recursively
+						objects.push(...generateObjects(childRule, item));
 					}
+				}
 			}
+		}
 	}
 	return objects;
 }
 
-function createObject(rule) {
+function createObject(rule, item) {
 	const position = new THREE.Vector3(...rule.position);
 	const size = new THREE.Vector3(...rule.size);
 	const rotation = new THREE.Euler(...rule.rotation);
 
-	// Load resource and create mesh
-	const loader = new THREE.GLTFLoader();
-	loader.load(rule.resource.src, function (gltf) {
-			const mesh = gltf.scene.children[0];
-			mesh.position.copy(position);
-			mesh.scale.copy(size);
-			mesh.rotation.copy(rotation);
+	const g = new THREE.Group();
+	
+	let o;
 
-			// Add mesh to the scene
-			scene.add(mesh);
+	item.mesh.traverse(f => {
+		if(f.name == rule.name) o = f.clone();
 	});
+
+	if(o){
+		o.position.copy(position);
+		o.rotation.copy(rotation);
+		// o.scale.copy(size);
+	}
+
+	if(rule.count > 1)
+
+
+	return rule.count > 1 ? g : o;
+	
+	// mesh.position.copy(position);
+	// mesh.scale.copy(size);
+	// mesh.rotation.copy(rotation);
 }
 
 function getRandomInt(min, max) {

@@ -30,4 +30,12 @@ export class Utils {
 		}
 		return parsed;
 	}
+
+	static randFrom(min, max){
+		return Math.floor(Math.random()*(max-min+1)+min);
+	}
+
+	static pickRandom(...items){
+		return items[this.randFrom(0, items.length-1)];
+	}
 }

@@ -1,9 +1,20 @@
-import { Scene3D } from "enable3d";
+import { Scene3D, THREE } from "enable3d";
 import { toload } from "./loader";
 import { CustomScene } from "./models/scene";
 import { specific_load } from "./specific_load";
 import { Utils } from "./utils";
+import { OBJLoader } from "../lib/OBJLoader";
 
+const loaders = {
+	obj: async (url: string) => {
+		const loader = new OBJLoader(new THREE.LoadingManager);
+		return new Promise((r) => {
+			loader.load(url, (item) => {
+				r(item);
+			}, null, null);
+		});
+	}
+}
 
 export const preload = async (scene: CustomScene) => {
 
@@ -24,13 +35,15 @@ export const preload = async (scene: CustomScene) => {
 					load.push(await scene.load[type](src));
 				}
 			} else if(type in scene.load) {
-				load = (await scene.load[type](item.resource.src));
+				load = await ((scene.load[type])(item.resource.src));
+			} else if(type in loaders){
+				load = await ((loaders[type])(item.resource.src));
 			}
 
 
 			if(type == "texture") {
 				item.texture = load;
-			} else if(type == "gltf" || type == "object" || type == "fbx") {
+			} else if(type == "gltf" || type == "obj" || type == "fbx") {
 				item.mesh = type == "gltf" ? load.scene : load;
 			} else if(item.type == "shader"){
 				item.id = item.id+'.shader';

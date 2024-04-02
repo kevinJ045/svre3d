@@ -5,12 +5,15 @@ import { ImprovedNoise } from '../lib/ImprovedNoise';
 import * as BufferGeometryUtils from "../lib/BufferGeometryUtils"
 import { item } from './models/item';
 import { CustomScene } from './models/scene';
+import { Utils } from './utils';
+import { generateWithRule } from './structure';
 
 export type chunktype = {
 	item: item,
 	name: string,
 	textures?: number[],
-	shader?: string
+	shader?: string,
+	structure_rules?: any
 };
 
 export class ChunkSet {
@@ -155,6 +158,25 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 	loadedChunks.add(stringifyChunkPosition(chunkPosition), chunk);
 
 	// generateGrassSpikes(chunk);
+
+	if(chunkType.structure_rules){
+
+		const rule = Utils.pickRandom(...chunkType.structure_rules);
+
+		const object = loadedChunks.scene.findLoadedResource(rule.object, 'objects');
+
+		// console.log(object);
+
+		const s = object!.mesh!.clone();
+
+		// s.scale.setScalar(0.01);
+
+		// console.log(s.position);
+
+		chunk.add(generateWithRule(object, object!.config!));
+
+	}
+
 }
 
 // Function to unload a chunk

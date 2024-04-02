@@ -33,8 +33,8 @@
 		}
 	},
 	"resource": {
-		"type": "fbx",
-		"src": "/res/obj/tree.fbx"
+		"type": "obj",
+		"src": "/res/obj/tree.obj"
 	},
 	"loader": {
 		"group": "objects"

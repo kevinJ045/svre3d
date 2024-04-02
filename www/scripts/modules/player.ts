@@ -3,6 +3,7 @@ import { item } from "./models/item";
 import { Item } from "./models/item2";
 import { CustomScene } from "./models/scene";
 import { Entity } from "./entity";
+import { Utils } from "./utils";
 
 
 
@@ -182,6 +183,14 @@ export class Player extends Entity {
     scene.add.existing(o);
 		const p = new this(scene, o, player);
 		p.addPhysics(o);
+
+		// p.onAnimation('Idle', () => {
+		// 	p.animQueue(setTimeout(() => {
+		// 		p.playAnimation('Turn', 1, false, () => {
+		// 			p.idle();
+		// 		});
+		// 	}, Utils.randFrom(10000, 30000)));
+		// });
 
     return p;
 	}

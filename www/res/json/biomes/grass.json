@@ -2,5 +2,12 @@
 	"type": "biome",
 	"name": "grass",
 	"item": "m:grass_segment",
-	"textures": [1, 1, 0, 1, 1, 1]
+	"textures": [1, 1, 0, 1, 1, 1],
+	"structure_rules": [
+		{
+			"name": "tree",
+			"object": "m:tree",
+			"density": 10
+		}
+	]
 }

@@ -3,11 +3,15 @@
 	"type": "player",
 	"config": {
 		"brow": "m:brow-1",
-		"color": "#09D0D0"
+		"color": "#09D0D0",
+		"animations": {
+			"Sneak": "Sneak",
+			"Attack": ["Attack", "Attack2"]
+		}
 	},
 	"resource": {
 		"type": "gltf",
-		"src": "/res/obj/cubixc2.glb"
+		"src": "/res/obj/cubixc4.glb"
 	},
 	"loader": {
 		"group": "objects"

@@ -2,6 +2,7 @@ import { ExtendedObject3D, THREE } from "enable3d";
 import { item } from "./models/item";
 import { Item } from "./models/item2";
 import { CustomScene } from "./models/scene";
+import { Utils } from "./utils";
 
 
 export class Entity {
@@ -69,21 +70,67 @@ export class Entity {
 
 	}
 
+	private _animationTimeout: any = 0;
+	private _playAnimation(action: string, speed = 1, loop = true, callback?: () => void){
 
-	private _playAnimation(name: string, speed = 1){
-
+		let name = action;
 		if(this.entityData.config?.animations?.[name]) name = this.entityData.config?.animations[name];
+		if(Array.isArray(name)) name = Utils.pickRandom(...name);
 
-		const anim = this.entityData.load.animations.find(anim => anim.name == name);
+		let anim = this.entityData.load.animations.find(anim => anim.name == name);
 
 		if(this.mesh.anims.mixer.timeScale != speed) this.mesh.anims.mixer.timeScale = speed;
 		this.mesh.anims.mixer.stopAllAction();
-		if(anim) this.mesh.anims.mixer
-			.clipAction(anim)
-			.reset()
-			.play();
+		if(anim) {
+			clearTimeout(this._animationTimeout);
+			if(this._animationQueues.length) this._animationQueues.forEach(i => this.removeAnimQueue(i));
+			const a = this.mesh.anims.mixer
+			.clipAction(anim);
+			a.reset();
+			if(!loop) a.loop = THREE.LoopOnce;
+			a.clampWhenFinished = true;
+
+			a.play();
+
+			this._animationTimeout = setTimeout(() => {
+				if(typeof callback == "function") callback();
+			}, a.getClip().duration * 1000);
+
+			if(this._animationListeners.length) this._animationListeners.filter(
+				i => i.name == action
+			).forEach(i => i.fn());
+
+			return a;
+		}
+
+		return null;
 	}
 
+	private _animationListeners: { name: string, fn: () => void, done: boolean }[] = [];
+	private _animationQueues: any[] = []; 
+	onAnimation(name: string, fn: () => void, done = false){
+		this._animationListeners.push({name, fn, done});
+		return this;
+	};
+	offAnimation(fn: () => void){
+		const f = this._animationListeners.find(i => i.fn == fn);
+		if(f) {
+			const index = this._animationListeners.indexOf(f);
+			this._animationListeners.splice(index, 1);
+		}
+	}
+	animQueue(queue){
+		this._animationQueues.push(queue);
+		return this;
+	}
+	removeAnimQueue(queue){
+		clearTimeout(queue);
+		this._animationQueues.splice(this._animationQueues.indexOf(queue));
+		return this;
+	}
+	playAnimation(name: string, speed = 1, loop = true, callback?: () => void){
+		return this._playAnimation(name, speed, loop, callback);
+	}
 
 	run(direction: {x?:number,y?:number,z?:number}, speed = false){
 		if('x' in direction) this.runDirection.x = direction.x!;
@@ -158,11 +205,10 @@ export class Entity {
 	attackTimeout: any;
 	attack(){
 		clearTimeout(this.attackTimeout);
-		this._playAnimation('Attack');
-		this.attackTimeout = setTimeout(() => {
+		this._playAnimation('Attack', 1, false, () => {
 			if(this.isRunning) this._playAnimation('Walk');
 			else this.idle();
-		}, 250);
+		});	
 	}
 
 	detectObstacles(position) {
@@ -229,7 +275,7 @@ export class Entity {
 	rotateTowardsTarget() {
     if (this.targetLocation) {
 			const rotationSpeed = this.rotationSpeed;
-			const maxRotation = Math.PI / 24; // Maximum rotation angle per frame
+			const maxRotation = Math.PI / 6; // Maximum rotation angle per frame
 
 			// Calculate the direction vector towards the target location
 			const direction = new THREE.Vector3();
@@ -259,6 +305,10 @@ export class Entity {
 				this.mesh.body.setAngularVelocityY(0);
 				return true;
 			} else {
+				this.run({
+					x: 0,
+					z: 0
+				});
 				this.mesh.body.setAngularVelocityY(deltaTheta * rotationSpeed);
 			}
     }
@@ -294,7 +344,7 @@ export class Entity {
 
 				if(looking) {
 					if (obstacles.hasHigherBlocks) {
-						this.addPos(direction.x+1, 1, direction.z+1);
+						this.addPos(direction.x, 1, direction.z);
 						this.run({ x: 0, z: 0});
 					} else if (obstacles.hasSolidObject || obstacles.hasEntity) {
 						const avoidanceDirection = this.avoidObstacles(nextStep, obstacles);

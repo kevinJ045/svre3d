@@ -4,6 +4,17 @@
 	+ Camera Position Set [-]
 	+ Player Animations [-]
 	+ Player HP [ ]
+	+ Player Inventory [ ]
+
+[Entity: 20]
+	+ Entity Basics [X]
+	+ Entity Logic [-]
+	+ Entity AI [ ]
+	+ Entity Stats [ ]
+	+ Entity Inventory [ ]
+
+[Creatures: 0]
+	+ Biome Creatures [ ]
 
 [World Generation: 50]
 	+ Chunk Load/Unload [X]
@@ -23,12 +34,7 @@
 	+ Emission Effects [ ]
 	+ Fog Effect [ ]
 	+ Bloom Effect [ ]
-
-[Creatures: 0]
-	+ Biome Creatures [ ]
-	+ Creature AI [ ]
-	+ Creature HP [ ]
-
+	
 [Mines: 0]
 	+ Mining Biome [ ]
 	+ Ores [ ]

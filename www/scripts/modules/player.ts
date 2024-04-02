@@ -164,9 +164,6 @@ export class Player extends Entity {
       child.receiveShadow = false
     });
 
-    // pmesh.rotation.y = Math.PI;
-    pmesh.position.set(0, -0.8, 0);
-
     (pmesh.children[0].children[0].children[0] as any).material = new THREE.MeshPhongMaterial({
       color: player.config!.color
     });
@@ -183,19 +180,25 @@ export class Player extends Entity {
 
 
     scene.add.existing(o);
-    scene.physics.add.existing(o, { 
-      shape: 'concave',
-      offset: { y: -0.2 },
-      collisionFlags: 0
+		const p = new this(scene, o, player);
+		p.addPhysics(o);
+
+    return p;
+	}
+
+	addPhysics(mesh: any) {
+    this.physics.add.existing(mesh, {
+      // shape: 'box',
+      // offset: { z: 0.55, y: -1.25 },
+      // collisionFlags: 0,
+			// width: 2,
+			// depth: 2,
+			// height: 2.9
+			shape: 'convex',
+      offset: { z: 0.55, y: -0.55 }
     });
-    o.body.setFriction(0.8)
-    o.body.setAngularFactor(0, 0, 0)
-    // this.physics.add.box(pmesh.children[0].children[0].children[0], { y: 5 });
-
-    // o.body.applyForceY(5);
-    o.body.setGravity(0, -20, 0)
-
-    return new this(scene, o, player);
+		mesh.body.setFriction(0.8);
+    mesh.body.setAngularFactor(0, 0, 0);
 	}
 
 }

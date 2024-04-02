@@ -36,6 +36,20 @@ export class Entity {
 
 	targetLocation : null | THREE.Vector3 = null;
 
+	health = {
+		base: 10,
+		current: 10
+	}
+
+	defense = {
+		base: 0,
+		current: 0
+	}
+
+	damage = {
+		base: 1,
+		current: 1
+	}
 
 	constructor(scene: CustomScene, mesh: ExtendedObject3D, data: item){
 		this.mesh = mesh;
@@ -83,6 +97,16 @@ export class Entity {
 		return this;
 	}
 
+	addPhysics(mesh){}
+
+	addPos(x, y, z){
+		this.physics.destroy(this.mesh.body);
+		this.mesh.position.x += y;
+		this.mesh.position.y += y;
+		this.mesh.position.z += z;
+		this.addPhysics(this.mesh);
+	}
+
 	rotate(degrees: number){
 		this.physics.destroy(this.mesh.body);
 		this.mesh.rotation.y += degrees;
@@ -114,7 +138,7 @@ export class Entity {
 		if(!this.canJump) return;
 		this.isJumping = true;
 		this.canJump = false;
-		this.mesh.body.applyForceY(10);
+		this.mesh.body.applyForceY(5);
 		this.idle();
 		this.isJumping = false;
 	}
@@ -153,7 +177,7 @@ export class Entity {
 		// Perform raycast to detect obstacles in front of the player
 		const raycaster = new THREE.Raycaster(playerpos, position);
 		const intersects = raycaster.intersectObjects(this.scene.loadedChunks.chunkObjects(), true);
-		const intersectsEntity = raycaster.intersectObjects(this.scene.entities.map(i => i.mesh), true);
+		const intersectsEntity = raycaster.intersectObjects(this.scene.entities.map(i => i.mesh).filter(mesh => mesh.uuid !== this.mesh.uuid), true);
 
 		// console.log(intersects);
 
@@ -270,9 +294,9 @@ export class Entity {
 
 				if(looking) {
 					if (obstacles.hasHigherBlocks) {
-						this.jump();
-					}
-					if (obstacles.hasSolidObject || obstacles.hasEntity) {
+						this.addPos(direction.x+1, 1, direction.z+1);
+						this.run({ x: 0, z: 0});
+					} else if (obstacles.hasSolidObject || obstacles.hasEntity) {
 						const avoidanceDirection = this.avoidObstacles(nextStep, obstacles);
 						this.run({
 								x: avoidanceDirection.x * speed,

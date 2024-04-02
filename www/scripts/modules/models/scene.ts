@@ -1,4 +1,4 @@
-import { ExtendedGroup, Scene3D, ThirdPersonControls } from "enable3d";
+import { ExtendedGroup, ExtendedObject3D, Scene3D, ThirdPersonControls } from "enable3d";
 import { item } from "./item";
 import { ChunkSet } from "../world";
 import { UI } from "../ui";
@@ -7,7 +7,7 @@ import { Entity } from "../entity";
 export class CustomScene extends Scene3D {
   loaded: Record<string, item[]> = {};
   controls!: ThirdPersonControls;
-  world!: ExtendedGroup;
+  world!: ExtendedObject3D;
 
   entities: Entity[] = [];
 

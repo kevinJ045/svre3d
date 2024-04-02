@@ -3,7 +3,7 @@ import { preload } from './modules/preload'
 import { item } from './modules/models/item'
 import { CustomScene } from './modules/models/scene'
 import { Player } from './modules/player'
-import { ChunkSet, generateWorldChunk, getDistance, loadChunksAroundPlayer, updateChunks, updateChunkss } from './modules/world'
+import { ChunkSet, updateChunks } from './modules/world'
 import { Item } from './modules/models/item2'
 
 class MainScene extends CustomScene {
@@ -54,7 +54,7 @@ class MainScene extends CustomScene {
     //   this.loaded['m:grass_segment']
     // )
 
-    const world = new ExtendedGroup();
+    const world = new ExtendedObject3D();
 
     world.position.set(0, -15, 0);
 
@@ -176,6 +176,9 @@ class MainScene extends CustomScene {
     this.camera.position.set(0, -1, 5);
     this.setupControls();
     this.camera.lookAt(this.player.mesh.position);
+    
+    // updateChunks(this.player.mesh, this.world, this.chunkSize, this.maxWorldHeight, this.loadedChunks, this.renderDistance, this.seed);
+
   }
 
   inventoryOpen = false;
@@ -330,8 +333,6 @@ class MainScene extends CustomScene {
 
     this.updateCameraLocation();
 
-    // updateChunks(this.player.player.position, this.world, this.chunkSize, this.maxWorldHeight, this.loadedChunks, this.seed);
-    
     updateChunks(this.player.mesh, this.world, this.chunkSize, this.maxWorldHeight, this.loadedChunks, this.renderDistance, this.seed);
     // updateChunkss(this.player.player.position, this.world, this.chunkSize, this.maxWorldHeight, new Set(), this.seed);
     // this.updateLightPosition();

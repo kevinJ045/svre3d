@@ -1,0 +1,42 @@
+{
+	"id": "m:tree",
+	"type": "structure",
+	"config": {
+		"generation_rule": {
+			"stem": {
+				"count": 1,
+				"position": [0, 0, 0],
+				"size": [1, 5, 1],
+				"rotation": [0, 0, 0],
+				"name": "Stem",
+				"forEach": {
+					"side": "branches"
+				}
+			},
+			"branches": {
+				"count": [3, 5],
+				"position": [0, 4, 0],
+				"size": [0.5, 3, 0.5],
+				"rotation": [0, 0, 0],
+				"name": "Branch",
+				"forEach": {
+					"top": "leaves"
+				}
+			},
+			"leaves": {
+				"count": 50,
+				"position": [0, 7, 0],
+				"size": [0.2, 0.5, 0.2],
+				"rotation": [0, 0, 0],
+				"name": "Leaf"
+			}
+		}
+	},
+	"resource": {
+		"type": "fbx",
+		"src": "/res/obj/tree.fbx"
+	},
+	"loader": {
+		"group": "objects"
+	}
+}

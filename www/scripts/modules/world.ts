@@ -6,288 +6,6 @@ import * as BufferGeometryUtils from "../lib/BufferGeometryUtils"
 import { item } from './models/item';
 import { CustomScene } from './models/scene';
 
-export function getDistance(object, object2) {
-	// Calculate the distance between object's position and playerPosition
-	const dx = object.position.x - object2.position.x;
-	const dy = object.position.y - object2.position.y;
-	const dz = object.position.z - object2.position.z;
-	return Math.sqrt(dx * dx + dy * dy + dz * dz);
-}
-
-export function generateWorldChunk(worldWidth, worldDepth, segmentSize, maxHeight, seed, position) {
-    // Create a noise generator with the provided seed
-    const rng = seedrandom(seed);
-		var noise = new Noise.Noise(rng());
-
-		const blockSize = segmentSize*2;
-
-		function generateHeight( width, height ) {
-
-			const data: number[] = [],
-				size = width * height, z = rng() * 100;
-
-			let quality = 2;
-
-			for ( let j = 0; j < 4; j ++ ) {
-
-				if ( j === 0 ) for ( let i = 0; i < size; i ++ ) data[ i ] = 0;
-
-				for ( let i = 0; i < size; i ++ ) {
-
-					const x = i % width, y = ( i / width ) | 0;
-					data[ i ] += noise.perlin3( x / quality, y / quality, z ) * quality;
-
-
-				}
-
-				quality *= 4;
-
-			}
-
-			return data;
-
-		}
-
-		function getY( x, z ) {
-
-			return Math.min(( data[ x + z * worldWidth ] * 0.15 ) | 0, maxHeight);
-
-		}
-
-		const worldHalfWidth = worldWidth / 2;
-		const worldHalfDepth = worldDepth / 2;
-		const data = generateHeight( worldWidth, worldDepth );
-
-    // Create a group to hold all the blocks
-    var worldGroup = new THREE.Group();
-
-		let startX = Math.max(0, position.x - worldHalfWidth);
-    let startZ = Math.max(0, position.z - worldHalfDepth);
-    let endX = Math.min(worldWidth, position.x + worldHalfWidth);
-    let endZ = Math.min(worldDepth, position.z + worldHalfDepth);
-
-
-		const matrix = new THREE.Matrix4();
-
-		const pxGeometry = new THREE.PlaneGeometry( blockSize, blockSize );
-		pxGeometry.attributes.uv.array[ 1 ] = 0.5;
-		pxGeometry.attributes.uv.array[ 3 ] = 0.5;
-		pxGeometry.rotateY( Math.PI / 2 );
-		pxGeometry.translate( blockSize/2, 0, 0 );
-
-		const nxGeometry = new THREE.PlaneGeometry( blockSize, blockSize );
-		nxGeometry.attributes.uv.array[ 1 ] = 0.5;
-		nxGeometry.attributes.uv.array[ 3 ] = 0.5;
-		nxGeometry.rotateY( - Math.PI / 2 );
-		nxGeometry.translate( - blockSize/2, 0, 0 );
-
-		const pyGeometry = new THREE.PlaneGeometry( blockSize, blockSize );
-		pyGeometry.attributes.uv.array[ 5 ] = 0.5;
-		pyGeometry.attributes.uv.array[ 7 ] = 0.5;
-		pyGeometry.rotateX( - Math.PI / 2 );
-		pyGeometry.translate( 0, blockSize/2, 0 );
-
-		const pzGeometry = new THREE.PlaneGeometry( blockSize, blockSize );
-		pzGeometry.attributes.uv.array[ 1 ] = 0.5;
-		pzGeometry.attributes.uv.array[ 3 ] = 0.5;
-		pzGeometry.translate( 0, 0, blockSize/ 2 );
-
-		const nzGeometry = new THREE.PlaneGeometry( blockSize, blockSize );
-		nzGeometry.attributes.uv.array[ 1 ] = 0.5;
-		nzGeometry.attributes.uv.array[ 3 ] = 0.5;
-		nzGeometry.rotateY( Math.PI );
-		nzGeometry.translate( 0, 0, - blockSize/2 );
-
-		//
-
-		const geometries: any = [];
-
-		for (let z = Math.min(startZ, endZ); z < Math.max(startZ, endZ); z++) {
-			for (let x = Math.min(startX, endX); x < Math.max(startX, endX); x++) {
-
-				const h = getY( x, z );
-
-				matrix.makeTranslation(
-					x * blockSize - worldHalfWidth * blockSize,
-					h * blockSize/2,
-					z * blockSize - worldHalfDepth * blockSize
-				);
-
-				const px = getY( x + 1, z );
-				const nx = getY( x - 1, z );
-				const pz = getY( x, z + 1 );
-				const nz = getY( x, z - 1 );
-
-				geometries.push( pyGeometry.clone().applyMatrix4( matrix ) );
-
-				if ( ( px !== h && px !== h + 1 ) || x === 0 ) {
-
-					geometries.push( pxGeometry.clone().applyMatrix4( matrix ) );
-
-				}
-
-				if ( ( nx !== h && nx !== h + 1 ) || x === worldWidth - 1 ) {
-
-					geometries.push( nxGeometry.clone().applyMatrix4( matrix ) );
-
-				}
-
-				if ( ( pz !== h && pz !== h + 1 ) || z === worldDepth - 1 ) {
-
-					geometries.push( pzGeometry.clone().applyMatrix4( matrix ) );
-
-				}
-
-				if ( ( nz !== h && nz !== h + 1 ) || z === 0 ) {
-
-					geometries.push( nzGeometry.clone().applyMatrix4( matrix ) );
-
-				}
-
-			}
-
-		}
-
-		if(!geometries.length) return worldGroup;
-
-		const geometry = BufferGeometryUtils.mergeGeometries( geometries );
-		geometry!.computeBoundingSphere();
-
-		const colors = [0x00ff00, 0xff0000, 0x0000ff];
-		const rand = Math.min(Math.floor(Math.random() * 3 - 1), 1);
-
-		const mesh = new THREE.Mesh( geometry!, new THREE.MeshLambertMaterial( { color: colors[rand], side: THREE.DoubleSide } ) );
-		worldGroup.add( mesh );
-
-		mesh.receiveShadow = true;
-
-    return worldGroup;
-}
-
-function updateChunkPhysics(world, chunk, rm){
-	try{
-		if(rm) return world.physics.destroy(world.body);
-	} catch(e){}
-	try{
-		world.physics.add.existing(chunk as any, {
-			shape: 'concave',
-			mass: 0,
-			collisionFlags: 1,
-			autoCenter: false
-		});
-	} catch(e) {}
-}
-
-// Function to get the chunk index based on player position
-export function getChunkIndex(position, chunkSize) {
-	return {
-			x: Math.floor(position.x / chunkSize),
-			z: Math.floor(position.z / chunkSize)
-	};
-}
-
-function chunkExists(group, area){
-	let returns = false;
-
-	group.traverse(element => {
-		if (
-			element.position.x >= area.minX &&
-			element.position.x <= area.maxX &&
-			element.position.y >= area.minY &&
-			element.position.y <= area.maxY &&
-			element.position.z >= area.minZ &&
-			element.position.z <= area.maxZ
-		) {
-			// Element exists within the area
-			returns = element;
-		}
-	});
-
-	return returns;
-}
-
-export function chunkOverlaps(chunk, loadedChunks, chunkSize) {
-	for (const loadedChunk of loadedChunks) {
-		const [chunkX, chunkZ] = loadedChunk.split('_').map(Number);
-		const overlapX = Math.abs(chunk.position.x - chunkX) < chunkSize;
-		const overlapZ = Math.abs(chunk.position.z - chunkZ) < chunkSize;
-		if (overlapX && overlapZ) {
-				return true; // Chunk overlaps with existing loaded chunk
-		}
-	}
-	return false; // Chunk does not overlap
-}
-
-// Function to load chunks around the player
-export function loadChunksAroundPlayer(playerPosition, worldGroup, chunkSize, maxHeight, seed, loadedChunks) {
-	const currentPlayerChunk = getChunkIndex(playerPosition, chunkSize);
-	const chunkRange = 1; // Number of chunks to load in each direction
-
-	for (let xOffset = -chunkRange; xOffset <= chunkRange; xOffset++) {
-			for (let zOffset = -chunkRange; zOffset <= chunkRange; zOffset++) {
-					const x = currentPlayerChunk.x + xOffset;
-					const z = currentPlayerChunk.z + zOffset;
-					const chunkKey = `${x}_${z}`;
-
-					if (!loadedChunks.has(chunkKey)) {
-
-						const chunkPosition = {
-								x: x * chunkSize,
-								z: z * chunkSize
-						};
-
-						// const area = {
-						// 	minX: chunkPosition.x-chunkSize,
-						// 	maxX: chunkPosition.x,
-						// 	minZ: chunkPosition.z-chunkSize,
-						// 	maxZ: chunkPosition.z,
-						// 	minY: -10,
-						// 	maxY: 100
-						// }
-
-						// if(chunkExists(worldGroup, area)) return worldGroup.remove(chunkExists(worldGroup, area));
-						
-						const newChunk = generateWorldChunk(chunkSize, chunkSize, 2, maxHeight, seed, chunkPosition);
-
-						// if (!chunkOverlaps(newChunk, loadedChunks, chunkSize)) {
-							worldGroup.add(newChunk);
-							loadedChunks.add(chunkKey);
-							updateChunkPhysics(worldGroup, newChunk, false);
-						// }						
-
-						
-					}
-			}
-	}
-}
-
-// Function to unload chunks that are too far from the player
-export function unloadDistantChunks(playerPosition, worldGroup, chunkSize, loadedChunks) {
-	const currentPlayerChunk = getChunkIndex(playerPosition, chunkSize);
-	const chunkUnloadDistance = 2; // Number of chunks away from the player to unload
-
-	// Iterate over loaded chunks and check distance from the player
-	loadedChunks.forEach(chunkKey => {
-			const [chunkX, chunkZ] = chunkKey.split('_').map(Number);
-			if (Math.abs(chunkX - currentPlayerChunk.x) > chunkUnloadDistance ||
-					Math.abs(chunkZ - currentPlayerChunk.z) > chunkUnloadDistance) {
-					const chunkToRemove = worldGroup.getObjectByName(chunkKey);
-					if (chunkToRemove) {
-							updateChunkPhysics(worldGroup, chunkToRemove, true);
-							worldGroup.remove(chunkToRemove);
-							loadedChunks.delete(chunkKey);
-					}
-			}
-	});
-}
-
-// Update function to be called each frame or tick
-export function updateChunkss(playerPosition, worldGroup, chunkSize, maxHeight, loadedChunks, seed) {
-	loadChunksAroundPlayer(playerPosition, worldGroup, chunkSize, maxHeight, seed, loadedChunks);
-	unloadDistantChunks(playerPosition, worldGroup, chunkSize, loadedChunks);
-}
-
-
 export type chunktype = {
 	item: item,
 	name: string,
@@ -325,7 +43,7 @@ export class ChunkSet {
 		this.scene.physics.add.existing(chunk, {
 			shape: 'box',
 			mass: 0,
-			collisionFlags: 1,
+			// collisionFlags: 1,
 			autoCenter: false,
 			
 			width: this.scene.chunkSize,
@@ -435,6 +153,8 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 	chunk.position.copy(chunkPosition).multiplyScalar(chunkSize);
 
 	loadedChunks.add(stringifyChunkPosition(chunkPosition), chunk);
+
+	// generateGrassSpikes(chunk);
 }
 
 // Function to unload a chunk
@@ -460,18 +180,100 @@ function generateChunkHeight(x, z, maxHeight, chunkSize, loadedChunks) {
 	return Math.round(noiseValue * maxHeight) / 2.5;
 }
 
+function createCurvedGrassGeometry(width, curveHeight, curveWidth) {
+	const curveSegments = 30;
+	const grassGeometry = new THREE.BufferGeometry();
+
+	// Create a curved shape for the grass
+	const curve = new THREE.CatmullRomCurve3([
+			new THREE.Vector3(0, 0, 0),
+			new THREE.Vector3(curveWidth / 2, curveHeight, 0),
+			new THREE.Vector3(curveWidth, 0, 0)
+	]);
+
+	// Create the grass blade geometry along the curve
+	const divisions = Math.floor(curveSegments * curve.getLength());
+	const points = curve.getPoints(divisions);
+
+	const vertices: number[] = [];
+	const normals: number[] = [];
+	const uvs: number[] = [];
+	const indices: number[] = [];
+
+	for (let i = 0; i < points.length; i++) {
+			const point = points[i];
+			const tangent = curve.getTangentAt(i / divisions).normalize();
+			const normal = new THREE.Vector3().crossVectors(tangent, new THREE.Vector3(0, 0, 1)).normalize();
+
+			// Add vertices for the grass blade
+			const angle = Math.PI / 2;
+			const offset = new THREE.Vector3(width * Math.cos(angle), width * Math.sin(angle), 0);
+			const vertex1 = new THREE.Vector3().copy(point).sub(offset);
+			const vertex2 = new THREE.Vector3().copy(point).add(offset);
+
+			vertices.push(vertex1.x, vertex1.y, vertex1.z);
+			vertices.push(vertex2.x, vertex2.y, vertex2.z);
+
+			// Add normals for the grass blade
+			normals.push(normal.x, normal.y, normal.z);
+			normals.push(normal.x, normal.y, normal.z);
+
+			// Add uvs for the grass blade
+			uvs.push(0, 0);
+			uvs.push(1, 0);
+
+			// Add indices for the faces
+			const indexOffset = i * 2;
+			indices.push(indexOffset, indexOffset + 1, (indexOffset + 2) % (points.length * 2));
+	}
+
+	grassGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+	grassGeometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+	grassGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+	grassGeometry.setIndex(indices);
+
+	return grassGeometry;
+}
+
+
+// Create a function to generate grass spikes
+function generateGrassSpikes(groundMesh, density = 10, heightRange = [0.2, 0.5]) {
+	const groundGeometry = groundMesh.geometry;
+	groundGeometry.computeBoundingBox();
+
+	const groundBoundingBox = groundGeometry.boundingBox;
+	const min = groundBoundingBox.min;
+	const max = groundBoundingBox.max;
+
+	const grassMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Adjust material as needed
+
+	// Generate grass spikes
+	for (let i = 0; i < density; i++) {
+		const randomX = THREE.MathUtils.randFloat(min.x, max.x);
+		const randomZ = THREE.MathUtils.randFloat(min.z, max.z);
+		const randomHeight = THREE.MathUtils.randFloat(heightRange[0], heightRange[1]);
+
+		const grassGeometry = createCurvedGrassGeometry(1, 1, 0.1); // Adjust dimensions as needed
+		const grassMesh = new THREE.Mesh(grassGeometry, grassMaterial);
+		
+		grassMesh.position.set(randomX, max.y + randomHeight / 2, randomZ); // Adjust height position
+
+		groundMesh.add(grassMesh);
+	}
+}
+
 // Function to update loaded chunks based on player position
 export function updateChunks(player, worldGroup, chunkSize, maxHeight, loadedChunks, renderDistance, seed) {
 	const playerChunkPosition = player.position.clone().divideScalar(chunkSize).floor();
 
 	// Unload chunks that are too far from the player
 	for (const {key, chunk} of loadedChunks.entries()) {
-			const chunkPosition = new THREE.Vector3(...key.split(',').map(Number));
-			// chunkPosition.y = playerChunkPosition.y;
-			const distance = chunkPosition.clone().sub(playerChunkPosition).length();
-			if (distance > renderDistance+2) {
-					unloadChunk(chunkPosition, { loadedChunks });
-			}
+		const chunkPosition = new THREE.Vector3(...key.split(',').map(Number));
+		// chunkPosition.y = playerChunkPosition.y;
+		const distance = chunkPosition.clone().sub(playerChunkPosition).length();
+		if (distance > renderDistance*2) {
+			unloadChunk(chunkPosition, { loadedChunks });
+		}
 	}
 
 	// Load chunks around the player

@@ -148,9 +148,9 @@ export class Entity {
 
 	addPos(x, y, z){
 		this.physics.destroy(this.mesh.body);
-		this.mesh.position.x += y;
+		// this.mesh.position.x += y;
 		this.mesh.position.y += y;
-		this.mesh.position.z += z;
+		// this.mesh.position.z += z;
 		this.addPhysics(this.mesh);
 	}
 
@@ -232,8 +232,6 @@ export class Entity {
 			const chunkY = intersects[0].object.position.y; // Y position of the chunk below next step
 			const playerY = this.mesh.position.y; // Y position of the player
 			const heightDifference = chunkY - playerY;
-
-			// console.log(heightDifference)
 
 			// If the height difference is exactly 1, make the player jump
 			if (heightDifference > -1) {
@@ -336,7 +334,7 @@ export class Entity {
 					});
 					this.idle();
 			} else {
-				const nextStep = new THREE.Vector3().copy(direction).add(this.mesh.position).addScalar(4);
+				const nextStep = new THREE.Vector3(direction.x + (direction.x < 0 ? -1 : 1), direction.y, direction.z + (direction.z < 0 ? -1 : 1)).add(this.mesh.position);
 				nextStep.y += 1;
 				const obstacles = this.detectObstacles(nextStep);
 
@@ -344,8 +342,8 @@ export class Entity {
 
 				if(looking) {
 					if (obstacles.hasHigherBlocks) {
-						this.addPos(direction.x, 1, direction.z);
-						this.run({ x: 0, z: 0});
+						this.addPos(direction.x, 2, direction.z);
+						// this.run({ x: 0, z: 0});
 					} else if (obstacles.hasSolidObject || obstacles.hasEntity) {
 						const avoidanceDirection = this.avoidObstacles(nextStep, obstacles);
 						this.run({

@@ -25,6 +25,8 @@ export const preload = async (scene: CustomScene) => {
 
 		const item = {...undefinedItem};
 
+		// console.log(undefinedItem.id);
+
 		if(item.resource){
 
 			const type = item.resource.type;
@@ -47,8 +49,10 @@ export const preload = async (scene: CustomScene) => {
 				item.mesh = type == "gltf" ? load.scene : load;
 			} else if(item.type == "shader"){
 				item.id = item.id+'.shader';
-				item['vertex'] = await Utils.loadText(item.resource.sources![0]);
-				item['fragment'] = await Utils.loadText(item.resource.sources![1]);
+				if(item.resource.sources){
+					if(!item['vertex']) item['vertex'] = await Utils.loadText(item.resource.sources![0]);
+					if(!item['fragment']) item['fragment'] = await Utils.loadText(item.resource.sources![1]);
+				}
 			}
 
 

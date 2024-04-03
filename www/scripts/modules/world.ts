@@ -7,6 +7,7 @@ import { item } from './models/item';
 import { CustomScene } from './models/scene';
 import { Utils } from './utils';
 import { generateWithRule } from './structure';
+import { makeObjectMaterial, makeSegmentMaterial } from './shaderMaterial';
 
 export type chunktype = {
 	item: item,
@@ -109,34 +110,7 @@ function getChunkType(noiseValue, loadedChunks: ChunkSet){
 	return loadedChunks.chunkTypes[0];
 }
 
-function parseMaterialOptions(options){
-	const o = {};
-	const keys = ['emissive', 'emissiveIntensity', 'metalness', 'opacity', 'color', 'roughness', 'wireframe'];
-	for(let i of keys) if(i in options) o[i] = options[i];
-	return o;
-}
-
-function makeSegmentMaterial(texture: THREE.Texture, chunkType: chunktype, scene: CustomScene){
-	
-	const { fragment, vertex, materialOptions } = (scene.findLoadedResource(chunkType.shader ? chunkType.shader+'.shader' : 'm:segment.shader', 'shaders', 'm:segment.shader') || {}) as any;
-
-	const uniforms = {
-		textureMap: { value: texture },
-		// shadowMap: { value: scene.lightSet.directionalLight.shadow.map }
-	};
-
-	const mat = materialOptions ? new THREE.MeshStandardMaterial({
-		...parseMaterialOptions(materialOptions),
-		map: texture
-	}) : new THREE.ShaderMaterial({
-		fragmentShader: fragment,
-		vertexShader: vertex,
-		uniforms
-	});
-	
-	return mat;
-}
-
+let f = false;
 // Function to load a chunk
 function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: number, loadedChunks: ChunkSet }) {
 	
@@ -157,23 +131,36 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 
 	loadedChunks.add(stringifyChunkPosition(chunkPosition), chunk);
 
-	// generateGrassSpikes(chunk);
-
-	if(chunkType.structure_rules){
+	if(Utils.randFrom(0, 10) == 3 && chunkType.structure_rules){
 
 		const rule = Utils.pickRandom(...chunkType.structure_rules);
 
 		const object = loadedChunks.scene.findLoadedResource(rule.object, 'objects');
 
-		// console.log(object);
+		const item = generateWithRule(object, object!.config!, loadedChunks.rng);
 
-		const s = object!.mesh!.clone();
+		chunk.add(item);
 
-		// s.scale.setScalar(0.01);
+		const materialsRule = object!.config!.materials;
 
-		// console.log(s.position);
+		console.log(item);
 
-		chunk.add(generateWithRule(object, object!.config!));
+		item.children.forEach(item => {
+			if(item.userData.rule){
+				if(item.userData.rule.physics === true){
+					loadedChunks.scene.physics.add.existing(item as any, {
+						shape: 'convex',
+						mass: 0
+					})
+				}
+			}
+		});
+
+		if(materialsRule){
+			(item.children[0] as any).material = materialsRule.map(mat => {
+				return makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat, 'shaders')!, loadedChunks.scene);
+			});
+		}
 
 	}
 

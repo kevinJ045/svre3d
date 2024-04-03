@@ -1,0 +1,14 @@
+{
+	"id": "m:tree_leaf_material",
+	"type": "shader",
+	"resource": {
+		"type": "shader"
+	},
+	"materialOptions": {
+		"roughness": 0.8,
+		"texture": "m:tree_leaf"
+	},
+	"loader": {
+		"group": "shaders"
+	}
+}

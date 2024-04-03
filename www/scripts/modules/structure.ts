@@ -1,6 +1,7 @@
 import { THREE } from "enable3d";
+import { Utils } from "./utils";
 
-export function generateWithRule(item, rule) {
+export function generateWithRule(item, rule, seed) {
 	const generationRule = rule.generation_rule;
 
 	const group = new THREE.Group();
@@ -9,10 +10,8 @@ export function generateWithRule(item, rule) {
 		if (generationRule.hasOwnProperty(key)) {
 			const currentRule = generationRule[key];
 
-			// Generate objects based on current rule
-			const objects = generateObjects(currentRule, item);
+			const objects = generateObjects(currentRule, item, group, seed);
 
-			// Add generated objects to the scene
 			objects.forEach(object => {
 				if(object) group.add(object);
 			});
@@ -22,11 +21,14 @@ export function generateWithRule(item, rule) {
 	return group;
 }
 
-export function generateObjects(rule, item) {
+export function generateObjects(rule, item, parent, seed, side = '') {
 	const objects: any = [];
-	const count = Array.isArray(rule.count) ? getRandomInt(rule.count[0], rule.count[1]) : rule.count;
+	const count = Array.isArray(rule.count) ? Utils.randFrom(rule.count[0], rule.count[1], seed) : rule.count;
 	for (let i = 0; i < count; i++) {
-		const object = createObject(rule, item);
+
+		const name = Array.isArray(rule.name) ? rule.name[Utils.randFrom(0, rule.name.length-1, seed)] : rule.name;
+
+		const object = createObject({...rule, name}, item, side, seed, parent);
 		objects.push(object);
 
 		// Handle forEach rule
@@ -36,11 +38,7 @@ export function generateObjects(rule, item) {
 					const childRuleName = rule.forEach[key];
 					const childRule = rule[childRuleName];
 					if (childRule) {
-						// Set position for child object based on key
-						const position = getPositionForKey(key, object, childRule);
-						childRule.position = position;
-						// Generate child objects recursively
-						objects.push(...generateObjects(childRule, item));
+						objects.push(...generateObjects(childRule, item, parent, seed, key));
 					}
 				}
 			}
@@ -49,8 +47,8 @@ export function generateObjects(rule, item) {
 	return objects;
 }
 
-function createObject(rule, item) {
-	const position = new THREE.Vector3(...rule.position);
+function createObject(rule, item, side, seed, parent?: any) {
+	let position = new THREE.Vector3(...rule.position);
 	const size = new THREE.Vector3(...rule.size);
 	const rotation = new THREE.Euler(...rule.rotation);
 
@@ -62,36 +60,57 @@ function createObject(rule, item) {
 		if(f.name == rule.name) o = f.clone();
 	});
 
-	if(o){
+	if(o) {
+		if(side) position = getPositionForKey(side, parent, rule, seed);
+		else if (Array.isArray(rule.position[0])) position = getRandomPos(rule.position, seed);
+			
 		o.position.copy(position);
-		o.rotation.copy(rotation);
-		// o.scale.copy(size);
 	}
+	else return g;
 
-	if(rule.count > 1)
+	o.userData.rule = rule;
 
-
-	return rule.count > 1 ? g : o;
-	
-	// mesh.position.copy(position);
-	// mesh.scale.copy(size);
-	// mesh.rotation.copy(rotation);
+	return o;
 }
 
-function getRandomInt(min, max) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
+function getRandomPos(position, seed){
+	return new THREE.Vector3(
+		Utils.randFrom(position[0][0], position[0][1], seed),
+		Utils.randFrom(position[1][0], position[1][1], seed),
+		Utils.randFrom(position[2][0], position[2][1], seed)
+	);
 }
 
-function getPositionForKey(key, parentObject, childRule) {
-	const position = new THREE.Vector3(...childRule.position);
+function getPositionForKey(key, parentObject, childRule, seed) {
+	let position;
+	if (Array.isArray(childRule.position[0])) {
+			position = getRandomPos(childRule.position, seed);
+	} else {
+			position = new THREE.Vector3(...childRule.position);
+	}
 	switch (key) {
-			case 'side':
-					position.add(parentObject.position.clone().multiplyScalar(0.5)); // Adjust position based on parent object
+		case 'side':
+			const sides = ['left', 'right', 'front', 'back'].filter(i => parentObject.userData.sides ? parentObject.userData.sides.indexOf(i) > -1 : true);
+			const side = childRule.side ? Utils.pickRandom(...sides) : childRule.side;
+			switch (side) {
+				case 'left':
+					position.add(parentObject.position.clone().multiplyScalar(0.5));
 					break;
-			case 'top':
-					position.add(parentObject.position.clone().add(new THREE.Vector3(0, parentObject.scale.y, 0))); // Adjust position based on parent object
+				case 'right':
+					position.sub(parentObject.position.clone().multiplyScalar(0.5));
 					break;
-			// Add more cases for other positioning rules if needed
+				case 'front':
+					position.add(new THREE.Vector3(0, 0, parentObject.scale.z / 2));
+					break;
+				case 'back':
+					position.sub(new THREE.Vector3(0, 0, parentObject.scale.z / 2));
+					break;
+			}
+			parentObject.userData.sides = sides.filter(f => f !== side);
+			break;
+		case 'top':
+				position.add(parentObject.position.clone().add(new THREE.Vector3(0, parentObject.scale.y, 0)));
+				break;
 	}
 	return position;
 }

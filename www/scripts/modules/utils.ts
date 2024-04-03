@@ -31,8 +31,8 @@ export class Utils {
 		return parsed;
 	}
 
-	static randFrom(min, max){
-		return Math.floor(Math.random()*(max-min+1)+min);
+	static randFrom(min, max, seed?: any){
+		return Math.floor((seed ? seed() : Math.random())*(max-min+1)+min);
 	}
 
 	static pickRandom(...items){

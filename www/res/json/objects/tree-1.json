@@ -1,0 +1,23 @@
+{
+	"id": "m:tree-1",
+	"type": "structure",
+	"config": {
+		"generation_rule": {
+			"tree": {
+				"count": 1,
+				"position": [[0, 1], [0, 0], [0, 1]],
+				"size": [1, 5, 1],
+				"rotation": [0, 0, 0],
+				"name": ["Tree1", "Tree2", "Tree3"]
+			}
+		},
+		"materials": ["m:tree_leaf_material.shader", "m:segment.shader"]
+	},
+	"resource": {
+		"type": "obj",
+		"src": "/res/obj/trees.obj"
+	},
+	"loader": {
+		"group": "objects"
+	}
+}

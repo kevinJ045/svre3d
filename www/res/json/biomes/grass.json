@@ -6,7 +6,7 @@
 	"structure_rules": [
 		{
 			"name": "tree",
-			"object": "m:tree",
+			"object": "m:tree-1",
 			"density": 10
 		}
 	]

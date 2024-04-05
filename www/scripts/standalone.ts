@@ -5,11 +5,10 @@ import { CustomScene } from './modules/models/scene'
 import { Player } from './modules/player'
 import { ChunkSet, updateChunks } from './modules/world'
 import { Item } from './modules/models/item2'
+import { firstPersonControls } from './modules/fpc'
+import { FirstPersonControls } from './lib/FirstPersonControls'
 
 class MainScene extends CustomScene {
-  loader!: Promise<any>
-  player!: Player
-  keys: Record<string, boolean> = {};
 
   constructor() {
     super({ key: 'MainScene' })
@@ -154,36 +153,35 @@ class MainScene extends CustomScene {
     //   this.player.moveRight = x
     // });
 
-    const keyEvents = {
-      // On Space Key Down
-      'Down ': () => this.player.jump(),
-      'Upe': () => this.toggleInventory(),
-      'Downv': () => this.changeCameraAngle(),
-      'DownShift': () => player.sneak('start'),
-      'UpShift': () => player.sneak('stop'),
-    }
-
-    window.addEventListener('keydown', (e) => {
-      e.preventDefault();
-      this.keys[e.key.toLowerCase()] = true;
-      this.keys.ctrlKey = e.ctrlKey;
-      if(keyEvents['Down'+e.key]) keyEvents['Down'+e.key]();
-    });
-
-    window.addEventListener('keyup', (e) => {
-      e.preventDefault();
-      this.keys[e.key.toLowerCase()] = false;
-      this.keys.ctrlKey = e.ctrlKey;
-      if(keyEvents['Up'+e.key]) keyEvents['Up'+e.key]();
-    });
-
-    this.camera.position.set(0, -1, 5);
     this.setupControls();
-    this.camera.lookAt(this.player.mesh.position);
-    
     // updateChunks(this.player.mesh, this.world, this.chunkSize, this.maxWorldHeight, this.loadedChunks, this.renderDistance, this.seed);
 
   }
+
+  toggleFirstPersonMode(){
+    if(this.firstPersonMode){
+      this.cameraPosition.lookat = false;
+      this.firstPersonMode = false;
+      this.cameraPosition.offset = this.cameraPosition.angles[this.cameraPosition.current];
+
+      this.pointerLock.exit();
+      this.pointerLock = null;
+
+      this.player.mesh.visible = true;
+    } else {
+      this.cameraPosition.offset = new THREE.Vector3(0, 1, -2);
+      this.cameraPosition.lookat = new THREE.Vector3(0, 1, -3);
+      this.firstPersonMode = true;
+      
+      this.pointerLock = new PointerLock(this.canvas);
+      this.controls = new FirstPersonControls(this.camera, this.player.mesh, {
+        offset: new THREE.Vector3(0, 1, 0)
+      }) as any;
+
+      this.player.mesh.visible = false;
+    }
+  }
+
 
   inventoryOpen = false;
 
@@ -200,11 +198,7 @@ class MainScene extends CustomScene {
 
     this.cameraPosition.offset = new THREE.Vector3(4, 2, -8);
 
-    const pt = this.player.mesh.position.clone();
-
-    pt.x += 4;
-
-    pt.applyEuler(this.player.mesh.rotation);
+    const pt = new THREE.Vector3(4, 0, 0);
 
     this.cameraPosition.lookat = pt;
 
@@ -274,13 +268,50 @@ class MainScene extends CustomScene {
         if(isClick == 0 || (event.clientX !== pos.x && event.clientY !== pos.y)) return isClick = 1;
   
         isClick = 1;
-        onMouseClick(event);
+        if(!this.firstPersonMode) onMouseClick(event);
       } else {
         event.preventDefault();
 
         this.player.attack();
 
       }
+    });
+
+    this.camera.layers.set(0);
+
+    const keyEvents = {
+      // On Space Key Down
+      'Down ': () => this.player.jump(),
+      'Upe': () => this.toggleInventory(),
+      'Downv': () => this.changeCameraAngle(),
+      'Downf': () => this.toggleFirstPersonMode(),
+      'DownShift': () => this.player.sneak('start'),
+      'UpShift': () => this.player.sneak('stop'),
+      'DownF': () => this.lockCameraToObject = !this.lockCameraToObject,
+    }
+
+    window.addEventListener('keydown', (e) => {
+      e.preventDefault();
+      this.keys[e.key.toLowerCase()] = true;
+      this.keys.ctrlKey = e.ctrlKey;
+      if(keyEvents['Down'+e.key]) keyEvents['Down'+e.key]();
+    });
+
+    window.addEventListener('keyup', (e) => {
+      e.preventDefault();
+      this.keys[e.key.toLowerCase()] = false;
+      this.keys.ctrlKey = e.ctrlKey;
+      if(keyEvents['Up'+e.key]) keyEvents['Up'+e.key]();
+    });
+
+    
+    const pointerDrag = new PointerDrag(this.canvas);
+    pointerDrag.onMove(delta => {
+      if (!this.pointerLock) return;
+      if (!this.pointerLock.isLocked()) return;
+      const { x, y } = delta;
+      this.player.moveTop = -y
+      this.player.moveRight = x
     });
 
   }
@@ -307,35 +338,34 @@ class MainScene extends CustomScene {
     this.cameraPosition.offset = this.cameraPosition.angles[this.cameraPosition.current];
   }
 
+  lockCameraToObject = true;
+
   updateCameraLocation() {
     const playerPosition = this.player.mesh.position;
     const playerRotation = this.player.mesh.rotation;
 
     // Convert offsets to a Vector3 based on player's rotation
     const offsetVector = this.cameraPosition.offset.clone();
-    offsetVector.applyEuler(playerRotation);
+    if(this.lockCameraToObject) offsetVector.applyEuler(playerRotation);
 
     // Set camera position
     const cameraPosition = new THREE.Vector3().copy(playerPosition).add(offsetVector);
     this.camera.position.copy(cameraPosition);
 
     // Make the camera look at the player
-    if(this.cameraPosition.lookat) this.camera.lookAt(this.cameraPosition.lookat);
+    if(this.cameraPosition.lookat) this.camera.lookAt(playerPosition.clone().add(this.cameraPosition.lookat).applyEuler(this.player.mesh.rotation));
     else this.camera.lookAt(playerPosition);
   }
 
 
   update() {
 
-    // this.controls.update(this.player.moveRight * 3, -this.player.moveTop * 3)
-    this.player.moveRight = this.player.moveTop = 0
-
     this.entities.forEach((entity) => {
       entity.think();
     });
 
-
-    this.updateCameraLocation();
+    if(this.firstPersonMode) firstPersonControls(this, this.player);
+    else this.updateCameraLocation();
 
     updateChunks(this.player.mesh, this.world, this.chunkSize, this.maxWorldHeight, this.loadedChunks, this.renderDistance, this.seed);
     // updateChunkss(this.player.player.position, this.world, this.chunkSize, this.maxWorldHeight, new Set(), this.seed);

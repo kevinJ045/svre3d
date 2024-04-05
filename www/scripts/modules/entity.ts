@@ -59,15 +59,6 @@ export class Entity {
 		this.scene = scene;
 
 		scene.entities.push(this);
-
-
-		if(this.mesh.body) this.mesh.body.on.collision((otherObjecr) => {
-			if(otherObjecr.name == 'chunk' && this.canJump == false){
-				this.canJump = true;
-			}
-		});
-
-
 	}
 
 	private _animationTimeout: any = 0;
@@ -185,9 +176,18 @@ export class Entity {
 		if(!this.canJump) return;
 		this.isJumping = true;
 		this.canJump = false;
-		this.mesh.body.applyForceY(5);
+		this.mesh.body.applyForceY(6);
 		this.idle();
 		this.isJumping = false;
+		setTimeout(() => {
+			const onc = ({object}) => {
+				if(object.name == 'chunk' && this.canJump == false){
+					this.canJump = true;
+				}
+				this.offCollision(onc);
+			}
+			this.onCollision(onc);
+		}, 10);
 	}
 
 	sneak(act: string){
@@ -441,8 +441,8 @@ export class Entity {
 	}
 
 	baseThinking(){
-		if(this.targetLocation){
-			this.moveTowardsTarget();
+		if(this.targetLocation) this.moveTowardsTarget();
+		if(this.runDirection.x || this.runDirection.z){
 			this.mesh.body.setVelocity(this.runDirection.x, this.mesh.body.velocity.y, this.runDirection.z);
 		} else {
 			this.mesh.body.setVelocity(0, this.mesh.body.velocity.y, 0);
@@ -451,6 +451,20 @@ export class Entity {
 
 	think(){
 		this.baseThinking();
+	}
+
+	_collisionListeners: ((data: any) => any)[] = [];
+	onCollision(f : (data: any) => any){
+		this._collisionListeners.push(f);
+		return this;
+	}
+	offCollision(f: (data: any) => any){
+		this._collisionListeners.splice(this._collisionListeners.indexOf(f), 1);
+		return this;
+	}
+
+	collided(data: any){
+		this._collisionListeners.forEach(f => f(data));
 	}
 
 

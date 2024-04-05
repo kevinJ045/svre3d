@@ -4,6 +4,7 @@ import { ChunkSet } from "../world";
 import { UI } from "../ui";
 import { Entity } from "../entity";
 import { generateUniqueId } from "../bid";
+import { Player } from "../player";
 
 export class CustomScene extends Scene3D {
   loaded: Record<string, item[]> = {};
@@ -28,6 +29,15 @@ export class CustomScene extends Scene3D {
 
   UI = new UI;
 
+
+  firstPersonMode = false;
+
+
+  loader!: Promise<any>
+  player!: Player
+  keys: Record<string, boolean> = {};
+
+  pointerLock: any;
 
   findLoadedResource(name: string, type = "", defaultResource = "none"){
     return this.loaded[type].find(i => i.id == name) || this.loaded[type].find(i => i.id == name);

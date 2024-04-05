@@ -1,4 +1,4 @@
-import { ExtendedObject3D, THREE } from "enable3d";
+import { ExtendedMesh, ExtendedObject3D, THREE } from "enable3d";
 import { item } from "./models/item";
 import { Item } from "./models/item2";
 import { CustomScene } from "./models/scene";
@@ -155,10 +155,11 @@ export class Player extends Entity {
     const player = scene.findLoadedResource('m:player', 'objects')!;
     const pmesh = player.mesh!.copy(new THREE.Object3D(), true);
 
-    console.log(player.load);
 
     scene.animationMixers.add(o.anims.mixer);
     o.anims.mixer.timeScale = 1;
+		
+    // pmesh.rotation.y = Math.PI;
 
     pmesh.traverse(child => {
       child.castShadow = true
@@ -171,13 +172,13 @@ export class Player extends Entity {
 
     o.add(pmesh);
 
-    o.anims.mixer.clipAction(player.load.animations[0]).reset().play()
+    // o.anims.mixer.clipAction(player.load.animations[0]).reset().play()
 
     // this.wearAccessory(o, player.config!.brow);
     // this.wearAccessory(o, player.config!.hat);
 
-    // o.rotation.y = Math.PI;
     o.position.y = -8;
+		// o.rotation.y = Math.PI;
 
 
     scene.add.existing(o);
@@ -208,6 +209,9 @@ export class Player extends Entity {
     });
 		mesh.body.setFriction(0.8);
     mesh.body.setAngularFactor(0, 0, 0);
+		mesh.body.on.collision((otherObject) => {
+			this.collided({object: otherObject});
+		});
 	}
 
 }

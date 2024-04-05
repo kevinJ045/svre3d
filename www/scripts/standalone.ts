@@ -286,7 +286,7 @@ class MainScene extends CustomScene {
   }
 
   cameraPosition : { offset: THREE.Vector3, diagonal: number, lookat: THREE.Vector3 | false, angles: THREE.Vector3[], current: number } = {
-    offset: new THREE.Vector3(15, 15, -15),
+    offset: new THREE.Vector3(0, 200, 0),
     diagonal: 10,
     lookat: false,
     angles: [

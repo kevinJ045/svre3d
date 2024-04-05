@@ -72,7 +72,9 @@ export const preload = async (scene: CustomScene) => {
 		}
 	}
 
-	console.log(scene.loaded);
+	// console.log(scene.loadedChunks.chunkTypes);
+
+	scene.loadedChunks.chunkTypes = Utils.shuffleArray(scene.loadedChunks.chunkTypes, scene.loadedChunks.rng);
 
 	
 };

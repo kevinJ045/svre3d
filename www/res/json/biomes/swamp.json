@@ -1,0 +1,6 @@
+{
+	"type": "biome",
+	"name": "swamp",
+	"item": "m:swamp_segment",
+	"textures": [1, 1, 0, 1, 1, 1]
+}

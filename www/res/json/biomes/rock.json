@@ -1,0 +1,6 @@
+{
+	"type": "biome",
+	"name": "rock",
+	"item": "m:rock_segment",
+	"textures": [1, 1, 0, 1, 1, 1]
+}

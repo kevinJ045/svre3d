@@ -20,8 +20,8 @@ export class CustomScene extends Scene3D {
 
   chunkSize = 5;
   maxWorldHeight = 4;
-  renderDistance = 8;
-  seed = "joeman";
+  renderDistance = 16;
+  seed = "likethat";
 
   loadedChunks!: ChunkSet;
 

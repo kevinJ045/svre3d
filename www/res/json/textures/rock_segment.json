@@ -1,0 +1,14 @@
+{
+	"id": "m:rock_segment",
+	"type": "texture_map",
+	"resource": {
+		"type": "texture",
+		"sources": [
+			"/res/tex/segment_rock_top.png",
+			"/res/tex/segment_rock_side.png"
+		]
+	},
+	"loader": {
+		"group": "textures"
+	}
+}

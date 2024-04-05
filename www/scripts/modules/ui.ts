@@ -212,7 +212,6 @@ export class UI {
 			}
 		)
 
-		this.show();
 	}
 
 }

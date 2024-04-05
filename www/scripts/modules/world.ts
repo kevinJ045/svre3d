@@ -105,20 +105,30 @@ function stringifyChunkPosition(pos){
 	return pos.x+', '+pos.y+', '+pos.z;
 }
 
-function getChunkType(noiseValue, loadedChunks: ChunkSet){
-	const noiseColorIndex = Math.floor((noiseValue / 2 + 0.5) * (loadedChunks.chunkTypes.length - 1));
-	return loadedChunks.chunkTypes[0];
+function getChunkType(noiseValue, chunkSize, loadedChunks: ChunkSet){
+	// const num = 1/loadedChunks.chunkTypes.length * 0.1;
+	const types = loadedChunks.chunkTypes;
+
+	// const value = Math.abs(noiseValue);
+
+	const index = Math.min(Math.abs(Math.floor(noiseValue * types.length-1)), types.length-1);
+
+	return types[index];
 }
+
+
 
 let f = false;
 // Function to load a chunk
 function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: number, loadedChunks: ChunkSet }) {
-	
-	const noiseValue = loadedChunks.noise.perlin3(chunkPosition.x * 0.1, 0, chunkPosition.z * 0.1);
-	
+
+	const scale = 0.0001;
+	const offset = 0;
+	const noiseValue = loadedChunks.noise.perlin2((chunkPosition.x + offset) * scale, (chunkPosition.z + offset) * scale);
+
 	const geometry = new THREE.BoxGeometry(chunkSize, 2, chunkSize);
 
-	const chunkType = getChunkType(noiseValue, loadedChunks);	
+	const chunkType = getChunkType(noiseValue, chunkSize, loadedChunks);	
 
 	const materials = 'textures' in chunkType ? chunkType.textures!.map(i => makeSegmentMaterial(chunkType.item.texture[i], chunkType, loadedChunks.scene)) : makeSegmentMaterial(chunkType.item.texture, chunkType, loadedChunks.scene);
 

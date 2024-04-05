@@ -3,6 +3,7 @@ import { item } from "./item";
 import { ChunkSet } from "../world";
 import { UI } from "../ui";
 import { Entity } from "../entity";
+import { generateUniqueId } from "../bid";
 
 export class CustomScene extends Scene3D {
   loaded: Record<string, item[]> = {};
@@ -20,8 +21,8 @@ export class CustomScene extends Scene3D {
 
   chunkSize = 5;
   maxWorldHeight = 4;
-  renderDistance = 16;
-  seed = "likethat";
+  renderDistance = 8;
+  seed = generateUniqueId();
 
   loadedChunks!: ChunkSet;
 

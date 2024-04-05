@@ -14,7 +14,10 @@ export type chunktype = {
 	name: string,
 	textures?: number[],
 	shader?: string,
-	structure_rules?: any
+	structure_rules?: any,
+	foliage?: {
+		color: string
+	}
 };
 
 export class ChunkSet {
@@ -147,15 +150,18 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 
 		const density = rule.density;
 
+		const variables = {
+			foliage: chunkType.foliage?.color || "#00ff00"
+		};
 
-		const noiseAtPosition = Utils.randFrom(0, density, () => loadedChunks.noise.perlin3(chunkPosition.x * 0.1, 0, chunkPosition.z * 0.1));
+		const noiseAtPosition = Utils.randFrom(0, density, () => loadedChunks.rng());
 
 		const randomThreshold = Math.floor(loadedChunks.rng() * density) * (noiseAtPosition < 0 ? -1 : 1);
 
 		if (noiseAtPosition === randomThreshold){
 			const object = loadedChunks.scene.findLoadedResource(rule.object, 'objects');
 
-			const item = generateWithRule(object, object!.config!, loadedChunks.rng);
+			const item = generateWithRule(object, object!.config!, loadedChunks.rng, rule.object_rules);
 
 			chunk.add(item);
 
@@ -178,19 +184,19 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 					if(mat){
 						if(Array.isArray(child.material)){
 							if(Array.isArray(mat)) child.material = materialsRule.map(mat => {
-								return makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat, 'shaders')!, loadedChunks.scene);
+								return makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat, 'shaders')!, loadedChunks.scene, variables);
 							});
 							else {
 								child.material = child.material.map(mate => {
 									if(mate.name in mat){
-										return makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat[mate.name], 'shaders')!, loadedChunks.scene);
+										return makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat[mate.name], 'shaders')!, loadedChunks.scene, variables);
 									} else {
 										return mate;
 									}
 								});
 							}
 						} else{
-							child.material = makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat, 'shaders')!, loadedChunks.scene)
+							child.material = makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat, 'shaders')!, loadedChunks.scene, variables)
 						}
 					}
 				});

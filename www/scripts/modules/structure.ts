@@ -1,12 +1,13 @@
 import { THREE } from "enable3d";
 import { Utils } from "./utils";
 
-export function generateWithRule(item, rule, seed) {
+export function generateWithRule(item, rule, seed, object_rules?: string[]) {
 	const generationRule = rule.generation_rule;
 
 	const group = new THREE.Group();
+	const keys = object_rules || Object.keys(generationRule);
 
-	for (let key in generationRule) {
+	for (let key of keys) {
 		if (generationRule.hasOwnProperty(key)) {
 			const currentRule = generationRule[key];
 

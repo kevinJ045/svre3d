@@ -6,7 +6,7 @@
 	},
 	"materialOptions": {
 		"roughness": 0.8,
-		"color": "#00aaaa"
+		"color": "mix(#00aaaa, $foliage, 0.5)"
 	},
 	"loader": {
 		"group": "shaders"

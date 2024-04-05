@@ -3,12 +3,19 @@
 	"type": "structure",
 	"config": {
 		"generation_rule": {
-			"tree": {
+			"tree1": {
 				"count": 1,
 				"position": [0, 0, 0],
 				"size": [1, 5, 1],
 				"rotation": [0, 0, 0],
 				"name": ["Tree1", "Tree2", "Tree3"]
+			},
+			"tree2": {
+				"count": 1,
+				"position": [0, 0, 0],
+				"size": [1, 5, 1],
+				"rotation": [0, 0, 0],
+				"name": ["Tree1", "Tree2", "Tree6"]
 			}
 		},
 		"materials": [

@@ -7,7 +7,11 @@
 		{
 			"name": "tree",
 			"object": "m:tree-1",
-			"density": 25
+			"density": 25,
+			"object_rules": ["tree1"]
 		}
-	]
+	],
+	"foliage": {
+		"color": "#00aaaa"
+	}
 }

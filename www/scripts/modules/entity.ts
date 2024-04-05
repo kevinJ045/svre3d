@@ -148,9 +148,9 @@ export class Entity {
 
 	addPos(x, y, z){
 		this.physics.destroy(this.mesh.body);
-		// this.mesh.position.x += y;
+		this.mesh.position.x += x;
 		this.mesh.position.y += y;
-		// this.mesh.position.z += z;
+		this.mesh.position.z += z;
 		this.addPhysics(this.mesh);
 	}
 
@@ -211,17 +211,18 @@ export class Entity {
 		});	
 	}
 
-	detectObstacles(position) {
+	detectObstacles(position: THREE.Vector3, direction: THREE.Vector3) {
     const obstacles = {
         hasSolidObject: false,
         hasHigherBlocks: false,
         hasEntity: false
     };
 
-		const playerpos = this.mesh.position.clone();
+		const pos = this.mesh.position.clone().add(direction.clone());
+		// console.log(pos, position);
 
 		// Perform raycast to detect obstacles in front of the player
-		const raycaster = new THREE.Raycaster(playerpos, position);
+		const raycaster = new THREE.Raycaster(pos, position);
 		const intersects = raycaster.intersectObjects(this.scene.loadedChunks.chunkObjects(), true);
 		const intersectsEntity = raycaster.intersectObjects(this.scene.entities.map(i => i.mesh).filter(mesh => mesh.uuid !== this.mesh.uuid), true);
 
@@ -229,12 +230,18 @@ export class Entity {
 
 		if (intersects.length > 0) {
 			// intersects[0].object.material = new THREE.MeshBasicMaterial({ color: 0x09d0d0 });
+			// console.log(intersects[0].object);
 			const chunkY = intersects[0].object.position.y; // Y position of the chunk below next step
 			const playerY = this.mesh.position.y; // Y position of the player
 			const heightDifference = chunkY - playerY;
 
+			// if (intersects[0].object.name == 'chunk') {
+			// 	intersects[0].object.material = new THREE.MeshBasicMaterial({color: 0x00ffff});
+			// 	console.log(heightDifference);
+			// }
+
 			// If the height difference is exactly 1, make the player jump
-			if (heightDifference > -1) {
+			if (intersects[0].object.name == 'chunk' && heightDifference > -1) {
 				obstacles.hasHigherBlocks = true;
 			}
 
@@ -334,15 +341,17 @@ export class Entity {
 					});
 					this.idle();
 			} else {
-				const nextStep = new THREE.Vector3(direction.x + (direction.x < 0 ? -1 : 1), direction.y, direction.z + (direction.z < 0 ? -1 : 1)).add(this.mesh.position);
-				nextStep.y += 1;
-				const obstacles = this.detectObstacles(nextStep);
+				const nextStep = new THREE.Vector3(direction.x, direction.y + 1, direction.z).add(this.mesh.position);
+
+				const obstacles = this.detectObstacles(nextStep, direction);
+
+				// console.log(obstacles.hasHigherBlocks, nextStep, this.mesh.position);
 
 				const looking = this.rotateTowardsTarget();
 
 				if(looking) {
 					if (obstacles.hasHigherBlocks) {
-						this.addPos(direction.x, 2, direction.z);
+						this.addPos(0, 2, 0);
 						// this.run({ x: 0, z: 0});
 					} else if (obstacles.hasSolidObject || obstacles.hasEntity) {
 						const avoidanceDirection = this.avoidObstacles(nextStep, obstacles);

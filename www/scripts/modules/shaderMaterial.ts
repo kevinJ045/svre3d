@@ -2,8 +2,15 @@ import { item } from "./models/item";
 import { THREE } from "enable3d";
 import { CustomScene } from "./models/scene";
 import { chunktype } from "./world";
+import { mixColors } from "./colors";
 
-export function makeObjectMaterial(shader: item, scene: CustomScene){
+const basicVariables = {
+	mix(color1, color2, ratio){
+		return mixColors(color1.trim(), color2.trim(), parseFloat(ratio));
+	}
+}
+
+export function makeObjectMaterial(shader: item, scene: CustomScene, variables = {}){
 	
 	const { fragment, vertex, materialOptions } = shader;
 
@@ -26,17 +33,20 @@ export function makeObjectMaterial(shader: item, scene: CustomScene){
 		vertexShader: vertex,
 		uniforms
 	}) : new THREE.MeshStandardMaterial({
-		...parseMaterialOptions(materialOptions)
+		...parseMaterialOptions(materialOptions, {...variables, ...basicVariables})
 	});
 	
 	return mat;
 }
 
+function parseVariable(string: string, variables: Record<string, any> = {}){
+	return typeof string == "string" ? string.replace(/\$([A-Za-z0-9]+)/g, (_, name) => variables[name] || _).replace(/([A-Za-z0-9]+)\(([^)]+)\)/g, (_, name, args) => variables[name] ? variables[name](...args.split(',')) : _) : string;
+}
 
-function parseMaterialOptions(options){
+function parseMaterialOptions(options, variables = {}){
 	const o = {};
 	const keys = ['map', 'color', 'emissive', 'emissiveIntensity', 'metalness', 'opacity', 'color', 'roughness', 'wireframe'];
-	for(let i of keys) if(i in options) o[i] = options[i];
+	for(let i of keys) if(i in options) o[i] = parseVariable(options[i], variables);
 	return o;
 }
 

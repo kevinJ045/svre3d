@@ -22,7 +22,7 @@ export class CustomScene extends Scene3D {
   chunkSize = 5;
   maxWorldHeight = 4;
   renderDistance = 8;
-  seed = generateUniqueId();
+  seed = generateUniqueId().toString();
 
   loadedChunks!: ChunkSet;
 

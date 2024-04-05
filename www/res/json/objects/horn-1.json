@@ -19,6 +19,9 @@
 				"top": "50%",
 				"left": "0"
 			}
+		},
+		"inventory": {
+			"max": 1
 		}
 	},
 	"resource": {

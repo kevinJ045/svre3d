@@ -1,12 +1,12 @@
 {
-	"id": "m:tree_leaf_material",
+	"id": "m:tree_log_material",
 	"type": "shader",
 	"resource": {
 		"type": "shader"
 	},
 	"materialOptions": {
-		"roughness": 0.8,
-		"color": "#00aaaa"
+		"roughness": 1,
+		"color": "#440000"
 	},
 	"loader": {
 		"group": "shaders"

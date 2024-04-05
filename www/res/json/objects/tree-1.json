@@ -5,13 +5,18 @@
 		"generation_rule": {
 			"tree": {
 				"count": 1,
-				"position": [[0, 1], [0, 0], [0, 1]],
+				"position": [0, 0, 0],
 				"size": [1, 5, 1],
 				"rotation": [0, 0, 0],
 				"name": ["Tree1", "Tree2", "Tree3"]
 			}
 		},
-		"materials": ["m:tree_leaf_material.shader", "m:segment.shader"]
+		"materials": [
+			{
+				"Leaf": "m:tree_leaf_material.shader",
+				"Log": "m:tree_log_material.shader"
+			}
+		]
 	},
 	"resource": {
 		"type": "obj",

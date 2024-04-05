@@ -32,10 +32,15 @@ export class Utils {
 	}
 
 	static randFrom(min, max, seed?: any){
-		return Math.floor((seed ? seed() : Math.random())*(max-min+1)+min);
+		const r = (seed ? seed() : Math.random());
+		return Math.floor(r*(max-min+1)+min);
 	}
 
 	static pickRandom(...items){
-		return items[this.randFrom(0, items.length-1)];
+		let r = null;
+		if(typeof items[items.length-1] == "function" && typeof items[0] !== "function"){
+			r = items.pop();
+		}
+		return items[this.randFrom(0, items.length-1, r)];
 	}
 }

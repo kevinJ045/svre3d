@@ -131,35 +131,65 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 
 	loadedChunks.add(stringifyChunkPosition(chunkPosition), chunk);
 
-	if(Utils.randFrom(0, 10) == 3 && chunkType.structure_rules){
+	if(chunkType.structure_rules){
 
-		const rule = Utils.pickRandom(...chunkType.structure_rules);
+		const rule = Utils.pickRandom(...chunkType.structure_rules, loadedChunks.rng);
 
-		const object = loadedChunks.scene.findLoadedResource(rule.object, 'objects');
+		const density = rule.density;
 
-		const item = generateWithRule(object, object!.config!, loadedChunks.rng);
 
-		chunk.add(item);
+		const noiseAtPosition = Utils.randFrom(0, density, () => loadedChunks.noise.perlin3(chunkPosition.x * 0.1, 0, chunkPosition.z * 0.1));
 
-		const materialsRule = object!.config!.materials;
+		const randomThreshold = Math.floor(loadedChunks.rng() * density) * (noiseAtPosition < 0 ? -1 : 1);
 
-		console.log(item);
+		console.log(noiseAtPosition, Math.floor(chunkPosition.x), randomThreshold);
 
-		item.children.forEach(item => {
-			if(item.userData.rule){
-				if(item.userData.rule.physics === true){
-					loadedChunks.scene.physics.add.existing(item as any, {
-						shape: 'convex',
-						mass: 0
-					})
+		if (noiseAtPosition === randomThreshold){
+			const object = loadedChunks.scene.findLoadedResource(rule.object, 'objects');
+
+			const item = generateWithRule(object, object!.config!, loadedChunks.rng);
+
+			chunk.add(item);
+
+			const materialsRule = object!.config!.materials;
+
+			console.log(item);
+
+			item.children.forEach(item => {
+				if(item.userData.rule){
+					if(item.userData.rule.physics === true){
+						loadedChunks.scene.physics.add.existing(item as any, {
+							shape: 'convex',
+							mass: 0
+						})
+					}
 				}
-			}
-		});
-
-		if(materialsRule){
-			(item.children[0] as any).material = materialsRule.map(mat => {
-				return makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat, 'shaders')!, loadedChunks.scene);
 			});
+
+			if(materialsRule){
+				item.children.forEach((child: any, index: number) => {
+					const mat = materialsRule.length > 1 ? materialsRule[index] : materialsRule[0];
+					if(mat){
+						if(Array.isArray(child.material)){
+							if(Array.isArray(mat)) child.material = materialsRule.map(mat => {
+								return makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat, 'shaders')!, loadedChunks.scene);
+							});
+							else {
+								child.material = child.material.map(mate => {
+									if(mate.name in mat){
+										console.log(mate.name, loadedChunks.scene.findLoadedResource(mat[mate.name], 'shaders'));
+										return makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat[mate.name], 'shaders')!, loadedChunks.scene);
+									} else {
+										return mate;
+									}
+								});
+							}
+						} else{
+							child.material = makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat, 'shaders')!, loadedChunks.scene)
+						}
+					}
+				});
+			}
 		}
 
 	}

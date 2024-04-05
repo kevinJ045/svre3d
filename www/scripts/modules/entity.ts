@@ -365,23 +365,50 @@ export class Entity {
 		return this.inventory.find(i => i.id == item.id);
 	}
 
+	kindInInventory(item: Item){
+		return this.inventory.filter(i => i.item.id == item.item.id);
+	}
+
 	ownItem(item: Item){}
 
-	toInventory(item: Item){
-		if(this.inInventory(item)) return true;
-		else {
+	toInventory(item: Item, count = 0){
+		const itin = this.kindInInventory(item).find(i => i.count < i.max)!;
+
+		const addItem = () => {
 			this.ownItem(item);
 			this.inventory.push(item);
 			this.updateInventory(item, 'add');
+		}
+
+		if(itin) {
+			if(itin.count < itin.max){
+				itin.count += count || 1;
+				this.updateInventory(itin, 'update-count');
+			} else {
+				addItem();
+			}
+		} else {
+			addItem();
 			return true;
 		}
 	}
 
-	fromInventory(item: Item){
-		const ini = this.inInventory(item);
+	fromInventory(item: Item, count = 0){
+		const ini = this.kindInInventory(item).sort(i => i.max - i.count)[0];
 		if(!ini) return false;
-		this.inventory.splice(this.inventory.indexOf(ini), 1);
-		this.updateInventory(ini, 'remove');
+
+		const rm = () => {
+			this.inventory.splice(this.inventory.indexOf(ini), 1);
+			this.updateInventory(ini, 'remove');
+		}
+
+		if(count){
+			ini.count -= count;
+			if(ini.count < 1) rm();
+			else this.updateInventory(ini, 'update-count');
+		} else {
+			rm();
+		}
 		return true;
 	}
 

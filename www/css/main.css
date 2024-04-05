@@ -4,6 +4,7 @@ body {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
+	user-select: none;
 }
 
 *{
@@ -125,19 +126,41 @@ body {
 	display: inline-block;
 	background: #70c70d;
 	position: relative;
+	cursor: pointer;
 }
 
 .player-menu .inventory .item.with-icon{
 	background: var(--item-url) no-repeat;
 }
 
-.player-menu .inventory .item .item-name{
-	display: none;
+.player-menu .inventory .item .item-count{
 	color: white;
 	position: absolute;
 	bottom: -10px;
-	right: -10px;
-}
-.player-menu .inventory .item:hover .item-name{
+	right: 1px;
 	display: block;
+	font-weight: 700;
+}
+
+.player-menu .inventory .inventory-item-info{
+	position: absolute;
+	background: rgba(0, 0, 0, 0.4);
+	width: 200px;
+	height: 100px;
+	display: flex;
+	color: white;
+	font-weight: 700;
+	flex-direction: column;
+	display: none;
+	z-index: 100;
+}
+
+.player-menu .inventory .inventory-item-info .item-title{
+	font-size: 22px;
+	width: 100%;
+	text-align: center;
+}
+.player-menu .inventory .inventory-item-info .item-title > span {
+	font-size: 16px;
+	position: absolute;
 }

@@ -12,10 +12,21 @@ export class Item {
 	data: Record<string, any> = {};
 	mesh?: THREE.Object3D;
 
+	count = 1;
+	max = 1;
+
+	name: string = "";
+
 	constructor(item: item){
 		this.item = item;
 
+		this.max = item.config?.inventory?.max || 1;
+
 		this.id = THREE.MathUtils.generateUUID();
+
+		this.name = item.config?.name || item.id || "item";
+
+		this.data.content = "";
 	}
 
 	setParentPlayer(player: Player){

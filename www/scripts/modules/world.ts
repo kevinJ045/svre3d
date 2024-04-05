@@ -142,8 +142,6 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 
 		const randomThreshold = Math.floor(loadedChunks.rng() * density) * (noiseAtPosition < 0 ? -1 : 1);
 
-		console.log(noiseAtPosition, Math.floor(chunkPosition.x), randomThreshold);
-
 		if (noiseAtPosition === randomThreshold){
 			const object = loadedChunks.scene.findLoadedResource(rule.object, 'objects');
 
@@ -152,8 +150,6 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 			chunk.add(item);
 
 			const materialsRule = object!.config!.materials;
-
-			console.log(item);
 
 			item.children.forEach(item => {
 				if(item.userData.rule){
@@ -177,7 +173,6 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 							else {
 								child.material = child.material.map(mate => {
 									if(mate.name in mat){
-										console.log(mate.name, loadedChunks.scene.findLoadedResource(mat[mate.name], 'shaders'));
 										return makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat[mate.name], 'shaders')!, loadedChunks.scene);
 									} else {
 										return mate;

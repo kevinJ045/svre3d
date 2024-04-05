@@ -88,6 +88,10 @@ class MainScene extends CustomScene {
     const horn = this.itemFromName('m:horn-1')!
     player.toInventory(horn);
     player.toInventory(brow);
+    player.toInventory(this.itemFromName('m:rubidium')!);
+    for(let i = 0; i < 100; i++){
+      player.toInventory(this.itemFromName('m:rubidium')!);
+    }
 
     player.wearAccessory(brow);
 

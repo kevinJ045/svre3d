@@ -136,7 +136,7 @@ export class Goober extends Entity {
 		p.beforeInit();
 
 		p.onCollision((otherobject) => {
-			if(otherobject.object.position.y - p.mesh.position.y > 0){
+			if(otherobject.object.name == 'chunk' && otherobject.object.position.y - p.mesh.position.y > 0){
 				p.hasHigherBlocks = true;
 			}
 		});

@@ -210,6 +210,17 @@ export class Player extends Entity {
 		// 	}, Utils.randFrom(10000, 30000)));
 		// });
 
+		p.onCollision((otherobject) => {
+			if(otherobject.object.name == 'chunk' && otherobject.object.position.y - p.mesh.position.y > 0){
+				p.hasHigherBlocks = true;
+			}
+		});
+
+		p.onHealth('death', () => {
+			localStorage.setItem('pos', '0,0');
+			scene.player = scene.entities.summon('m:player');
+		});
+
     return p;
 	}
 

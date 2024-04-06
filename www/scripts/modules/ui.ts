@@ -177,7 +177,6 @@ export class UI {
 
 		const updateCount = (item : Item) => {
 			if(item.data.inventory){
-				console.log(item);
 				item.data.inventory.querySelector('.item-count').innerText = item.count;
 			}
 		}
@@ -195,7 +194,6 @@ export class UI {
 
 		player.onInventory('update-count',
 			(item) => {
-				console.log('update', item);
 				updateCount(item);
 			}
 		)

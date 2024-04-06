@@ -4,7 +4,7 @@
 	+ Camera Position Set [-]
 	+ Player Animations [-]
 	+ Player HP [ ]
-	+ Player Inventory [ ]
+	+ Player Inventory [-]
 
 [Entity: 20]
 	+ Entity Basics [X]
@@ -34,7 +34,7 @@
 	+ Emission Effects [ ]
 	+ Fog Effect [ ]
 	+ Bloom Effect [ ]
-	
+
 [Mines: 0]
 	+ Mining Biome [ ]
 	+ Ores [ ]
@@ -44,7 +44,7 @@
 	+ 121 Items [ ]
 	+ Item Logic [-]
 	+ Item Loot [ ]
-	+ Item Tier
+	+ Item Tier [e]
 
 [Crafting: 0]
 	+ Crafting Logic [ ]

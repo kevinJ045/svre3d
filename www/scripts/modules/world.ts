@@ -8,6 +8,7 @@ import { CustomScene } from './models/scene';
 import { Utils } from './utils';
 import { generateWithRule } from './structure';
 import { makeObjectMaterial, makeSegmentMaterial } from './shaderMaterial';
+import { Entity } from './entity';
 
 export type chunktype = {
 	item: item,
@@ -17,7 +18,8 @@ export type chunktype = {
 	structure_rules?: any,
 	foliage?: {
 		color: string
-	}
+	},
+	spawn_rules?: any
 };
 
 export class ChunkSet {
@@ -205,6 +207,32 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 
 	}
 
+	if(chunkType.spawn_rules){
+		const rule = Utils.pickRandom(...chunkType.spawn_rules, loadedChunks.rng);
+		const rarity = rule.rarity;
+
+		const variables = {};
+		const pos = new THREE.Vector3(chunkPosition.x, chunk.position.y += 2, chunkPosition.z);
+		
+		const noiseAtPosition = Utils.randFrom(0, rarity, () => loadedChunks.rng());
+
+		const randomThreshold = Math.floor(loadedChunks.rng() * rarity) * (noiseAtPosition < 0 ? -1 : 1);
+
+		if (noiseAtPosition === randomThreshold){
+			spawnEntity(loadedChunks, rule, variables, pos);
+		}
+		
+	}
+
+}
+
+function spawnEntity(loadedChunks, rule, variables, pos){
+	const entity: Entity = loadedChunks.scene.entities.summon(rule.entity, '', pos);
+
+	if(rule.variant){
+		const variant = (entity.entityData.config?.variants || []).find(v => v.name == rule.variant)
+		if(variant) entity.setVariant(variant, variables);
+	}
 }
 
 // Function to unload a chunk

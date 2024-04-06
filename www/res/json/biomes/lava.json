@@ -2,5 +2,13 @@
 	"type": "biome",
 	"name": "lava",
 	"item": "m:lava_segment",
-	"textures": [1, 1, 0, 1, 1, 1]
+	"textures": [1, 1, 0, 1, 1, 1],
+	"spawn_rules": [
+		{
+			"name": "goober",
+			"entity": "m:goober",
+			"rarity": 50,
+			"variant": "lava"
+		}
+	]
 }

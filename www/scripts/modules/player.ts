@@ -4,6 +4,7 @@ import { Item } from "./models/item2";
 import { CustomScene } from "./models/scene";
 import { Entity } from "./entity";
 import { Utils } from "./utils";
+import { Entities } from "./entityman";
 
 
 
@@ -113,6 +114,8 @@ export class Player extends Entity {
 	think(){
 		super.think();
 
+		localStorage.setItem('pos', this.mesh.position.x+','+this.mesh.position.z);
+
 		this.mesh.traverse(node => {
 			if ((node as any).isBone && node.userData.attachment) {
 				const attachment = node.userData.attachment;
@@ -149,7 +152,11 @@ export class Player extends Entity {
 
 	}
 
-	static entityMeshLoader(scene: CustomScene) {
+	physicsOptions = {
+		shape: 'convex',
+		offset: { z: 0.55, y: -0.55 }
+	};
+	static entityMeshLoader(scene: CustomScene, name: string = '', pos?: any) {
 		const o = new ExtendedObject3D();
 
     const player = scene.findLoadedResource('m:player', 'objects')!;
@@ -180,10 +187,16 @@ export class Player extends Entity {
     o.position.y = -8;
 		// o.rotation.y = Math.PI;
 
+		const pp = (localStorage.getItem('pos') || "0,0").split(',').map(Number);
+		o.position.x = pp[0];
+		o.position.z = pp[1];
+
 
     scene.add.existing(o);
 		const p = new this(scene, o, player);
 		p.addPhysics(o);
+
+		p.variant = player.config!.variant;
 
 		// p.onAnimation('Idle', () => {
 		// 	p.animQueue(setTimeout(() => {
@@ -194,24 +207,6 @@ export class Player extends Entity {
 		// });
 
     return p;
-	}
-
-	addPhysics(mesh: any) {
-    this.physics.add.existing(mesh, {
-      // shape: 'box',
-      // offset: { z: 0.55, y: -1.25 },
-      // collisionFlags: 0,
-			// width: 2,
-			// depth: 2,
-			// height: 2.9
-			shape: 'convex',
-      offset: { z: 0.55, y: -0.55 }
-    });
-		mesh.body.setFriction(0.8);
-    mesh.body.setAngularFactor(0, 0, 0);
-		mesh.body.on.collision((otherObject) => {
-			this.collided({object: otherObject});
-		});
 	}
 
 }

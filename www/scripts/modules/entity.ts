@@ -1,9 +1,23 @@
-import { ExtendedObject3D, THREE } from "enable3d";
+import { ExtendedMesh, ExtendedObject3D, THREE } from "enable3d";
 import { item } from "./models/item";
 import { Item } from "./models/item2";
 import { CustomScene } from "./models/scene";
 import { Utils } from "./utils";
+import { makeObjectMaterial } from "./shaderMaterial";
 
+export type entityVariant = {
+	name: string,
+	objects?: {
+		name: string,
+		count: number,
+		position?: "auto" | {
+			x: number,
+			y: number,
+			z: number
+		}
+	}[],
+	material?: string
+}
 
 export class Entity {
 	mesh!: ExtendedObject3D;
@@ -29,6 +43,8 @@ export class Entity {
 		z: 0
 	};
 
+	name: string = '';
+
 	speed = 10;
 	speedBoost = 0;
 	rotationSpeed = 10;
@@ -52,13 +68,20 @@ export class Entity {
 		current: 1
 	}
 
+	attackTarget: Entity | null = null;
+
+	id: string;
+
+	maxLookDistnce = 4;
+
 	constructor(scene: CustomScene, mesh: ExtendedObject3D, data: item){
 		this.mesh = mesh;
 		this.entityData = data;
 		this.physics = scene.physics;
 		this.scene = scene;
+		this.id = THREE.MathUtils.generateUUID();
 
-		scene.entities.push(this);
+		scene.entities.add(this);
 	}
 
 	private _animationTimeout: any = 0;
@@ -128,14 +151,22 @@ export class Entity {
 		if('y' in direction) this.runDirection.y = direction.y!;
 		if('z' in direction) this.runDirection.z = direction.z!;
 		if(this.isRunning && (this.fast == speed)) return this;
-		console.log('running');
+		// console.log('running');
 		this._playAnimation('Walk');
 		this.isRunning = true;
 		this.fast = speed;
 		return this;
 	}
-
-	addPhysics(mesh){}
+	
+	physicsOptions = { shape: 'convex' }
+	addPhysics(mesh: any) {
+    this.physics.add.existing(mesh, {...this.physicsOptions});
+		mesh.body.setFriction(0.8);
+    mesh.body.setAngularFactor(0, 0, 0);
+		mesh.body.on.collision((otherObject, event) => {
+			if(event == 'collision') this.collided({object: otherObject});
+		});
+	}
 
 	addPos(x, y, z){
 		this.physics.destroy(this.mesh.body);
@@ -160,7 +191,7 @@ export class Entity {
 	idle(){
 		this.isRunning = false;
 		this._playAnimation('Idle');
-		console.log('idling')
+		// console.log('idling')
 		return this;
 	}
 
@@ -202,15 +233,70 @@ export class Entity {
 	}
 
 
-	attackTimeout: any;
-	attack(){
-		clearTimeout(this.attackTimeout);
+	attacked = false;
+	attackCooldown = 200;
+	attack(target?: Entity){
+		if(this.attacked) return;
+		this.attacked = true;
 		this._playAnimation('Attack', 1, false, () => {
 			if(this.isRunning) this._playAnimation('Walk');
 			else this.idle();
 		});	
+		if(target) this.sendDamage(target);
+		setTimeout(() => this.attacked = false, this.attackCooldown)
 	}
 
+	sendDamage(target: Entity){
+		target.recieveDamage(this.damage.base);
+	}
+
+	setHealth(health, set = false){
+		const hp = this.health.current;
+		this.health.current += health;
+		if(set) this.health.current = health;
+
+		if(this.health.current < 0){
+			this.updateHealth('before-death', this.health);
+		}
+
+		if(this.health.current < 0){
+			this.kill();
+			this.updateHealth('death', this.health);
+		} else {
+			const act = hp < this.health.current ? 'add' : 'sub';
+			this.updateHealth(act, this.health);
+			if(act == 'sub') console.log('Ouch', health);
+		}
+	}
+
+	recieveDamage(damage){
+		this.setHealth(-damage);
+	}
+
+	_healthListeners: {type:string,f:CallableFunction}[] = [];
+	onHealth(type: string, f: CallableFunction){
+		this._healthListeners.push({type,f});
+	}
+
+	updateHealth(type: string, hp: typeof this.health){
+		this._healthListeners.filter(e => e.type == type || e.type == 'all')
+		.forEach(e => {
+			e.f(this.health, type);
+		});
+	}
+
+	destroy(){
+		this.physics.destroy(this.mesh.body);
+		this.scene.entities.remove(this);
+		this.scene.scene.remove(this.mesh);
+	}
+
+	kill(){
+		this.destroy();
+	}
+
+
+	hasHigherBlocks = false;
 	detectObstacles(position: THREE.Vector3, direction: THREE.Vector3) {
     const obstacles = {
         hasSolidObject: false,
@@ -224,7 +310,7 @@ export class Entity {
 		// Perform raycast to detect obstacles in front of the player
 		const raycaster = new THREE.Raycaster(pos, position);
 		const intersects = raycaster.intersectObjects(this.scene.loadedChunks.chunkObjects(), true);
-		const intersectsEntity = raycaster.intersectObjects(this.scene.entities.map(i => i.mesh).filter(mesh => mesh.uuid !== this.mesh.uuid), true);
+		const intersectsEntity = raycaster.intersectObjects(this.scene.entities.allEntities().map(i => i.mesh).filter(mesh => mesh.uuid !== this.mesh.uuid), true);
 
 		// console.log(intersects);
 
@@ -254,6 +340,11 @@ export class Entity {
 			obstacles.hasEntity = true;
 		}
 
+		if(this.hasHigherBlocks){
+			this.hasHigherBlocks = false;
+			obstacles.hasHigherBlocks = true;
+		}
+
 
     return obstacles;
 	}
@@ -277,14 +368,14 @@ export class Entity {
     return avoidanceDirection;
 	}
 
-	rotateTowardsTarget() {
-    if (this.targetLocation) {
+	rotateTowardsTarget(target?: THREE.Vector3) {
+    if (this.targetLocation || target) {
 			const rotationSpeed = this.rotationSpeed;
 			const maxRotation = Math.PI / 6; // Maximum rotation angle per frame
 
 			// Calculate the direction vector towards the target location
 			const direction = new THREE.Vector3();
-			direction.subVectors(this.targetLocation, this.mesh.position);
+			direction.subVectors((this.targetLocation! || target), this.mesh.position);
 			// direction.x = 0; // Assuming movement is only along x and z axes
 			direction.y = 0; // Assuming movement is only along x and z axes
 			// direction.z = 0; // Assuming movement is only along x and z axes
@@ -351,7 +442,7 @@ export class Entity {
 
 				if(looking) {
 					if (obstacles.hasHigherBlocks) {
-						this.addPos(0, 2, 0);
+						this.addPos(0, 2.5, 0);
 						// this.run({ x: 0, z: 0});
 					} else if (obstacles.hasSolidObject || obstacles.hasEntity) {
 						const avoidanceDirection = this.avoidObstacles(nextStep, obstacles);
@@ -467,8 +558,41 @@ export class Entity {
 		this._collisionListeners.forEach(f => f(data));
 	}
 
+	variant = "";
+	neutral = true;
+	setVariant(variant: entityVariant, variables = {}){
+		if(variant.objects){
+			variant.objects.forEach(object => {
+				const obj = this.scene.findLoadedResource(object.name, 'objects');
+				if(!obj) return;
+				if(object.count > 1){
 
-	static entityMeshLoader(scene: CustomScene, name: string) : any {
+				} else {
+					const m = obj.mesh!.clone();
+
+					const t = object.position == "auto" ? 
+					(obj.config?.position ? obj.config?.position : {x:0,y:0,z:0})
+					: (typeof object.position == "object" ? object.position : {x:0,y:0,z:0})
+
+					m.position.set(t.x, t.y, t.z);
+
+					this.mesh.add(m);
+				}
+			});
+		}
+		if(variant.material){
+			const mat = this.scene.findLoadedResource(variant.material, 'shaders');
+			if(mat){
+				const m = makeObjectMaterial(mat, this.scene, variables);
+				this.setBodyMaterial(m);
+			}
+		}
+		this.variant = variant.name;
+	}
+
+	setBodyMaterial(m: THREE.Material){}
+
+	static entityMeshLoader(scene: CustomScene, name: string, pos?: any) : any {
 		return {};
 	}
 

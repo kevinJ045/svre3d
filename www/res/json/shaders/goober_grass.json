@@ -1,0 +1,14 @@
+{
+	"id": "m:goober_grass",
+	"type": "shader",
+	"resource": {
+		"type": "shader"
+	},
+	"materialOptions": {
+		"roughness": 1,
+		"color": "#00af66"
+	},
+	"loader": {
+		"group": "shaders"
+	}
+}

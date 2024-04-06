@@ -22,7 +22,8 @@
 		},
 		"inventory": {
 			"max": 1
-		}
+		},
+		"item": true
 	},
 	"resource": {
 		"type": "gltf",

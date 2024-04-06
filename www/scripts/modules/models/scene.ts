@@ -5,13 +5,14 @@ import { UI } from "../ui";
 import { Entity } from "../entity";
 import { generateUniqueId } from "../bid";
 import { Player } from "../player";
+import { Entities } from "../entityman";
 
 export class CustomScene extends Scene3D {
   loaded: Record<string, item[]> = {};
   controls!: ThirdPersonControls;
   world!: ExtendedObject3D;
 
-  entities: Entity[] = [];
+  entities!: Entities;
 
 
   lightSet!: {

@@ -1,0 +1,22 @@
+{
+	"id": "m:goober",
+	"type": "entity",
+	"config": {
+		"variants": [
+			{
+				"name": "grass",
+				"material": "m:goober_grass.shader"
+			}, {
+				"name": "lava",
+				"material": "m:goober_lava.shader"
+			}
+		]
+	},
+	"resource": {
+		"type": "gltf",
+		"src": "/res/obj/goober_e.gltf"
+	},
+	"loader": {
+		"group": "objects"
+	}
+}

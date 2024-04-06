@@ -11,6 +11,14 @@
 			"object_rules": ["tree1"]
 		}
 	],
+	"spawn_rules": [
+		{
+			"name": "goober",
+			"entity": "m:goober",
+			"rarity": 50,
+			"variant": "grass"
+		}
+	],
 	"foliage": {
 		"color": "#00aaaa"
 	}

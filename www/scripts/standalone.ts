@@ -7,6 +7,7 @@ import { ChunkSet, updateChunks } from './modules/world'
 import { Item } from './modules/models/item2'
 import { firstPersonControls } from './modules/fpc'
 import { FirstPersonControls } from './lib/FirstPersonControls'
+import { Entities } from './modules/entityman'
 
 class MainScene extends CustomScene {
 
@@ -22,6 +23,7 @@ class MainScene extends CustomScene {
 
 
     this.loadedChunks = new ChunkSet(this, this.seed);
+    this.entities = new Entities(this);
   }
 
   async preload() {
@@ -77,7 +79,7 @@ class MainScene extends CustomScene {
     // console.log(this.loadedChunks.keys())
 
 
-    const player = Player.entityMeshLoader(this);
+    const player = this.entities.summon('m:player');
     this.player = player;
     player.idle();
 
@@ -360,9 +362,7 @@ class MainScene extends CustomScene {
 
   update() {
 
-    this.entities.forEach((entity) => {
-      entity.think();
-    });
+    this.entities.think();
 
     if(this.firstPersonMode) firstPersonControls(this, this.player);
     else this.updateCameraLocation();

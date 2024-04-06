@@ -15,7 +15,8 @@
 				"left": "0"
 			}
 		},
-		"item": true
+		"item": true,
+		"material": "mat(color: #ac24f6)"
 	},
 	"resource": {
 		"type": "obj",

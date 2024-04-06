@@ -4,12 +4,21 @@ import { CustomScene } from "./models/scene";
 import { specific_load } from "./specific_load";
 import { Utils } from "./utils";
 import { OBJLoader } from "../lib/OBJLoader";
+import { FontLoader } from "../lib/FontLoader";
 
 const loaders = {
 	obj: async (url: string) => {
 		const loader = new OBJLoader(new THREE.LoadingManager);
 		return new Promise((r) => {
 			loader.load(url, (item) => {
+				r(item);
+			}, null, null);
+		});
+	},
+	font: async (url: string) => {
+		const fontLoader = new FontLoader(new THREE.LoadingManager);
+		return new Promise((r) => {
+			fontLoader.load(url, (item) => {
 				r(item);
 			}, null, null);
 		});
@@ -66,13 +75,13 @@ export const preload = async (scene: CustomScene) => {
 				...item,
 				item: scene.findLoadedResource(item.item, 'textures')
 			} as any);
+		} else if(item.type == 'particle') {
+			scene.particleSystem.registerFromJson(item);
 		} else {
 			if(!scene.loaded[group]) scene.loaded[group] = [];
 			scene.loaded[group].push(item);
 		}
 	}
-
-	// console.log(scene.loadedChunks.chunkTypes);
 
 	scene.loadedChunks.chunkTypes = Utils.shuffleArray(scene.loadedChunks.chunkTypes, scene.loadedChunks.rng);
 

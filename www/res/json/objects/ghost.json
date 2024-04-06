@@ -1,0 +1,11 @@
+{
+	"id": "m:ghost",
+	"type": "particle_object",
+	"resource": {
+		"type": "obj",
+		"src": "/res/obj/ghost.obj"
+	},
+	"loader": {
+		"group": "objects"
+	}
+}

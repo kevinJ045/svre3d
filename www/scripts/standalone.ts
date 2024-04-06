@@ -1,4 +1,4 @@
-import { Project, Scene3D, PhysicsLoader, THREE, ExtendedObject3D, PointerLock, PointerDrag, ThirdPersonControls, ExtendedGroup, ExtendedMesh } from 'enable3d'
+import { Project, Scene3D, PhysicsLoader, THREE, ExtendedObject3D, PointerLock, PointerDrag, ThirdPersonControls, ExtendedGroup, ExtendedMesh, FLAT } from 'enable3d'
 import { preload } from './modules/preload'
 import { item } from './modules/models/item'
 import { CustomScene } from './modules/models/scene'
@@ -8,6 +8,7 @@ import { Item } from './modules/models/item2'
 import { firstPersonControls } from './modules/fpc'
 import { FirstPersonControls } from './lib/FirstPersonControls'
 import { Entities } from './modules/entityman'
+import { Particle, ParticleSystem } from './modules/particle'
 
 class MainScene extends CustomScene {
 
@@ -24,12 +25,13 @@ class MainScene extends CustomScene {
 
     this.loadedChunks = new ChunkSet(this, this.seed);
     this.entities = new Entities(this);
+    this.particleSystem = new ParticleSystem(this);
   }
 
   async preload() {
     await preload(this);
   }
-  
+
   async create() {
     console.log('create')
   
@@ -360,6 +362,8 @@ class MainScene extends CustomScene {
     updateChunks(this.player.mesh, this.world, this.chunkSize, this.maxWorldHeight, this.loadedChunks, this.renderDistance, this.seed);
     // updateChunkss(this.player.player.position, this.world, this.chunkSize, this.maxWorldHeight, new Set(), this.seed);
     // this.updateLightPosition();
+
+    this.particleSystem.update();
   }
 }
 

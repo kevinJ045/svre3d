@@ -7,7 +7,7 @@ import { item } from './models/item';
 import { CustomScene } from './models/scene';
 import { Utils } from './utils';
 import { generateWithRule } from './structure';
-import { makeObjectMaterial, makeSegmentMaterial } from './shaderMaterial';
+import { applyMaterials, makeObjectMaterial, makeSegmentMaterial, materialParser } from './shaderMaterial';
 import { Entity } from './entity';
 
 export type chunktype = {
@@ -181,27 +181,7 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 			});
 
 			if(materialsRule){
-				item.children.forEach((child: any, index: number) => {
-					const mat = materialsRule.length > 1 ? materialsRule[index] : materialsRule[0];
-					if(mat){
-						if(Array.isArray(child.material)){
-							if(Array.isArray(mat)) child.material = materialsRule.map(mat => {
-								return makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat, 'shaders')!, loadedChunks.scene, variables);
-							});
-							else {
-								child.material = child.material.map(mate => {
-									if(mate.name in mat){
-										return makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat[mate.name], 'shaders')!, loadedChunks.scene, variables);
-									} else {
-										return mate;
-									}
-								});
-							}
-						} else{
-							child.material = makeObjectMaterial(loadedChunks.scene.findLoadedResource(mat, 'shaders')!, loadedChunks.scene, variables)
-						}
-					}
-				});
+				applyMaterials(item, materialsRule, loadedChunks.scene, variables);
 			}
 		}
 

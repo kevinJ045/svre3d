@@ -1,0 +1,13 @@
+{
+	"name": "m:hp",
+	"count": 1,
+	"text": {
+		"content": "$quantity",
+		"size": 1,
+		"height": 0.1
+	},
+	"velocity": [0, 0.1, 0],
+	"lifetime": 50,
+	"material": "mat(color: #ffffff)",
+	"type": "particle"
+}

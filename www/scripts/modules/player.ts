@@ -13,6 +13,8 @@ export class Player extends Entity {
 
 	health = { base: 30, current: 30 };
 
+	defense = { base: 2, current: 2 };
+
 	wearables : Record<string, Item | null> = {
 		hat: null,
 		eye: null,
@@ -40,6 +42,39 @@ export class Player extends Entity {
 		this.bone().userData.attachment.push(mesh);
 	}
 
+	attack(){
+		const entityDirection = this.mesh.getWorldDirection(new THREE.Vector3()); // Reverse the direction vector
+
+		// Define a maximum angle within which targets are considered to be in front of the entity
+		const maxAngle = Math.cos(THREE.MathUtils.degToRad(45)); // Assuming 5 degrees as the maximum angle
+
+		// Define the maximum distance for attack to count
+		const maxDistance = this.maxReachDistance; // Assuming a maximum distance of 1 unit
+
+		// Filter potential targets
+		const potentialTargets = this.scene.entities.filter(entity => {
+			if(entity.id == this.id) return;
+			// Calculate the vector pointing from your entity to the potential target
+			const toTarget = entity.mesh.position.clone().sub(this.mesh.position);
+
+			// Check if the target is within the maximum distance
+			const distance = toTarget.length();
+			if (distance > maxDistance) return false;
+
+			// Normalize the toTarget vector
+			toTarget.normalize();
+
+			// Calculate the dot product between entity's direction and the vector to the target
+			const dotProduct = entityDirection.dot(toTarget);
+
+			// Check if the target is in front of your entity (dot product is greater than maxAngle)
+			return -dotProduct > maxAngle;
+		});
+
+		console.log(potentialTargets);
+
+		super.attack(potentialTargets);
+	}
 
 	unwearAccessory(wearable: Item){
 		const { item } = wearable;

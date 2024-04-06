@@ -2,15 +2,10 @@ import { item } from "./models/item";
 import { THREE } from "enable3d";
 import { CustomScene } from "./models/scene";
 import { chunktype } from "./world";
-import { mixColors } from "./colors";
+import { basicVariables, parseVariable } from "./variableMixer";
 
-const basicVariables = {
-	mix(color1, color2, ratio){
-		return mixColors(color1.trim(), color2.trim(), parseFloat(ratio));
-	}
-}
 
-export function makeObjectMaterial(shader: item, scene: CustomScene, variables = {}){
+export function makeObjectMaterial(shader: any, scene: CustomScene, variables = {}){
 	
 	const { fragment, vertex, materialOptions } = shader;
 
@@ -39,8 +34,33 @@ export function makeObjectMaterial(shader: item, scene: CustomScene, variables =
 	return mat;
 }
 
-function parseVariable(string: string, variables: Record<string, any> = {}){
-	return typeof string == "string" ? string.replace(/\$([A-Za-z0-9]+)/g, (_, name) => variables[name] || _).replace(/([A-Za-z0-9]+)\(([^)]+)\)/g, (_, name, args) => variables[name] ? variables[name](...args.split(',')) : _) : string;
+function parseMaterial(mat: string, scene, variables = {}){
+	const materialOptions = Object.fromEntries(mat.split('(')[1]
+	.split(')')[0]
+	.split(',')
+	.map(i => i.split(':').map(t => t.trim())));
+
+	let fragment = null, vertex = null;
+	
+	if(materialOptions.shader){
+		const shader = scene.findLoadedResource(materialOptions.shader, 'shaders');
+		fragment = shader?.fragment;
+		vertex = shader?.vertex;
+	}
+
+	return makeObjectMaterial({
+		fragment,
+		vertex,
+		materialOptions
+	}, scene, variables);
+}
+
+export function materialParser(mat: string, scene, variables){
+	return mat.startsWith('mat(') ? parseMaterial(mat, scene, variables): makeObjectMaterial(
+		scene.findLoadedResource(mat, 'shaders'),
+		scene,
+		variables
+	);
 }
 
 function parseMaterialOptions(options, variables = {}){
@@ -69,4 +89,31 @@ export function makeSegmentMaterial(texture: THREE.Texture, chunkType: chunktype
 	});
 	
 	return mat;
+}
+
+export function applyMaterials(obj: any, mat: string | any[], scene: CustomScene, variables = {}){
+	const materialsRule = Array.isArray(mat) ? mat : [mat];
+	obj.children.forEach((child: any, index: number) => {
+		const mat = materialsRule.length > 1 ? materialsRule[index] : materialsRule[0];
+		if(mat){
+			if(Array.isArray(child.material)){
+				if(Array.isArray(mat)) child.material = materialsRule.map(mat => {
+					return materialParser(mat, scene, variables);
+				});
+				else if(typeof mat == "object") {
+					child.material = child.material.map(mate => {
+						if(mate.name in mat){
+							return materialParser(mat[mate.name], scene, variables);
+						} else {
+							return mate;
+						}
+					});
+				} else {
+					child.material = materialParser(mat, scene, variables);
+				}
+			} else{
+				child.material = materialParser(mat, scene, variables);
+			}
+		}
+	});
 }

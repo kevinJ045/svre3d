@@ -2,7 +2,7 @@ import { item } from "./models/item";
 import { Utils } from "./utils";
 
 export const types = [
-	'objects', 'textures', 'shaders', 'biomes'
+	'objects', 'textures', 'shaders', 'biomes', 'particles'
 ];
 
 export const toload = async () : Promise<item[]> => {

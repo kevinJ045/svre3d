@@ -2,11 +2,12 @@ import { ExtendedObject3D, THREE } from "enable3d";
 import { Entity } from "./entity";
 import { CustomScene } from "./models/scene";
 import { Entities } from "./entityman";
-import { makeObjectMaterial } from "./shaderMaterial";
+import { makeObjectMaterial, materialParser } from "./shaderMaterial";
 import { Utils } from "./utils";
+import { generateName } from "./variableMixer";
 
 const resolveMaterial = (m, scene) => 
-	typeof m == 'string' ? makeObjectMaterial(scene.findLoadedResource(m, 'shaders')!, scene, {}) : m;
+	typeof m == 'string' ? materialParser(m, scene, {}) : m;
 
 export class Goober extends Entity {
 	neutral = false;
@@ -40,11 +41,11 @@ export class Goober extends Entity {
 	};
 
 	selectAttackTarget(enemies: Entity[]){
-		this.attackTarget = enemies[0];
+		this.attackTarget = enemies.sort((enemyA, enemyB) => this.mesh.position.distanceTo(enemyA.mesh.position) - this.mesh.position.distanceTo(enemyB.mesh.position))[0]
 	}
 
 	findEnemies() {
-    const maxDistance = this.maxLookDistnce * this.scene.chunkSize;
+    const maxDistance = this.maxLookDistance * this.scene.chunkSize;
     const enemies = this.scene.entities.filter(entity => {
 			return entity.variant !== this.variant && !entity.neutral && this.mesh.position.distanceTo(entity.mesh.position) <= maxDistance;
     });
@@ -85,14 +86,13 @@ export class Goober extends Entity {
 		if(this.attackTarget){
 			const newPosition = this.attackTarget.mesh.position.clone();
 			const distance = this.mesh.position.distanceTo(this.attackTarget.mesh.position);
-			if(distance < 12) {
+			if(distance < this.maxReachDistance) {
 				this.targetLocation = null;
 				this.run({x: 0, z:0});
 				this.rotateTowardsTarget(newPosition);
 				this.idle();
 
 				this.attack(this.attackTarget);
-
 			} else if(!this.targetLocation){
 				this.targetLocation = newPosition;
 			} else {
@@ -131,7 +131,7 @@ export class Goober extends Entity {
 		const p = new this(scene, o, gload);
 		p.addPhysics(o);
 
-		p.name = name;
+		p.name = name || generateName();
 
 		p.beforeInit();
 

@@ -3,8 +3,9 @@ import { item } from "./models/item";
 import { Item } from "./models/item2";
 import { CustomScene } from "./models/scene";
 import { Utils } from "./utils";
-import { makeObjectMaterial } from "./shaderMaterial";
+import { makeObjectMaterial, materialParser } from "./shaderMaterial";
 import { ItemEntity } from "./itementity";
+import { TextGeometry } from "../lib/TextGeometry";
 
 export type entityVariant = {
 	name: string,
@@ -18,7 +19,8 @@ export type entityVariant = {
 		}
 	}[],
 	material?: string,
-	drops?: {item: string, count: number | number[]}[]
+	drops?: {item: string, count: number | number[]}[],
+	"set-data"?: any
 }
 
 export class Entity {
@@ -52,6 +54,7 @@ export class Entity {
 	rotationSpeed = 10;
 
 	canJump = true;
+	alive = true;
 
 	targetLocation : null | THREE.Vector3 = null;
 
@@ -74,7 +77,19 @@ export class Entity {
 
 	id: string;
 
-	maxLookDistnce = 4;
+	maxLookDistance = 4;
+	maxReachDistance = 3;
+
+	exp = {
+		level: 1,
+		max: 100,
+		current: 0,
+		multipliers: {
+			damage: 1,
+			defense: 1,
+			health: 1
+		}
+	};
 
 	constructor(scene: CustomScene, mesh: ExtendedObject3D, data: item){
 		this.mesh = mesh;
@@ -237,19 +252,22 @@ export class Entity {
 
 	attacked = false;
 	attackCooldown = 200;
-	attack(target?: Entity){
+	attack(target?: Entity | Entity[]){
 		if(this.attacked) return;
 		this.attacked = true;
 		this._playAnimation('Attack', 1, false, () => {
 			if(this.isRunning) this._playAnimation('Walk');
 			else this.idle();
 		});	
-		if(target) this.sendDamage(target);
+		if(target) {
+			if(Array.isArray(target)) target.forEach(target => this.sendDamage(target));
+			else this.sendDamage(target);
+		}
 		setTimeout(() => this.attacked = false, this.attackCooldown)
 	}
 
 	sendDamage(target: Entity){
-		target.recieveDamage(this.damage.base);
+		target.recieveDamage(this.damage.base * this.exp.multipliers.damage, this);
 	}
 
 	setHealth(health, set = false){
@@ -264,15 +282,33 @@ export class Entity {
 		if(this.health.current < 0){
 			this.kill();
 			this.updateHealth('death', this.health);
+			if(this.previousAttacker?.alive){
+				this.previousAttacker.addExp(this.exp.current);
+			}
 		} else {
 			const act = hp < this.health.current ? 'add' : 'sub';
 			this.updateHealth(act, this.health);
-			if(act == 'sub') console.log('Ouch', health);
+			this.scene.particleSystem.particle('m:hp', this.mesh.position.clone()
+			.add(new THREE.Vector3(0, 3, 0)), {
+				heal: act == 'add',
+				quantity: health
+			})
 		}
 	}
 
-	recieveDamage(damage){
-		this.setHealth(-damage);
+	damageTimeout: any = 0;
+	normalMaterial: any;
+	previousAttacker?: Entity;
+	recieveDamage(damage: number, attacker: Entity){
+		const finalDamage = damage / this.exp.multipliers.defense;
+		this.setHealth(-finalDamage);
+		const knockbackDirection = this.mesh.position.clone().sub(attacker.mesh.position).normalize();
+
+		this.previousAttacker = attacker;
+
+    if (this.mesh.body) {
+      this.mesh.body.applyForce(knockbackDirection.x * 5, 0, knockbackDirection.z * 5);
+    }
 	}
 
 	_healthListeners: {type:string,f:CallableFunction}[] = [];
@@ -287,6 +323,44 @@ export class Entity {
 		});
 	}
 
+	_xpListeners: {type:string,f:CallableFunction}[] = [];
+	onXp(type: string, f: CallableFunction){
+		this._xpListeners.push({type,f});
+	}
+
+	updateXp(type: string, xp: typeof this.exp){
+		this._xpListeners.filter(e => e.type == type || e.type == 'all')
+		.forEach(e => {
+			e.f(this.exp, type);
+		});
+	}
+
+	addExp(xp: number){
+		this.exp.current += xp;
+		this.updateXp('add', this.exp);
+		if(this.exp.current >= this.exp.max){
+			const overflow = (this.exp.current - this.exp.max) || 1;
+			this.exp.current = overflow;
+			this.exp.level++;
+			this.exp.max = 100 * this.exp.level;
+			this.updateXp('level-up', this.exp);
+
+			this.setHealth(this.health.base, true);
+		}
+	};
+
+	subExp(xp: number){
+		this.exp.current -= xp;
+		this.updateXp('sub', this.exp);
+		if(this.exp.current <= 0){
+			if(this.exp.level > 1) this.exp.level--;
+			this.exp.max = 100 * this.exp.level;
+			const overflow = -this.exp.current || 1;
+			this.exp.current = this.exp.max - overflow;
+			this.updateXp('level-down', this.exp);
+		}
+	};
+
 	destroy(){
 		this.physics.destroy(this.mesh.body);
 		this.scene.entities.remove(this);
@@ -294,8 +368,14 @@ export class Entity {
 	}
 
 	kill(){
+		const pos = this.mesh.position.clone();
+		this.alive = false;
 		this.dropInventory();
 		this.destroy();
+
+		this.scene.particleSystem.particle('m:death', pos, {
+			rotation: this.mesh.rotation.clone()
+		});
 	}
 
 	dropInventory(){
@@ -594,9 +674,8 @@ export class Entity {
 			});
 		}
 		if(variant.material){
-			const mat = this.scene.findLoadedResource(variant.material, 'shaders');
-			if(mat){
-				const m = makeObjectMaterial(mat, this.scene, variables);
+			const m = materialParser(variant.material, this.scene, variables);
+			if(m){
 				this.setBodyMaterial(m);
 			}
 		}
@@ -611,10 +690,59 @@ export class Entity {
 				}
 			});
 		}
+		if("set-data" in variant){
+			const data = variant['set-data'];
+			this.setData(data);
+		}
 		this.variant = variant.name;
 	}
 
+	setData(data){
+		for(let i in data){
+			if(typeof this[i] !== "function" && this[i]){
+				this[i] = typeof this[i] == "object" ? {
+					...this[i],
+					...data[i]
+				} : data[i];
+			}
+		}	
+	}
+
 	setBodyMaterial(m: THREE.Material){}
+
+	addTextAbove(){
+		const textContent = `${this.name}\nHealth: ${this.health.current}/${this.health.base}\nLevel: ${this.exp.level}`;
+
+		const font = this.scene.findLoadedResource('m:base_font', 'fonts')!.load!;
+
+		const textParams = {
+			font: font,
+			size: 0.5, // Adjust the size as needed
+			height: 0.01, // Adjust the height as needed
+			curveSegments: 12,
+			bevelEnabled: false
+		};
+
+		const textGeometry = new TextGeometry(textContent, textParams);
+
+		// Create a material for the text (you can adjust the color and other properties)
+		const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+		// Create a mesh for the text using the geometry and material
+		const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+
+		const box = new THREE.Box3().setFromObject(this.mesh);
+		const sizeParent = new THREE.Vector3();
+		box.getSize(sizeParent);
+
+		textMesh.position.y += sizeParent.y + 4; // Adjust the height offset as needed
+
+		textMesh.rotation.y = Math.PI / 2;
+
+		// Add the text mesh as a child of the entity mesh
+		this.mesh.add(textMesh);
+
+	}
 
 	static entityMeshLoader(scene: CustomScene, name: string, pos?: any) : any {
 		return {};

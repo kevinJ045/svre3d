@@ -7,6 +7,7 @@ import { generateUniqueId } from "../bid";
 import { Player } from "../player";
 import { Entities } from "../entityman";
 import { Item } from "./item2";
+import { ParticleSystem } from "../particle";
 
 export class CustomScene extends Scene3D {
   loaded: Record<string, item[]> = {};
@@ -28,6 +29,7 @@ export class CustomScene extends Scene3D {
   seed = generateUniqueId().toString();
 
   loadedChunks!: ChunkSet;
+  particleSystem!: ParticleSystem;
 
   UI = new UI;
 

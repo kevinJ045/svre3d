@@ -17,8 +17,10 @@
   "dependencies": {
     "enable3d": "~0.25.0"
   },
+  "type": "module",
   "devDependencies": {
     "@yandeu/keyboard": "^0.1.0",
+    "delaunay-triangulate": "^1.1.6",
     "five-server": "^0.1.2",
     "keyboard": "^0.0.1",
     "noisejs": "^2.1.0",

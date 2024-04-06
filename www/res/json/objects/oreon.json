@@ -1,0 +1,28 @@
+{
+	"id": "m:oreon",
+	"type": "gem",
+	"config": {
+		"inventory": {
+			"max": 99
+		},
+		"name": "Oreon",
+		"icon": {
+			"src": "/res/tex/oreon.png",
+			"width": "32px",
+			"height": "32px",
+			"offset": {
+				"top": "50%",
+				"left": "0"
+			}
+		},
+		"item": true,
+		"material": "mat(color: #ffa500, roughness: 0)"
+	},
+	"resource": {
+		"type": "obj",
+		"src": "/res/obj/oreon.obj"
+	},
+	"loader": {
+		"group": "objects"
+	}
+}

@@ -187,7 +187,7 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 
 	}
 
-	if(chunkType.spawn_rules){
+	if(chunkType.spawn_rules?.s){
 		const rule = Utils.pickRandom(...chunkType.spawn_rules, loadedChunks.rng);
 		const rarity = rule.rarity;
 

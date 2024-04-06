@@ -567,18 +567,30 @@ export class Entity {
 	toInventory(item: Item, count = 0){
 		const itin = this.kindInInventory(item).find(i => i.count < i.max)!;
 
-		const addItem = () => {
-			this.ownItem(item);
-			this.inventory.push(item);
-			this.updateInventory(item, 'add');
+		const addItem = (i?:any) => {
+			this.ownItem(i || item);
+			this.inventory.push(i || item);
+			this.updateInventory(i || item, 'add');
 		}
 
+		const finalCount = count || item.count;
+
+		if(finalCount == 0) return;
+
 		if(itin) {
-			if(itin.count < itin.max){
-				itin.count += count || item.count;
+			const remainingCapacity = itin.max - itin.count;
+			if (remainingCapacity >= finalCount) {
+				item.count -= finalCount;
+				itin.count += finalCount;
 				this.updateInventory(itin, 'update-count');
 			} else {
-				addItem();
+				itin.count = itin.max;
+				this.updateInventory(itin, 'update-count');
+
+				item.count -= remainingCapacity;
+				const i = new Item(item.item);
+				i.count = item.count;
+				addItem(i)
 			}
 		} else {
 			addItem();
@@ -586,13 +598,17 @@ export class Entity {
 		}
 	}
 
+	rmInventory(item: Item){
+		this.inventory.splice(this.inventory.indexOf(item), 1);
+		this.updateInventory(item, 'remove');
+	}
+
 	fromInventory(item: Item, count = 0){
 		const ini = this.kindInInventory(item).sort(i => i.max - i.count)[0];
 		if(!ini) return false;
 
 		const rm = () => {
-			this.inventory.splice(this.inventory.indexOf(ini), 1);
-			this.updateInventory(ini, 'remove');
+			this.rmInventory(ini);
 		}
 
 		if(count){

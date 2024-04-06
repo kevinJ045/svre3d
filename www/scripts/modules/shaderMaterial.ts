@@ -65,7 +65,7 @@ export function materialParser(mat: string, scene, variables){
 
 function parseMaterialOptions(options, variables = {}){
 	const o = {};
-	const keys = ['map', 'color', 'emissive', 'emissiveIntensity', 'metalness', 'opacity', 'color', 'roughness', 'wireframe'];
+	const keys = ['map', 'color', 'emissive', 'emissiveIntensity', 'metalness', 'opacity', 'color', 'roughness', 'wireframe', 'transparent'];
 	for(let i of keys) if(i in options) o[i] = parseVariable(options[i], variables);
 	return o;
 }

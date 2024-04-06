@@ -83,7 +83,7 @@ class MainScene extends CustomScene {
     player.toInventory(brow);
     player.toInventory(this.itemFromName('m:rubidium')!);
     for(let i = 0; i < 100; i++){
-      player.toInventory(this.itemFromName('m:rubidium')!);
+      player.toInventory(this.itemFromName('m:oreon')!);
     }
 
     player.wearAccessory(brow);
@@ -106,7 +106,7 @@ class MainScene extends CustomScene {
 
     // set up scene (light, ground, grid, sky, orbitControls)
     // this.warpSpeed('-ground');
-    const { lights } = await this.warpSpeed('camera', 'light');
+    const { lights } = await this.warpSpeed('camera', 'light', 'sky');
 
     this.lightSet = lights!;
 
@@ -304,8 +304,8 @@ class MainScene extends CustomScene {
       if (!this.pointerLock) return;
       if (!this.pointerLock.isLocked()) return;
       const { x, y } = delta;
-      this.player.moveTop = -y
-      this.player.moveRight = x
+      this.player.moveTop = -y * 3
+      this.player.moveRight = x * 3
     });
 
   }

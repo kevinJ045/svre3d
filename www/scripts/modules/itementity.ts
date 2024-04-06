@@ -15,7 +15,7 @@ export class ItemEntity  {
 		if(pos) o.position.copy(pos);
 		scene.add.existing(o);
 		scene.physics.add.existing(o, {
-			shape: 'concave'
+			shape: 'convex'
 		});
 
 		const rm = () => {

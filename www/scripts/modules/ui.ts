@@ -1,5 +1,7 @@
+import { ItemEntity } from "./itementity";
 import { Item } from "./models/item2";
 import { Player } from "./player";
+import { THREE } from "enable3d";
 
 
 
@@ -54,6 +56,14 @@ export class UI {
 		return i;
 	}
 
+	getDropPosition(){
+		var quaternion = new THREE.Quaternion().setFromEuler(this.player.mesh.rotation);
+
+		var movementDirection = new THREE.Vector3(0, 0, -1).applyQuaternion(quaternion)
+		.add(this.player.mesh.position);
+		return new THREE.Vector3(movementDirection.x * 5, this.player.mesh.position.y, movementDirection.z * 5);
+	}
+
 	updateItemInfo({
 		x = 0,
 		y = 0,
@@ -94,11 +104,15 @@ export class UI {
 					} else if(act == 'drop'){
 						action.innerText = 'Drop';
 						action.addEventListener('click', () => {
-							this.player!.fromInventory(item);
+							this.player!.rmInventory(item);
+							ItemEntity.createItem(this.player.scene, this.getDropPosition(), item);
 						});
 						action.addEventListener('contextmenu', (e) => {
 							e.preventDefault();
-							this.player!.fromInventory(item, 1);
+							item.count--;
+							if(item.count <= 0) this.player!.rmInventory(item);
+							const i = new Item(item.item);
+							ItemEntity.createItem(this.player.scene, this.getDropPosition(), i);
 						});
 					};
 					actionsEl.appendChild(action);
@@ -171,8 +185,9 @@ export class UI {
 			}
 		}
 
+		// Find First Empty Index
 		const emptyOne = () => {
-			return inventoryItems.indexOf(inventoryItems.find(i => i.innerHTML == '')!);
+			return inventoryItems.indexOf(inventoryItems.find(i => !i.querySelector('.item'))!);
 		}
 
 		const updateCount = (item : Item) => {

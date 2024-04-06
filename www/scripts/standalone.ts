@@ -89,6 +89,7 @@ class MainScene extends CustomScene {
     player.wearAccessory(brow);
 
     this.UI.setPlayer(player);
+    this.UI.create2dMap(this);
 
     // const physics = this.physics;
     // world.children[0].traverse(child => {
@@ -364,6 +365,7 @@ class MainScene extends CustomScene {
     // this.updateLightPosition();
 
     this.particleSystem.update();
+    this.UI.update2dMap();
   }
 }
 

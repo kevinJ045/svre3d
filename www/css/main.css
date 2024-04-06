@@ -11,6 +11,15 @@ body {
 	box-sizing: border-box;
 }
 
+:root{
+	--vp-c-bg: #1b1b1f;
+	--vp-c-bg-alt: #161618;
+	--vp-c-bg-elv: #202127;
+	--vp-c-bg-soft: #20212788;
+	--vp-c-text: rgba(255, 255, 245, .86);
+	--vp-c-fg: #5c73e7;
+}
+
 
 .player-menu{
 	position: absolute;
@@ -18,7 +27,6 @@ body {
 	left: 50%;
 	width: 100%;
 	height: 100%;
-	background: linear-gradient(transparent, rgba(0, 0, 0, 0.4));
 	transform: translate(-50%, -50%) scale(5);
 	padding: 10px;
 	transition: .4s;
@@ -27,6 +35,8 @@ body {
 	
 	display: flex;
 	flex-wrap: wrap;
+
+	background: linear-gradient(to right, var(--vp-c-bg-soft) 70%, transparent 100%);
 }
 
 .player-menu.active{
@@ -50,30 +60,52 @@ body {
 
 .player-menu .tabs .tab{
 	padding: 5px 10px;
-	border: 2px solid #333;
-	transform: skew(-20deg);
 	margin: 5px;
 	text-align: center;
 	cursor: pointer;
 	height: 40px;
+	border: 1px solid var(--vp-c-bg);
+	border-radius: 5px;
+	transition: .25s;
 }
 
-.player-menu .tabs .tab > * {
-	transform: skew(100deg);
-	line-height: 25px;
+.player-menu .tabs .tab > b {
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+	background: var(--bg-icon);
+	background-size: 32px 32px;
+}
+
+.player-menu .tabs .tab > b.inventory-icon{
+	--bg-icon: url(/res/tex/chest.png);
+}
+
+.player-menu .tabs .tab > b.craft-icon{
+	--bg-icon: url(/res/tex/hammer.png);
+}
+
+.player-menu .tabs .tab > b.map-icon{
+	--bg-icon: url(/res/tex/blueprint.png);
+}
+
+.player-menu .tabs .tab > b.settings-icon{
+	--bg-icon: url(/res/tex/bolt.png);
 }
 
 .player-menu .tabs .tab.active{
-	background: #09D0D0;
-	border-color: #09D0D0;
 	color: white;
+	border-radius: 5px 5px 0 0;
+	border-bottom: 0;
+	margin-top: 10px;
 }
 
 .player-menu .tab-panes {
 	position: absolute;
-	top: 70px;
-	height: calc(100% - 70px);
+	top: 60px;
+	height: calc(100% - 60px);
 	width: 100%;
+	border-top: 1px solid var(--vp-c-bg);
 }
 
 .player-menu .tab-panes .tab-pane{
@@ -109,11 +141,12 @@ body {
 .player-menu .inventory .inventory-slot{
 	width: 35px;
 	height: 35px;
-	background-color: rgba(0, 0, 0, 0.4);
-	border: 1px solid black;
+	background-color: var(--vp-c-bg-alt);
+	border: 1px solid var(--vp-c-bg);
 	display: block;
 	text-align: center;
 	line-height: 35px;
+	border-radius: 5px;
 }
 
 .player-menu .inventory .inventory-slot.wearable{
@@ -144,7 +177,7 @@ body {
 
 .player-menu .inventory .inventory-item-info{
 	position: absolute;
-	background: rgba(0, 0, 0, 0.4);
+	background: var(--vp-c-bg-soft);
 	width: 200px;
 	height: 100px;
 	display: flex;
@@ -153,6 +186,7 @@ body {
 	flex-direction: column;
 	display: none;
 	z-index: 100;
+	border-radius: 15px;
 }
 
 .player-menu .inventory .inventory-item-info .item-title{
@@ -163,4 +197,23 @@ body {
 .player-menu .inventory .inventory-item-info .item-title > span {
 	font-size: 16px;
 	position: absolute;
+}
+
+.player-menu .inventory-item-info button {
+	background: var(--vp-c-bg-alt);
+	border: 0;
+	border-radius: 5px;
+	color: var(--vp-c-text);
+	cursor: pointer;
+}
+
+.player-menu .tab-pane[tab=map]{
+	padding: 5px 0;
+}
+
+.player-menu .tab-pane #map{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: black;
 }

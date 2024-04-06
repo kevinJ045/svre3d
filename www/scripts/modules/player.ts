@@ -152,8 +152,8 @@ export class Player extends Entity {
 	think(){
 		super.think();
 
-		// localStorage.setItem('pos', this.mesh.position.x+','+this.mesh.position.z);
-		localStorage.setItem('pos', '0,0');
+		localStorage.setItem('pos', this.mesh.position.x+','+this.mesh.position.z);
+		// localStorage.setItem('pos', '0,0');
 
 		this.mesh.traverse(node => {
 			if ((node as any).isBone && node.userData.attachment) {

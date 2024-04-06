@@ -11,10 +11,10 @@
 			
       <div class="menu">
         <div class="tabs">
-          <div class="tab active" to="inventory"><b>Inventory</b></div>
-          <div class="tab" to="trading"><b>Trading</b></div>
-          <div class="tab" to="crafting"><b>Crafting</b></div>
-          <div class="tab" to="chats"><b>Chats</b></div>
+          <div class="tab active" to="inventory"><b class="inventory-icon"></b></div>
+          <div class="tab" to="crafting"><b class="craft-icon"></b></div>
+          <div class="tab" to="map"><b class="map-icon"></b></div>
+          <div class="tab" to="settings"><b class="settings-icon"></b></div>
         </div>
   
         <div class="tab-panes">
@@ -69,11 +69,13 @@
             </div>
           </div>
   
-          <div class="tab-pane" tab="trading"></div>
-  
           <div class="tab-pane" tab="crafting"></div>
+
+          <div class="tab-pane" tab="map">
+            <canvas id="map"></canvas>
+          </div>
   
-          <div class="tab-pane" tab="chats"></div>
+          <div class="tab-pane" tab="settings"></div>
   
         </div>
   

@@ -57,4 +57,15 @@ export class CustomScene extends Scene3D {
     return new Item(item);
   }
 
-}
+  private EventListeners: {evt: string, f: CallableFunction}[] = [];
+  on(evt: string, f: CallableFunction){
+    this.EventListeners.push({evt,f});
+    return this;
+  }
+  
+  emit(evt: string, data: any){
+    this.EventListeners.filter(e => e.evt == evt)
+    .forEach(e => e.f(data));
+    return this;
+  }
+} 

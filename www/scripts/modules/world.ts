@@ -19,6 +19,9 @@ export type chunktype = {
 	foliage?: {
 		color: string
 	},
+	map?: {
+		color: string
+	},
 	spawn_rules?: any
 };
 
@@ -59,11 +62,14 @@ export class ChunkSet {
 			depth: this.scene.chunkSize,
 			height: 2
 		});
+
+		this.scene.emit('chunk:load', chunk);
 	}
 
 	removeChunk(chunk: any){
 		this.scene.physics.destroy(chunk.body)
 		this.scene.scene.remove(chunk);
+		this.scene.emit('chunk:unload', chunk);
 	}
 
 	clear(){
@@ -110,7 +116,7 @@ function stringifyChunkPosition(pos){
 	return pos.x+', '+pos.y+', '+pos.z;
 }
 
-function getChunkType(noiseValue, chunkSize, loadedChunks: ChunkSet){
+export function getChunkType(noiseValue, chunkSize, loadedChunks: ChunkSet){
 	// const num = 1/loadedChunks.chunkTypes.length * 0.1;
 	const types = loadedChunks.chunkTypes;
 
@@ -141,6 +147,8 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 
 	chunk.receiveShadow = true;
 	chunk.castShadow = true;
+	
+	chunk.userData.type = chunkType;
 
 	chunk.position.copy(chunkPosition).multiplyScalar(chunkSize);
 

@@ -1,7 +1,9 @@
 import { ItemEntity } from "./itementity";
 import { Item } from "./models/item2";
+import { CustomScene } from "./models/scene";
 import { Player } from "./player";
-import { THREE } from "enable3d";
+import { PointerDrag, PointerLock, THREE } from "enable3d";
+import { getChunkType } from "./world";
 
 
 
@@ -11,7 +13,22 @@ export class UI {
 
 	player!: Player;
 
-	constructor(){};
+	constructor(){
+		this.findAll('.tab').forEach(e => {
+			e.addEventListener('click', () => {
+				this.activateTab(e.getAttribute('to'));
+			});
+		});
+
+	};
+
+	activateTab(tab){
+		this.findAll('.tab').forEach(e => e.classList.remove('active'));
+		this.findAll('.tab-pane').forEach(e => e.classList.remove('active'));
+
+		this.find('.tab[to='+tab+']')?.classList.add('active');
+		this.find('.tab-pane[tab='+tab+']')?.classList.add('active');
+	}
 
 	inventory = {
 		loadedFirst: false
@@ -226,5 +243,76 @@ export class UI {
 		)
 
 	}
+
+	loadedForPosition = "";
+	create2dMap(scene: CustomScene) {
+    const canvas = this.find('#map')! as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d')!;
+    const width = canvas.width;
+    const height = canvas.height;
+		const chunkSize = scene.chunkSize;
+
+		const mapOffset = { x: 0, y: 0 };
+		let scale = 0.001;
+
+		const init = () => {
+
+			const X = mapOffset.x;
+			const Y = mapOffset.y;
+	
+			const playerPosition = scene.player.mesh.position;
+	
+			const half_height = height / 2;
+			const half_width = width / 2;
+			const playerX = Math.floor(playerPosition.x / chunkSize) * chunkSize;
+			const playerZ = Math.floor(playerPosition.z / chunkSize) * chunkSize;
+	
+			for (let z = playerZ - half_height + Y; z < playerZ + half_height + Y; z += chunkSize) {
+				for (let x = playerX - half_width + X; x < playerX + half_width + X; x += chunkSize) {
+					const offset = 0;
+					const noiseValue = scene.loadedChunks.noise.perlin2((x + offset) * scale, (z + offset) * scale);
+					const chunkType = getChunkType(noiseValue, chunkSize, scene.loadedChunks);
+					const color = chunkType.map!.color;
+					const scaleDelta = Math.abs(scale - 0.01) * 100;
+					if (x <= playerPosition.x && playerPosition.x < x + chunkSize + scaleDelta && z <= playerPosition.z && playerPosition.z < z + chunkSize + scaleDelta) {
+						ctx.fillStyle = 'purple'; // Set fill style to purple for the player's square
+					} else {
+						ctx.fillStyle = color; // Otherwise, use the color determined by noise
+					}
+					ctx.fillRect(x + half_width - playerX - X, z + half_height - playerZ - Y, chunkSize, chunkSize);
+				}
+			}
+			
+			
+		}
+		
+
+		const pointerLock = new PointerLock(canvas);
+
+		const pointerDrag = new PointerDrag(canvas);
+    pointerDrag.onMove(delta => {
+      if (!pointerLock.isLocked()) return;
+      const { x, y } = delta;
+      mapOffset.y = -y * 3;
+			mapOffset.x = x * 3;
+    });
+
+		canvas.addEventListener('wheel', (event) => {
+			const scaleChange = event.deltaY > 0 ? -0.0001 : 0.0001;
+			scale += scaleChange;
+			scale = Math.max(0.0001, Math.min(0.1, scale));
+		});
+		
+
+    canvas.addEventListener('reinit', (event) => {
+			init();
+		});
+	}
+
+	update2dMap(){
+		const canvas = this.find('#map')! as HTMLCanvasElement;
+		canvas.dispatchEvent(new Event('reinit'));
+	}
+
 
 }

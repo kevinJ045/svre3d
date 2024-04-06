@@ -287,22 +287,43 @@ export class UI {
 		}
 		
 
-		const pointerLock = new PointerLock(canvas);
+		let isDragging = false;
+		let lastX = 0;
+		let lastY = 0;
 
-		const pointerDrag = new PointerDrag(canvas);
-    pointerDrag.onMove(delta => {
-      if (!pointerLock.isLocked()) return;
-      const { x, y } = delta;
-      mapOffset.y = -y * 3;
-			mapOffset.x = x * 3;
-    });
+		canvas.addEventListener('mousedown', (event) => {
+				isDragging = true;
+				lastX = event.clientX;
+				lastY = event.clientY;
+		});
+
+		canvas.addEventListener('mousemove', (event) => {
+			if (!isDragging) return;
+
+			const deltaX = event.clientX - lastX;
+			const deltaY = event.clientY - lastY;
+
+			// Update mapOffset based on deltaX and deltaY
+			mapOffset.x -= deltaX * 3;
+			mapOffset.y -= deltaY * 3;
+
+			lastX = event.clientX;
+			lastY = event.clientY;
+		});
+
+		canvas.addEventListener('mouseup', (e) => {
+			isDragging = false;
+		});
+
+		canvas.addEventListener('dblclick', () => {
+			mapOffset.x = mapOffset.y = 0;
+		});
 
 		canvas.addEventListener('wheel', (event) => {
-			const scaleChange = event.deltaY > 0 ? -0.0001 : 0.0001;
+			const scaleChange = event.deltaY > 0 ? 0.0001 : -0.0001;
 			scale += scaleChange;
 			scale = Math.max(0.0001, Math.min(0.1, scale));
 		});
-		
 
     canvas.addEventListener('reinit', (event) => {
 			init();

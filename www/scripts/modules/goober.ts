@@ -42,6 +42,7 @@ export class Goober extends Entity {
 
 	selectAttackTarget(enemies: Entity[]){
 		this.attackTarget = enemies.sort((enemyA, enemyB) => this.mesh.position.distanceTo(enemyA.mesh.position) - this.mesh.position.distanceTo(enemyB.mesh.position))[0]
+		this.attackTarget.onHealth('death', () => this.selectRandomTarget());
 	}
 
 	findEnemies() {

@@ -254,6 +254,7 @@ export class Player extends Entity {
 		p.onHealth('death', () => {
 			localStorage.setItem('pos', '0,0');
 			scene.player = scene.entities.summon('m:player');
+			scene.UI.setPlayer(scene.player);
 		});
 
     return p;

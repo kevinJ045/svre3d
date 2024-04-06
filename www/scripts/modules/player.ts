@@ -9,6 +9,9 @@ import { Entities } from "./entityman";
 
 
 export class Player extends Entity {
+	neutral = false;
+
+	health = { base: 30, current: 30 };
 
 	wearables : Record<string, Item | null> = {
 		hat: null,
@@ -114,7 +117,8 @@ export class Player extends Entity {
 	think(){
 		super.think();
 
-		localStorage.setItem('pos', this.mesh.position.x+','+this.mesh.position.z);
+		// localStorage.setItem('pos', this.mesh.position.x+','+this.mesh.position.z);
+		localStorage.setItem('pos', '0,0');
 
 		this.mesh.traverse(node => {
 			if ((node as any).isBone && node.userData.attachment) {
@@ -162,7 +166,6 @@ export class Player extends Entity {
     const player = scene.findLoadedResource('m:player', 'objects')!;
     const pmesh = player.mesh!.copy(new THREE.Object3D(), true);
 
-
     scene.animationMixers.add(o.anims.mixer);
     o.anims.mixer.timeScale = 1;
 		
@@ -197,6 +200,7 @@ export class Player extends Entity {
 		p.addPhysics(o);
 
 		p.variant = player.config!.variant;
+		o.userData.player = p;
 
 		// p.onAnimation('Idle', () => {
 		// 	p.animQueue(setTimeout(() => {

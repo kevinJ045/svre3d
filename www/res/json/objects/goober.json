@@ -8,7 +8,11 @@
 				"material": "m:goober_grass.shader"
 			}, {
 				"name": "lava",
-				"material": "m:goober_lava.shader"
+				"material": "m:goober_lava.shader",
+				"drops": [{
+					"item": "m:rubidium",
+					"count": 3
+				}]
 			}
 		]
 	},

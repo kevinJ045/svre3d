@@ -118,8 +118,6 @@ export class Goober extends Entity {
     const gload = scene.findLoadedResource('m:goober', 'objects')!;
     const gmesh = gload.mesh!.clone(true);
 
-		console.log(gload.load);
-
 		gmesh.traverse(child => {
       child.castShadow = true
       child.receiveShadow = false

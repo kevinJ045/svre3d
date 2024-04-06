@@ -4,6 +4,7 @@ import { Item } from "./models/item2";
 import { CustomScene } from "./models/scene";
 import { Utils } from "./utils";
 import { makeObjectMaterial } from "./shaderMaterial";
+import { ItemEntity } from "./itementity";
 
 export type entityVariant = {
 	name: string,
@@ -16,7 +17,8 @@ export type entityVariant = {
 			z: number
 		}
 	}[],
-	material?: string
+	material?: string,
+	drops?: {item: string, count: number | number[]}[]
 }
 
 export class Entity {
@@ -292,8 +294,19 @@ export class Entity {
 	}
 
 	kill(){
+		this.dropInventory();
 		this.destroy();
 	}
+
+	dropInventory(){
+		this.inventory.forEach(item => {
+			ItemEntity.createItem(
+				this.scene,
+				this.mesh.position.clone(),
+				item
+			);
+		});
+	};
 
 
 	hasHigherBlocks = false;
@@ -482,7 +495,7 @@ export class Entity {
 
 		if(itin) {
 			if(itin.count < itin.max){
-				itin.count += count || 1;
+				itin.count += count || item.count;
 				this.updateInventory(itin, 'update-count');
 			} else {
 				addItem();
@@ -586,6 +599,17 @@ export class Entity {
 				const m = makeObjectMaterial(mat, this.scene, variables);
 				this.setBodyMaterial(m);
 			}
+		}
+		if(variant.drops){
+			variant.drops.forEach(drop => {
+				const item = this.scene.itemFromName(drop.item);
+				if(item){
+					item.count = Array.isArray(drop.count) ? Utils.randFrom(drop.count[0], drop.count[1]) : drop.count;
+					if(item.count > 0){
+						this.toInventory(item);
+					}
+				}
+			});
 		}
 		this.variant = variant.name;
 	}

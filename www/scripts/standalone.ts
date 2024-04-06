@@ -29,17 +29,7 @@ class MainScene extends CustomScene {
   async preload() {
     await preload(this);
   }
-
-  loadedObject(name: string) : item {
-    return this.findLoadedResource(name, 'objects')!;
-  }
-
-  itemFromName(name: string) {
-    let item = this.loadedObject(name);
-    if(!item) return null;
-    return new Item(item);
-  }
-
+  
   async create() {
     console.log('create')
   

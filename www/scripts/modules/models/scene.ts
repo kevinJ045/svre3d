@@ -6,6 +6,7 @@ import { Entity } from "../entity";
 import { generateUniqueId } from "../bid";
 import { Player } from "../player";
 import { Entities } from "../entityman";
+import { Item } from "./item2";
 
 export class CustomScene extends Scene3D {
   loaded: Record<string, item[]> = {};
@@ -43,4 +44,15 @@ export class CustomScene extends Scene3D {
   findLoadedResource(name: string, type = "", defaultResource = "none"){
     return this.loaded[type].find(i => i.id == name) || this.loaded[type].find(i => i.id == name);
   }
+
+  loadedObject(name: string) : item {
+    return this.findLoadedResource(name, 'objects')!;
+  }
+
+  itemFromName(name: string) {
+    let item = this.loadedObject(name);
+    if(!item) return null;
+    return new Item(item);
+  }
+
 }

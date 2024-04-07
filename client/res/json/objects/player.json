@@ -1,0 +1,20 @@
+{
+	"id": "m:player",
+	"type": "player",
+	"config": {
+		"brow": "m:brow-1",
+		"color": "#09D0D0",
+		"animations": {
+			"Sneak": "Sneak",
+			"Attack": ["Attack", "Attack2"]
+		},
+		"variant": "grass"
+	},
+	"resource": {
+		"type": "gltf",
+		"src": "/res/obj/cubixc4.glb"
+	},
+	"loader": {
+		"group": "objects"
+	}
+}

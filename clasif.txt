@@ -1,0 +1,26 @@
+Server-Side:
+
+Procedurally generated world based on a seed
+Entity spawning and movement
+Built-in entity-to-entity trade mechanics
+Item dropping and despawning
+PvP mechanics (attacking other players and creatures)
+Persistence of entity data and inventories
+Special entity spawn rules (e.g., for traders, bosses)
+Biomes, structures, and entity spawning based on chunk biomes
+Management of player positions and respawn points
+Crafting system
+Buff management for players and entities
+
+
+
+
+Client-Side:
+
+Rendering the game world (graphics, models, animations)
+Player movement and interaction (input handling)
+Inventory management and UI for trading, crafting, and item management
+Displaying player and entity health, buffs, and other status indicators
+Visual effects for attacks, projectiles, and buffs
+Displaying other players and entities in the world
+Displaying structures and biomes in the world

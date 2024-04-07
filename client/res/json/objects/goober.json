@@ -1,0 +1,32 @@
+{
+	"id": "m:goober",
+	"type": "entity",
+	"config": {
+		"variants": [
+			{
+				"name": "grass",
+				"material": "m:goober_grass.shader",
+				"set-data": {
+					"damage": {
+						"base": 0.5,
+						"current": 0.5
+					}
+				}
+			}, {
+				"name": "lava",
+				"material": "m:goober_lava.shader",
+				"drops": [{
+					"item": "m:rubidium",
+					"count": 3
+				}]
+			}
+		]
+	},
+	"resource": {
+		"type": "gltf",
+		"src": "/res/obj/goober_e.gltf"
+	},
+	"loader": {
+		"group": "objects"
+	}
+}

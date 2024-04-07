@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES2015",
-    "module": "commonjs",
+    "target": "es2020",
+    "module": "es2020",
+    "moduleResolution": "nodenext",
 
     "strict": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["www/scripts/**/*"],
+  "include": ["client/scripts/**/*", "server/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

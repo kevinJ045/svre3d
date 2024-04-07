@@ -1,0 +1,11 @@
+{
+	"id": "m:tree_leaf",
+	"type": "texture",
+	"resource": {
+		"type": "texture",
+		"src": "/res/tex/segment_grass_top.png"
+	},
+	"loader": {
+		"group": "textures"
+	}
+}

@@ -15,9 +15,10 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "enable3d": "~0.25.0"
+    "enable3d": "~0.25.0",
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
   },
-  "type": "module",
   "devDependencies": {
     "@yandeu/keyboard": "^0.1.0",
     "delaunay-triangulate": "^1.1.6",

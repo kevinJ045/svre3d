@@ -1,0 +1,11 @@
+{
+	"id": "m:segment",
+	"type": "segment",
+	"resource": {
+		"type": "gltf",
+		"src": "/res/obj/segment.glb"
+	},
+	"loader": {
+		"group": "objects"
+	}
+}

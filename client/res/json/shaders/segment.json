@@ -1,0 +1,17 @@
+{
+	"id": "m:segment",
+	"type": "shader",
+	"resource": {
+		"type": "shader",
+		"sources": [
+			"/res/shaders/segment.vertex.glsl",
+			"/res/shaders/segment.fragment.glsl"
+		]
+	},
+	"materialOptions": {
+		"roughness": 0.8
+	},
+	"loader": {
+		"group": "shaders"
+	}
+}

@@ -2,6 +2,6 @@
 
 export class Settings {
 
-	static renderDistance = 8;
+	static renderDistance = 4;
 
 }

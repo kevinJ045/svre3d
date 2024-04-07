@@ -22,12 +22,14 @@ export class UI {
 
 	};
 
+	activeTab = "";
 	activateTab(tab){
 		this.findAll('.tab').forEach(e => e.classList.remove('active'));
 		this.findAll('.tab-pane').forEach(e => e.classList.remove('active'));
 
 		this.find('.tab[to='+tab+']')?.classList.add('active');
 		this.find('.tab-pane[tab='+tab+']')?.classList.add('active');
+		this.activeTab = tab;
 	}
 
 	inventory = {
@@ -242,6 +244,9 @@ export class UI {
 			}
 		)
 
+    this.create2dMap(player.scene);
+		this.initCrafting();
+
 	}
 
 	loadedForPosition = "";
@@ -255,7 +260,11 @@ export class UI {
 		const mapOffset = { x: 0, y: 0 };
 		let scale = 0.001;
 
+		const playerIcon = scene.findLoadedResource('m:player_marker', 'textures')!.load;
+
 		const init = () => {
+
+			if(this.activeTab != 'map') return;
 
 			const X = mapOffset.x;
 			const Y = mapOffset.y;
@@ -273,16 +282,20 @@ export class UI {
 					const noiseValue = scene.loadedChunks.noise.perlin2((x + offset) * scale, (z + offset) * scale);
 					const chunkType = getChunkType(noiseValue, chunkSize, scene.loadedChunks);
 					const color = chunkType.map!.color;
-					const scaleDelta = Math.abs(scale - 0.01) * 100;
-					if (x <= playerPosition.x && playerPosition.x < x + chunkSize + scaleDelta && z <= playerPosition.z && playerPosition.z < z + chunkSize + scaleDelta) {
-						ctx.fillStyle = 'purple'; // Set fill style to purple for the player's square
-					} else {
-						ctx.fillStyle = color; // Otherwise, use the color determined by noise
-					}
+					// const scaleDelta = Math.abs(scale - 0.01) * 100;
+					ctx.fillStyle = color;
+					// ctx.strokeStyle = 'black'; // Set border color
+    			// ctx.lineWidth = 1;
 					ctx.fillRect(x + half_width - playerX - X, z + half_height - playerZ - Y, chunkSize, chunkSize);
+					// ctx.strokeRect(x + half_width - playerX - X, z + half_height - playerZ - Y, chunkSize, chunkSize);
 				}
 			}
 			
+			const playerIndicatorX = half_width - X + (playerPosition.x % chunkSize);
+			const playerIndicatorZ = half_height - Y + (playerPosition.z % chunkSize);
+
+			// Draw the player icon at the calculated position
+			ctx.drawImage(playerIcon, playerIndicatorX - playerIcon.width / 2, playerIndicatorZ - playerIcon.height / 2);
 			
 		}
 		
@@ -292,9 +305,9 @@ export class UI {
 		let lastY = 0;
 
 		canvas.addEventListener('mousedown', (event) => {
-				isDragging = true;
-				lastX = event.clientX;
-				lastY = event.clientY;
+			isDragging = true;
+			lastX = event.clientX;
+			lastY = event.clientY;
 		});
 
 		canvas.addEventListener('mousemove', (event) => {
@@ -335,5 +348,26 @@ export class UI {
 		canvas.dispatchEvent(new Event('reinit'));
 	}
 
+
+
+	initCrafting(){
+		const craftBench = this.find('#craft-ui');
+		const slots = [
+			craftBench.querySelector('.slot-1')!,
+			craftBench.querySelector('.slot-2')!
+		];
+
+		slots.forEach(slot => {
+			slot.addEventListener('click', () => {
+				
+			});
+		});
+
+
+	}
+
+	showChooseItemUi(parent){
+		parent.appendChild()
+	}
 
 }

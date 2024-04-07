@@ -9,18 +9,27 @@ import { FontLoader } from "../lib/FontLoader";
 const loaders = {
 	obj: async (url: string) => {
 		const loader = new OBJLoader(new THREE.LoadingManager);
-		return new Promise((r) => {
+		return new Promise((r, re) => {
 			loader.load(url, (item) => {
 				r(item);
-			}, null, null);
+			}, null, () => re(null));
 		});
 	},
 	font: async (url: string) => {
 		const fontLoader = new FontLoader(new THREE.LoadingManager);
-		return new Promise((r) => {
+		return new Promise((r, re) => {
 			fontLoader.load(url, (item) => {
 				r(item);
-			}, null, null);
+			}, null, () => re(null));
+		});
+	},
+	image: async (url: string) => {
+		return new Promise((r,re) => {
+			const playerIcon = new Image();
+			playerIcon.src = url;
+			playerIcon.onload = () => {
+				r(playerIcon);
+			}
 		});
 	}
 }

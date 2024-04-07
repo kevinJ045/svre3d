@@ -89,7 +89,6 @@ class MainScene extends CustomScene {
     player.wearAccessory(brow);
 
     this.UI.setPlayer(player);
-    this.UI.create2dMap(this);
 
     // const physics = this.physics;
     // world.children[0].traverse(child => {
@@ -286,6 +285,7 @@ class MainScene extends CustomScene {
     }
 
     window.addEventListener('keydown', (e) => {
+      if(e.target instanceof HTMLInputElement) return;
       e.preventDefault();
       this.keys[e.key.toLowerCase()] = true;
       this.keys.ctrlKey = e.ctrlKey;
@@ -293,6 +293,7 @@ class MainScene extends CustomScene {
     });
 
     window.addEventListener('keyup', (e) => {
+      if(e.target instanceof HTMLInputElement) return;
       e.preventDefault();
       this.keys[e.key.toLowerCase()] = false;
       this.keys.ctrlKey = e.ctrlKey;

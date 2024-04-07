@@ -28,7 +28,7 @@
 	+ 3D Preview [-]
 	+ Main Menu [ ]
 	+ Trade UI [ ]
-	+ Crafting UI [ ]
+	+ Crafting UI [-]
 
 [Effects: 0]
 	+ Emission Effects [ ]
@@ -47,7 +47,7 @@
 	+ Item Tier [e]
 
 [Crafting: 0]
-	+ Crafting Logic [ ]
+	+ Crafting Logic [-]
 
 [Pets: 0]
 	+ Pets Logic [ ]

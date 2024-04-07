@@ -697,7 +697,7 @@ export class Entity {
 		}
 		if(variant.drops){
 			variant.drops.forEach(drop => {
-				const item = this.scene.itemFromName(drop.item);
+				const item = this.scene.items.itemFromName(drop.item);
 				if(item){
 					item.count = Array.isArray(drop.count) ? Utils.randFrom(drop.count[0], drop.count[1]) : drop.count;
 					if(item.count > 0){

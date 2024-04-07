@@ -16,7 +16,8 @@
 			}
 		},
 		"item": true,
-		"material": "mat(color: #ffa500, roughness: 0)"
+		"material": "mat(color: #ffa500, roughness: 0)",
+		"powergem": true
 	},
 	"resource": {
 		"type": "obj",

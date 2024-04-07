@@ -8,6 +8,7 @@ import { Player } from "../player";
 import { Entities } from "../entityman";
 import { Item } from "./item2";
 import { ParticleSystem } from "../particle";
+import { ItemMan } from "../items";
 
 export class CustomScene extends Scene3D {
   loaded: Record<string, item[]> = {};
@@ -30,6 +31,7 @@ export class CustomScene extends Scene3D {
 
   loadedChunks!: ChunkSet;
   particleSystem!: ParticleSystem;
+  items!: ItemMan;
 
   UI = new UI;
 
@@ -51,18 +53,12 @@ export class CustomScene extends Scene3D {
     return this.findLoadedResource(name, 'objects')!;
   }
 
-  itemFromName(name: string) {
-    let item = this.loadedObject(name);
-    if(!item) return null;
-    return new Item(item);
-  }
-
   private EventListeners: {evt: string, f: CallableFunction}[] = [];
   on(evt: string, f: CallableFunction){
     this.EventListeners.push({evt,f});
     return this;
   }
-  
+
   emit(evt: string, data: any){
     this.EventListeners.filter(e => e.evt == evt)
     .forEach(e => e.f(data));

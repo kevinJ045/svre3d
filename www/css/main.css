@@ -162,11 +162,11 @@ body {
 	cursor: pointer;
 }
 
-.player-menu .inventory .item.with-icon{
+.player-menu .item.with-icon{
 	background: var(--item-url) no-repeat;
 }
 
-.player-menu .inventory .item .item-count{
+.player-menu .item .item-count{
 	color: white;
 	position: absolute;
 	bottom: -10px;
@@ -187,6 +187,7 @@ body {
 	display: none;
 	z-index: 100;
 	border-radius: 15px;
+	overflow: auto;
 }
 
 .player-menu .inventory .inventory-item-info .item-title{
@@ -244,6 +245,7 @@ body {
 	position: absolute;
 	top: 50%;
 	transform: translate(0, -50%);
+	cursor: pointer;
 } 
 
 .player-menu .tab-pane[tab=crafting] .slot-1{
@@ -260,4 +262,27 @@ body {
 
 .player-menu .tab-pane[tab=crafting] .slot-result .inventory-slot{
 	background: var(--vp-c-fg);
+}
+
+.player-menu .inventory-selector {
+	width: 130px;
+	height: 50px;
+	padding: 5px;
+	background: var(--vp-c-bg);
+	border: 1px solid var(--vp-c-bg-alt);
+	border-radius: 5px;
+	position: absolute;
+	top: -150%;
+	overflow: auto;
+	z-index: 200;
+}
+
+.player-menu .inventory-selector .wrapper {
+	display: flex;
+	width: auto;
+	gap: 5px;
+}
+
+.player-menu .inventory-selector .item {
+	flex: 0 0 auto;
 }

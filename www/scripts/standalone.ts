@@ -9,6 +9,7 @@ import { firstPersonControls } from './modules/fpc'
 import { FirstPersonControls } from './lib/FirstPersonControls'
 import { Entities } from './modules/entityman'
 import { Particle, ParticleSystem } from './modules/particle'
+import { ItemMan } from './modules/items'
 
 class MainScene extends CustomScene {
 
@@ -26,6 +27,7 @@ class MainScene extends CustomScene {
     this.loadedChunks = new ChunkSet(this, this.seed);
     this.entities = new Entities(this);
     this.particleSystem = new ParticleSystem(this);
+    this.items = new ItemMan(this);
   }
 
   async preload() {
@@ -77,13 +79,13 @@ class MainScene extends CustomScene {
 
     // console.log(this.itemFromName('m:horn-1'));
 
-    const brow = this.itemFromName('m:brow-1')!;
-    const horn = this.itemFromName('m:horn-1')!
+    const brow = this.items.itemFromName('m:brow-1')!;
+    const horn = this.items.itemFromName('m:horn-1')!
     player.toInventory(horn);
     player.toInventory(brow);
-    player.toInventory(this.itemFromName('m:rubidium')!);
+    player.toInventory(this.items.itemFromName('m:rubidium')!);
     for(let i = 0; i < 100; i++){
-      player.toInventory(this.itemFromName('m:oreon')!);
+      player.toInventory(this.items.itemFromName('m:oreon')!);
     }
 
     player.wearAccessory(brow);

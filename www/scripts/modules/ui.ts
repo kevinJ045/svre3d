@@ -30,6 +30,8 @@ export class UI {
 		this.find('.tab[to='+tab+']')?.classList.add('active');
 		this.find('.tab-pane[tab='+tab+']')?.classList.add('active');
 		this.activeTab = tab;
+
+		this.find('.tab-panes')?.dispatchEvent(new Event('update-tabs'));
 	}
 
 	inventory = {
@@ -162,7 +164,7 @@ export class UI {
 
 		this.inventory.loadedFirst = true;
 
-		const inventoryItems = [...this.findAll('.inventory-slot')] as HTMLElement[];
+		const inventoryItems = [...this.findAll('.inventory-slot:not(.independent)')] as HTMLElement[];
 
 		inventoryItems.forEach(slot => {
 			slot.addEventListener('mouseenter', (e) => {
@@ -357,17 +359,146 @@ export class UI {
 			craftBench.querySelector('.slot-2')!
 		];
 
-		slots.forEach(slot => {
+		const resultSlot = craftBench.querySelector('.slot-result')!;
+		const contentRename = this.find('#item-content-text')! as HTMLInputElement;
+
+		const slot_items = {
+			0: [],
+			1: []
+		}
+
+		const finishCraft = () => {
+			slots.concat(resultSlot).forEach(e => e.querySelector('.inventory-slot')!.innerHTML = '');
+			slot_items[0] = slot_items[1] = [];
+			contentRename.value = "";
+		}
+
+		const slots_update = () => {
+			resultSlot.querySelector('.inventory-slot')!.innerHTML = '';
+			if(slot_items[0].length && !slot_items[1].length){
+				let item: Item = slot_items[0][1];
+				if(contentRename.value && contentRename.value != item.data.content){
+					const i = this.createItemInventory(item);
+					i.addEventListener('click', () => {
+						item.data.content = contentRename.value;
+						finishCraft();
+					});
+					resultSlot.querySelector('.inventory-slot')!.appendChild(i);
+				}
+			} else if(slot_items[0].length && slot_items[1].length) {
+				resultSlot.querySelector('.inventory-slot')!.innerHTML = '';
+				const item1: Item = this.player.inventory.find(i => i.id == (slot_items[0][1] as any).id)!;
+				const item2: Item = this.player.inventory.find(i => i.id == (slot_items[1][1] as any).id)!;
+				if(item2.item.config!.powergem == true && item1.item.accessory && item1.item.config!.powergems != false && (item1.item.config!.exclude_gems ? !item1.item.config!.exclude_gems.includes(item2.item.id) : true)){
+					const i = this.createItemInventory(item1);
+					i.addEventListener('click', () => {
+						this.player.fromInventory(item2, 1);
+						if(!item1.data.buffs) item1.data.buffs = [];
+						item1.data.buffs.push(item2);
+						if(contentRename.value && contentRename.value != item1.data.content) item1.data.content = contentRename.value;
+						finishCraft();
+					});
+					resultSlot.querySelector('.inventory-slot')!.appendChild(i);
+				} else {
+					const craftable = this.player.scene.items.fromRecipe(item1, item2);
+					if(craftable){
+						const item = new Item(craftable.item);
+						const i = this.createItemInventory(item);
+						i.addEventListener('click', () => {
+							this.player.fromInventory(item1, craftable.recipe[0].count || 1);
+							this.player.fromInventory(item2, craftable.recipe[1].count || 1);
+
+							item.count = craftable.count;
+
+							if(contentRename.value) item.data.content = contentRename.value;
+							
+							this.player.toInventory(item);
+							// slots_update();
+						});
+						resultSlot.querySelector('.inventory-slot')!.appendChild(i);
+					}
+				}
+			} 
+		}
+
+		slots.forEach((slot, index) => {
 			slot.addEventListener('click', () => {
-				
+				this.showChooseItemUi(slot, (item,  itemElt) => {
+					slot.querySelector('.inventory-slot')!.innerHTML = '';
+					slot_items[index] = [itemElt, item];
+					slot.querySelector('.inventory-slot')!.appendChild(itemElt);
+					slots_update();
+				}, slot_items[index == 0 ? 1 : 0][1]);
+			});
+			slot.addEventListener('contextmenu', (e) => {
+				e.preventDefault();
+				if(slot_items[index][0]){
+					slot_items[index][0].remove();
+				}
+				slot_items[index] = [];
+				slots_update();
+			});
+			slot.addEventListener('mouseleave', () => {
+				while(slot.querySelector('.inventory-selector')){
+					slot.querySelector('.inventory-selector')!.remove();
+				}
 			});
 		});
 
+		this.player.onInventory('update-count',
+			(item) => {
+				slots.forEach(slot => {
+					const i = slot.querySelector('.item');
+					if(i){
+						if(item.id == (i as any).item.id){
+							(i.querySelector('.item-count') as any).innerText = item.count;
+						}
+					}
+				});
+			}
+		)
+
+		this.player.onInventory('remove',
+			(item) => {
+				slots.forEach((slot, index) => {
+					const i = slot.querySelector('.item');
+					if(i){
+						if(item.id == (i as any).item.id){
+							i.remove();
+							slot_items[index] = [];
+							slots_update();
+						}
+					}
+				});
+			}
+		)
+
+		this.find('.tab-panes')?.addEventListener('update-tabs', () => {
+			finishCraft();
+		});
 
 	}
 
-	showChooseItemUi(parent){
-		parent.appendChild()
+	showChooseItemUi(parent, cb = (item: any, itemElt: any) => {}, ignore?:Item){
+		const elt = document.createElement('div');
+		elt.className = 'inventory-selector';
+
+		const wrapper = document.createElement('div');
+		wrapper.className = 'wrapper';
+
+		elt.appendChild(wrapper);
+
+		this.player.inventory.forEach(item => {
+			if(ignore && ignore.id == item.id) return;
+			const iu = this.createItemInventory(item);
+			wrapper.appendChild(iu);
+			iu.addEventListener('click', () => {
+				cb(item, iu);
+			});
+		});
+
+		parent.appendChild(elt);
+		return elt;
 	}
 
 }

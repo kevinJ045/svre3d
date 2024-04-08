@@ -6,6 +6,7 @@ import { THREE } from "enable3d";
 import { ping, pingFrom } from "../socket/socket";
 import { PhysicsManager } from "../common/physics";
 import { ServerData } from "../../../server/models/data";
+import { Biomes } from "./biomes";
 
 export class Chunks {
 
@@ -20,8 +21,8 @@ export class Chunks {
 
 	static loadChunk(chunk: Chunk){
 		const chunkObject = makeChunk(chunk.chunkSize);
-
 		chunk.setMesh(chunkObject);
+		Biomes.applyChunkBiome(chunk);
 		chunkObject.position.set(chunk.position.x, chunk.position.y - 3, chunk.position.z);
 		SceneManager.scene.scene.add(chunkObject);
 		PhysicsManager.addPhysics(chunkObject, {

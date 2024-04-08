@@ -16,12 +16,15 @@ export async function userConnected(serverData, socket){
 
 	if(token in serverData.users){
 
-		const player = await Players.find(serverData.users[token])!;
-		
-		const playerEntity = Entities.spawn('m:player', player!.position, player!.username, player?.variant, player?.inventory);
-		console.log(Entities.entities.length);
+		const username = serverData.users[token];
 
-		socket.emit('recognize', {
+		const player = await Players.find(username)!;
+		
+		const playerEntity = Entities.spawn('m:player', player!.position, player!.username, player?.variant, player?.inventory, { username })!;
+
+		if(
+			!Entities.entities.find(i => i.data.username == username) || socket.handshake.query.reconnect != 'true'
+		) socket.emit('recognize', {
 			player,
 			playerEntity,
 			resources: ResourceMap.resources.map(f => f.data)
@@ -31,7 +34,6 @@ export async function userConnected(serverData, socket){
 
 		socket.on('disconnect', () => {
 			Entities.despawn(playerEntity!);
-			console.log(Entities.entities.length);
 		})
 
 	} else {

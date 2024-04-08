@@ -24,15 +24,19 @@ export function pingFrom<T = any, D = any>(action: string, func: (data: T) => an
 }
 
 
-let socketConnected = false;
 export async function connectSocket(){
-	if(socketConnected) return;
-	socketConnected = true;
 	const token = "u";
 
+	let reconnect = false;
+
 	const socket = io('/', {
-		auth: { token }
+		auth: { token },
+		query: { reconnect }
 	});
+
+	socket.on('reconnect', () => {
+		reconnect = true;
+	})
 
 	socket.on('recognize', ({
 		player,
@@ -50,5 +54,9 @@ export async function connectSocket(){
 
 		initScene();
 
+	});
+
+	socket.on('disconnect', () => {
+		reconnect = true;
 	});
 }

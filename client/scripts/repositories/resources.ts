@@ -43,12 +43,7 @@ export class ResourceMap {
 	static resources: jsonres[] = [];
 	static queue: jsonres[] = [];
 
-	static loaded = false;
-
 	static async loadAll(scene: Scene3D){
-
-		if(ResourceMap.loaded) return;
-		ResourceMap.loaded = true;
 
 		for(let undefinedItem of ResourceMap.queue){
 			let load: any = null;

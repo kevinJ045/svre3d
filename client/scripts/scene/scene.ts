@@ -27,7 +27,7 @@ export class MainScene extends Scene3D {
 		this.warpSpeed('-ground');
 
 		Chunks.init();
-		const player = Entities.spawn(PlayerInfo.entity);
+		const player = Entities.spawn(PlayerInfo.entity)!;
 		PlayerInfo.setPlayerEntity(player);
 
 		this.camera.position.set(25, 25, 25);

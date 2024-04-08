@@ -8,6 +8,7 @@ import { PhysicsManager } from "../common/physics";
 import { ping, pingFrom } from "../socket/socket";
 import { cloneGltf } from "../lib/gltfclone";
 import { Items } from "./items";
+import { PlayerInfo } from "./player";
 
 
 export class Entities {
@@ -16,6 +17,11 @@ export class Entities {
 
 
 	static spawn(entityData: EntityData){
+
+		if(this.entities.find(e => e.data.username == PlayerInfo.username)){
+			console.log(entityData.data.username);
+			if(entityData.data.username == PlayerInfo.username) return;
+		}
 
 		const entity = ServerData.create<Entity>(Entity, entityData);
 		entity.id = entityData.id;

@@ -5,26 +5,31 @@ import { makeChunk } from "../objects/chunk";
 import { THREE } from "enable3d";
 import { ping, pingFrom } from "../socket/socket";
 import { PhysicsManager } from "../common/physics";
+import { ServerData } from "../../../server/models/data";
 
 export class Chunks {
 
 	static chunks: Chunk[] = [];
 
 	static chunkFromData(chunk: Record<string, any>){
-		return Chunk.from(chunk) as Chunk;
+		return ServerData.create(Chunk, chunk).setData({
+			position: new THREE.Vector3(chunk.position.x, chunk.position.y, chunk.position.z),
+			biome: chunk.biome
+		});
 	}
 
 	static loadChunk(chunk: Chunk){
-		const chunkObject = makeChunk(chunk.size);
+		const chunkObject = makeChunk(chunk.chunkSize);
+
 		chunk.setMesh(chunkObject);
-		chunkObject.position.set(chunk.position.x, chunk.position.y, chunk.position.z);
+		chunkObject.position.set(chunk.position.x, chunk.position.y - 3, chunk.position.z);
 		SceneManager.scene.scene.add(chunkObject);
 		PhysicsManager.addPhysics(chunkObject, {
 			shape: 'box',
 
-			width: chunk.size,
-			height: Math.floor(chunk.size/2),
-			depth: chunk.size,
+			width: chunk.chunkSize,
+			height: Math.floor(chunk.chunkSize/2),
+			depth: chunk.chunkSize,
 
 			mass: 0,
 		});
@@ -92,7 +97,7 @@ export class Chunks {
 
 		pingFrom('chunk:load', (data) => {
 			if(!Chunks.has(stringifyChunkPosition(data.position)))
-			 Chunks.loadChunk(Chunks.chunkFromData({...data, size: data.chunkSize, position: new THREE.Vector3(data.position.x,data.position.y, data.position.z)}));
+			 Chunks.loadChunk(Chunks.chunkFromData(data));
 		});
 
 		pingFrom('chunk:unload', (data) => {

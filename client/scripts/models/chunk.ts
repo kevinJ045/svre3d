@@ -1,11 +1,13 @@
+import { ChunkData } from "../../../server/models/chunk";
 import { stringifyChunkPosition } from "../common/chunk";
 import { Model } from "./model";
 
 
-export class Chunk extends Model {
+export class Chunk extends ChunkData {
 
 	position!: THREE.Vector3;
 	size!: number;
+
 
 	object3d!: THREE.Object3D;
 

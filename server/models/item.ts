@@ -1,7 +1,10 @@
+import { ResourceMap } from "../repositories/resources";
 import { ServerData } from "./data";
 
 
 export class ItemData extends ServerData {
-	count: number = 0;
+	quantity: number = 0;
 	itemID: string = "";
+
+	max = 1;
 }

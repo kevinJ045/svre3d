@@ -5,6 +5,8 @@ import { xyz } from "../models/misc.xyz";
 import { ResourceMap } from "./resources";
 import { ping, pingFrom } from "../ping/ping";
 import { Sockets } from "../ping/sockets";
+import { ItemData } from "../models/item";
+import { Items } from "./items";
 
 
 export class Entities {
@@ -12,7 +14,7 @@ export class Entities {
 	static entities : EntityData[] = [];
 
 	
-	static spawn(type: string, position: xyz, name?: string, variant?: string){
+	static spawn(type: string, position: xyz, name?: string, variant?: string, inventory?: any[]){
 		
 		const ref = ResourceMap.findResource(type);
 		
@@ -22,7 +24,8 @@ export class Entities {
 			position,
 			name,
 			variant,
-			type
+			type,
+			inventory: inventory ? inventory.map(item => Items.create(item.id, item.quantity)) : null
 		});
 
 		entity.setReference(ref.data);

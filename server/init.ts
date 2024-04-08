@@ -1,7 +1,9 @@
 import { loadAllResources } from "./functions/resources";
 import { startPing } from "./ping/ping";
 import { Sockets } from "./ping/sockets";
+import { Biomes } from "./repositories/biomes";
 import { Entities } from "./repositories/entities";
+import { Items } from "./repositories/items";
 import { Players } from "./repositories/players";
 import { ResourceMap } from "./repositories/resources";
 
@@ -16,7 +18,7 @@ export async function userConnected(serverData, socket){
 
 		const player = await Players.find(serverData.users[token])!;
 		
-		const playerEntity = Entities.spawn('m:player', player!.position, player!.username);
+		const playerEntity = Entities.spawn('m:player', player!.position, player!.username, player?.variant, player?.inventory);
 		console.log(Entities.entities.length);
 
 		socket.emit('recognize', {
@@ -42,4 +44,6 @@ export async function userConnected(serverData, socket){
 
 export function init(serverData: any){
 	loadAllResources(ResourceMap);
+	Items.filterItems();
+	Biomes.registerBiomes();
 }

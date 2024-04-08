@@ -24,7 +24,7 @@ export class MainScene extends Scene3D {
 	}
 
 	async create() {
-		this.warpSpeed();
+		this.warpSpeed('-ground');
 
 		Chunks.init();
 		const player = Entities.spawn(PlayerInfo.entity);

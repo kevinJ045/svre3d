@@ -20,23 +20,28 @@ export class ServerData {
 
 	setReference(reference: Record<string, any>){
 		this.reference = reference as any;
+		return this;
+	}
+
+	setData<T = any>(data: T){
+		const d = this as any;
+		for(let i in data){
+			if(data[i] !== null) d[i] = data[i];
+		}
+		return this;
 	}
 
 	static from(data: object, args?: any[]) {
 		// @ts-ignore
 		let d = new this(...(args || []));
-		for(let i in data){
-			if(i in d) d[i] = data[i];
-		}
+		d.setData(data);
 		return d;
 	}
 
 	static create<T extends ServerData = ServerData>(model: new () => T, data: object, args?: any[]) {
 		// @ts-ignore
 		let d = new model(...(args || []));
-		for(let i in data){
-			if(i in d && data[i] !== null) d[i] = data[i];
-		}
+		d.setData(data);
 		return d;
 	}
 }

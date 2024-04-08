@@ -3,6 +3,7 @@ import { ChunkData } from "../models/chunk";
 import { xyz } from "../models/misc.xyz";
 import { pingFrom } from "../ping/ping";
 import { generateChunkHeight } from "../world/chunks";
+import { Biomes } from "./biomes";
 
 
 export class Chunks {
@@ -16,7 +17,7 @@ export class Chunks {
 		if(this.has(stringifyChunkPosition(position))) return this.find(stringifyChunkPosition(position));
 		position.y = generateChunkHeight(position.x, position.z, this.maxHeight, this.chunkSize);
 
-		const chunk = ChunkData.create<ChunkData>(ChunkData, { position, chunkSize: this.chunkSize });
+		const chunk = ChunkData.create<ChunkData>(ChunkData, { position, chunkSize: this.chunkSize, biome: Biomes.getBiome(position.x, position.z).reference });
 
 		this.chunks.push(chunk);
 

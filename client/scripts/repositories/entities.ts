@@ -7,6 +7,7 @@ import { ServerData } from "../../../server/models/data";
 import { PhysicsManager } from "../common/physics";
 import { ping, pingFrom } from "../socket/socket";
 import { cloneGltf } from "../lib/gltfclone";
+import { Items } from "./items";
 
 
 export class Entities {
@@ -23,6 +24,8 @@ export class Entities {
 
 		entity.setReference(ref);
 		entity.speed = ref.config?.speed || 1;
+
+		entity.inventory = entity.inventory.map(i => Items.create(i));
 
 		const entityMesh = new ExtendedObject3D();
 

@@ -23,7 +23,11 @@ export function pingFrom<T = any, D = any>(action: string, func: (data: T) => an
 	});
 }
 
+
+let socketConnected = false;
 export async function connectSocket(){
+	if(socketConnected) return;
+	socketConnected = true;
 	const token = "u";
 
 	const socket = io('/', {
@@ -35,6 +39,8 @@ export async function connectSocket(){
 		resources,
 		playerEntity
 	}) => {
+
+		if(PlayerInfo.player.username) return;
 
 		PlayerInfo.setPlayer(player);
 		PlayerInfo.setPlayerEntity(playerEntity);

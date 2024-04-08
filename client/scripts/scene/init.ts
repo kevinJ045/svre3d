@@ -5,7 +5,11 @@ import { Chunks } from "../repositories/chunks";
 import { Items } from "../repositories/items";
 import { Entities } from "../repositories/entities";
 
+
+let started = false;
 export async function initScene(){
+	if(started) return;
+	started = true;
 	PhysicsLoader('/ammo', () => new Project({ scenes: [MainScene], antialias: true }));
 
 

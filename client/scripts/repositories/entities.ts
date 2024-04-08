@@ -34,7 +34,7 @@ export class Entities {
 
 		console.log(ref);
 
-		const refMesh: THREE.Object3D = cloneGltf(ref.load).scene;
+		const refMesh: THREE.Object3D = cloneGltf(ref.load);
 		SceneManager.scene.scene.add(refMesh);
 
 		console.log(refMesh);

@@ -7,6 +7,9 @@ import { PlayerInfo } from "../repositories/player";
 import { Entities } from "../repositories/entities";
 import { ping } from "../socket/socket";
 import { Utils } from "../modules/utils";
+import { CameraManager } from "../repositories/camera";
+import { Controls } from "../repositories/controls";
+import UI from "../ui/uiman";
 // import { xyz } from "../common/xyz";
 
 export class MainScene extends Scene3D {
@@ -16,6 +19,9 @@ export class MainScene extends Scene3D {
   }
 
 	init(){
+    this.renderer.setPixelRatio(1)
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+
 		SceneManager.scene = this;
 	}
 
@@ -40,12 +46,16 @@ export class MainScene extends Scene3D {
 
 		Entities.ping();
 
+		CameraManager.setCamera(this.camera);
+		UI.init();
+		Controls.initControls(this.canvas);
 	}
 
 	update(){
 
 		Chunks.update(PlayerInfo.entity.object3d.position, Settings.renderDistance);
 		Entities.update();
+		CameraManager.update();
 
 	}
 

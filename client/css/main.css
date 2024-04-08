@@ -208,7 +208,7 @@ body {
 	cursor: pointer;
 }
 
-.player-menu .tab-pane[tab=map]{
+.player-menu .tab-pane#map{
 	padding: 5px 0;
 }
 
@@ -219,7 +219,7 @@ body {
 	background: black;
 }
 
-.player-menu .tab-pane[tab=crafting] .item-content-editor{
+.player-menu .tab-pane#craft-ui .item-content-editor{
 	width: 100%;
 	height: 40px;
 	padding: 5px;
@@ -228,7 +228,7 @@ body {
 	color: white;
 }
 
-.player-menu .tab-pane[tab=crafting] .item-content-editor input {
+.player-menu .tab-pane#craft-ui .item-content-editor input {
 	width: 100%;
 	padding: 0;
 	color: inherit;
@@ -239,28 +239,28 @@ body {
 	outline: 0;
 }
 
-.player-menu .tab-pane[tab=crafting] .slot-1,
-.player-menu .tab-pane[tab=crafting] .slot-2,
-.player-menu .tab-pane[tab=crafting] .slot-result {
+.player-menu .tab-pane#craft-ui .slot-1,
+.player-menu .tab-pane#craft-ui .slot-2,
+.player-menu .tab-pane#craft-ui .slot-result {
 	position: absolute;
 	top: 50%;
 	transform: translate(0, -50%);
 	cursor: pointer;
 } 
 
-.player-menu .tab-pane[tab=crafting] .slot-1{
+.player-menu .tab-pane#craft-ui .slot-1{
 	left: 5%;
 }
 
-.player-menu .tab-pane[tab=crafting] .slot-2{
+.player-menu .tab-pane#craft-ui .slot-2{
 	left: 30%;
 }
 
-.player-menu .tab-pane[tab=crafting] .slot-result{
+.player-menu .tab-pane#craft-ui .slot-result{
 	left: 80%;
 }
 
-.player-menu .tab-pane[tab=crafting] .slot-result .inventory-slot{
+.player-menu .tab-pane#craft-ui .slot-result .inventory-slot{
 	background: var(--vp-c-fg);
 }
 

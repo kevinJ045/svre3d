@@ -135,7 +135,7 @@ export class Chunks {
     // Load chunks within the range around the player
     for (let x = startX; x <= endX; x++) {
 			for (let z = startZ; z <= endZ; z++) {
-				if(!Chunks.has(stringifyChunkPosition({ x, z })))
+				// if(!Chunks.has(stringifyChunkPosition({ x, z })))
 					Chunks.requestLoadChunk(new THREE.Vector3(x * chunkSize, 0, z * chunkSize));
 			}
     }

@@ -19,7 +19,6 @@ export class Entities {
 	static spawn(entityData: EntityData){
 
 		if(this.entities.find(e => e.data.username == PlayerInfo.username)){
-			console.log(entityData.data.username);
 			if(entityData.data.username == PlayerInfo.username) return;
 		}
 
@@ -86,7 +85,6 @@ export class Entities {
 
 	static ping(){
 		pingFrom('entity:settarget', ({entity:se, position}) => {
-			console.log('target', position);
 			const entity = Entities.find(se);
 			if(entity){
 				entity.displace(new THREE.Vector3(position.x, position.y, position.z));
@@ -95,7 +93,6 @@ export class Entities {
 
 		pingFrom('entity:spawn', ({entity}) => {
 			Entities.spawn(entity);
-			console.log(Entities.entities);
 		});
 	}
 

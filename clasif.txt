@@ -1,7 +1,10 @@
+Hours Spent: 14
+
+
 Server-Side:
 
-Procedurally generated world based on a seed
-Entity spawning and movement
+[X] Procedurally generated world based on a seed
+> Entity spawning and movement
 Built-in entity-to-entity trade mechanics
 Item dropping and despawning
 PvP mechanics (attacking other players and creatures)

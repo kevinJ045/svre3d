@@ -16,9 +16,7 @@ export class Chunks {
 		if(this.has(stringifyChunkPosition(position))) return this.find(stringifyChunkPosition(position));
 		position.y = generateChunkHeight(position.x, position.z, this.maxHeight, this.chunkSize);
 
-		console.log(position.y);
-
-		const chunk = ChunkData.from({ position, chunkSize: this.chunkSize }) as ChunkData;
+		const chunk = ChunkData.create<ChunkData>(ChunkData, { position, chunkSize: this.chunkSize });
 
 		this.chunks.push(chunk);
 

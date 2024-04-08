@@ -2,6 +2,9 @@
 
 import sio from "socket.io-client";
 import { initScene } from "../scene/init";
+import { ResourceMap } from "../repositories/resources";
+import { PlayerInfo } from "../repositories/player";
+import { Entities } from "../repositories/entities";
 const io = (window as any).io as typeof sio;
 
 let S!: any;
@@ -27,8 +30,16 @@ export async function connectSocket(){
 		auth: { token }
 	});
 
-	socket.on('recognize', (username) => {
-		console.log('Name:', username)
+	socket.on('recognize', ({
+		player,
+		resources,
+		playerEntity
+	}) => {
+
+		PlayerInfo.setPlayer(player);
+		PlayerInfo.setPlayerEntity(playerEntity);
+		ResourceMap.queue.push(...resources);
+		
 		S = socket;
 
 		initScene();

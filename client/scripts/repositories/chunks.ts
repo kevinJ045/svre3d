@@ -4,6 +4,7 @@ import { Chunk } from "../models/chunk";
 import { makeChunk } from "../objects/chunk";
 import { THREE } from "enable3d";
 import { ping, pingFrom } from "../socket/socket";
+import { PhysicsManager } from "../common/physics";
 
 export class Chunks {
 
@@ -18,7 +19,20 @@ export class Chunks {
 		chunk.setMesh(chunkObject);
 		chunkObject.position.set(chunk.position.x, chunk.position.y, chunk.position.z);
 		SceneManager.scene.scene.add(chunkObject);
+		PhysicsManager.addPhysics(chunkObject, {
+			shape: 'box',
+
+			width: chunk.size,
+			height: Math.floor(chunk.size/2),
+			depth: chunk.size,
+
+			mass: 0,
+		});
 		this.chunks.push(chunk);
+	}
+
+	static chunkObjects(){
+		return this.chunks.map(chunk => chunk.object3d);
 	}
 
 	static unloadChunk(chunk: Chunk){

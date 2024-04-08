@@ -7,6 +7,7 @@ import fs from 'fs';
 import * as socketIo from 'socket.io';
 import http from "http";
 import { init, userConnected } from './init';
+import { Sockets } from './ping/sockets';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -43,6 +44,8 @@ async function createApp() {
   
   // Initialize Socket.IO
   const io = new socketIo.Server(httpServer);
+
+  Sockets.setIO(io);
 
   io.on('connection', (socket) => {
     userConnected(serverData, socket);

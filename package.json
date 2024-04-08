@@ -17,7 +17,9 @@
   "dependencies": {
     "enable3d": "~0.25.0",
     "express": "^4.19.2",
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@yandeu/keyboard": "^0.1.0",

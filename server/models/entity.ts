@@ -26,13 +26,17 @@ class EntityData extends ServerData {
     variant: string; // Variant of the entity (if applicable)
     isNeutral: boolean; // Indicates if the entity is neutral (does not attack)
     buffs: BuffData[]; // Buffs or status effects applied to the entity
+    name: string; // Entity name
+    state: string; // Entity state, Like Running, Idle....
 
     constructor() {
         super();
         this.type = "";
+        this.name = "";
         this.position = { x: 0, y: 0, z: 0 };
         this.inventory = [];
         this.variant = "";
+        this.state = "Idle";
         this.isNeutral = false;
         this.buffs = [];
     }

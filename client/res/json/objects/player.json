@@ -8,11 +8,15 @@
 			"Sneak": "Sneak",
 			"Attack": ["Attack", "Attack2"]
 		},
-		"variant": "grass"
+		"variant": "grass",
+		"physics": {
+			"shape": "convex",
+			"offset": { "z": 0.55, "y": -0.55 }
+		}
 	},
 	"resource": {
 		"type": "gltf",
-		"src": "/res/obj/cubixc4.glb"
+		"src": "/res/obj/cubixc5.glb"
 	},
 	"loader": {
 		"group": "objects"

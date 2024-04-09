@@ -21,7 +21,9 @@ export async function userConnected(serverData, socket){
 	if(username){
 
 		const player = await Players.find(username)!;
-		
+
+		console.log(player);
+
 		const playerEntity = Entities.spawn('m:player', player!.position, player!.username, player?.variant, player?.inventory, { username, equipment: player?.equipment })!;
 
 		if(

@@ -56,24 +56,48 @@ export class MainScene extends Scene3D {
 			Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
 		});
 
+		player.on('inventory', () => {
+			ping('player:inventory', {
+				inventory: player.inventory.map(i => ({ id: i.itemID, data: i.data, quantity: i.quantity })),
+				username: PlayerInfo.username
+			})
+		});
+
+		// ping('player:inventory', {
+		// 	inventory: [{ id: 'm:horn-1', data: {}, quantity: 1 }, { id: 'm:rubidium', data: {}, quantity: 3 }, { id: 'm:oreon', data: {}, quantity: 6 }],
+		// 	username: PlayerInfo.username
+		// })
+
+		player.on('equip', () => {
+			PlayerInfo.updateEquipmentData();
+		});
+
+		player.on('unequip', () => {
+			PlayerInfo.updateEquipmentData();
+		});
+
 		Entities.ping();
 
 		CameraManager.setCamera(this.camera);
 		UI.init();
 		Controls.initControls(this.canvas);
 
+		// player.addToInventory(Items.create(new ItemData().setData({
+		// 	itemID: 'm:horn-1',
+		// 	quantity: 1
+		// })));
 
-		player.addToInventory(Items.create(new ItemData().setData({
-			itemID: 'm:rubidium',
-			quantity: 1
-		})));
+		// player.addToInventory(Items.create(new ItemData().setData({
+		// 	itemID: 'm:rubidium',
+		// 	quantity: 1
+		// })));
 
-		player.addToInventory(Items.create(new ItemData().setData({
-			itemID: 'm:oreon',
-			quantity: 5
-		})));
+		// player.addToInventory(Items.create(new ItemData().setData({
+		// 	itemID: 'm:oreon',
+		// 	quantity: 5
+		// })));
 
-		Items.crafting(...player.inventory.slice(1, 3) as any);
+		// Items.crafting(...player.inventory.slice(1, 3) as any);
 
 	}
 

@@ -16,6 +16,7 @@ export class Login {
 		root.render(<LoginForm onSubmit={(username, password) => {
 			S.emit('login', { username, password }, (token) => {
 				LocalDB.cookie.set('token', token);
+				location.reload();
 			});
 		}}></LoginForm>)
 

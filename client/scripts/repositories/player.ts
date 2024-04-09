@@ -1,4 +1,6 @@
 import { Entity } from "../models/entity";
+import { ping } from "../socket/socket";
+import { Equipments } from "./equipments";
 
 export interface PlayerLike {
 	username: string,
@@ -42,4 +44,24 @@ export class PlayerInfo {
 		return this.player.position;
 	}
 
+
+	static updateEquipmentData(){
+		const equipment = {};
+
+		for(let i in PlayerInfo.entity.data.equipment){
+			if(i == 'brow'){
+				equipment[i] = Equipments.brows[PlayerInfo.entity.data.equipment[i]];
+			} else {
+				equipment[i] = PlayerInfo.entity.findItemByData('wid',
+					PlayerInfo.entity.data.equipment[i]
+				)?.data.wid;
+			}
+		}
+		
+		ping('player:equipment', {
+			inventory: PlayerInfo.entity.inventory.map(i => ({ itemID: i.itemID, data: i.data, quantity: i.quantity, id: i.id })).filter(i => i.data.wid),
+			equipment,
+			username: PlayerInfo.username
+		});
+	}
 }

@@ -10,7 +10,7 @@ import Inventory from "../widgets/inventory";
 export const Menu = () => {
 
 	const [tab, setTab] = React.useState('inventory');
-
+	
 	const [inventory, setInventory] = React.useState([...PlayerInfo.entity.inventory]);
 
 

@@ -11,6 +11,11 @@ export const PlayerModel = {
 	settings: {
 		renderDistance: 4,
 		sensitivity: 3
+	},
+	exp: {
+		level: 1,
+		max: 100,
+		current: 1,
 	}
 } as {
 	username: string;
@@ -18,6 +23,11 @@ export const PlayerModel = {
 	variant: string,
 	equipment: { [key: string]: any },
 	inventory: (typeof ItemDBModel)[],
-	settings: { [key: string]: any }
+	settings: { [key: string]: any },
+	exp: {
+		level: number;
+		max: number;
+		current: number;
+	}
 }
 

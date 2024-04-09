@@ -5,6 +5,8 @@ import * as uuid from "uuid";
 
 export class Equipments {
 
+	static brows = {};
+
 	static entity(entity: Entity){
 
 		for(let i in entity.data.equipment){
@@ -16,6 +18,10 @@ export class Equipments {
 
 			if(ref?.equipment?.type == i){
 				Equipments.equip(entity, i, item as Item);
+			}
+
+			if(i == 'brow'){
+				Equipments.brows[item?.data.wid] = item?.itemID;
 			}
 
 		}

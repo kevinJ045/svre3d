@@ -12,6 +12,10 @@ export class Keyboard {
 		this.keys[key] = { pressed: false, prevent };
 	}
 
+  static register_keys(keys: string[], prevent = false){
+    keys.forEach(key => this.register(key, prevent));
+  }
+
   static init() {
     window.addEventListener('keydown', (event) => {
       const key = event.key.toLowerCase();

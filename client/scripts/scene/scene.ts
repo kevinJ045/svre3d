@@ -7,9 +7,10 @@ import { PlayerInfo } from "../repositories/player";
 import { Entities } from "../repositories/entities";
 import { ping } from "../socket/socket";
 import { Utils } from "../modules/utils";
-import { CameraManager } from "../repositories/camera";
-import { Controls } from "../repositories/controls";
+import { CameraManager } from "../controls/camera";
+import { Controls } from "../controls/controls";
 import UI from "../ui/uiman";
+import { Lights } from "./lights";
 // import { xyz } from "../common/xyz";
 
 export class MainScene extends Scene3D {
@@ -30,19 +31,27 @@ export class MainScene extends Scene3D {
 	}
 
 	async create() {
-		this.warpSpeed('-ground');
+		const { lights } = await this.warpSpeed('camera', 'light', 'sky');
+
+    Lights
+			.setLights(lights!)
+			.initLights();
 
 		Chunks.init();
 		const player = Entities.spawn(PlayerInfo.entity)!;
 		PlayerInfo.setPlayerEntity(player);
 
-		this.camera.position.set(25, 25, 25);
+		// this.camera.position.set(25, 25, 25);
 
 		player.on('setTarget', (position) => {
 			ping('entity:settarget', {entity: player.id, position});
 		});
 
-		player.displace(new THREE.Vector3(Utils.randFrom(-10, 10), 0, Utils.randFrom(-10, 10)));
+		// player.displace(new THREE.Vector3(Utils.randFrom(-10, 10), 0, Utils.randFrom(-10, 10)));
+		Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
+		player.on('move', () => {
+			Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
+		});
 
 		Entities.ping();
 
@@ -53,9 +62,8 @@ export class MainScene extends Scene3D {
 
 	update(){
 
-		Chunks.update(PlayerInfo.entity.object3d.position, Settings.renderDistance);
 		Entities.update();
-		CameraManager.update();
+		Controls.update();
 
 	}
 

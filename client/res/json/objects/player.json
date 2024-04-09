@@ -12,7 +12,8 @@
 		"physics": {
 			"shape": "convex",
 			"offset": { "z": 0.55, "y": -0.55 }
-		}
+		},
+		"speed": 10
 	},
 	"resource": {
 		"type": "gltf",

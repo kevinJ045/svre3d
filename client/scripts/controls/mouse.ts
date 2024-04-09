@@ -1,7 +1,7 @@
 import { CameraManager } from "./camera";
-import { Chunks } from "./chunks";
+import { Chunks } from "../repositories/chunks";
 import { Controls } from "./controls";
-import { PlayerInfo } from "./player";
+import { PlayerInfo } from "../repositories/player";
 import { THREE } from "enable3d";
 
 export class Mouse {

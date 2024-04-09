@@ -24,7 +24,7 @@ export class Entities {
 			name,
 			variant,
 			type,
-			inventory: inventory ? inventory.map(item => Items.create(item.id, item.quantity)) : null,
+			inventory: inventory ? inventory.map(item => Items.create(item.id, item.quantity, item.data)) : null,
 			data: {...data}
 		});
 
@@ -78,25 +78,38 @@ export class Entities {
 				entity:eid,
 				type,
 				item,
-				action
+				action,
+				full,
+				inventory
 			} : 
 			{ entity: string, type: 'add' | 'remove', item: {
 				type: string,
 				id: string,
-				quantity: number
-			}, action: string }
+				quantity: number,
+				data: any
+			}, action: string, 
+			full?: boolean,
+			inventory?: {
+				type: string,
+				id: string,
+				quantity: number,
+				data: any
+			}[] }
 		) => {
 			const entity = Entities.find(eid);
 			if(entity){
-				if(type == 'add'){
+				if(full){
+					entity.inventory = inventory!.map(item => Items.create(item.type, item.quantity)!
+					.setData({ id: item.id, data: item.data }));
+				} else if(type == 'add'){
 					entity.addToInventory(
 						Items.create(item.type, item.quantity)!
-						.setData({ id: item.id }),
+						.setData({ id: item.id, data: item.data }),
 					)
 				} else if(type == 'remove'){
 					entity.removeFromInventory(
 						Items.create(item.type)!
-						.setData({ id: item.id }),
+						.setData({ id: item.id, data: item.data }),
 						item.quantity
 					)
 				}
@@ -104,8 +117,10 @@ export class Entities {
 					entity:eid,
 					type,
 					item: Items.create(item.type, item.quantity)!
-					.setData({ id: item.id }),
-					action
+					.setData({ id: item.id, data: item.data }),
+					action,
+					full,
+					inventory: full ? entity.inventory : []
 				});
 			}
 		});

@@ -58,6 +58,11 @@ export class MainScene extends Scene3D {
 
 		Entities.ping();
 
+		CameraManager.setCamera(this.camera);
+		UI.init();
+		Controls.initControls(this.canvas);
+
+
 		player.addToInventory(Items.create(new ItemData().setData({
 			itemID: 'm:rubidium',
 			quantity: 1
@@ -68,11 +73,8 @@ export class MainScene extends Scene3D {
 			quantity: 5
 		})));
 
-		Items.crafting(...player.inventory.slice(1, 2) as any);
+		Items.crafting(...player.inventory.slice(1, 3) as any);
 
-		CameraManager.setCamera(this.camera);
-		UI.init();
-		Controls.initControls(this.canvas);
 	}
 
 	update(){

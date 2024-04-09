@@ -47,7 +47,7 @@ class EntityData extends ServerData {
 	// Method to add an item to the inventory
 	addToInventory(item: ItemData): void | string {
 		const existingItem = this.findItemTypeInInventory(item);
-		if (existingItem) {
+        if (existingItem) {
 			if (existingItem.quantity + item.quantity <= existingItem.max) {
 				existingItem.quantity += item.quantity;
                 return 'increase';
@@ -85,6 +85,10 @@ class EntityData extends ServerData {
 
     findItemInInventory(item: ItemData | string) {
 		return this.inventory.find(i => i.id === (typeof item == "string" ? item : item.id));
+	}
+
+    findItemByData(key: string, value: any) {
+		return this.inventory.find(i => i.data[key] == value);
 	}
 }
 

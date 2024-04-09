@@ -7,6 +7,7 @@ import { PlayerInfo } from "../repositories/player";
 import { Entities } from "../repositories/entities";
 import { Seed } from "../world/seed";
 import { WorldData } from "../world/data";
+import { LocalDB } from "../localdb/localdb";
 const io = (window as any).io as typeof sio;
 
 let S!: any;
@@ -27,7 +28,7 @@ export function pingFrom<T = any, D = any>(action: string, func: (data: T) => an
 
 
 export async function connectSocket(){
-	const token = "u";
+	const token = LocalDB.cookie.get('token');
 
 	let reconnect = false;
 
@@ -60,6 +61,10 @@ export async function connectSocket(){
 
 		initScene();
 
+	});
+
+	socket.on('unrecognized', () => {
+		
 	});
 
 	socket.on('disconnect', () => {

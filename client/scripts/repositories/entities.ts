@@ -105,13 +105,19 @@ export class Entities {
 				entity:eid,
 				type,
 				item,
-				action
+				action,
+				full,
+				inventory
 			} : 
-			{ entity: string, type: 'add' | 'remove', item: ItemData, action: string }
+			{ full?: true, inventory?: ItemData[], entity: string, type: 'add' | 'remove', item: ItemData, action: string }
 		) => {
 			const entity = Entities.find(eid);
 			if(entity){
-				if(type == 'add'){
+				if(full) {
+					entity.inventory = inventory!.map(i => Items.create(i));
+					entity.emit('inventory', {type: 'reset', inventory: entity.inventory});
+					entity.emit('inventory:reset', entity.inventory);
+				} else if(type == 'add'){
 					entity.addToInventory(
 						Items.create(item)!,
 					)
@@ -121,7 +127,6 @@ export class Entities {
 						item.quantity
 					)
 				}
-				console.log(entity.data);
 			}
 		});
 	}

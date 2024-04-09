@@ -4,16 +4,29 @@ import { Map2D } from "../misc/map";
 import { Map2DWidget } from "../widgets/map";
 import { PlayerInfo } from "../../repositories/player";
 import { SlotItem } from "../widgets/slotitem";
+import Inventory from "../widgets/inventory";
 
 
 export const Menu = () => {
 
 	const [tab, setTab] = React.useState('inventory');
 
+	const [inventory, setInventory] = React.useState([...PlayerInfo.entity.inventory]);
+
 
 	React.useEffect(() => {
 		Map2D.activeTab = tab;
 	}, [tab]);
+
+	React.useEffect(() => {
+		PlayerInfo.entity.on('inventory', () => {
+			setInventory([...PlayerInfo.entity.inventory]);
+		}).on('equip', () => {
+			setInventory([...PlayerInfo.entity.inventory]);
+		}).on('unequip', () => {
+			setInventory([...PlayerInfo.entity.inventory]);
+		});
+	}, []);
 
 	return (<div className="menu">
 		
@@ -46,26 +59,25 @@ export const Menu = () => {
 						<div className="item-actions"></div>
 					</div>
 					
-					<div className="inventory-group">
-						{
-							PlayerInfo.entity.inventory
-							.concat(PlayerInfo.entity.inventory.length < 20 ? Array(20 - PlayerInfo.entity.inventory.length).fill(null) : [])
-							.map((i, k) => <div key={k} className="inventory-slot">{
-								i ? <>
-									<SlotItem item={i as any}></SlotItem>
-								</> : ""
-							}</div>)
-						}
-					</div>
+					<Inventory inventory={inventory}></Inventory>
 
 					<div className="inventory-group" style={{width: "45px"}}>
-						<div className="inventory-slot wearable hat"></div>
-						
-						<div className="inventory-slot wearable eye"></div>
-						
-						<div className="inventory-slot wearable armor"></div>
-						
-						<div className="inventory-slot wearable attachment"></div>
+						{
+							['hat', 'eye', 'armor', 'attachment'].map(
+								type => {
+									return <div key={type} className={"inventory-slot wearable "+type}>
+										{
+											(() => {
+												let item = inventory
+												.find(i => i.data.wid && i.reference?.equipment.type == type);
+
+											return item ? <SlotItem item={item as any} /> : null;
+											})()
+										}
+									</div>
+								}
+							)
+						}
 					</div>
 
 				</div>

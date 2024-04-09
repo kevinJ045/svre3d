@@ -201,10 +201,6 @@ body {
 }
 
 .player-menu .inventory-item-info button {
-	background: var(--vp-c-bg-alt);
-	border: 0;
-	border-radius: 5px;
-	color: var(--vp-c-text);
 	cursor: pointer;
 }
 
@@ -285,4 +281,17 @@ body {
 
 .player-menu .inventory-selector .item {
 	flex: 0 0 auto;
+}
+
+.player-menu .inventory button{
+	background: var(--vp-c-bg-alt);
+	border: 0;
+	border-radius: 5px;
+	color: var(--vp-c-text);
+	padding: 5px 10px;
+}
+
+.player-menu .inventory .pager-buttons{
+	display: flex;
+	justify-content: space-between;
 }

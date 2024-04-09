@@ -7,4 +7,6 @@ export class ItemData extends ServerData {
 	itemID: string = "";
 
 	max = 1;
+
+	data: any = {};
 }

@@ -43,7 +43,7 @@ export async function userConnected(serverData, socket){
 
 	} else {
 
-
+		socket.emit('unrecognized');
 
 	}
 

@@ -19,11 +19,13 @@ export class Entity extends EntityData {
 	private _eventListeners: {type:string,f:CallableFunction}[] = [];
 	on(type:string,f:CallableFunction){
 		this._eventListeners.push({type, f});
+		return this;
 	}
 	emit(type:string,...args: any[]){
 		this._eventListeners
 		.filter(e => e.type == type)
 		.forEach(e => e.f(...args));
+		return this;
 	}
 
 	
@@ -357,7 +359,8 @@ export class Entity extends EntityData {
 				id: item.id,
 				type: item.itemID,
 				quantity: item.quantity,
-				count
+				count,
+				data: item.data
 			},
 			action,
 			type

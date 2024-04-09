@@ -1,5 +1,7 @@
 import { Item } from "../../models/item"
 import * as React from "react";
+import { Equipments } from "../../repositories/equipments";
+import { PlayerInfo } from "../../repositories/player";
 
 export const SlotItem = ({ item }: { item: Item }) => {
   // Check if the item has an icon configuration
@@ -20,8 +22,18 @@ export const SlotItem = ({ item }: { item: Item }) => {
 		iconStyle.backgroundRepeat = 'no-repeat';
   }
 
+  const onclick = () => {
+    if(item?.reference?.equipment){
+      if(item?.data.wid){
+        Equipments.unequip(PlayerInfo.entity, item?.reference!.equipment!.type!, item);
+      } else {
+        Equipments.equip(PlayerInfo.entity, item?.reference!.equipment!.type!, item);
+      }
+    }
+  }
+
   return (
-    <div className={classNames} style={iconStyle}>
+    <div className={classNames} onClick={onclick} style={iconStyle}>
       <span className="item-count">{item.quantity}</span>
     </div>
   );

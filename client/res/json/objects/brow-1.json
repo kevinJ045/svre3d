@@ -1,7 +1,7 @@
 {
 	"id": "m:brow-1",
-	"type": "accessory",
-	"accessory": {
+	"type": "equipment",
+	"equipment": {
 		"type": "brow"
 	},
 	"config": {

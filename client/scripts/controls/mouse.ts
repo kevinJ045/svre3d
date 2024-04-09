@@ -3,6 +3,8 @@ import { Chunks } from "../repositories/chunks";
 import { Controls } from "./controls";
 import { PlayerInfo } from "../repositories/player";
 import { THREE } from "enable3d";
+import { Items } from "../repositories/items";
+import { ItemData } from "../../../server/models/item";
 
 export class Mouse {
 
@@ -20,10 +22,20 @@ export class Mouse {
       raycaster.setFromCamera(mouse, CameraManager.camera);
       const intersects = raycaster.intersectObjects(Chunks.chunkObjects());
 
-      if (intersects.length > 0) {
+      
+
+      const intersectsPlayer = raycaster.intersectObjects([PlayerInfo.entity.object3d]);
+
+      if(intersectsPlayer.length > 0){
+        PlayerInfo.entity.addToInventory(Items.create(new ItemData().setData({
+          itemID: 'm:rubidium',
+          quantity: 1
+        })));
+      } else if (intersects.length > 0) {
         const intersectionPoint = intersects[0].point;
         PlayerInfo.entity.displace(intersectionPoint);
       }
+
     }
 
     const pos = new THREE.Vector2();

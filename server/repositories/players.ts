@@ -47,20 +47,28 @@ export class Players {
 			username
 		}) => {			
 
+			const entity = Entities.entities.find(i => i.data.username == username);
+
 			Data
 				.collection('players')
 				.updateOne({
 					username
 				}, {
 					$set: {
-						inventory: Entities.entities.find(i => i.data.username == username)!.inventory
+						inventory: entity!.inventory
 						.filter(i => !inventory.find(i2 => i2.id == i.id))
 						.map(i => ({ id: i.itemID, quantity: i.quantity, data: i.data }))
 						.concat(inventory.map(i => ({ id: i.itemID, quantity: i.quantity, data: i.data }))),
 						equipment
 					}
-				})
+				});
 			
+				socket
+					.emit('player:equipment', {
+						inventory,
+						equipment,
+						entity: entity!.id
+					})
 		});
 
 	}

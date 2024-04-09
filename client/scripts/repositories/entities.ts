@@ -129,6 +129,23 @@ export class Entities {
 				}
 			}
 		});
+
+		pingFrom('player:equipment', ({
+			entity: eid,
+			inventory,
+			equipment
+		}) => {
+			const entity = Entities.find(eid);
+			entity!.data.equipment = equipment;
+
+			entity!.inventory
+				.filter(i => !inventory.find(i2 => i2.id == i.id))
+				.map(i => {
+					i.data = inventory.find(i2 => i2.id == i.id)!.data
+				});
+			
+			Equipments.entity(entity!);
+		})
 	}
 
 	static update(){

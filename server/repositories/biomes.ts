@@ -1,4 +1,4 @@
-import { Utils } from "../../client/scripts/modules/utils";
+import { Random } from "../common/rand";
 import { noise, seedrng } from "../constant/seed";
 import { BiomeData } from "../models/biome";
 import { ResourceMap } from "./resources";
@@ -9,7 +9,7 @@ export class Biomes {
 	static biomes: BiomeData[] = [];
 
 	static registerBiomes(){
-		Biomes.biomes = Utils.shuffleArray(ResourceMap.resources
+		Biomes.biomes = Random.shuffleArray(ResourceMap.resources
 		.filter(
 			i => i.data.type == 'biome'
 		)

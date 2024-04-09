@@ -65,4 +65,3 @@ class FirstPersonControls {
 	}
 }
 export { FirstPersonControls };
-//# sourceMappingURL=firstPersonControls.js.map

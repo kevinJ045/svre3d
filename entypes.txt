@@ -1,0 +1,70 @@
+Forest Dwellers:
+
+Sylvanians
+Arborians
+Verdantkin
+Groveborn
+Leafwalkers
+Desert Nomads:
+
+Sandstriders
+Duneborn
+Oasisfolk
+Sunscorchers
+Mirage Wanderers
+Mountain Tribes:
+
+Stonehearts
+Peakfolk
+Cliffdwellers
+Summitborn
+Avalanche Nomads
+Underground Dwellers:
+
+Deep Delvers
+Cavernborn
+Subterrans
+Tunnelkin
+Darkrock Clan
+Coastal Inhabitants:
+
+Tidecallers
+Seafolk
+Coralians
+Saltborn
+Waveborn
+Arctic Explorers:
+
+Frostborn
+Tundra Wanderers
+Blizzardkin
+Iceheart Clan
+Snowstriders
+Jungle Natives:
+
+Vineborn
+Canopy Dwellers
+Junglekin
+Leafblades
+Rainforest Nomads
+Grassland Tribes:
+
+Plainswalkers
+Meadowfolk
+Savannakin
+Grassland Nomads
+Steppe Wanderers
+Swamp Dwellers:
+
+Bogfolk
+Marshwalkers
+Swampkin
+Murkborn
+Fen Nomads
+Volcanic Inhabitants:
+
+Magmaforged
+Ashwalkers
+Lavalings
+Volcanic Nomads
+Emberborn

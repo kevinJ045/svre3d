@@ -1,5 +1,8 @@
+import { Random } from "./common/rand";
+import { variants } from "./constant/player_variant";
 import { worldData } from "./constant/world";
 import { loadAllResources } from "./functions/resources";
+import { LoginManager } from "./login/login";
 import { startPing } from "./ping/ping";
 import { Sockets } from "./ping/sockets";
 import { Biomes } from "./repositories/biomes";
@@ -12,12 +15,10 @@ import { ResourceMap } from "./repositories/resources";
 export async function userConnected(serverData, socket){
 
 	const token = socket.handshake.auth.token;
-	
-	if(!token) return;
 
-	if(token in serverData.users){
+	const username = token ? await LoginManager.verifyToken(token) : null;
 
-		const username = serverData.users[token];
+	if(username){
 
 		const player = await Players.find(username)!;
 		
@@ -42,9 +43,22 @@ export async function userConnected(serverData, socket){
 		})
 
 	} else {
-
 		socket.emit('unrecognized');
 
+		socket.on('login', async ({ username, password }, cb) => {
+
+			const user = await Players.find(username);
+			
+			if(!user) await LoginManager.register(
+				username,
+				password,
+				Random.pick(...variants)
+			);
+
+			const token = await LoginManager.login(username, password);
+			
+			cb(token);
+		});
 	}
 
 }

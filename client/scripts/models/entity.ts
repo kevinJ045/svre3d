@@ -1,6 +1,5 @@
 import { ExtendedObject3D, THREE } from "enable3d";
 import { EntityData } from "../../../server/models/entity";
-import { Utils } from "../modules/utils";
 import { xyz, xyzt } from "../common/xyz";
 import { PhysicsManager } from "../common/physics";
 import { Chunks } from "../repositories/chunks";
@@ -9,6 +8,7 @@ import { ChunkData } from "../../../server/models/chunk";
 import { SceneManager } from "../common/sceneman";
 import { Item } from "./item";
 import { ping, pingFrom } from "../socket/socket";
+import { Random } from "../../../server/common/rand";
 
 
 
@@ -34,7 +34,7 @@ export class Entity extends EntityData {
 
 		let name = action;
 		if(this.reference.config?.animations?.[name]) name = this.reference.config?.animations[name];
-		if(Array.isArray(name)) name = Utils.pickRandom(...name);
+		if(Array.isArray(name)) name = Random.pick(...name);
 
 		let anim = this.reference.load.animations.find(anim => anim.name == name);
 

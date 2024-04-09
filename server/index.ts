@@ -9,6 +9,7 @@ import http from "http";
 import { init, userConnected } from './init';
 import { Sockets } from './ping/sockets';
 import { Data } from './db/db';
+import { env } from './constant/env';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,7 +29,7 @@ async function createApp() {
     server: { middlewareMode: 'html' }
   });
 
-  await Data.connect('mongodb://127.0.0.1:27017/');
+  await Data.connect(env.mongoURL);
 
   app.get('/lsdir/*', async (req, res) => {
   	const requestedPath = req.originalUrl.split('/lsdir/')[1];

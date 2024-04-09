@@ -6,6 +6,7 @@ import { Utils } from "./utils";
 import { makeObjectMaterial, materialParser } from "./shaderMaterial";
 import { ItemEntity } from "./itementity";
 import { TextGeometry } from "../lib/TextGeometry";
+import { Random } from "../../../server/common/rand";
 
 export type entityVariant = {
 	name: string,
@@ -106,7 +107,7 @@ export class Entity {
 
 		let name = action;
 		if(this.entityData.config?.animations?.[name]) name = this.entityData.config?.animations[name];
-		if(Array.isArray(name)) name = Utils.pickRandom(...name);
+		if(Array.isArray(name)) name = Random.pick(...name);
 
 		let anim = this.entityData.load.animations.find(anim => anim.name == name);
 
@@ -699,7 +700,7 @@ export class Entity {
 			variant.drops.forEach(drop => {
 				const item = this.scene.items.itemFromName(drop.item);
 				if(item){
-					item.count = Array.isArray(drop.count) ? Utils.randFrom(drop.count[0], drop.count[1]) : drop.count;
+					item.count = Array.isArray(drop.count) ? Random.from(drop.count[0], drop.count[1]) : drop.count;
 					if(item.count > 0){
 						this.toInventory(item);
 					}

@@ -16,7 +16,7 @@ export class LocalDB {
 		
 		static set(key, value){
 			const object = LocalDB.cookie.getCookieJson();
-			object[key] = JSON.stringify(value);
+			object[key] = typeof value == "object" ? JSON.stringify(value) : value;
 			LocalDB.cookie.setCookieJson(object);
 			return this;
 		}

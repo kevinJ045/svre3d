@@ -1,3 +1,4 @@
+import { Data } from "../db/db";
 
 
 
@@ -5,14 +6,10 @@
 
 export class Players {
 
-	static players = [
-		{ username: 'makano', position: { x: 0, y: 0, z: 0 }, variant: 'grass', equipment: { brow: 'm:brow-1', hat: '1isd' }, inventory: [{id: 'm:horn-1', quantity: 1, data: { wid: '1isd', corn: 'true' } }] }
-	];
-
 	static active: string[] = [];
 
 	static async find(username: string){
-		return Players.players.find(player => player.username == username);
+		return await Data.collection('players').findOne({ username });
 	}
 
 	static isActive(username: string){
@@ -30,7 +27,7 @@ export class Players {
 
 
 	static setPlayerData(username: string, data: any){
-		
+
 	}
 
 }

@@ -8,6 +8,7 @@ import { Entities } from "../repositories/entities";
 import { Seed } from "../world/seed";
 import { WorldData } from "../world/data";
 import { LocalDB } from "../localdb/localdb";
+import { Login } from "../login/login";
 const io = (window as any).io as typeof sio;
 
 let S!: any;
@@ -64,7 +65,7 @@ export async function connectSocket(){
 	});
 
 	socket.on('unrecognized', () => {
-		
+		Login.init(socket);
 	});
 
 	socket.on('disconnect', () => {

@@ -1,3 +1,4 @@
+import { worldData } from "./constant/world";
 import { loadAllResources } from "./functions/resources";
 import { startPing } from "./ping/ping";
 import { Sockets } from "./ping/sockets";
@@ -20,14 +21,18 @@ export async function userConnected(serverData, socket){
 
 		const player = await Players.find(username)!;
 		
-		const playerEntity = Entities.spawn('m:player', player!.position, player!.username, player?.variant, player?.inventory, { username })!;
+		const playerEntity = Entities.spawn('m:player', player!.position, player!.username, player?.variant, player?.inventory, { username, equipment: player?.equipment })!;
 
 		if(
 			!Entities.entities.find(i => i.data.username == username) || socket.handshake.query.reconnect != 'true'
 		) socket.emit('recognize', {
 			player,
 			playerEntity,
-			resources: ResourceMap.resources.map(f => f.data)
+			resources: ResourceMap.resources.map(f => f.data),
+			worldData: {
+				...worldData,
+				biomeColors: Biomes.biomes.map(i => i.reference.map.color)
+			}
 		});
 
 		startPing(serverData, socket);

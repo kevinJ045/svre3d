@@ -3,7 +3,10 @@ import { Entity } from "../models/entity";
 export interface PlayerLike {
 	username: string,
 	position: { x: number, y: number, z: number },
-	inventory: string[]
+	inventory: string[],
+	equipment: {
+		brow: string
+	}
 }
 
 export class PlayerInfo {
@@ -11,7 +14,10 @@ export class PlayerInfo {
 	static player: PlayerLike = {
 		username: "",
 		position: { x:0, y:0, z:0 },
-		inventory: []
+		inventory: [],
+		equipment: {
+			brow: 'brow-1'
+		}
 	}
 
 	static entity: Entity;

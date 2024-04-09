@@ -42,6 +42,50 @@ class EntityData extends ServerData {
         this.isNeutral = false;
         this.buffs = [];
     }
+
+
+	// Method to add an item to the inventory
+	addToInventory(item: ItemData): void | string {
+		const existingItem = this.findItemTypeInInventory(item);
+		if (existingItem) {
+			if (existingItem.quantity + item.quantity <= existingItem.max) {
+				existingItem.quantity += item.quantity;
+                return 'increase';
+			} else {
+				const remainingCount = existingItem.max - existingItem.quantity;
+				existingItem.quantity = existingItem.max;
+				item.quantity -= remainingCount;
+				this.inventory.push(item);
+                return 'add';
+			}
+		} else {
+            this.inventory.push(item);
+            return 'add';
+		}
+	}
+
+	// Method to remove an item from the inventory
+	removeFromInventory(item: ItemData, count: number = 1): void | string {
+		const existingItem = this.findItemTypeInInventory(item);
+		if (!existingItem) return;
+
+		if (existingItem.quantity > count) {
+            existingItem.quantity -= count;
+            return 'decrease';
+		} else {
+            this.inventory.splice(this.inventory.indexOf(existingItem), 1);
+            return 'remove';
+		}
+		
+	}
+
+	findItemTypeInInventory(item: ItemData) {
+		return this.inventory.find(i => i.itemID === item.itemID);
+	}
+
+    findItemInInventory(item: ItemData | string) {
+		return this.inventory.find(i => i.id === (typeof item == "string" ? item : item.id));
+	}
 }
 
 export { EntityData };

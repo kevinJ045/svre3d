@@ -1,11 +1,15 @@
-import ReactDOM from "react-dom";
+import { Root, createRoot } from "react-dom/client";
 import { Menu } from "./componets/menu";
 import * as React from "react";
+import { Map2D } from "./misc/map";
 
 export default class UI {
 
+	static root: Root;
+
 	static init(){
-		ReactDOM.render(<Menu></Menu>, document.querySelector('#full-menu'));
+		this.root = createRoot(document.querySelector('#full-menu')!);
+		this.root.render(<Menu></Menu>);
 	}
 
 	static toggle(){
@@ -18,6 +22,10 @@ export default class UI {
 
 	static hide(){
 		document.querySelector('#full-menu')?.classList.remove('active');
+	}
+
+	static update(){
+		Map2D.update();
 	}
 
 }

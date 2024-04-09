@@ -7,6 +7,7 @@ import { ping, pingFrom } from "../socket/socket";
 import { PhysicsManager } from "../common/physics";
 import { ServerData } from "../../../server/models/data";
 import { Biomes } from "./biomes";
+import { WorldData } from "../world/data";
 
 export class Chunks {
 
@@ -107,7 +108,8 @@ export class Chunks {
 
 	}
 
-	static update(playerPosition, renderDistance, chunkSize = 5){
+	static update(playerPosition, renderDistance){
+		const chunkSize = WorldData.get('chunkSize');
 		const playerChunkPosition = playerPosition.clone().divideScalar(chunkSize).floor();
 
     // Calculate the range of chunk coordinates around the player within the render distance

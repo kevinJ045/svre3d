@@ -6,7 +6,7 @@
 export class Players {
 
 	static players = [
-		{ username: 'makano', position: { x: 0, y: 0, z: 0 }, variant: 'grass', inventory: [{id: 'm:horn-1', quantity: 1}] }
+		{ username: 'makano', position: { x: 0, y: 0, z: 0 }, variant: 'grass', equipment: { brow: 'brow-1' }, inventory: [{id: 'm:horn-1', quantity: 1}] }
 	];
 
 	static active: string[] = [];

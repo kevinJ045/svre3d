@@ -5,6 +5,8 @@ import { initScene } from "../scene/init";
 import { ResourceMap } from "../repositories/resources";
 import { PlayerInfo } from "../repositories/player";
 import { Entities } from "../repositories/entities";
+import { Seed } from "../world/seed";
+import { WorldData } from "../world/data";
 const io = (window as any).io as typeof sio;
 
 let S!: any;
@@ -41,7 +43,8 @@ export async function connectSocket(){
 	socket.on('recognize', ({
 		player,
 		resources,
-		playerEntity
+		playerEntity,
+		worldData
 	}) => {
 
 		if(PlayerInfo.player.username) return;
@@ -49,6 +52,9 @@ export async function connectSocket(){
 		PlayerInfo.setPlayer(player);
 		PlayerInfo.setPlayerEntity(playerEntity);
 		ResourceMap.queue.push(...resources);
+
+		Seed.setSeed(worldData.seed);
+		WorldData.setData(worldData);
 		
 		S = socket;
 

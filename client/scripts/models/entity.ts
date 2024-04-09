@@ -7,6 +7,8 @@ import { Chunks } from "../repositories/chunks";
 import { Entities } from "../repositories/entities";
 import { ChunkData } from "../../../server/models/chunk";
 import { SceneManager } from "../common/sceneman";
+import { Item } from "./item";
+import { ping, pingFrom } from "../socket/socket";
 
 
 
@@ -279,7 +281,7 @@ export class Entity extends EntityData {
 
 			const distanceToTarget = this.object3d.position.distanceTo(this.targetLocation);
 
-			if (distanceToTarget < 5) {
+			if (distanceToTarget < 1.5) {
 				this.displace(null);
 				this.object3d.body.setAngularVelocityY(0);
 				this.run({
@@ -328,5 +330,42 @@ export class Entity extends EntityData {
 		}
 	}
 
+
+	// Method to add an item to the inventory
+	addToInventory(item: Item): void {
+		const type = super.addToInventory(item);
+		if(!type) return;
+		this.emit('inventory:add', {item});
+		this.emit('inventory', {type: 'add', item});
+		this.sendInventoryUpdateToServer(item, item.quantity, 'add', type);
+	}
+
+	// Method to remove an item from the inventory
+	removeFromInventory(item: Item, count: number = 1): void {
+		const type = super.removeFromInventory(item, count);
+		if(!type) return;
+		this.emit('inventory:remove', {item});
+		this.emit('inventory', {type: 'remove', item});
+		this.sendInventoryUpdateToServer(item, count, 'remove', type);
+	}
+
+
+	private sendInventoryUpdateToServer(item: Item, count, type: string, action: string): void {
+		ping('entity:inventory', {
+			entity: this.id,
+			item: {
+				id: item.id,
+				type: item.itemID,
+				quantity: item.quantity,
+				count
+			},
+			action,
+			type
+		});
+	}
+
+	receiveInventoryUpdateFromServer(update: string, updatedInventory: Item[]): void {
+		
+	}
 
 }

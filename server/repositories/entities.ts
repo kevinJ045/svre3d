@@ -72,6 +72,43 @@ export class Entities {
 			Entities.target(entity, position);
 			socket.broadcast.emit('entity:settarget', {entity, position});
 		});
+
+		pingFrom(socket, 'entity:inventory', (
+			{
+				entity:eid,
+				type,
+				item,
+				action
+			} : 
+			{ entity: string, type: 'add' | 'remove', item: {
+				type: string,
+				id: string,
+				quantity: number
+			}, action: string }
+		) => {
+			const entity = Entities.find(eid);
+			if(entity){
+				if(type == 'add'){
+					entity.addToInventory(
+						Items.create(item.type, item.quantity)!
+						.setData({ id: item.id }),
+					)
+				} else if(type == 'remove'){
+					entity.removeFromInventory(
+						Items.create(item.type)!
+						.setData({ id: item.id }),
+						item.quantity
+					)
+				}
+				socket.broadcast.emit('entity:inventory', {
+					entity:eid,
+					type,
+					item: Items.create(item.type, item.quantity)!
+					.setData({ id: item.id }),
+					action
+				});
+			}
+		});
 	}
 
 }

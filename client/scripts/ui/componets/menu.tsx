@@ -1,11 +1,19 @@
 import * as React from "react";
 import { Tab, TabPane } from "../widgets/tabs";
+import { Map2D } from "../misc/map";
+import { Map2DWidget } from "../widgets/map";
+import { PlayerInfo } from "../../repositories/player";
+import { SlotItem } from "../widgets/slotitem";
 
 
 export const Menu = () => {
 
 	const [tab, setTab] = React.useState('inventory');
 
+
+	React.useEffect(() => {
+		Map2D.activeTab = tab;
+	}, [tab]);
 
 	return (<div className="menu">
 		
@@ -39,31 +47,15 @@ export const Menu = () => {
 					</div>
 					
 					<div className="inventory-group">
-					
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-							<div className="inventory-slot"></div>
-
+						{
+							PlayerInfo.entity.inventory
+							.concat(PlayerInfo.entity.inventory.length < 20 ? Array(20 - PlayerInfo.entity.inventory.length).fill(null) : [])
+							.map((i, k) => <div key={k} className="inventory-slot">{
+								i ? <>
+									<SlotItem item={i as any}></SlotItem>
+								</> : ""
+							}</div>)
+						}
 					</div>
 
 					<div className="inventory-group" style={{width: "45px"}}>
@@ -98,7 +90,7 @@ export const Menu = () => {
 			</TabPane>
 
 			<TabPane tab="map" activeTab={tab} id="map">
-				<canvas id="map"></canvas>
+				<Map2DWidget activeTab={tab} />
 			</TabPane>
 
 			<TabPane tab="settings" activeTab={tab}>

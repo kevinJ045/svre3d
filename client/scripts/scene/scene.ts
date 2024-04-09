@@ -11,6 +11,9 @@ import { CameraManager } from "../controls/camera";
 import { Controls } from "../controls/controls";
 import UI from "../ui/uiman";
 import { Lights } from "./lights";
+import { Items } from "../repositories/items";
+import { ItemData } from "../../../server/models/item";
+import { Item } from "../models/item";
 // import { xyz } from "../common/xyz";
 
 export class MainScene extends Scene3D {
@@ -55,6 +58,18 @@ export class MainScene extends Scene3D {
 
 		Entities.ping();
 
+		player.addToInventory(Items.create(new ItemData().setData({
+			itemID: 'm:rubidium',
+			quantity: 1
+		})));
+
+		player.addToInventory(Items.create(new ItemData().setData({
+			itemID: 'm:oreon',
+			quantity: 5
+		})));
+
+		Items.crafting(...player.inventory.slice(1, 2) as any);
+
 		CameraManager.setCamera(this.camera);
 		UI.init();
 		Controls.initControls(this.canvas);
@@ -64,6 +79,7 @@ export class MainScene extends Scene3D {
 
 		Entities.update();
 		Controls.update();
+		UI.update();
 
 	}
 

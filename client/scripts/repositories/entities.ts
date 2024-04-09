@@ -9,6 +9,8 @@ import { ping, pingFrom } from "../socket/socket";
 import { cloneGltf } from "../lib/gltfclone";
 import { Items } from "./items";
 import { PlayerInfo } from "./player";
+import { Equipments } from "./equipments";
+import { ItemData } from "../../../server/models/item";
 
 
 export class Entities {
@@ -37,8 +39,6 @@ export class Entities {
 		SceneManager.scene.animationMixers.add(entityMesh.anims.mixer);
     entityMesh.anims.mixer.timeScale = 1;
 
-		console.log(ref);
-
 		const refMesh: THREE.Object3D = cloneGltf(ref.load);
 		SceneManager.scene.scene.add(refMesh);
 
@@ -61,6 +61,10 @@ export class Entities {
 		entity.addPhysics();
 
 		this.entities.push(entity);
+
+		if(ref.type == 'player'){
+			Equipments.entity(entity);
+		}
 
 		return entity;
 	} 
@@ -93,6 +97,32 @@ export class Entities {
 
 		pingFrom('entity:spawn', ({entity}) => {
 			Entities.spawn(entity);
+		});
+
+
+		pingFrom('entity:inventory', (
+			{
+				entity:eid,
+				type,
+				item,
+				action
+			} : 
+			{ entity: string, type: 'add' | 'remove', item: ItemData, action: string }
+		) => {
+			const entity = Entities.find(eid);
+			if(entity){
+				if(type == 'add'){
+					entity.addToInventory(
+						Items.create(item)!,
+					)
+				} else if(type == 'remove'){
+					entity.removeFromInventory(
+						Items.create(item)!,
+						item.quantity
+					)
+				}
+				console.log(entity.data);
+			}
 		});
 	}
 

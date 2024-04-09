@@ -1,4 +1,5 @@
 import { stringifyChunkPosition } from "../common/chunk";
+import { worldData } from "../constant/world";
 import { ChunkData } from "../models/chunk";
 import { xyz } from "../models/misc.xyz";
 import { pingFrom } from "../ping/ping";
@@ -11,7 +12,7 @@ export class Chunks {
 	static chunks: ChunkData[] = [];
 
 	static maxHeight = 5;
-	static chunkSize = 5;
+	static chunkSize = worldData.chunkSize;
 
 	static loadChunk(position: xyz){
 		if(this.has(stringifyChunkPosition(position))) return this.find(stringifyChunkPosition(position));

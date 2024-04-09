@@ -1,4 +1,5 @@
 import { stringifyChunkPosition } from "../common/chunk";
+import { worldData } from "../constant/world";
 import { BiomeData } from "./biome";
 import { ServerData } from "./data";
 import { EntityData } from "./entity";
@@ -22,7 +23,7 @@ export class ChunkData extends ServerData {
 		this.structures = [];
 		this.entities = [];
 		this.position = { x: 0, y: 0, z: 0 };
-		this.chunkSize = 5;
+		this.chunkSize = worldData.chunkSize;
 	}
 
 	stringify(){

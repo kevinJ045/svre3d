@@ -8,6 +8,7 @@ import { Sockets } from "./ping/sockets";
 import { Biomes } from "./repositories/biomes";
 import { Entities } from "./repositories/entities";
 import { Items } from "./repositories/items";
+import { Mainloop } from "./repositories/mainloop";
 import { Players } from "./repositories/players";
 import { ResourceMap } from "./repositories/resources";
 
@@ -40,6 +41,8 @@ export async function userConnected(serverData, socket){
 
 		startPing(serverData, socket);
 
+		setTimeout(() => Entities.spawn('m:goober', { x: 0, y: 0, z:0 }), 5000);
+
 		socket.on('disconnect', () => {
 			Entities.despawn(playerEntity!);
 		})
@@ -69,4 +72,12 @@ export function init(serverData: any){
 	loadAllResources(ResourceMap);
 	Items.filterItems();
 	Biomes.registerBiomes();
+
+
+	Mainloop.register(() => {
+		Entities.update();
+	});
+
+
+	Mainloop.start();
 }

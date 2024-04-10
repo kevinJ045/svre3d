@@ -29,10 +29,9 @@ export const Character = (
 
 			const addplayer = () => {
 				// @ts-ignore
-				let player = PlayerInfo.entity?.object3d || window.player?.entity?.object3d;
+				let player = PlayerInfo.entity?.object3d;
 				if(!player) return;
 				// @ts-ignore
-				if(!window.player) window.player = PlayerInfo;
 				if(currentPlayerMesh) scene.remove(currentPlayerMesh);
 				currentPlayerMesh = cloneGltf({scene: player});
 

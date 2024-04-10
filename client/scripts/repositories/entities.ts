@@ -96,6 +96,7 @@ export class Entities {
 		});
 
 		pingFrom('entity:spawn', ({entity}) => {
+			console.log(entity);
 			Entities.spawn(entity);
 		});
 

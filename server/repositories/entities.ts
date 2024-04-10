@@ -131,4 +131,8 @@ export class Entities {
 		});
 	}
 
+
+
+	static update(){}
+
 }

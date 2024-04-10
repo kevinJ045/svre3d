@@ -2,7 +2,7 @@ import * as React from "react";
 import { Tab, TabPane } from "../widgets/tabs";
 import { Map2D } from "../misc/map";
 import { Map2DWidget } from "../widgets/map";
-import { PlayerInfo as s } from "../../repositories/player";
+import { PlayerInfo } from "../../repositories/player";
 import { SlotItem } from "../widgets/slotitem";
 import Inventory from "../widgets/inventory";
 import { Character } from "../widgets/character";
@@ -11,9 +11,6 @@ import { Character } from "../widgets/character";
 export const Menu = () => {
 
 	// @ts-ignore
-	if(!s.entity) var PlayerInfo = window.player;
-	else var PlayerInfo = s;
-
 	const [tab, setTab] = React.useState('inventory');
 	
 	const [inventory, setInventory] = React.useState([...(PlayerInfo.entity?.inventory || [])]);
@@ -116,7 +113,7 @@ export const Menu = () => {
 							<h4>Level {PlayerInfo?.entity.exp.level.toString()}</h4>
 						</div>
 						<div className="c-preview">
-							<Character activeTab={tab}></Character>
+							{/* <Character activeTab={tab}></Character> */}
 						</div>
 						<div className="about">
 							hello bro... how are you?

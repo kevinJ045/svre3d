@@ -1,11 +1,11 @@
 # Thing
 Install:
 ```bash
-git clone https://github.com/kevinj045/trye3d
-cd trye3d
+git clone https://github.com/kevinj045/svre3d
+cd svre3d
 npm i
-npm run dev
+npm start
 ```
 Open:
-In the browser open page `http://localhost:5173/`
+In the browser open page `http://localhost:3000/`
 Bam.

@@ -7,6 +7,9 @@ import { ping, pingFrom } from "../ping/ping";
 import { Sockets } from "../ping/sockets";
 import { ItemData } from "../models/item";
 import { Items } from "./items";
+import { Vector3 } from "three";
+import { Chunks } from "./chunks";
+import { Random } from "../common/rand";
 
 
 export class Entities {
@@ -132,7 +135,80 @@ export class Entities {
 	}
 
 
+	static moveTowardsTarget(entity) {
+		if (entity.targetPosition) {
+			const position = new Vector3(entity.position.x, entity.position.y, entity.position.z);
+			const targetPosition = new Vector3(entity.targetPosition.x, 0, entity.targetPosition.z);
+			const direction = new Vector3();
+			direction.subVectors(targetPosition, position);
+			direction.y = 0; 
 
-	static update(){}
+			direction.normalize();
+
+			const speed = parseInt(entity.speed) || 1; 
+
+			const distanceToTarget = position.distanceTo(targetPosition);
+
+			if (distanceToTarget < 1.5) {
+				entity.targetPosition = null;
+			} else {
+					entity.position.x += direction.x * speed;
+					entity.position.z += direction.z * speed;
+
+					Sockets.emit('entity:move', {
+							direction,
+							position: entity.position,
+							speed,
+							entity: entity.id
+					});
+
+			}
+		}
+	}
+
+	static selectRandomTarget(entity){
+		const chunks = Chunks.chunks;
+		if(chunks.length) entity.targetPosition = Random.pick(...chunks).position;
+	}
+
+	static thinkNoAttackTarget(entity): void {
+		entity.restTime.current++;
+		if (entity.restTime.current > entity.restTime.currentMax) {
+			entity.restTime.current = 0;
+			entity.restTime.currentMax = Random.from(entity.restTime.min, entity.restTime.max);
+			if (!entity.targetPosition) {
+				Entities.selectRandomTarget(entity);
+			}
+		} else {
+			if (!entity.init) {
+				entity.init = true;
+				if (Random.from(0, 3) === 2) Entities.selectRandomTarget(entity);
+			}
+			Entities.think(entity);
+		}
+	}    
+
+	static think(entity){
+
+		const ai = entity.reference.config!.ai || {};
+
+		if(ai.random_movement){
+			if(entity.targetPosition) Entities.moveTowardsTarget(entity);
+			else Entities.thinkNoAttackTarget(entity);   
+		}
+
+	}
+
+	static update(){
+
+		const entitiesWithAi = this.entities.filter(
+			e => e.reference.config?.ai
+		);
+
+		entitiesWithAi.forEach(e => {
+			Entities.think(e);
+		});
+
+	}
 
 }

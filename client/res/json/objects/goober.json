@@ -2,6 +2,7 @@
 	"id": "m:goober",
 	"type": "entity",
 	"config": {
+		"speed": 4,
 		"variants": [
 			{
 				"name": "grass",

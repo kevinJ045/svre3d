@@ -108,7 +108,11 @@ export class Entity extends EntityData {
     this.object3d.body.setAngularFactor(0, 0, 0);
 		this.object3d.body.on.collision((otherObject, event) => {
 			if(event == 'collision') this.emit('collision', {object: otherObject});
+			if(otherObject.name == 'chunk' && otherObject.position.y - this.object3d.position.y > -1){
+				this.hasHigherBlocks = true;
+			}
 		});
+		
 	}
 
 	addPos(x, y, z){
@@ -302,7 +306,8 @@ export class Entity extends EntityData {
 
 				if(looking) {
 					if (obstacles.hasHigherBlocks) {
-						this.addPos(0, 2.5, 0);
+						// console.log(obstacles.hasHigherBlocks);
+						this.addPos(0, 1.5, 0);
 						// this.run({ x: 0, z: 0});
 					} else if (obstacles.hasSolidObject || obstacles.hasEntity) {
 						const avoidanceDirection = this.avoidObstacles(nextStep, obstacles);

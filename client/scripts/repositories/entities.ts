@@ -100,6 +100,12 @@ export class Entities {
 			Entities.spawn(entity);
 		});
 
+		pingFrom('entity:move', ({entity:se, position}) => {
+			const entity = Entities.find(se);
+			if(entity){
+				if(!entity.targetLocation) entity.displace(new THREE.Vector3(position.x, position.y, position.z));
+			} else {}
+		});
 
 		pingFrom('entity:inventory', (
 			{

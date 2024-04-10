@@ -1,6 +1,7 @@
 import { BuffData } from "./buff";
 import { ServerData } from "./data";
 import { ItemData } from "./item";
+import { Random } from "../common/rand";
 
 class EntityData extends ServerData {
     // Entity-specific properties
@@ -85,6 +86,16 @@ class EntityData extends ServerData {
     findItemByData(key: string, value: any) {
 		return this.inventory.find(i => i.data[key] == value);
 	}
+
+    restTime = {
+        current: 0,
+        max: 200,
+        min: 100,
+        currentMax: 100
+    };
+
+    init = false;
+    
 }
 
 export { EntityData };

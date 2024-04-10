@@ -32,7 +32,9 @@ export class Map2D {
 			const X = mapOffset.x;
 			const Y = mapOffset.y;
 	
-			const playerPosition = PlayerInfo.entity.object3d.position;
+			const playerPosition = PlayerInfo.entity?.object3d.position;
+
+			if(!playerPosition) return;
 	
 			const half_height = height / 2;
 			const half_width = width / 2;

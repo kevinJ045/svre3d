@@ -9,7 +9,6 @@ import { Entities } from "../repositories/entities";
 export async function initScene(){
 	PhysicsLoader('/ammo', () => new Project({ scenes: [MainScene], antialias: true }));
 
-
 	// @ts-ignore
 	window.ResourceMap = ResourceMap;
 	// @ts-ignore

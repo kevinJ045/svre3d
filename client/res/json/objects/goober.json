@@ -20,7 +20,19 @@
 					"count": 3
 				}]
 			}
-		]
+		],
+		"ai": {
+			"attack": [
+				{
+					"id": "m:player",
+					"variant": "!$self"
+				},{
+					"id": "m:goober",
+					"variant": "!$self"
+				}
+			],
+			"random_movement": true
+		}
 	},
 	"resource": {
 		"type": "gltf",

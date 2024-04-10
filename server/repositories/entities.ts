@@ -13,7 +13,7 @@ export class Entities {
 
 	static entities : EntityData[] = [];
 	
-	static spawn(type: string, position: xyz, name?: string, variant?: string, inventory?: any[], data?: any){
+	static spawn(type: string, position: xyz, name?: string, variant?: string, inventory?: any[], data?: any, exp?: any){
 		
 		const ref = ResourceMap.findResource(type);
 		
@@ -25,7 +25,12 @@ export class Entities {
 			variant,
 			type,
 			inventory: inventory ? inventory.map(item => Items.create(item.id, item.quantity, item.data)) : null,
-			data: {...data}
+			data: {...data},
+			exp: exp ? exp : {
+				level: 1,
+				current: 1,
+				max: 100
+			}
 		});
 
 		entity.setReference(ref.data);

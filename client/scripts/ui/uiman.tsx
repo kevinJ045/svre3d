@@ -9,7 +9,9 @@ export default class UI {
 
 	static init(){
 		this.root = createRoot(document.querySelector('#full-menu')!);
-		this.root.render(<Menu></Menu>);
+		this.root.render(<div>
+			<Menu></Menu>
+		</div>);
 	}
 
 	static toggle(){

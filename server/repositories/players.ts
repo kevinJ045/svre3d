@@ -1,4 +1,5 @@
 import { Data } from "../db/db";
+import { DBModel } from "../models/dbmodel";
 import { Entities } from "./entities";
 
 
@@ -10,7 +11,7 @@ export class Players {
 	static active: string[] = [];
 
 	static async find(username: string){
-		return await Data.collection('players').findOne({ username });
+		return DBModel.create('player', await Data.collection('players').findOne({ username }));
 	}
 
 	static isActive(username: string){

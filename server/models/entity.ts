@@ -16,11 +16,6 @@ class EntityData extends ServerData {
         level: number;
         max: number;
         current: number;
-        multipliers: {
-            damage: number;
-            defense: number;
-            health: number;
-        };
     };
     inventory: ItemData[] = []; // Inventory of the entity
     variant: string; // Variant of the entity (if applicable)

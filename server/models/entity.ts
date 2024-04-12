@@ -89,9 +89,9 @@ class EntityData extends ServerData {
 
     restTime = {
         current: 0,
-        max: 200,
-        min: 100,
-        currentMax: 100
+        max: 2000,
+        min: 1000,
+        currentMax: 1000
     };
 
     init = false;

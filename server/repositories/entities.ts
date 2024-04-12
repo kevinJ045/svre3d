@@ -38,6 +38,31 @@ export class Entities {
 
 		entity.setReference(ref.data);
 
+		const v = (ref.data.config?.variants || []).find(i => i.name == variant);
+
+		let drops = (ref.data.config?.drops || []);
+
+		if(ref.data.config?.health){
+			entity.health = { max: ref.data.config.health, current: ref.data.config.health }
+		}
+		if(ref.data.config?.damage) entity.damage = ref.data.config?.damage;
+		if(ref.data.config?.defense) entity.defense = ref.data.config?.defense;
+
+		if(v){
+			if(v.drops){
+				drops.push(...v.drops);
+			}
+			if(v.health){
+				entity.health = { max: v.health, current: v.health }
+			}
+			if(v.damage) entity.damage = v.damage;
+			if(v.defense) entity.defense = v.defense;
+		}
+
+		if(drops.length){
+			entity.inventory.push(...drops.map(item => Items.create(item.item, item.quantity, item.data)))
+		}
+
 		Entities.entities.push(entity);
 
 		Sockets.emit('entity:spawn', { entity });
@@ -137,7 +162,7 @@ export class Entities {
 
 	static moveTowardsTarget(entity) {
 		if (entity.targetPosition) {
-			const position = new Vector3(entity.position.x, entity.position.y, entity.position.z);
+			const position = new Vector3(entity.position.x, 0, entity.position.z);
 			const targetPosition = new Vector3(entity.targetPosition.x, 0, entity.targetPosition.z);
 			const direction = new Vector3();
 			direction.subVectors(targetPosition, position);
@@ -151,6 +176,10 @@ export class Entities {
 
 			if (distanceToTarget < 1.5) {
 				entity.targetPosition = null;
+				Sockets.emit('entity:reach', {
+					entity: entity.id,
+					position: entity.position
+				});
 			} else {
 					entity.position.x += direction.x * speed;
 					entity.position.z += direction.z * speed;

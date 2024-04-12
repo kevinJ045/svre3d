@@ -5,6 +5,7 @@ import { xyz } from "../models/misc.xyz";
 import { pingFrom } from "../ping/ping";
 import { generateChunkHeight } from "../world/chunks";
 import { Biomes } from "./biomes";
+import { EntitySpawner } from "./spawner";
 import { Structures } from "./structures";
 
 
@@ -22,6 +23,7 @@ export class Chunks {
 		const chunk = ChunkData.create<ChunkData>(ChunkData, { position, chunkSize: this.chunkSize, biome: Biomes.getBiome(position.x, position.z).reference });
 
 		Structures.constructStructure(chunk);
+		EntitySpawner.spawnAtChunk(chunk);
 
 		this.chunks.push(chunk);
 

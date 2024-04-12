@@ -278,6 +278,7 @@ export class Entity extends EntityData {
 
 	moveTowardsTarget() {
     if (this.targetLocation) {
+			this.targetLocation.y = this.object3d.position.y;
 			const direction = new THREE.Vector3();
 			direction.subVectors(this.targetLocation, this.object3d.position);
 			direction.y = 0; 
@@ -288,7 +289,14 @@ export class Entity extends EntityData {
 
 			const distanceToTarget = this.object3d.position.distanceTo(this.targetLocation);
 
+			// const box = new THREE.Box3().setFromObject(this.object3d);
+			// const sizeParent = new THREE.Vector3();
+			// box.getSize(sizeParent);
+			// sizeParent.distanceTo(direction)
+			// console.log(distanceToTarget - sizeParent.distanceTo(direction));
+
 			if (distanceToTarget < 1.5) {
+				console.log('reach');
 				this.displace(null);
 				this.object3d.body.setAngularVelocityY(0);
 				this.run({
@@ -311,11 +319,11 @@ export class Entity extends EntityData {
 						this.addPos(0, 1.5, 0);
 						// this.run({ x: 0, z: 0});
 					} else if (obstacles.hasSolidObject || obstacles.hasEntity) {
-						const avoidanceDirection = this.avoidObstacles(nextStep, obstacles);
-						this.run({
-								x: avoidanceDirection.x * speed,
-								z: avoidanceDirection.z * speed
-						});
+						// const avoidanceDirection = this.avoidObstacles(nextStep, obstacles);
+						// this.run({
+						// 		x: avoidanceDirection.x * speed,
+						// 		z: avoidanceDirection.z * speed
+						// });
 					} else {
 						this.run({
 							x: direction.x * speed,

@@ -11,6 +11,7 @@ import { Items } from "./items";
 import { PlayerInfo } from "./player";
 import { Equipments } from "./equipments";
 import { ItemData } from "../../../server/models/item";
+import { MaterialManager } from "./materials";
 
 
 export class Entities {
@@ -39,10 +40,8 @@ export class Entities {
 		SceneManager.scene.animationMixers.add(entityMesh.anims.mixer);
     entityMesh.anims.mixer.timeScale = 1;
 
-		const refMesh: THREE.Object3D = cloneGltf(ref.load);
+		const refMesh: THREE.Object3D = ref.resource.type == "gltf" ? cloneGltf(ref.load) : ref.mesh.clone();
 		SceneManager.scene.scene.add(refMesh);
-
-		console.log(refMesh);
 
 		refMesh.traverse(child => {
       child.castShadow = true
@@ -65,6 +64,22 @@ export class Entities {
 		if(ref.type == 'player'){
 			Equipments.entity(entity);
 		}
+
+		if(ref.config?.material){
+			const variant = 
+				((ref.config?.variants || []).find(
+					i => i.name == entity.variant
+				) || {}).material || {};
+			const material = {
+				...ref.config!.material,
+				...variant
+			};
+			for(let i in material){
+				const part = Equipments.entityBody(i, entity);
+				part.material = MaterialManager.parse(material[i], {});
+			}
+		}
+
 
 		return entity;
 	} 
@@ -100,10 +115,25 @@ export class Entities {
 			Entities.spawn(entity);
 		});
 
-		pingFrom('entity:move', ({entity:se, position}) => {
+		pingFrom('entity:move', ({entity:se, direction, position}) => {
 			const entity = Entities.find(se);
 			if(entity){
-				if(!entity.targetLocation) entity.displace(new THREE.Vector3(position.x, position.y, position.z));
+				if(!entity.targetLocation) console.log('new pos', position);
+				entity.displace(new THREE.Vector3(position.x, position.y, position.z));
+				// entity.run({
+				// 	x: direction.x * entity.speed,
+				// 	z: direction.z * entity.speed
+				// })
+			} else {}
+		});
+
+		pingFrom('entity:reach', ({entity:se, position}) => {
+			const entity = Entities.find(se);
+			if(entity){
+				const pos = new THREE.Vector3(position.x, position.y, position.z);
+				const distance = pos.distanceTo(entity.object3d.position);
+				if(distance < 1.5) entity.displace(null);
+				else entity.displace(new THREE.Vector3(position.x, position.y, position.z));
 			} else {}
 		});
 

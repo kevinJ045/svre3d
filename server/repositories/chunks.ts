@@ -5,6 +5,7 @@ import { xyz } from "../models/misc.xyz";
 import { pingFrom } from "../ping/ping";
 import { generateChunkHeight } from "../world/chunks";
 import { Biomes } from "./biomes";
+import { Structures } from "./structures";
 
 
 export class Chunks {
@@ -19,6 +20,8 @@ export class Chunks {
 		position.y = generateChunkHeight(position.x, position.z, this.maxHeight, this.chunkSize);
 
 		const chunk = ChunkData.create<ChunkData>(ChunkData, { position, chunkSize: this.chunkSize, biome: Biomes.getBiome(position.x, position.z).reference });
+
+		Structures.constructStructure(chunk);
 
 		this.chunks.push(chunk);
 
@@ -67,6 +70,7 @@ export class Chunks {
 		pingFrom(socket, 'chunk:request', ({position, type}) => {
 
 			const chunk = type == 'load' ? Chunks.loadChunk(position) : Chunks.unloadChunk(position);
+			
 			socket.broadcast.emit('chunk:'+type, chunk || position);
 			socket.emit('chunk:'+type, chunk || position);
 			return chunk;

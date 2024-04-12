@@ -10,8 +10,9 @@
 		{
 			"name": "tree",
 			"object": "m:tree-1",
-			"density": 25,
-			"object_rules": ["tree1"]
+			"density": 10,
+			"object_rules": ["tree1"],
+			"random": true
 		}
 	],
 	"spawn_rules": [

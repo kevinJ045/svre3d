@@ -7,6 +7,7 @@ import { THREE } from "enable3d";
 export class MaterialManager {
 
 	static parseMaterial(mat: string, variables = {}){
+		console.log(mat);
 		const materialOptions = Object.fromEntries(mat.split('(')[1]
 		.split(')')[0]
 		.split(',')
@@ -89,6 +90,33 @@ export class MaterialManager {
 		});
 		
 		return mat;
+	}
+
+	static applyMaterials(obj: any, mat: string | any[], variables = {}){
+		const materialsRule = Array.isArray(mat) ? mat : [mat];
+		obj.children.forEach((child: any, index: number) => {
+			const mat = materialsRule.length > 1 ? materialsRule[index] : materialsRule[0];
+			if(mat){
+				if(Array.isArray(child.material)){
+					if(Array.isArray(mat)) child.material = materialsRule.map(mat => {
+						return MaterialManager.parse(mat, variables);
+					});
+					else if(typeof mat == "object") {
+						child.material = child.material.map(mate => {
+							if(mate.name in mat){
+								return MaterialManager.parse(mat[mate.name], variables);
+							} else {
+								return mate;
+							}
+						});
+					} else {
+						child.material = MaterialManager.parse(mat, variables);
+					}
+				} else{
+					child.material = MaterialManager.parse(mat, variables);
+				}
+			}
+		});
 	}
 
 }

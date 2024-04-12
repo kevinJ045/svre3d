@@ -8,6 +8,7 @@ import { PhysicsManager } from "../common/physics";
 import { ServerData } from "../../../server/models/data";
 import { Biomes } from "./biomes";
 import { WorldData } from "../world/data";
+import { Structures } from "./structures";
 
 export class Chunks {
 
@@ -25,6 +26,7 @@ export class Chunks {
 		chunk.setMesh(chunkObject);
 		Biomes.applyChunkBiome(chunk);
 		chunkObject.position.set(chunk.position.x, chunk.position.y - 3, chunk.position.z);
+		Structures.loadStrcuture(chunk);
 		SceneManager.scene.scene.add(chunkObject);
 		PhysicsManager.addPhysics(chunkObject, {
 			shape: 'box',
@@ -107,6 +109,20 @@ export class Chunks {
 		});
 
 	}
+
+	static findChunkAtPosition(position: THREE.Vector3): Chunk | null {
+    for (const chunk of this.chunks) {
+      if (
+        position.x >= chunk.object3d.position.x &&
+        position.x < chunk.object3d.position.x + chunk.chunkSize &&
+        position.z >= chunk.object3d.position.z &&
+        position.z < chunk.object3d.position.z + chunk.chunkSize
+      ) {
+        return chunk;
+      }
+    }
+    return null;
+  }
 
 	static update(playerPosition, renderDistance){
 		const chunkSize = WorldData.get('chunkSize');

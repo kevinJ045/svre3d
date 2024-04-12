@@ -23,7 +23,7 @@ export async function userConnected(serverData, socket){
 
 		const player = await Players.find(username)!;
 
-		console.log(player);
+		// console.log(player);
 
 		const playerEntity = Entities.spawn('m:player', player!.position, player!.username, player?.variant, player?.inventory, { username, equipment: player?.equipment }, player!.exp)!;
 
@@ -41,7 +41,7 @@ export async function userConnected(serverData, socket){
 
 		startPing(serverData, socket);
 
-		setTimeout(() => Entities.spawn('m:goober', { x: 0, y: 0, z:0 }), 5000);
+		// setTimeout(() => Entities.spawn('m:goober', { x: 0, y: 0, z:0 }), 5000);
 
 		socket.on('disconnect', () => {
 			Entities.despawn(playerEntity!);

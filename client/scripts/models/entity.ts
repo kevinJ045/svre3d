@@ -108,6 +108,7 @@ export class Entity extends EntityData {
     this.object3d.body.setAngularFactor(0, 0, 0);
 		this.object3d.body.on.collision((otherObject, event) => {
 			if(event == 'collision') this.emit('collision', {object: otherObject});
+			// if(this.reference.id == 'm:goober') console.log(otherObject.position.y - this.object3d.position.y)
 			if(otherObject.name == 'chunk' && otherObject.position.y - this.object3d.position.y > -1){
 				this.hasHigherBlocks = true;
 			}
@@ -326,12 +327,26 @@ export class Entity extends EntityData {
     }
 	}
 
+	hasBlockNextStep() {
+		const nextPosition = this.object3d.position.clone().add(this.runDirection);
+	
+		const nextChunk = Chunks.findChunkAtPosition(nextPosition);
+		
+		if (!nextChunk) {
+			return false; 
+		}
+		
+		return true;
+	}
+
 	update(){
 		if(this.targetLocation) this.moveTowardsTarget();
 
 		if(this.runDirection.x || this.runDirection.z){
-			this.object3d.body.setVelocity(this.runDirection.x, this.object3d.body.velocity.y, this.runDirection.z);
-			this.emit('move', this.runDirection, this.object3d.position.clone().add(this.runDirection));
+			if(this.hasBlockNextStep()){
+				this.object3d.body.setVelocity(this.runDirection.x, this.object3d.body.velocity.y, this.runDirection.z);
+				this.emit('move', this.runDirection, this.object3d.position.clone().add(this.runDirection));
+			}
 		} else {
 			this.object3d.body.setVelocity(0, this.object3d.body.velocity.y, 0);
 		}

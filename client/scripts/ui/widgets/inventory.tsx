@@ -1,7 +1,34 @@
 import React, { useState } from 'react';
 import { SlotItem } from './slotitem';
 
-const Inventory = ({ inventory }) => {
+
+export const InventoryItem = ({
+  selectItem,
+  unselectItem,
+  item,
+  free = false,
+  mouse = true
+}) => {
+  return (<div 
+    onClick={
+      () => selectItem(item)
+    }
+    // onMouseEnter={
+    //   () => mouse ? selectItem(item) : null
+    // }
+    // onMouseLeave={
+    //   () => unselectItem(item)
+    // }
+    className={free ? '' : "inventory-slot"}>
+      {item ? <SlotItem item={item}></SlotItem> : ""}
+    </div>);
+}
+
+const Inventory = ({ 
+  inventory,
+  selectItem,
+  unselectItem,
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
@@ -21,15 +48,22 @@ const Inventory = ({ inventory }) => {
     const slicedInventory = inventory.filter(i => !i.data.wid).slice(startIndex, endIndex);
 
     const filledSlots = slicedInventory.map((item, index) => (
-      <div key={index} className="inventory-slot">
-        {item ? <SlotItem item={item}></SlotItem> : ""}
-      </div>
+      <InventoryItem
+      key={index} 
+      selectItem={selectItem}
+      unselectItem={unselectItem}
+      item={item}
+      ></InventoryItem>
     ));
 
     // Calculate the number of empty slots to fill
     const emptySlotsCount = Math.max(0, itemsPerPage - slicedInventory.length);
     const emptySlots = Array.from({ length: emptySlotsCount }).map((_, index) => (
-      <div key={`empty-${index}`} className="inventory-slot">
+      <div
+      onMouseEnter={
+        () => unselectItem()
+      }
+      key={`empty-${index}`} className="inventory-slot">
         {/* Render whatever you want for empty slots */}
       </div>
     ));

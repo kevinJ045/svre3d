@@ -229,6 +229,15 @@ body {
 	background: var(--item-url) no-repeat;
 }
 
+.player-menu .inventory .inventory-item-info .item-icon{
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
 .player-menu .item .item-count{
 	color: white;
 	position: absolute;
@@ -240,17 +249,17 @@ body {
 
 .player-menu .inventory .inventory-item-info{
 	position: absolute;
-	background: var(--vp-c-bg-soft);
-	width: 200px;
+	width: calc(100% - 20px);
 	height: 100px;
 	display: flex;
 	color: white;
 	font-weight: 700;
 	flex-direction: column;
-	display: none;
 	z-index: 100;
 	border-radius: 15px;
 	overflow: auto;
+	top: 10px;
+	left: 10px;
 }
 
 .player-menu .inventory .inventory-item-info .item-title{
@@ -334,6 +343,7 @@ body {
 	top: -150%;
 	overflow: auto;
 	z-index: 200;
+	display: block;
 }
 
 .player-menu .inventory-selector .wrapper {

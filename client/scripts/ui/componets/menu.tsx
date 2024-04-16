@@ -3,9 +3,12 @@ import { Tab, TabPane } from "../widgets/tabs";
 import { Map2D } from "../misc/map";
 import { Map2DWidget } from "../widgets/map";
 import { PlayerInfo } from "../../repositories/player";
-import { SlotItem } from "../widgets/slotitem";
-import Inventory from "../widgets/inventory";
+import { SlotItem, generateItemIcon } from "../widgets/slotitem";
+import Inventory, { InventoryItem } from "../widgets/inventory";
 import { Character } from "../widgets/character";
+import { Item } from "../../models/item";
+import { ItemActions } from "../widgets/actions";
+import CraftingUI from "../widgets/craftui";
 
 
 export const Menu = () => {
@@ -15,6 +18,7 @@ export const Menu = () => {
 	
 	const [inventory, setInventory] = React.useState([...(PlayerInfo.entity?.inventory || [])]);
 
+	const [currentItem, setCurrentItem] = React.useState<Item | null>(null)
 
 	React.useEffect(() => {
 		Map2D.activeTab = tab;
@@ -58,8 +62,20 @@ export const Menu = () => {
 			
 			<TabPane tab="inventory" activeTab={tab}>
 
+
 				<div className="inventory">
-					<Inventory inventory={inventory}></Inventory>
+
+					{currentItem ? <div className="inventory-item-info">
+						<div className="item-title"><div className="item-icon" style={generateItemIcon(currentItem.reference?.config?.icon)}></div>{currentItem.reference.config?.name || currentItem.itemID}<span>{currentItem.quantity}</span></div>
+						<p className="item-about">{currentItem.data.content}</p>
+						<ItemActions item={currentItem} />
+					</div> : null}
+					
+					<Inventory selectItem={
+						(item: Item) => setCurrentItem(item)
+					} unselectItem={
+						() => setCurrentItem(null)
+					} inventory={inventory}></Inventory>
 
 					<div className="inventory-group has-character" style={{width: "45px"}}>
 
@@ -72,7 +88,14 @@ export const Menu = () => {
 												let item = inventory
 												.find(i => i.data.wid && i.reference?.equipment.type == type);
 
-											return item ? <SlotItem item={item as any} /> : null;
+											return item ? <InventoryItem
+											selectItem={
+												(item: Item) => setCurrentItem(item)
+											} unselectItem={
+												() => setCurrentItem(null)
+											}
+											free={true}
+											item={item as any} /> : null;
 											})()
 										}
 									</div>
@@ -85,20 +108,8 @@ export const Menu = () => {
 			</TabPane>
 
 			<TabPane id="craft-ui" tab="crafting" activeTab={tab}>
-				<div className="item-content-editor">
-					<input type="text" id="item-content-text" />
-				</div>
-
-				<div className="slot-1">
-					<div className="inventory-slot independent"></div>
-				</div>
-				<div className="slot-2">
-					<div className="inventory-slot independent"></div>
-				</div>
-
-				<div className="slot-result">
-					<div className="inventory-slot independent"></div>
-				</div>
+				
+				<CraftingUI />
 
 			</TabPane>
 
@@ -109,15 +120,15 @@ export const Menu = () => {
 			<TabPane tab="player-info" activeTab={tab}>
 				<h3>Entity Info</h3>
 				<div className="player-info-grid">
-						<div className="info">
-							<h4>Level {PlayerInfo?.entity.exp.level.toString()}</h4>
-						</div>
-						<div className="c-preview">
-							{/* <Character activeTab={tab}></Character> */}
-						</div>
-						<div className="about">
-							hello bro... how are you?
-						</div>
+					<div className="info">
+						<h4>Level {PlayerInfo?.entity.exp.level.toString()}</h4>
+					</div>
+					<div className="c-preview">
+						{/* <Character activeTab={tab}></Character> */}
+					</div>
+					<div className="about">
+						hello bro... how are you?
+					</div>
 				</div>
 			</TabPane>
 

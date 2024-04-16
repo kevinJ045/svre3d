@@ -46,10 +46,9 @@ export class Items {
 	}
 
 	static fromRecipe(preview = false, ...items: ItemData[]): { quantity: number, recipe: { item: string, quantity: number }[], item: jsonres, items?: ItemData[] } | null {
-		
 		const itemsIds = items.map(item => item.itemID).sort().join(',');
-    const item = this.craftable().find(i =>
-			i.config!.crafting.recipe.map(r => r.item).sort().join(',') === itemsIds
+    	const item = this.craftable().find(i =>
+		i.config!.crafting.recipe.map(r => r.item).sort().join(',') === itemsIds
     );
 
     if (!item) return null;
@@ -59,21 +58,21 @@ export class Items {
 
     // Check if there are enough items for the recipe
     for (const { item: recipeItem, quantity: recipeItemCount } of recipe) {
-			const item = items.find(i => i.itemID === recipeItem);
-			if (!item || item.quantity < recipeItemCount) return null;
+		const item = items.find(i => i.itemID === recipeItem);
+		if (!item || item.quantity < recipeItemCount) return null;
     }
 
     return {
-			quantity,
-			recipe,
-			item,
-			items: preview ? [] : items
+		quantity,
+		recipe,
+		item,
+		items: preview ? [] : items
     };
 	}
 
 	static startPing(socket){
 
-		pingFrom(socket, 'crafting:recipe', (items) => {
+		pingFrom(socket, 'crafting:recipe', ({entity: eid, items}) => {
 			return Items.fromRecipe(true, ...items.map(i => Items.create(i.itemID, i.quantity)?.setData({ id: i.id })));
 		});
 

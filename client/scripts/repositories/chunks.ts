@@ -128,35 +128,35 @@ export class Chunks {
 		const chunkSize = WorldData.get('chunkSize');
 		const playerChunkPosition = playerPosition.clone().divideScalar(chunkSize).floor();
 
-    // Calculate the range of chunk coordinates around the player within the render distance
-    const startX = Math.floor(playerChunkPosition.x - renderDistance);
-    const endX = Math.ceil(playerChunkPosition.x + renderDistance);
-    const startZ = Math.floor(playerChunkPosition.z - renderDistance);
-    const endZ = Math.ceil(playerChunkPosition.z + renderDistance);
+		// Calculate the range of chunk coordinates around the player within the render distance
+		const startX = Math.floor(playerChunkPosition.x - renderDistance);
+		const endX = Math.ceil(playerChunkPosition.x + renderDistance);
+		const startZ = Math.floor(playerChunkPosition.z - renderDistance);
+		const endZ = Math.ceil(playerChunkPosition.z + renderDistance);
 		
 		const unloadStartX = Math.floor(playerChunkPosition.x - 2 * renderDistance);
-    const unloadEndX = Math.ceil(playerChunkPosition.x + 2 * renderDistance);
-    const unloadStartZ = Math.floor(playerChunkPosition.z - 2 * renderDistance);
-    const unloadEndZ = Math.ceil(playerChunkPosition.z + 2 * renderDistance);
+		const unloadEndX = Math.ceil(playerChunkPosition.x + 2 * renderDistance);
+		const unloadStartZ = Math.floor(playerChunkPosition.z - 2 * renderDistance);
+		const unloadEndZ = Math.ceil(playerChunkPosition.z + 2 * renderDistance);
 
-    // Unload chunks that are outside the range
-    for (let i = Chunks.chunks.length - 1; i >= 0; i--) {
-			const chunk = Chunks.chunks[i];
-			const chunkPosition = chunk.position.clone().divideScalar(chunkSize).floor();
+		// Unload chunks that are outside the range
+		for (let i = Chunks.chunks.length - 1; i >= 0; i--) {
+				const chunk = Chunks.chunks[i];
+				const chunkPosition = chunk.position.clone().divideScalar(chunkSize).floor();
 
-			// Check if the chunk is outside the range of loaded chunks
-			if (chunkPosition.x < unloadStartX || chunkPosition.x > unloadEndX || chunkPosition.z < unloadStartZ || chunkPosition.z > unloadEndZ) {
-				Chunks.requestUnloadChunk(chunk.position);
-			}
-    }
+				// Check if the chunk is outside the range of loaded chunks
+				if (chunkPosition.x < unloadStartX || chunkPosition.x > unloadEndX || chunkPosition.z < unloadStartZ || chunkPosition.z > unloadEndZ) {
+					Chunks.requestUnloadChunk(chunk.position);
+				}
+		}
 
-    // Load chunks within the range around the player
-    for (let x = startX; x <= endX; x++) {
-			for (let z = startZ; z <= endZ; z++) {
-				// if(!Chunks.has(stringifyChunkPosition({ x, z })))
-					Chunks.requestLoadChunk(new THREE.Vector3(x * chunkSize, 0, z * chunkSize));
-			}
-    }
+		// Load chunks within the range around the player
+		for (let x = startX; x <= endX; x++) {
+				for (let z = startZ; z <= endZ; z++) {
+					// if(!Chunks.has(stringifyChunkPosition({ x, z })))
+						Chunks.requestLoadChunk(new THREE.Vector3(x * chunkSize, 0, z * chunkSize));
+				}
+		}
 	}
 
 }

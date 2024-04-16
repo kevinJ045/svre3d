@@ -118,8 +118,7 @@ export class Entities {
 		pingFrom('entity:move', ({entity:se, direction, position}) => {
 			const entity = Entities.find(se);
 			if(entity){
-				if(!entity.targetLocation) console.log('new pos', position);
-				entity.displace(new THREE.Vector3(position.x, position.y, position.z));
+				if(!entity.targetLocation) entity.displace(new THREE.Vector3(position.x, position.y, position.z));
 				// entity.run({
 				// 	x: direction.x * entity.speed,
 				// 	z: direction.z * entity.speed
@@ -130,6 +129,7 @@ export class Entities {
 		pingFrom('entity:reach', ({entity:se, position}) => {
 			const entity = Entities.find(se);
 			if(entity){
+				console.log('reach on server');
 				const pos = new THREE.Vector3(position.x, position.y, position.z);
 				const distance = pos.distanceTo(entity.object3d.position);
 				if(distance < 1.5) entity.displace(null);
@@ -172,6 +172,9 @@ export class Entities {
 			inventory,
 			equipment
 		}) => {
+
+			if(!inventory) return;
+
 			const entity = Entities.find(eid);
 			entity!.data.equipment = equipment;
 

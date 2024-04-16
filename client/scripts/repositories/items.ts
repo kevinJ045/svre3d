@@ -22,14 +22,14 @@ export class Items {
 	}
 
 	private static crafting_request: any;
-	static crafting(...items: Item[]){
+	static crafting(recipe = true, ...items: Item[]){
 		if(this.crafting_request) Promise.resolve(this.crafting_request);
-		this.crafting_request = ping('crafting:craft', {entity: PlayerInfo.entity.id,items:items.map(i => ({ itemID: i.itemID, max: i.max, quantity: i.quantity, id: i.id }))})
+		this.crafting_request = ping('crafting:'+(recipe ? 'recipe' : 'craft'), {entity: PlayerInfo.entity.id,items:items.map(i => ({ itemID: i.itemID, max: i.max, quantity: i.quantity, id: i.id }))})
 		.then((e) => {
-			if(!e) return console.log('abort');
 			this.crafting_request = null;
-			console.log(e);
+			return e;
 		});
+		return this.crafting_request;
 	}
 
 }

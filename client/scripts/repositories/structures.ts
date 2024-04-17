@@ -70,7 +70,8 @@ function createObject(rule, item, side, seed, parent?: any) {
 	if(o) {
 		if(side) position = getPositionForKey(side, parent, rule, seed);
 		else if (Array.isArray(rule.position[0])) position = getRandomPos(rule.position, seed);
-			
+		
+		o.castShadow = o.receiveShadow = true;
 		o.position.copy(position);
 	}
 	else return g;

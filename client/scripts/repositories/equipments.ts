@@ -60,8 +60,6 @@ export class Equipments {
 	}
 
 	static unequip(entity: Entity, type: string, item: Item){
-		delete item.data.wid;
-
 		delete entity.data.equipment[type];
 
 		const bodyMesh = Equipments.entityBody('body', entity);
@@ -71,7 +69,9 @@ export class Equipments {
 		bodyMesh.remove(equipmentMesh);
 
 		delete item.data.wmeshid;
+		delete item.data.wid;
 
+		entity.data.uneqiupped = item;
 		entity.emit('unequip');
 	}
 

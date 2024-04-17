@@ -59,7 +59,7 @@ export class PlayerInfo {
 		}
 		
 		ping('player:equipment', {
-			inventory: PlayerInfo.entity.inventory.map(i => ({ itemID: i.itemID, data: i.data, quantity: i.quantity, id: i.id })).filter(i => i.data.wid),
+			inventory: PlayerInfo.entity.inventory.filter(i => i.data.wid).concat(PlayerInfo.entity.data.uneqiupped ? [PlayerInfo.entity.data.uneqiupped] : []).map(i => ({ itemID: i.itemID, data: i.data, quantity: i.quantity, id: i.id })),
 			equipment,
 			username: PlayerInfo.username
 		});

@@ -28,7 +28,7 @@ const CraftingUI = () => {
         Items.crafting(true, ...slotItems)
         .then(i => {
             setResultItem(i ? Items.create({
-                itemID: i.item.id,
+                itemID: i.item.itemID || i.item.id,
                 quantity: i.quantity
             } as any) : null);
         });

@@ -181,6 +181,7 @@ export class Entities {
 			entity!.inventory
 				.filter(i => !inventory.find(i2 => i2.id == i.id))
 				.map(i => {
+					// IDFK wtf is going on in here
 					i.data = inventory.find(i2 => i2.id == i.id)!.data
 				});
 			

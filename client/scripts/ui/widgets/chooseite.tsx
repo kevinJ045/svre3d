@@ -22,6 +22,7 @@ const ChooseItemUI = ({ cb, ignore, rect }) => {
                         key={item.id}
                         item={item}
                         mouse={false}
+                        click={false}
                         selectItem={() => handleItemClick(item)}
                         unselectItem={() => null}
                         />

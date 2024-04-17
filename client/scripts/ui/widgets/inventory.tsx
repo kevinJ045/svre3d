@@ -7,20 +7,21 @@ export const InventoryItem = ({
   unselectItem,
   item,
   free = false,
-  mouse = true
+  mouse = true,
+  click = true
 }) => {
   return (<div 
     onClick={
       () => selectItem(item)
     }
-    // onMouseEnter={
-    //   () => mouse ? selectItem(item) : null
-    // }
+    onMouseEnter={
+      () => mouse ? selectItem(item) : null
+    }
     // onMouseLeave={
     //   () => unselectItem(item)
     // }
     className={free ? '' : "inventory-slot"}>
-      {item ? <SlotItem item={item}></SlotItem> : ""}
+      {item ? <SlotItem click={click} item={item}></SlotItem> : ""}
     </div>);
 }
 

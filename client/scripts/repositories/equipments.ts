@@ -9,6 +9,8 @@ export class Equipments {
 
 	static entity(entity: Entity){
 
+		if(!entity.data.equipment.brow) entity.data.equipment.brow = 'm:brow-1';
+
 		for(let i in entity.data.equipment){
 			let item = i == 'brow' ? Items.create({
 				itemID: entity.data.equipment[i]
@@ -43,14 +45,14 @@ export class Equipments {
 		bodyMesh.add(equipmentMesh);
 
 		equipmentMesh.position.x += ref.config!.position.x;
-    equipmentMesh.position.y += ref.config!.position.y;
-    equipmentMesh.position.z += ref.config!.position.z;
+		equipmentMesh.position.y += ref.config!.position.y;
+		equipmentMesh.position.z += ref.config!.position.z;
 
-    if(ref.config!.scale){
-      equipmentMesh.scale.x = ref.config!.scale.x;
-      equipmentMesh.scale.y = ref.config!.scale.y;
-      equipmentMesh.scale.z = ref.config!.scale.z;
-    }
+		if(ref.config!.scale){
+			equipmentMesh.scale.x = ref.config!.scale.x;
+			equipmentMesh.scale.y = ref.config!.scale.y;
+			equipmentMesh.scale.z = ref.config!.scale.z;
+		}
 
 		item.data.wmeshid = equipmentMesh.uuid;
 

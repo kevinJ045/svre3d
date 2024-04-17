@@ -45,35 +45,55 @@ export class Items {
 		return this.items.filter(i => i.config?.crafting);
 	}
 
+	static gemEnchant(item1: ItemData, item2: ItemData){
+		if(!item1 || !item2) return false;
+		if(item2.reference.config?.powergem
+		  && (item1.reference.config?.powergems !== false)
+		  && !(item1.reference.config?.exclude_gems || []).includes(item2.itemID)){
+
+			return {
+				item: item1,
+				quantity: item1.quantity
+			};
+		}
+		return false;
+	}
+
 	static fromRecipe(preview = false, ...items: ItemData[]): { quantity: number, recipe: { item: string, quantity: number }[], item: jsonres, items?: ItemData[] } | null {
 		const itemsIds = items.map(item => item.itemID).sort().join(',');
     	const item = this.craftable().find(i =>
-		i.config!.crafting.recipe.map(r => r.item).sort().join(',') === itemsIds
-    );
+			i.config!.crafting.recipe.map(r => r.item).sort().join(',') === itemsIds
+    	);
 
-    if (!item) return null;
+		if (!item) return null;
 
-    const recipe = item.config!.crafting.recipe.map(r => ({ quantity: 1, ...r }));
-    const quantity = item.config!.crafting.quantity;
+		const recipe = item.config!.crafting.recipe.map(r => ({ quantity: 1, ...r }));
+		const quantity = item.config!.crafting.quantity;
 
-    // Check if there are enough items for the recipe
-    for (const { item: recipeItem, quantity: recipeItemCount } of recipe) {
-		const item = items.find(i => i.itemID === recipeItem);
-		if (!item || item.quantity < recipeItemCount) return null;
-    }
+		// Check if there are enough items for the recipe
+		for (const { item: recipeItem, quantity: recipeItemCount } of recipe) {
+			const item = items.find(i => i.itemID === recipeItem);
+			if (!item || item.quantity < recipeItemCount) return null;
+		}
 
-    return {
-		quantity,
-		recipe,
-		item,
-		items: preview ? [] : items
-    };
+		return {
+			quantity,
+			recipe,
+			item,
+			items: preview ? [] : items
+		};
+	}
+
+	static itemFromEntity(entity, item){
+		return entity.inventory.find(i => i.id == item?.id);
 	}
 
 	static startPing(socket){
 
 		pingFrom(socket, 'crafting:recipe', ({entity: eid, items}) => {
-			return Items.fromRecipe(true, ...items.map(i => Items.create(i.itemID, i.quantity)?.setData({ id: i.id })));
+			const entity = Entities.find(eid);
+			if(!entity) return;
+			return Items.fromRecipe(true, ...items.map(i => Items.create(i.itemID, i.quantity)?.setData({ id: i.id }))) || Items.gemEnchant(Items.itemFromEntity(entity, items[0]), Items.itemFromEntity(entity, items[1]));
 		});
 
 		pingFrom(socket, 'crafting:craft', ({entity: eid, items}) => {
@@ -92,6 +112,19 @@ export class Items {
 				socket.broadcast.emit('entity:inventory', { entity: entity.id, full: true, inventory: entity.inventory });
 				socket.emit('entity:inventory', { entity: entity.id, full: true, inventory: entity.inventory });
 				return recipe;
+			} else {
+				const recipe = Items.gemEnchant(Items.itemFromEntity(entity, items[0]), Items.itemFromEntity(entity, items[1]));
+				if(recipe){
+					entity.removeFromInventory(items[1]);
+					entity.removeFromInventory(items[0]);
+
+					// add item stats here.
+
+					entity.addToInventory(recipe.item);
+					socket.broadcast.emit('entity:inventory', { entity: entity.id, full: true, inventory: entity.inventory });
+					socket.emit('entity:inventory', { entity: entity.id, full: true, inventory: entity.inventory });
+					return recipe;
+				}
 			}
 			return false;
 		});

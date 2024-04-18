@@ -1,0 +1,12 @@
+{
+    "type": "ui",
+    "id": "m.ui.hud.bottom",
+    "widgets": [
+        {
+            "type": "normal",
+            "children": "m.ui.hud.bottom.center",
+            "class": "hud-bottom-ui"
+        }
+    ],
+    "parent": "hud"
+}

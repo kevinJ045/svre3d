@@ -7,8 +7,20 @@ export const basicVariables = {
 }
 
 
+export function findVariableStack(variables: Record<string, any> = {}, name: string){
+	const names = name.split('.');
+	let value;
+	names.forEach(name => {
+		value = value ? value[name] : variables[name];
+	});
+	return value;
+}
+
 export function parseVariable(string: string, variables: Record<string, any> = basicVariables){
-	return typeof string == "string" ? string.replace(/\$([A-Za-z0-9]+)/g, (_, name) => variables[name] || _).replace(/([A-Za-z0-9]+)\(([^)]+)\)/g, (_, name, args) => variables[name] ? variables[name](...args.split(',')) : _) : string;
+	return typeof string == "string" ? string
+	.replace(/\$([A-Za-z0-9]+)/g, (_, name) => variables[name] || _)
+	.replace(/\$\(([A-Za-z0-9._]+)\)/g, (_, name) => variables[name] || findVariableStack(variables, name) || _)
+	.replace(/([A-Za-z0-9]+)\(([^)]+)\)/g, (_, name, args) => variables[name] ? variables[name](...args.split(',')) : _) : string;
 }
 
 export function setVector3Var(object, prop, value, variables = {}){

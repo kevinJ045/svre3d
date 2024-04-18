@@ -12,7 +12,7 @@ const ChooseItemUI = ({ cb, ignore, rect }) => {
         <div className="inventory-selector"
         style={{
             left: rect.left + 15 + 'px',
-            top: rect.top - 25 + 'px'
+            top: rect.top / 2 + 'px'
         }}>
             <div className="wrapper">
                 {PlayerInfo.entity?.inventory.map((item) => {

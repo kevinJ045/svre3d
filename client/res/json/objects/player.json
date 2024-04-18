@@ -16,7 +16,8 @@
 		"speed": 10,
 		"3d": {
 			"body": "0.0.0"
-		}
+		},
+		"health": 100
 	},
 	"resource": {
 		"type": "gltf",

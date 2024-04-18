@@ -13,4 +13,10 @@ export class ResourceMap {
 		return ResourceMap.resources.find(i => i.data.id == id && (type ? i.type == type : true));
 	}
 
+	static remove(id: string, type?:string){
+		const index = this.resources.indexOf(this.findResource(id, type)!);
+		if(!index) return;
+		this.resources.splice(index, 1);
+	}
+
 }

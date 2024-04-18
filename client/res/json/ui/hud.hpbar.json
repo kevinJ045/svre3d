@@ -1,0 +1,14 @@
+{
+    "type": "ui",
+    "id": "m.ui.hud.hpbar",
+    "widgets": [
+        {
+            "type": "bar",
+            "bar": {
+                "current": "$(player.health.current)",
+                "max": "$(player.health.max)"
+            }
+        }
+    ],
+    "parent": "m.ui.hud.bottom.center"
+}

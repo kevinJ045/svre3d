@@ -380,6 +380,60 @@ h1,h2,h3,h4,h5,h6 {
 .player-menu .player-info-grid{
 	display: grid;
 	grid-template-columns: auto auto;
-  grid-template-rows: auto;
-  grid-gap: 10px;
+	grid-template-rows: auto;
+	grid-gap: 10px;
+}
+
+
+.hud-bar{
+	position: relative;
+	text-align: center;
+	width: 200px;
+	max-width: 100%;
+	color: white;
+	border-radius: 5px;
+	height: 4px;
+	overflow: visible;
+}
+
+.hud-bar::before{
+	width: 100%;
+	background: #1a1b1f;
+	display: block;
+	height: inherit;
+	content: "";
+}
+
+.hud-bar::after{
+	width: var(--width);
+	content: "";
+	display: block;
+	height: inherit;
+	background: var(--background);
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.hud-bar .text{
+	position: absolute;
+	left: 50%;
+	top: -20px;
+	transform: translate(-50%, 0);
+}
+
+.hud-bottom-ui{
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	max-width: 70%;
+	width: 200px;
+	transform: translate(-50%, 0);
+	padding: 5px;
+}
+
+.hud-bottom-ui .hud-bar{
+	float: left;
+	max-width: 100px;
+	margin: 0 5px;
 }

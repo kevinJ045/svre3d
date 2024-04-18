@@ -37,6 +37,7 @@ class EntityData extends ServerData {
         this.state = "Idle";
         this.isNeutral = false;
         this.buffs = [];
+        this.health = { max: 1, current: 1 };
     }
 
 

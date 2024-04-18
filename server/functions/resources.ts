@@ -9,6 +9,18 @@ export function loadAllResources(map: typeof ResourceMap){
 
 	const json_folders = fs.readdirSync(res_path);
 
+	fs.watch(res_path, 
+	{ recursive: true },	
+	(event, filename) => {
+		const file = path.join(res_path, filename!);
+		const json = JSON.parse(fs.readFileSync(file, { encoding: 'utf-8' }));
+		const folder = path.basename(path.dirname(file));
+
+		map.remove(json.id, folder);
+		map.loadJson(json, folder);
+		console.log('updated json', filename);
+	})
+
 	json_folders.forEach(folder => {
 		const json_folder = path.join(res_path, folder);
 		const json_files = fs.readdirSync(json_folder);

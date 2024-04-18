@@ -24,7 +24,7 @@ class EntityData extends ServerData {
     buffs: BuffData[]; // Buffs or status effects applied to the entity
     name: string; // Entity name
     state: string; // Entity state, Like Running, Idle....
-
+    ai = true;
 
 	data: Record<string, any> = {};
     constructor() {

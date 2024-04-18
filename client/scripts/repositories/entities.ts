@@ -167,6 +167,14 @@ export class Entities {
 			}
 		});
 
+
+		pingFrom('entity:hp', ({entity: eid, hp}) => {
+			if(!hp) return;
+
+			const entity = Entities.find(eid);
+			entity?.setHealth(hp, false);
+		});
+
 		pingFrom('player:equipment', ({
 			entity: eid,
 			inventory,

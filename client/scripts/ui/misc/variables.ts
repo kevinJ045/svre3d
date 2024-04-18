@@ -1,13 +1,9 @@
 import { PlayerInfo } from "../../repositories/player"
 
 
-export const UIVariables = {
+export const UIVariables = () => ({
     player: {
-        get health(){
-            return PlayerInfo?.entity?.health || { max: 100, current: 100 };
-        },
-        get exp(){
-            return PlayerInfo?.entity?.exp || { llevel: 1, max: 100, current: 0 };
-        }
+        health: PlayerInfo?.entity?.health || { max: 100, current: 100 },
+        exp: PlayerInfo?.entity?.exp || { level: 1, max: 100, current: 0 }
     }
-}
+});

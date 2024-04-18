@@ -2,18 +2,19 @@ import * as React from "react";
 import { parseVariable } from "../../common/stringparse";
 import { UIVariables } from "../misc/variables";
 import { UIResources } from "../misc/uires";
+import { PlayerInfo } from "../../repositories/player";
 
 const elements: Record<string, React.ElementType> = {
-    text: ({ widget, children }) => <div className="text">{parseVariable(widget.text, UIVariables)}{children}</div>,
-    bar: ({ widget, children }) => <div
+    text: ({ widget, children, variables }) => <div className="text">{parseVariable(widget.text, variables)}{children}</div>,
+    bar: ({ widget, children, variables }) => <div
         className="hud-bar"
         style={{
             '--width': 
-            Math.min(Math.max(parseFloat(parseVariable(widget.bar.current, UIVariables)) / parseFloat(parseVariable(widget.bar.max, UIVariables)) * 100, 0), 100) + '%',
+            Math.min(Math.max(parseFloat(parseVariable(widget.bar.current, variables)) / parseFloat(parseVariable(widget.bar.max, variables)) * 100, 0), 100) + '%',
             '--background':
-            widget.bar.color ? parseVariable(widget.bar.color, UIVariables) : '#70c70d',
+            widget.bar.color ? parseVariable(widget.bar.color, variables) : '#70c70d',
             'width': 
-            parseVariable(widget.bar.width, UIVariables) || '200px'
+            parseVariable(widget.bar.width, variables) || '200px'
         } as React.CSSProperties}
     >{children}</div>,
     normal: ({ children, widget }) => <div style={
@@ -35,10 +36,17 @@ const widgetChildren = (widget) => {
 export const JSONUIWidget = ({
     json
 }) => {
-    console.log(json);
+    
+    let [variables, setVariables] = React.useState(UIVariables());
+
+    React.useEffect(() => {
+        PlayerInfo?.entity
+            .on('health', () => setVariables(UIVariables()));
+    }, []);
+
     const renderWidget = (widget) => {
         const Element = elements[widget.type] || elements['normal'];
-        return <Element key={widget.type} widget={widget}>
+        return <Element variables={variables} key={widget.type} widget={widget}>
             {widgetChildren(widget).map((childWidget, index) => (
               <React.Fragment key={index}>{renderWidget(childWidget)}</React.Fragment>
             ))}

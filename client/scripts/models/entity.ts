@@ -124,13 +124,55 @@ export class Entity extends EntityData {
 		this.addPhysics();
 	}
 
+	setHealth(health: typeof Entity.prototype.health, ping = true){
+		this.health = health;
+		if(ping) this.sendHealthUpdateToServer();
+		this.emit('health');
+	}
+
+	recieveDamage(damage: number, attacker: Entity){
+		const finalDamage = damage - (this.defense || 0);
+		this.setHealth({
+			max: this.health.max,
+			current: this.health.current - finalDamage
+		});
+		const knockbackDirection = this.object3d.position.clone().sub(attacker.object3d.position).normalize();
+
+		// this.previousAttacker = attacker;
+
+		if (this.object3d.body) {
+			this.object3d.body.applyForce(knockbackDirection.x * 5, 0, knockbackDirection.z * 5);
+		}
+	}
+
+	attacked = false;
+	attackCooldown = 200;
+	attack(target?: Entity | Entity[]){
+		if(this.attacked) return;
+		this.attacked = true;
+		this._playAnimation('Attack', 1, false, () => {
+			if(this.isState('Walk')) this.setState('Walk');
+			else this.idle();
+		});	
+
+		if(target) {
+			if(Array.isArray(target)) target.forEach(target => this.sendDamage(target));
+			else this.sendDamage(target);
+		}
+		setTimeout(() => this.attacked = false, this.attackCooldown)
+	}
+
+	sendDamage(target: Entity){
+		target.recieveDamage(this.damage, this);
+	}
+
 	hasHigherBlocks = false;
 	detectObstacles(position: THREE.Vector3, direction: THREE.Vector3) {
-    const obstacles = {
-        hasSolidObject: false,
-        hasHigherBlocks: false,
-        hasEntity: false
-    };
+		const obstacles = {
+			hasSolidObject: false,
+			hasHigherBlocks: false,
+			hasEntity: false
+		};
 
 		const pos = this.object3d.position.clone().add(direction.clone());
 		// console.log(pos, position);
@@ -174,26 +216,26 @@ export class Entity extends EntityData {
 		}
 
 
-    return obstacles;
+    	return obstacles;
 	}
 
 	avoidObstacles(position, obstacles) {
 
 		const avoidanceDirection = new THREE.Vector3();
 
-    // Avoidance behavior based on detected obstacles
-    if (obstacles.hasSolidObject) {
-        // Move away from solid objects
-        avoidanceDirection.subVectors(position, obstacles.closestSolidObject.position).normalize();
-    } else if (obstacles.hasHigherBlocks) {
-        // Move upwards to avoid higher blocks
-        avoidanceDirection.set(0, 1, 0);
-    } else {
-        // No specific avoidance behavior, move in a random direction
-        avoidanceDirection.set(Math.random() - 0.5, 0, Math.random() - 0.5).normalize();
-    }
+		// Avoidance behavior based on detected obstacles
+		if (obstacles.hasSolidObject) {
+			// Move away from solid objects
+			avoidanceDirection.subVectors(position, obstacles.closestSolidObject.position).normalize();
+		} else if (obstacles.hasHigherBlocks) {
+			// Move upwards to avoid higher blocks
+			avoidanceDirection.set(0, 1, 0);
+		} else {
+			// No specific avoidance behavior, move in a random direction
+			avoidanceDirection.set(Math.random() - 0.5, 0, Math.random() - 0.5).normalize();
+		}
 
-    return avoidanceDirection;
+		return avoidanceDirection;
 	}
 
 	previousState: string = "";
@@ -234,7 +276,7 @@ export class Entity extends EntityData {
 	}
 
 	rotateTowardsTarget(target?: THREE.Vector3) {
-    if (this.targetLocation || target) {
+    	if (this.targetLocation || target) {
 			const rotationSpeed = 10;
 			const maxRotation = Math.PI / 6; // Maximum rotation angle per frame
 
@@ -272,12 +314,12 @@ export class Entity extends EntityData {
 				});
 				this.object3d.body.setAngularVelocityY(deltaTheta * rotationSpeed);
 			}
-    }
+    	}
 		return false;
 	}
 
 	moveTowardsTarget() {
-    if (this.targetLocation) {
+    	if (this.targetLocation) {
 			this.targetLocation.y = this.object3d.position.y;
 			const direction = new THREE.Vector3();
 			direction.subVectors(this.targetLocation, this.object3d.position);
@@ -332,7 +374,7 @@ export class Entity extends EntityData {
 					}
 				}
 			}
-    }
+    	}
 	}
 
 	hasBlockNextStep() {
@@ -392,6 +434,13 @@ export class Entity extends EntityData {
 			},
 			action,
 			type
+		});
+	}
+
+	sendHealthUpdateToServer(){
+		ping('entity:hp', {
+			entity: this.id,
+			hp: this.health
 		});
 	}
 

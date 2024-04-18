@@ -44,7 +44,8 @@
 				}
 			],
 			"random_movement": true
-		}
+		},
+		"damage": 10
 	},
 	"resource": {
 		"type": "gltf",

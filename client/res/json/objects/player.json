@@ -17,7 +17,8 @@
 		"3d": {
 			"body": "0.0.0"
 		},
-		"health": 100
+		"health": 100,
+		"damage": 10
 	},
 	"resource": {
 		"type": "gltf",

@@ -96,6 +96,14 @@ export class Entities {
 		});
 	}
 
+	static hp(id, hp){
+		this.entities.forEach(entity => {
+			if(entity.id == id){
+				entity.health = hp;
+			}
+		});
+	};
+
 	static startPing(socket: Socket, serverdata){
 		pingFrom(socket, 'entity:move', ({entity,position}) => {
 			Entities.displace(entity, position);
@@ -104,6 +112,11 @@ export class Entities {
 		pingFrom(socket, 'entity:settarget', ({entity,position}) => {
 			Entities.target(entity, position);
 			socket.broadcast.emit('entity:settarget', {entity, position});
+		});
+
+		pingFrom(socket, 'entity:hp', ({entity, hp}) => {
+			Entities.hp(entity, hp);
+			socket.broadcast.emit('entity:hp', {entity, hp});
 		});
 
 		pingFrom(socket, 'entity:inventory', (
@@ -231,7 +244,7 @@ export class Entities {
 	static update(){
 
 		const entitiesWithAi = this.entities.filter(
-			e => e.reference.config?.ai
+			e => e.reference.config?.ai && e.data.ai !== false
 		);
 
 		entitiesWithAi.forEach(e => {

@@ -65,7 +65,7 @@ export class Mouse {
       } else {
         event.preventDefault();
 
-        // this.player.attack();
+        PlayerInfo.attack();
 
       }
     });

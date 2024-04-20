@@ -5,8 +5,13 @@ import { PlayerInfo } from "../repositories/player";
 import { THREE } from "enable3d";
 import { Items } from "../repositories/items";
 import { ItemData } from "../../../server/models/item";
+import { Entities } from "../repositories/entities";
+import { UISelectedItem } from "../ui/misc/variables";
+import { SceneManager } from "../common/sceneman";
 
 export class Mouse {
+
+  static firstPerson = false;
 
 	static init(canvas: HTMLCanvasElement){
 		let isClick = 1;
@@ -53,6 +58,50 @@ export class Mouse {
         event.preventDefault();
       }
     });
+
+    const place = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1, 0.5), new THREE.MeshBasicMaterial({ color: 0x000fff, opacity: 0.5 }));
+
+    const itemInfo = (event) => {
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, CameraManager.camera);
+
+      const intersects = raycaster.intersectObjects(
+        []
+        .concat(
+          Entities.entities.map(i => i.object3d) as any
+        )
+        .concat(
+          Chunks.chunkObjects() as any
+        ),
+        // true
+      );
+
+      if(intersects.length){
+        let { object, point } = intersects[0];
+        while(!(object.parent as any).isScene){
+          object = object.parent!;
+        }
+        if(object.userData.info){
+          if(event.type == 'mousemove') UISelectedItem.select(object.userData.info);
+        }
+        if(object.name == 'chunk'){
+          place.material.color = new THREE.Color(object.userData.info.chunk.biome.map.color);
+          place.position.copy(point);
+          SceneManager.scene.scene.add(place);
+        } else {
+          SceneManager.scene.scene.remove(place);
+        }
+      } else {
+        SceneManager.scene.scene.remove(place);
+      }
+
+    }
+
+    canvas.addEventListener('mousemove', itemInfo);
   
   
     canvas.addEventListener('mouseup', (event) => {

@@ -101,6 +101,10 @@ export class Entities {
 			});
 		}
 
+		entity.object3d.userData.info = {
+			type: 'entity',
+			entity
+		};
 
 		return entity;
 	} 

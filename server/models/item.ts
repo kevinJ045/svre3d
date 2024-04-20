@@ -9,4 +9,5 @@ export class ItemData extends ServerData {
 	max = 1;
 
 	data: any = {};
+    class = "common";
 }

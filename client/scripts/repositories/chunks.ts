@@ -23,6 +23,10 @@ export class Chunks {
 
 	static loadChunk(chunk: Chunk){
 		const chunkObject = makeChunk(chunk.chunkSize);
+		chunkObject.userData.info = {
+			type: 'chunk',
+			chunk
+		}
 		chunk.setMesh(chunkObject);
 		Biomes.applyChunkBiome(chunk);
 		chunkObject.position.set(chunk.position.x, chunk.position.y - 3, chunk.position.z);

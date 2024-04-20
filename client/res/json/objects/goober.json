@@ -45,7 +45,37 @@
 			],
 			"random_movement": true
 		},
-		"damage": 10
+		"damage": 10,
+		"health": 50,
+		"classes": {
+			"legendary": {
+				"chance": 0.01,
+				"boost": {
+					"health": [50, 75],
+					"damage": [7, 12]
+				}
+			},
+			"epic": {
+				"chance": 0.04,
+				"boost": {
+					"health": [20, 50],
+					"damage": [5, 8]
+				}
+			},
+			"common": {
+				"chance": 0.8,
+				"boost": {
+					"damage": [1, 2]
+				}
+			},
+			"rare": {
+				"chance": 0.15,
+				"boost": {
+					"health": [10, 30],
+					"damage": [3, 5]
+				}
+			}
+		}
 	},
 	"resource": {
 		"type": "gltf",

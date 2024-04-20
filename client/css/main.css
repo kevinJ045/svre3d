@@ -438,3 +438,48 @@ h1,h2,h3,h4,h5,h6 {
 	max-width: 100px;
 	margin: 0 5px;
 }
+
+.hud-top-left{
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	background: var(--vp-c-bg-soft);
+	opacity: .8;
+
+	width: 150px;
+	height: 100px;
+
+	scale: calc(100vh / 100vw);
+
+	padding: 5px;
+}
+
+
+.preview-chunk, .preview-entity{
+	width: 20px;
+	height: 20px;
+	background: var(--color);
+	display: inline-block;
+	position: relative;
+}
+
+.preview-entity::before, .preview-entity::after {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%)
+}
+
+.preview-entity::before{
+	width: 10px;
+	height: 10px;
+	background: white;
+}
+
+.preview-entity::after{
+	width: 4px;
+	height: 4px;
+	background: black;
+}

@@ -25,6 +25,7 @@ class EntityData extends ServerData {
     name: string; // Entity name
     state: string; // Entity state, Like Running, Idle....
     ai = true;
+    class = "common";
 
 	data: Record<string, any> = {};
     constructor() {

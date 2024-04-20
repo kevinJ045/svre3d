@@ -1,6 +1,6 @@
 import * as React from "react";
 import { parseVariable } from "../../common/stringparse";
-import { UIVariables } from "../misc/variables";
+import { UISelectedItem, UIVariables } from "../misc/variables";
 import { UIResources } from "../misc/uires";
 import { PlayerInfo } from "../../repositories/player";
 
@@ -34,15 +34,9 @@ const widgetChildren = (widget) => {
 }
 
 export const JSONUIWidget = ({
-    json
+    json,
+    variables
 }) => {
-    
-    let [variables, setVariables] = React.useState(UIVariables());
-
-    React.useEffect(() => {
-        PlayerInfo?.entity
-            .on('health', () => setVariables(UIVariables()));
-    }, []);
 
     const renderWidget = (widget) => {
         const Element = elements[widget.type] || elements['normal'];

@@ -41,7 +41,7 @@ export async function userConnected(serverData, socket){
 
 		startPing(serverData, socket);
 
-		setTimeout(() => Entities.spawn('m:goober', { x: 0, y: 0, z: 5 }, 'anji', 'lava', [], { ai: false }), 5000);
+		// setTimeout(() => Entities.spawn('m:goober', { x: 0, y: 0, z: 5 }, 'anji', 'lava', [], { ai: false }), 5000);
 		// setTimeout(() => Entities.spawnItem(Items.create('m:rubidium')!, { x: 0, y: 0, z: 2 }), 5000);
 
 		socket.on('disconnect', () => {

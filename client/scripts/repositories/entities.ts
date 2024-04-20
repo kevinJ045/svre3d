@@ -61,6 +61,8 @@ export class Entities {
 
 		entity.playAnimation(entity.state);
 
+		entityMesh.position.set(5000, 20, 15000);
+
 		SceneManager.scene.scene.add(entityMesh);
 		entity.addPhysics();
 

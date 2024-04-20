@@ -21,6 +21,14 @@ const loaders = {
 			}, null, () => re(null));
 		});
 	},
+	texture: async (url: string) => {
+		const textureLoader = new THREE.TextureLoader(new THREE.LoadingManager);
+		return new Promise((r, re) => {
+			textureLoader.load(url, (item) => {
+				r(item);
+			}, () => re(null));
+		});
+	},
 	image: async (url: string) => {
 		return new Promise((r,re) => {
 			const playerIcon = new Image();
@@ -57,7 +65,7 @@ export class ResourceMap {
 				if(item.type.endsWith("_map")){
 					load = [];
 					for(let src of item.resource.sources!){
-						load.push(await scene.load[type](src));
+						load.push(await loaders[type](src));
 					}
 				} else if(type in scene.load) {
 					load = await ((scene.load[type])(item.resource.src));
@@ -77,7 +85,6 @@ export class ResourceMap {
 						if(!item['fragment']) item['fragment'] = await Utils.loadText(item.resource.sources![1]);
 					}
 				}
-
 
 				item.load = load;
 			}

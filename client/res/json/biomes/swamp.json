@@ -7,7 +7,7 @@
 		"color": "#00ff00"
 	},
 	"map": {
-		"color": "#00ff00"
+		"color": ["#00ff00", "#6aff00", "#0dbc00"]
 	},
 	"structure_rules": [
 		{

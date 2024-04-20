@@ -79,10 +79,17 @@ export class MaterialManager {
 			textureMap: { value: texture },
 			// shadowMap: { value: scene.lightSet.directionalLight.shadow.map }
 		};
+
+		const colorOptions: any = {};
+
+		if(biome.tile_variation_color && biome.tile_variation_color !== 'none'){
+			colorOptions.color = biome.tile_variation_color;
+		}
 	
 		const mat = materialOptions ? new THREE.MeshStandardMaterial({
 			...MaterialManager.parseMaterialOptions(materialOptions),
-			map: texture
+			map: texture,
+			...colorOptions
 		}) : new THREE.ShaderMaterial({
 			fragmentShader: fragment,
 			vertexShader: vertex,

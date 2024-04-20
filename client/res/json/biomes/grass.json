@@ -4,7 +4,11 @@
 	"item": "m:grass_segment",
 	"textures": [1, 1, 0, 1, 1, 1],
 	"map": {
-		"color": "#00ffff"
+		"color": ["#00ffff", "#009f9f", "#00afaf"]
+	},
+	"tile_variations": {
+		"multicolor": true,
+		"keepdefault": true
 	},
 	"structure_rules": [
 		{

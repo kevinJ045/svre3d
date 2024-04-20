@@ -44,8 +44,7 @@ export class Map2D {
 			for (let z = playerZ - half_height + Y; z < playerZ + half_height + Y; z += chunkSize) {
 				for (let x = playerX - half_width + X; x < playerX + half_width + X; x += chunkSize) {
 					const offset = 0;
-					const noiseValue = Seed.noise.perlin2((x + offset) * scale, (z + offset) * scale);
-					const color = getChunkType(noiseValue);
+					const color = getChunkType(x, z, scale, offset);
 					// const scaleDelta = Math.abs(scale - 0.01) * 100;
 					ctx.fillStyle = color;
 					// ctx.strokeStyle = 'black'; // Set border color

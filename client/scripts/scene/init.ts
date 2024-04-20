@@ -4,6 +4,7 @@ import { ResourceMap } from "../repositories/resources";
 import { Chunks } from "../repositories/chunks";
 import { Items } from "../repositories/items";
 import { Entities } from "../repositories/entities";
+import { Seed } from "../world/seed";
 
 
 export async function initScene(){
@@ -17,4 +18,6 @@ export async function initScene(){
 	window.Chunks = Chunks;
 	// @ts-ignore
 	window.Items = Items;
+	// @ts-ignore
+	window.Seed = Seed;
 }

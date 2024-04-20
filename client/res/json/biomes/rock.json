@@ -4,6 +4,10 @@
 	"item": "m:rock_segment",
 	"textures": [1, 1, 0, 1, 1, 1],
 	"map": {
-		"color": "#555555"
+		"color": ["#555555", "#888888", "#909090", "#444444"]
+	},
+	"tile_variations": {
+		"multicolor": true,
+		"keepdefault": true
 	}
 }

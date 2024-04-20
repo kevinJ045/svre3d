@@ -100,7 +100,11 @@ export class Mouse {
         }
         if(object.name == 'chunk'){
           if(!Controls.controlMode){
-            place.material.color = new THREE.Color(object.userData.info.chunk.biome.map.color);
+            place.material.color = new THREE.Color(
+              Array.isArray(object.userData.info.chunk.biome.map.color) ?
+              object.userData.info.chunk.biome.map.color[0] : 
+              object.userData.info.chunk.biome.map.color
+            );
             place.position.copy(point);
             SceneManager.scene.scene.add(place);
           }

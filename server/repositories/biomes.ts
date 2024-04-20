@@ -23,7 +23,22 @@ export class Biomes {
 		const noiseValue = noise.perlin2((x + offset) * scale, (z + offset) * scale);
 		const index = Math.min(Math.abs(Math.floor(noiseValue * Biomes.biomes.length-1)), Biomes.biomes.length-1);
 
-		return Biomes.biomes[index];
+		const biome = {...Biomes.biomes[index], reference: {
+			...Biomes.biomes[index].reference
+		}};
+
+		if(biome.reference.tile_variations?.multicolor){
+			const colors = [...biome.reference.map.color];
+			if(biome.reference.tile_variations.keepdefault) colors.unshift('none');
+			biome.reference.tile_variation_color = Random.pick(...colors, () => Math.abs(noise.simplex2(x * 0.01, z * 0.01)));
+		}
+
+		if(Array.isArray(biome.reference.item)) {
+			biome.reference.item = Random.pick(...biome.reference.item, () => Math.abs(noise.simplex2(x * 0.01, z * 0.01)));
+		}
+
+
+		return biome;
 	}
 	
 }

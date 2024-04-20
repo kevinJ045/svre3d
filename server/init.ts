@@ -25,7 +25,7 @@ export async function userConnected(serverData, socket){
 
 		// console.log(player);
 
-		const playerEntity = Entities.spawn('m:player', player!.position, player!.username, player?.variant, player?.inventory, { username, equipment: player?.equipment }, player!.exp)!;
+		const playerEntity = Entities.spawn('m:player', player!.position, player!.username, player?.variant, player?.inventory, { username, color: player?.color, equipment: player?.equipment }, player!.exp)!;
 
 		if(
 			!Entities.entities.find(i => i.data.username == username) || socket.handshake.query.reconnect != 'true'

@@ -58,6 +58,10 @@ export class Controls {
 			CameraManager.changeCameraAngle();
 		});
 
+		Keyboard.listen(KeyMap.getKey('move.jump'), () => {
+			PlayerInfo.entity.jump();
+		});
+		
 		Keyboard.listen(KeyMap.getKey('ui.inventory'), () => {
 			UI.toggle();
 		});

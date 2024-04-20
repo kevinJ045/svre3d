@@ -109,9 +109,15 @@ export class Entity extends EntityData {
 		this.object3d.body.on.collision((otherObject, event) => {
 			if(event == 'collision') this.emit('collision', {object: otherObject});
 			// if(this.reference.id == 'm:goober') console.log(otherObject.position.y - this.object3d.position.y)
-			if(event == 'collision' && otherObject.name == 'chunk' && otherObject.position.y - this.object3d.position.y > -1){
-				this.hasHigherBlocks = true;
+			// console.log(otherObject.position.y - this.object3d.position.y > -0.5);
+			if(event == 'collision' && otherObject.name == 'chunk'){
+				if(otherObject.position.y - this.object3d.position.y > -0.5){
+					this.hasHigherBlocks = true;
+				} else {
+					this.data.canjump = true;
+				}
 			}
+			
 		});
 		
 	}
@@ -128,6 +134,13 @@ export class Entity extends EntityData {
 		this.health = health;
 		if(ping) this.sendHealthUpdateToServer();
 		this.emit('health');
+	}
+
+	jump(){
+		if(this.data.canjump !== false) {
+			this.object3d.body.applyForceY(5);
+			this.data.canjump = false;
+		}
 	}
 
 	recieveDamage(damage: number, attacker: Entity){

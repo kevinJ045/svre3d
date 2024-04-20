@@ -12,5 +12,16 @@ export class Biomes {
 		(chunk.object3d as any).material = materials;
 	}
 
+	static find(name){
+		return ResourceMap
+			.resources
+			.filter(
+				i => i.type == 'biome'
+			)
+			.find(
+				i => i.name == name
+			);
+	}
+
 
 }

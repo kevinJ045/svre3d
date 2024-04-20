@@ -12,6 +12,7 @@ import { PlayerInfo } from "./player";
 import { Equipments } from "./equipments";
 import { ItemData } from "../../../server/models/item";
 import { MaterialManager } from "./materials";
+import { SkinPlayer } from "../misc/playerskin";
 
 
 export class Entities {
@@ -61,7 +62,7 @@ export class Entities {
 
 		entity.playAnimation(entity.state);
 
-		entityMesh.position.set(5000, 20, 15000);
+		// entityMesh.position.set(5000, 20, 15000);
 
 		SceneManager.scene.scene.add(entityMesh);
 		entity.addPhysics();
@@ -70,6 +71,7 @@ export class Entities {
 
 		if(ref.type == 'player'){
 			Equipments.entity(entity);
+			SkinPlayer.skinPlayer(entity);
 		}
 
 		if(ref.config?.material){

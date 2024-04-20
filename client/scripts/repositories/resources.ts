@@ -58,6 +58,8 @@ export class ResourceMap {
 
 			const item = {...undefinedItem};
 
+			console.log(item);
+
 			if(item.resource){
 
 				const type = item.resource.type;

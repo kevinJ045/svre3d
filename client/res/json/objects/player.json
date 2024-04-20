@@ -11,7 +11,7 @@
 		"variant": "grass",
 		"physics": {
 			"shape": "convex",
-			"offset": { "z": 0.55, "y": -0.55 }
+			"offset": { "z": 0, "y": 0.75 }
 		},
 		"speed": 5,
 		"3d": {
@@ -22,7 +22,7 @@
 	},
 	"resource": {
 		"type": "gltf",
-		"src": "/res/obj/cubixc5.glb"
+		"src": "/res/obj/cubixc7.glb"
 	},
 	"loader": {
 		"group": "objects"

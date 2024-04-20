@@ -16,7 +16,8 @@ export class KeyMap {
 		'ui.pause': 'Escape',
 		
 		'controls.mode': 'F',
-		'camera.angle': 'V'
+		'camera.angle': 'V',
+		'camera.lock': 'Shift-V'
 	}
 
 	static setKey(name: string, key: string){

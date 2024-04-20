@@ -10,6 +10,7 @@ import { Items } from "./items";
 import { Vector3 } from "three";
 import { Chunks } from "./chunks";
 import { Random } from "../common/rand";
+import { jsonres } from "../models/jsonres";
 
 
 export class Entities {
@@ -18,7 +19,23 @@ export class Entities {
 	
 	static spawn(type: string, position: xyz, name?: string, variant?: string, inventory?: any[], data?: any, exp?: any){
 		
-		const ref = ResourceMap.findResource(type);
+		const ref = type == 'item' ? {
+			type: 'entity',
+			data: {
+				type: 'entity',
+				config: {
+					health: {
+						max: 1,
+						current: 1
+					}
+				},
+				resource: {
+					type: "",
+					src: ""
+				},
+				id: ""
+			} as jsonres
+		} : ResourceMap.findResource(type);
 		
 		if(!ref) return;
 
@@ -96,10 +113,36 @@ export class Entities {
 		});
 	}
 
+	static spawnItem(item: ItemData, position: xyz){
+		this.spawn(
+			'item',
+			position,
+			item.id,
+			undefined,
+			undefined,
+			{ item }
+		);
+	}
+
+	static kill(entity: string | EntityData){
+		if(typeof entity == 'string') entity = Entities.find(entity)!;
+		
+		if(entity.inventory.length){
+			entity.inventory.forEach(item => {
+				this.spawnItem(item, (entity as EntityData).position);
+			});
+		}
+
+		this.despawn(entity);
+	}
+
 	static hp(id, hp){
 		this.entities.forEach(entity => {
 			if(entity.id == id){
 				entity.health = hp;
+				if(entity.health.current <= 0){
+					this.kill(entity);
+				}
 			}
 		});
 	};
@@ -117,6 +160,26 @@ export class Entities {
 		pingFrom(socket, 'entity:hp', ({entity, hp}) => {
 			Entities.hp(entity, hp);
 			socket.broadcast.emit('entity:hp', {entity, hp});
+		});
+
+		pingFrom(socket, 'entity:collectitem', ({entity:eid, player:pid}) => {
+			// Entities.hp(entity, hp);
+			// socket.broadcast.emit('entity:hp', {entity, hp});
+
+			const entity = Entities.find(eid);
+			const player = Entities.find(pid);
+			if(entity && player){
+				if(entity.data.item) {
+					player.addToInventory(entity.data.item);
+					Entities.despawn(entity);
+					Sockets.emit('entity:inventory', {
+						entity: pid,
+						type: 'add',
+						item: entity.data.item,
+						action: 'add'
+					});
+				}
+			}
 		});
 
 		pingFrom(socket, 'entity:inventory', (

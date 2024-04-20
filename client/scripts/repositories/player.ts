@@ -32,6 +32,8 @@ export class PlayerInfo {
 
 	static setPlayerEntity(entity: Entity){
 		this.entity = entity;
+		if(!entity.object3d) return;
+		entity.object3d.userData.player = entity;
 	}	
 
 	static get username(){

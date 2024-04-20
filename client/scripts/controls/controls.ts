@@ -49,6 +49,10 @@ export class Controls {
 		Keyboard.listen(KeyMap.getKey('controls.mode'), () => {
 			this.toggleFirstPerson();
 		});
+		
+		Keyboard.listen(KeyMap.getKey('camera.lock'), () => {
+			CameraManager.toggleLock();
+		});
 
 		Keyboard.listen(KeyMap.getKey('camera.angle'), () => {
 			CameraManager.changeCameraAngle();
@@ -61,23 +65,23 @@ export class Controls {
 
 	static toggleFirstPerson(){
 		if(Controls.controlMode){
-      CameraManager.cameraPosition.lookat = false;
-      Controls.controlMode = 0;
-      CameraManager.cameraPosition.offset = CameraManager.cameraPosition.angles[CameraManager.cameraPosition.current];
+			CameraManager.cameraPosition.lookat = false;
+			Controls.controlMode = 0;
+			CameraManager.cameraPosition.offset = CameraManager.cameraPosition.angles[CameraManager.cameraPosition.current];
 
-      Controls.pointerLock!.exit();
-      Controls.pointerLock = null;
+			Controls.pointerLock!.exit();
+			Controls.pointerLock = null;
 
-      PlayerInfo.entity.object3d.visible = true;
-    } else {
-      CameraManager.cameraPosition.offset = new THREE.Vector3(0, 1, -2);
-      CameraManager.cameraPosition.lookat = new THREE.Vector3(0, 1, -3);
-      Controls.controlMode = 1;
-      
-      Controls.pointerLock = new PointerLock(Controls.canvas);
+			PlayerInfo.entity.object3d.visible = true;
+		} else {
+			CameraManager.cameraPosition.offset = new THREE.Vector3(0, 1, -2);
+			CameraManager.cameraPosition.lookat = new THREE.Vector3(0, 1, -3);
+			Controls.controlMode = 1;
+			
+			Controls.pointerLock = new PointerLock(Controls.canvas);
 
-      PlayerInfo.entity.object3d.visible = false;
-    }
+			PlayerInfo.entity.object3d.visible = false;
+		}
 	}
 
 	static firstPersonControls(){

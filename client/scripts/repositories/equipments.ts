@@ -75,11 +75,11 @@ export class Equipments {
 		entity.emit('unequip');
 	}
 
-	static entityBody(partname: string, entity: Entity){
+	static entityBody(partname: string, entity: Entity, fallback: string = ''){
 
 		let ref = entity.reference;
 
-		let part = ref.config?.['3d']?.[partname] || '';
+		let part = ref.config?.['3d']?.[partname] || fallback;
 
 		const referee = part ? part.split('.') : [];
 		let object = entity.object3d;

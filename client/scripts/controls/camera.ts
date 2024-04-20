@@ -48,6 +48,9 @@ export class CameraManager {
     else CameraManager.camera.lookAt(playerPosition);
   }
 
+  static toggleLock(){
+    this.lockCameraToObject = !this.lockCameraToObject;
+  }
 
 	static update(){
 		CameraManager.updateCameraLocation();

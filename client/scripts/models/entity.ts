@@ -99,17 +99,17 @@ export class Entity extends EntityData {
 
 	destroy(){
 		PhysicsManager.destroy(this.object3d);
-		SceneManager.remove(this.object3d);
+		SceneManager.scene.scene.remove(this.object3d);
 	}
 
 	addPhysics(){
 		PhysicsManager.addPhysics(this.object3d, this.reference!.config?.physics || { shape: 'convex' })
 		this.object3d.body.setFriction(0.8);
-    this.object3d.body.setAngularFactor(0, 0, 0);
+    	this.object3d.body.setAngularFactor(0, 0, 0);
 		this.object3d.body.on.collision((otherObject, event) => {
 			if(event == 'collision') this.emit('collision', {object: otherObject});
 			// if(this.reference.id == 'm:goober') console.log(otherObject.position.y - this.object3d.position.y)
-			if(otherObject.name == 'chunk' && otherObject.position.y - this.object3d.position.y > -1){
+			if(event == 'collision' && otherObject.name == 'chunk' && otherObject.position.y - this.object3d.position.y > -1){
 				this.hasHigherBlocks = true;
 			}
 		});
@@ -404,21 +404,21 @@ export class Entity extends EntityData {
 
 
 	// Method to add an item to the inventory
-	addToInventory(item: Item): void {
+	addToInventory(item: Item, send = true): void {
 		const type = super.addToInventory(item);
 		if(!type) return;
 		this.emit('inventory:add', {item});
 		this.emit('inventory', {type: 'add', item});
-		this.sendInventoryUpdateToServer(item, item.quantity, 'add', type);
+		if(send) this.sendInventoryUpdateToServer(item, item.quantity, 'add', type);
 	}
 
 	// Method to remove an item from the inventory
-	removeFromInventory(item: Item, count: number = 1): void {
+	removeFromInventory(item: Item, count: number = 1, send = true): void {
 		const type = super.removeFromInventory(item, count);
 		if(!type) return;
 		this.emit('inventory:remove', {item});
 		this.emit('inventory', {type: 'remove', item});
-		this.sendInventoryUpdateToServer(item, count, 'remove', type);
+		if(send) this.sendInventoryUpdateToServer(item, count, 'remove', type);
 	}
 
 

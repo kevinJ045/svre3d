@@ -1,4 +1,4 @@
-import { ExtendedObject3D, THREE } from "enable3d";
+import { ExtendedMesh, ExtendedObject3D, THREE } from "enable3d";
 import { SceneManager } from "../common/sceneman";
 import { Entity } from "../models/entity";
 import { ResourceMap } from "./resources";
@@ -28,7 +28,10 @@ export class Entities {
 		const entity = ServerData.create<Entity>(Entity, entityData);
 		entity.id = entityData.id;
 
-		const ref = ResourceMap.find(entityData.reference!.id)!;
+		const ref = ResourceMap.find(
+		entity.type == 'item' ? 
+		entityData.data.item.itemID
+		: entityData.reference!.id)!;
 
 		entity.setReference(ref);
 		entity.speed = ref.config?.speed || 1;
@@ -38,15 +41,17 @@ export class Entities {
 		const entityMesh = new ExtendedObject3D();
 
 		SceneManager.scene.animationMixers.add(entityMesh.anims.mixer);
-    entityMesh.anims.mixer.timeScale = 1;
+    	entityMesh.anims.mixer.timeScale = 1;
 
 		const refMesh: THREE.Object3D = ref.resource.type == "gltf" ? cloneGltf(ref.load) : ref.mesh.clone();
 		SceneManager.scene.scene.add(refMesh);
 
 		refMesh.traverse(child => {
-      child.castShadow = true
-      child.receiveShadow = false
-    });
+      		child.castShadow = true
+      		child.receiveShadow = false
+    	});
+
+		entityMesh.castShadow = true;
 
 		entityMesh.add(refMesh);
 
@@ -70,14 +75,30 @@ export class Entities {
 				((ref.config?.variants || []).find(
 					i => i.name == entity.variant
 				) || {}).material || {};
-			const material = {
-				...ref.config!.material,
-				...variant
-			};
-			for(let i in material){
-				const part = Equipments.entityBody(i, entity);
-				part.material = MaterialManager.parse(material[i], {});
+			if(typeof ref.config!.material == 'string'){
+				const part = Equipments.entityBody('body', entity, '0.0');
+				part.material = MaterialManager.parse(ref.config!.material, {});
+			} else {
+				const material = {
+					...ref.config!.material,
+					...variant
+				};
+				for(let i in material){
+					const part = Equipments.entityBody(i, entity);
+					part.material = MaterialManager.parse(material[i], {});
+				}
 			}
+		}
+
+		if(entity.type == 'item'){
+			entity.on('collision', ({ object }: { object: ExtendedMesh }) => {
+				if(object.userData.player){
+					ping('entity:collectitem', { entity: entity.id, player: object.userData.player.id })
+					.then(e => {
+						ping('entity:hp', { entity: entity.id, hp: { current: 0, max: 1 } });
+					});
+				}
+			});
 		}
 
 
@@ -113,6 +134,10 @@ export class Entities {
 		pingFrom('entity:spawn', ({entity}) => {
 			console.log(entity);
 			Entities.spawn(entity);
+		});
+
+		pingFrom('entity:despawn', ({entity}) => {
+			Entities.despawn(typeof entity == "string" ? entity : entity.id);
 		});
 
 		pingFrom('entity:move', ({entity:se, direction, position}) => {

@@ -40,7 +40,7 @@ export const JSONUIWidget = ({
 
     const renderWidget = (widget) => {
         const Element = elements[widget.type] || elements['normal'];
-        return <Element variables={variables} key={widget.type} widget={widget}>
+        return <Element variables={variables} key={Math.random()} widget={widget}>
             {widgetChildren(widget).map((childWidget, index) => (
               <React.Fragment key={index}>{renderWidget(childWidget)}</React.Fragment>
             ))}

@@ -400,6 +400,10 @@ export class Entity extends EntityData {
 		} else {
 			this.object3d.body.setVelocity(0, this.object3d.body.velocity.y, 0);
 		}
+
+		if(this.type == 'player'){
+			
+		}
 	}
 
 

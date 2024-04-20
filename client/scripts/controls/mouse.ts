@@ -64,15 +64,25 @@ export class Mouse {
     const itemInfo = (event) => {
       const raycaster = new THREE.Raycaster();
       const mouse = new THREE.Vector2();
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
+      if(Controls.controlMode){
+        mouse.x = 0;
+        mouse.y = 0;
+        raycaster.far = 5;
+      } else {
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        raycaster.far = (CameraManager.camera as any).far;
+      }
+    
       raycaster.setFromCamera(mouse, CameraManager.camera);
 
       const intersects = raycaster.intersectObjects(
         []
         .concat(
-          Entities.entities.map(i => i.object3d) as any
+          Entities.entities
+          .filter(i => i.id !== PlayerInfo.entity.id)
+          .map(i => i.object3d) as any
         )
         .concat(
           Chunks.chunkObjects() as any
@@ -85,20 +95,23 @@ export class Mouse {
         while(!(object.parent as any).isScene){
           object = object.parent!;
         }
-        if(object.userData.info){
+        if(object.userData.info && object.name !== 'chunk'){
           if(event.type == 'mousemove') UISelectedItem.select(object.userData.info);
         }
         if(object.name == 'chunk'){
-          place.material.color = new THREE.Color(object.userData.info.chunk.biome.map.color);
-          place.position.copy(point);
-          SceneManager.scene.scene.add(place);
+          if(!Controls.controlMode){
+            place.material.color = new THREE.Color(object.userData.info.chunk.biome.map.color);
+            place.position.copy(point);
+            SceneManager.scene.scene.add(place);
+          }
+          if(Controls.controlMode) UISelectedItem.unselect();
         } else {
           SceneManager.scene.scene.remove(place);
         }
       } else {
         SceneManager.scene.scene.remove(place);
+        if(Controls.controlMode) UISelectedItem.unselect();
       }
-
     }
 
     canvas.addEventListener('mousemove', itemInfo);

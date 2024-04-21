@@ -22,7 +22,7 @@ export const HUD = () => {
             {UIResources
                 .parent('hud')
                 .map((i, ind) => (
-                    <JSONUIWidget variables={variables} key={ind} json={{...i}}></JSONUIWidget>
+                    <JSONUIWidget variables={variables} key={'null'} json={{...i}}></JSONUIWidget>
                 ))}
             <div className="hud-top-left" style={{
                 display: variables.selectedItem ? 'block' : 'none'

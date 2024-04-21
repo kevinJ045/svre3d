@@ -34,6 +34,18 @@ export class PlayerInfo {
 		this.entity = entity;
 		if(!entity.object3d) return;
 		entity.object3d.userData.player = entity;
+
+		entity.on('move', () => {
+			entity.position = {
+				x: entity.object3d.position.x,
+				y: entity.object3d.position.y,
+				z: entity.object3d.position.z
+			};
+			ping('entity:move', {
+				entity: entity.id,
+				position: entity.position
+			});
+		});
 	}	
 
 	static get username(){

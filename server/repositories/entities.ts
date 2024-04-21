@@ -147,7 +147,12 @@ export class Entities {
 
 		if(entity.type == 'm:player'){
 			entity.inventory = []
+			Entities.hp(entity.id, {
+				max: entity.health.max,
+				current: entity.health.max
+			});
 			Sockets.emit('player:respawn', { entity });
+			Sockets.emit('entity:hp', {entity, hp: entity.health});
 		} else {
 			this.despawn(entity);
 		}
@@ -167,6 +172,7 @@ export class Entities {
 	static startPing(socket: Socket, serverdata){
 		pingFrom(socket, 'entity:move', ({entity,position}) => {
 			Entities.displace(entity, position);
+			socket.broadcast.emit('entity:settarget', {entity, position});
 		});
 
 		pingFrom(socket, 'entity:settarget', ({entity,position}) => {
@@ -258,8 +264,8 @@ export class Entities {
 				socket.broadcast.emit('entity:inventory', {
 					entity:eid,
 					type,
-					item: Items.create(item.type, item.quantity)!
-					.setData({ id: item.id, data: item.data }),
+					item: item && Object.keys(item).length ? Items.create(item.type, item.quantity)!
+					.setData({ id: item.id, data: item.data }) : null,
 					action,
 					full,
 					inventory: full ? entity.inventory : []
@@ -319,8 +325,8 @@ export class Entities {
 		const damage = entity.damage;
 		const finalDamage = damage - (target.defense || 0);
 
-		if(entity.attackInfo.current > 0){
-			entity.attackInfo.current -= 1;
+		if(entity.reference.config?.ai && entity.attackInfo.current > 0){
+			entity.attackInfo.current  -= 1;
 			return;
 		}
 

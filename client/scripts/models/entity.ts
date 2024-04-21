@@ -105,13 +105,14 @@ export class Entity extends EntityData {
 	addPhysics(){
 		PhysicsManager.addPhysics(this.object3d, this.reference!.config?.physics || { shape: 'convex' })
 		this.object3d.body.setFriction(0.8);
-    	this.object3d.body.setAngularFactor(0, 0, 0);
+		this.object3d.body.setAngularFactor(0, 0, 0);
 		this.object3d.body.on.collision((otherObject, event) => {
 			if(event == 'collision') this.emit('collision', {object: otherObject});
 			// if(this.reference.id == 'm:goober') console.log(otherObject.position.y - this.object3d.position.y)
 			// console.log(otherObject.position.y - this.object3d.position.y > -0.5);
 			if(event == 'collision' && otherObject.name == 'chunk'){
 				if(otherObject.position.y - this.object3d.position.y > -0.5){
+					// console.log('Higher Block');
 					this.hasHigherBlocks = true;
 				} else {
 					this.data.canjump = true;
@@ -214,7 +215,7 @@ export class Entity extends EntityData {
 
 			// If the height difference is exactly 1, make the player jump
 			if (intersects[0].object.name == 'chunk' && heightDifference > -1) {
-				obstacles.hasHigherBlocks = true;
+				// obstacles.hasHigherBlocks = true;
 			}
 
 			if(intersects[0].object.children.some(i => i.name.startsWith('chunk.'))){

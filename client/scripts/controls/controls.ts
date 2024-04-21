@@ -34,11 +34,11 @@ export class Controls {
     
 		const pointerDrag = new PointerDrag(canvas);
 		pointerDrag.onMove(delta => {
-		if (!this.pointerLock) return;
-		if (!this.pointerLock.isLocked()) return;
-		const { x, y } = delta;
-		Controls.move.y = -y * Settings.get('sensitivity')
-		Controls.move.x = x * Settings.get('sensitivity')
+			if (!this.pointerLock) return;
+			if (!this.pointerLock.isLocked()) return;
+			const { x, y } = delta;
+			Controls.move.y = -y * Settings.get('sensitivity')
+			Controls.move.x = x * Settings.get('sensitivity')
 		});
 
 		(SceneManager.scene as any).controls = new FirstPersonControls(CameraManager.camera as any, PlayerInfo.entity.object3d, {

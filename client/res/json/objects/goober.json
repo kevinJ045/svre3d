@@ -29,17 +29,10 @@
 			"eye": "0.0.3"
 		},
 		"ai": {
-			"attack": [
-				{
-					"id": "m:player",
-					"variant": "self"
-				}, {
-					"id": "m:goober",
-					"variant": "!self"
-				}
-			],
+			"attack": [],
 			"random_movement": true,
-			"movement_biome": "self"
+			"movement_biome": "self",
+			"attackBack": true
 		},
 		"damage": 10,
 		"health": 50,

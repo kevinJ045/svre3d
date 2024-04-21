@@ -145,7 +145,12 @@ export class Entities {
 			}
 		});
 
-		this.despawn(entity);
+		if(entity.type == 'm:player'){
+			entity.inventory = []
+			Sockets.emit('player:respawn', { entity });
+		} else {
+			this.despawn(entity);
+		}
 	}
 
 	static hp(id, hp){
@@ -327,14 +332,20 @@ export class Entities {
 			entity: target.id,
 			hp: target.health
 		});
+		
 		entity.attackInfo.current = entity.attackInfo.cooldown;
+		
+		if(target.reference.config?.ai?.attackBack){
+			if(target.reference.config?.ai?.attackBack == 'first'
+				? true : !target.attackTarget) target.attackTarget = entity;
+		}
 	}
 
 	static selectAttackTarget(entity: EntityData) {
     const range = entity.reference.config?.viewRange || 10;  // Define the attack range here (e.g., 5 units)
     const possibleTargets = this.entities.filter(
 			target => target.id !== entity.id &&  
-			target.isNeutral !== true && 
+			(entity.reference.config!.ai.attackNeutrals ? true : target.isNeutral !== true) && 
 			entity.reference.config!.ai.attack.map(i => i.id).includes(target.type) &&
 			(entity.reference.config!.ai.attack.find(i => i.id == target.type).variant ? 
 				(

@@ -92,6 +92,8 @@ export class Controls {
 		(SceneManager.scene as any).controls.update(this.move.x, this.move.y);
 		this.move.x = this.move.y = 0;
 
+		if(!PlayerInfo.entity || !PlayerInfo.entity.object3d || !PlayerInfo.entity.object3d.body) return;
+
 
 		var quaternion = new THREE.Quaternion().setFromEuler(PlayerInfo.entity.object3d.rotation);
 

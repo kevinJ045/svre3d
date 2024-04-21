@@ -150,15 +150,24 @@ export class Entities {
 		});
 
 		pingFrom('entity:despawn', ({entity}) => {
-			Entities.despawn(typeof entity == "string" ? entity : entity.id);
 			let e = typeof entity == "string" ? Entities.find(entity) : entity;
+			Entities.despawn(typeof entity == "string" ? entity : entity.id);
+		});
+
+		pingFrom('player:respawn', ({ entity }) => {
+			const e = this.find(entity)!;
+			if(!e) return;
 			if(e.data.username == PlayerInfo.player.username){
-				ping('player:respawn', {
-					username: e.data.username,
-					color: e.data.color,
-					variant: e.variant,
-					eqiupment: e.data.equipment || { brow: 'm:brow-1' }
-				});
+				// ping('player:respawn', {
+				// 	username: e.data.username,
+				// 	color: e.data.color,
+				// 	variant: e.variant,
+				// 	eqiupment: e.data.equipment || { brow: 'm:brow-1' }
+				// });\
+				PlayerInfo.entity.setInventory([]);
+				PhysicsManager.destroy(PlayerInfo.entity.object3d);
+				PlayerInfo.entity.object3d.position.set(0, 3, 0);
+				PlayerInfo.entity.addPhysics();
 			}
 		});
 

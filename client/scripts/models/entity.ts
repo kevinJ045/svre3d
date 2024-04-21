@@ -176,7 +176,10 @@ export class Entity extends EntityData {
 	}
 
 	sendDamage(target: Entity){
-		target.recieveDamage(this.damage, this);
+		ping('entity:attack', {
+			entity: this.id,
+			target: target.id
+		});
 	}
 
 	hasHigherBlocks = false;
@@ -429,6 +432,12 @@ export class Entity extends EntityData {
 		if(send) this.sendInventoryUpdateToServer(item, item.quantity, 'add', type);
 	}
 
+	setInventory(inventory: Item[], send = true){
+		this.inventory = inventory;
+		this.emit('inventory', {type: 'full'});
+		if(send) this.sendInventoryUpdateToServer(null, null, 'full', 'full');
+	}
+
 	// Method to remove an item from the inventory
 	removeFromInventory(item: Item, count: number = 1, send = true): void {
 		const type = super.removeFromInventory(item, count);
@@ -439,18 +448,20 @@ export class Entity extends EntityData {
 	}
 
 
-	private sendInventoryUpdateToServer(item: Item, count, type: string, action: string): void {
+	private sendInventoryUpdateToServer(item: Item | null, count, type: string, action: string): void {
 		ping('entity:inventory', {
 			entity: this.id,
-			item: {
+			item: item ? {
 				id: item.id,
 				type: item.itemID,
 				quantity: item.quantity,
 				count,
 				data: item.data
-			},
+			} : {},
 			action,
-			type
+			type,
+			full: type == 'full',
+			inventory: type == 'full' ? this.inventory : []
 		});
 	}
 

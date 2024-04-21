@@ -28,7 +28,7 @@ class EntityData extends ServerData {
     class = "common";
 
     attackInfo = {
-        cooldown: 5,
+        cooldown: 60,
         current: 0
     };
 

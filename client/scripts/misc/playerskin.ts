@@ -60,6 +60,8 @@ export class SkinPlayer {
 
 
     static skinPlayer(player: Entity){
+        
+        console.log(player.variant);
 
         const biome = Biomes.find(player.variant);
         

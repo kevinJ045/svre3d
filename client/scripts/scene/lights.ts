@@ -26,7 +26,7 @@ export class Lights {
     directionalLight.shadow.camera.bottom = - d;
     
     directionalLight.shadow.camera.near = 1;
-    directionalLight.shadow.camera.far = 1000000;
+    directionalLight.shadow.camera.far = 1000000 * 10000;
 	}
 
 }

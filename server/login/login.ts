@@ -62,7 +62,7 @@ export class LoginManager {
 			const playersCollection = db.collection('players');
 
 				// Check if the user already exists
-			const existingUser = await playersCollection.findOne({ username, variant });
+			const existingUser = await playersCollection.findOne({ username });
 			if (existingUser) {
 				throw new Error('User already exists');
 			}
@@ -71,7 +71,7 @@ export class LoginManager {
 			const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
 
 				// Create a new player using the DBModel
-			const newPlayer = await DBModel.create('player', { username, spawnPoint, position: { x: spawnPoint.x || 0, z: spawnPoint.z || 0, y: 5 } });
+			const newPlayer = await DBModel.create('player', { variant, username, spawnPoint, position: { x: spawnPoint.x || 0, z: spawnPoint.z || 0, y: 5 } });
 
 			await playersCollection.insertOne(newPlayer);
 

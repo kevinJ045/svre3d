@@ -34,7 +34,7 @@ export class MainScene extends Scene3D {
 	}
 
 	async create() {
-		const { lights } = await this.warpSpeed('camera', 'light', 'sky');
+		const { lights } = await this.warpSpeed('camera', 'light');
 
 		Lights
 		.setLights(lights!)
@@ -53,6 +53,7 @@ export class MainScene extends Scene3D {
 		// player.displace(new THREE.Vector3(Utils.randFrom(-10, 10), 0, Utils.randFrom(-10, 10)));
 		Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
 		player.on('move', () => {
+
 			Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
 		});
 

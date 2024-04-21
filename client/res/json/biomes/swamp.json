@@ -9,6 +9,10 @@
 	"map": {
 		"color": ["#00ff00", "#6aff00", "#0dbc00"]
 	},
+	"tile_variations": {
+		"multicolor": true,
+		"keepdefault": true
+	},
 	"structure_rules": [
 		{
 			"name": "tree",

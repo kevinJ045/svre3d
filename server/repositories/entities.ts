@@ -130,7 +130,9 @@ export class Entities {
 
 	static kill(entity: string | EntityData){
 		if(typeof entity == 'string') entity = Entities.find(entity)!;
-		
+
+		if(!entity) return;
+
 		if(entity.inventory.length){
 			entity.inventory.forEach(item => {
 				this.spawnItem(item, (entity as EntityData).position);
@@ -198,6 +200,14 @@ export class Entities {
 					});
 				}
 			}
+		});
+
+		pingFrom(socket, 'player:respawn', (player) => {
+			Entities.spawn('m:player', {
+				x: 0,
+				y: 0,
+				z: 0
+			}, player.username, player.variant, [], { respawn: true, username: player.username, color: player.color, equipment: { brow: player.equipment?.brow || 'm:brow-1' } })!;
 		});
 
 		pingFrom(socket, 'entity:inventory', (
@@ -290,7 +300,13 @@ export class Entities {
 	}
 
 	static selectRandomTarget(entity){
-		const chunks = Chunks.chunks;
+		let chunks = Chunks.chunks;
+		const ai = entity.reference.config?.ai;
+		if(ai){
+			if(ai.movement_biome){
+				chunks = chunks.filter(chunk => (chunk.biome as any).name == (ai.movement_biome == 'self' ? entity.variant : ai.movement_biome))
+			}
+		}
 		if(chunks.length) entity.targetPosition = Random.pick(...chunks).position;
 	}
 

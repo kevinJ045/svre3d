@@ -119,6 +119,7 @@ export class Entities {
 
 	static despawn(entity: string | Entity){
 		if(typeof entity == 'string') entity = Entities.find(entity)!;
+		if(!entity) return;
 		entity.destroy();
 		Entities.entities.splice(Entities.entities.indexOf(entity), 1);
 	}
@@ -140,12 +141,25 @@ export class Entities {
 		});
 
 		pingFrom('entity:spawn', ({entity}) => {
-			console.log(entity);
-			Entities.spawn(entity);
+			const spawn = Entities.spawn(entity);
+			if(spawn?.type == 'm:player' && spawn?.data.username == PlayerInfo.player.username){
+				PlayerInfo.setPlayerEntity(
+					spawn
+				);
+			}
 		});
 
 		pingFrom('entity:despawn', ({entity}) => {
 			Entities.despawn(typeof entity == "string" ? entity : entity.id);
+			let e = typeof entity == "string" ? Entities.find(entity) : entity;
+			if(e.data.username == PlayerInfo.player.username){
+				ping('player:respawn', {
+					username: e.data.username,
+					color: e.data.color,
+					variant: e.variant,
+					eqiupment: e.data.equipment || { brow: 'm:brow-1' }
+				});
+			}
 		});
 
 		pingFrom('entity:move', ({entity:se, direction, position}) => {

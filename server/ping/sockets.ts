@@ -14,4 +14,14 @@ export class Sockets {
 		this.io.emit(ev, ...args);
 	}
 
+	static find(username: string){
+		return Object.values(
+			Object.fromEntries(this.io.sockets.sockets.entries())
+		).find(i => i.data.username == username);
+	}
+
+	static id(id: string){
+		return this.io.sockets.sockets.get('id');
+	}
+
 }

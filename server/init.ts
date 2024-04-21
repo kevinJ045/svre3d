@@ -25,6 +25,8 @@ export async function userConnected(serverData, socket){
 
 		// console.log(player);
 
+		socket.data.username == username;
+
 		const playerEntity = Entities.spawn('m:player', player!.position, player!.username, player?.variant, player?.inventory, { username, color: player?.color, equipment: player?.equipment }, player!.exp)!;
 
 		if(
@@ -42,7 +44,7 @@ export async function userConnected(serverData, socket){
 		startPing(serverData, socket);
 
 		setTimeout(() => Entities.spawn('m:goober', { x: 0, y: 0, z: 5 }, 'anji', 'lava', [], { ai: true }), 5000);
-		setTimeout(() => Entities.spawn('m:goober', { x: 0, y: 0, z: -5 }, 'jani', 'grass', [], { ai: true }), 5000);
+		// setTimeout(() => Entities.spawn('m:goober', { x: 0, y: 0, z: -5 }, 'jani', 'grass', [], { ai: true }), 5000);
 		// setTimeout(() => Entities.spawnItem(Items.create('m:rubidium')!, { x: 0, y: 0, z: 2 }), 5000);
 
 		socket.on('disconnect', () => {

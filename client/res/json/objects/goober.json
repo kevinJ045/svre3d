@@ -12,12 +12,7 @@
 				"material": {
 					"body": "m:goober_grass.shader"
 				},
-				"set-data": {
-					"damage": {
-						"base": 0.5,
-						"current": 0.5
-					}
-				}
+				"damage": 20
 			}, {
 				"name": "lava",
 				"material": {
@@ -37,10 +32,10 @@
 			"attack": [
 				{
 					"id": "m:player",
-					"variant": "!$self"
+					"variant": "!self"
 				}, {
 					"id": "m:goober",
-					"variant": "!$self"
+					"variant": "!self"
 				}
 			],
 			"random_movement": true

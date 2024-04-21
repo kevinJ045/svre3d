@@ -167,6 +167,8 @@ export class Entities {
 				const distance = pos.distanceTo(entity.object3d.position);
 				if(distance < 1.5) entity.displace(null);
 				else entity.displace(new THREE.Vector3(position.x, position.y, position.z));
+				
+				entity.rotateTowardsTarget(new THREE.Vector3(position.x, position.y, position.z));
 			} else {}
 		});
 

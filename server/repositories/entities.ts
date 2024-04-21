@@ -55,6 +55,7 @@ export class Entities {
 
 		entity.setReference(ref.data);
 
+
 		const v = (ref.data.config?.variants || []).find(i => i.name == variant);
 
 		let drops = (ref.data.config?.drops || []);
@@ -80,6 +81,8 @@ export class Entities {
 			entity.inventory.push(...drops.map(item => Items.create(item.item, item.quantity, item.data)))
 		}
 
+		if(entity.reference.config?.neutral) entity.isNeutral = true;
+
 		Entities.entities.push(entity);
 
 		Sockets.emit('entity:spawn', { entity });
@@ -93,6 +96,7 @@ export class Entities {
 
 	static despawn(entity: string | EntityData){
 		if(typeof entity == 'string') entity = Entities.find(entity)!;
+		if(entity.attackTarget) entity.attackTarget = null;
 		Sockets.emit('entity:despawn', { entity });
 		Entities.entities.splice(Entities.entities.indexOf(entity), 1);
 	}
@@ -133,6 +137,12 @@ export class Entities {
 			});
 		}
 
+		this.entities.forEach(e => {
+			if(e.attackTarget?.id == (entity as any).id){
+				e.attackTarget = null;
+			}
+		});
+
 		this.despawn(entity);
 	}
 
@@ -160,6 +170,14 @@ export class Entities {
 		pingFrom(socket, 'entity:hp', ({entity, hp}) => {
 			Entities.hp(entity, hp);
 			socket.broadcast.emit('entity:hp', {entity, hp});
+		});
+
+		pingFrom(socket, 'entity:attack', ({entity: eid, target: tid}) => {
+			const entity = Entities.find(eid);
+			const target = Entities.find(tid);
+			if(target && entity){
+				Entities.attackTarget(entity, target);
+			}
 		});
 
 		pingFrom(socket, 'entity:collectitem', ({entity:eid, player:pid}) => {
@@ -276,6 +294,88 @@ export class Entities {
 		if(chunks.length) entity.targetPosition = Random.pick(...chunks).position;
 	}
 
+	static attackTarget(entity: EntityData, target: EntityData) {
+		const damage = entity.damage;
+		const finalDamage = damage - (target.defense || 0);
+
+		if(entity.attackInfo.current > 0){
+			entity.attackInfo.current -= 1;
+			return;
+		}
+
+		Entities.hp(target.id, {
+			max: target.health.max,
+			current: target.health.current - finalDamage
+		});
+		Sockets.emit('entity:hp', {
+			entity: target.id,
+			hp: target.health
+		});
+		entity.attackInfo.current = entity.attackInfo.cooldown;
+	}
+
+	static selectAttackTarget(entity: EntityData) {
+    const range = entity.reference.config?.viewRange || 10;  // Define the attack range here (e.g., 5 units)
+    const possibleTargets = this.entities.filter(
+			target => target.id !== entity.id &&  
+			target.isNeutral !== true && 
+			entity.reference.config!.ai.attack.map(i => i.id).includes(target.type) &&
+			(entity.reference.config!.ai.attack.find(i => i.id == target.type).variant ? 
+				(
+					entity.reference.config!.ai.attack.find(i => i.id == target.type).variant == 'self'
+					? target.variant == entity.variant :
+					(
+						entity.reference.config!.ai.attack.find(i => i.id == target.type).variant == '!self'
+						? target.variant !== entity.variant
+						: (
+							target.variant === entity.reference.config!.ai.attack.find(i => i.id == target.type).variant.startsWith('!')
+							? target.variant !== entity.reference.config!.ai.attack.find(i => i.id == target.type).variant.split('!')[1]
+							: target.variant ===  entity.reference.config!.ai.attack.find(i => i.id == target.type).variant 
+						)
+					)
+				)
+			: true) && 
+			new Vector3(
+				entity.position.x,
+				entity.position.y,
+				entity.position.z
+			).distanceTo(
+				new Vector3(
+					target.position.x,
+					target.position.y,
+					target.position.z
+				)
+			) <= range 
+    ).sort((a, b) => new Vector3(
+			entity.position.x,
+			entity.position.y,
+			entity.position.z
+		).distanceTo(
+			new Vector3(
+				b.position.x,
+				b.position.y,
+				b.position.z
+			)
+		) - new Vector3(
+			entity.position.x,
+			entity.position.y,
+			entity.position.z
+		).distanceTo(
+			new Vector3(
+				a.position.x,
+				a.position.y,
+				a.position.z
+			)
+		));
+
+    if (possibleTargets.length > 0) {
+			const target = possibleTargets[0];
+			entity.attackTarget = target;
+			return true;
+    }
+    return false;
+	}
+
 	static thinkNoAttackTarget(entity): void {
 		entity.restTime.current++;
 		if (entity.restTime.current > entity.restTime.currentMax) {
@@ -293,11 +393,55 @@ export class Entities {
 		}
 	}    
 
+	static thinkAttackTarget(entity: EntityData){
+		if(entity.attackTarget){
+			const reach = entity.reference.config?.reachRange || 5;  // Define the attack range here (e.g., 5 units)
+    
+			const position = new Vector3(
+				entity.position.x,
+				entity.position.y,
+				entity.position.z
+			);
+			const newPosition = new Vector3(
+				entity.attackTarget.position.x,
+				entity.attackTarget.position.y,
+				entity.attackTarget.position.z
+			);
+			const distance = position.distanceTo(newPosition);
+			if(distance < reach) {
+				if(entity.targetPosition){
+					entity.targetPosition = null;
+					Sockets.emit('entity:reach', {
+						entity: entity.id,
+						position: entity.position
+					});
+				}
+
+				this.attackTarget(entity, entity.attackTarget);
+			} else if(!entity.targetPosition){
+				entity.targetPosition = {
+					x: newPosition.x,
+					y: newPosition.y,
+					z: newPosition.z
+				};
+			} else {
+				Entities.moveTowardsTarget(entity);
+			} 
+		} else {
+			Entities.selectAttackTarget(entity);
+
+			if(entity.targetPosition) Entities.moveTowardsTarget(entity);
+			else Entities.thinkNoAttackTarget(entity);
+		}
+	}
+
 	static think(entity){
 
 		const ai = entity.reference.config!.ai || {};
 
-		if(ai.random_movement){
+		if(ai.attack){
+			Entities.thinkAttackTarget(entity);
+		} else if(ai.random_movement){
 			if(entity.targetPosition) Entities.moveTowardsTarget(entity);
 			else Entities.thinkNoAttackTarget(entity);   
 		}

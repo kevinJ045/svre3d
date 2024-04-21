@@ -11,7 +11,7 @@ class EntityData extends ServerData {
     speed!: number; // Speed of the entity
     defense!: number; // Defense of the entity
     damage!: number; // Damage of the entity
-    attackTarget!: string | null; // ID of the entity's attack target, if any
+    attackTarget!: EntityData | null; // ID of the entity's attack target, if any
     targetPosition!: { x: number; y: number; z: number } | null; // Target position of the entity
     exp!: {
         level: number;
@@ -26,6 +26,11 @@ class EntityData extends ServerData {
     state: string; // Entity state, Like Running, Idle....
     ai = true;
     class = "common";
+
+    attackInfo = {
+        cooldown: 50,
+        current: 0
+    };
 
 	data: Record<string, any> = {};
     constructor() {

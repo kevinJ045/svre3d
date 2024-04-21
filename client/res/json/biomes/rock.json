@@ -9,5 +9,21 @@
 	"tile_variations": {
 		"multicolor": true,
 		"keepdefault": true
-	}
+	},
+	"structure_rules": [
+		{
+			"name": "iron-ore",
+			"object": "m:iron-ore",
+			"density": 1,
+			"object_rules": ["ore"],
+			"random": true,
+			"loot": true,
+			"drops": [
+				{
+					"id": "m:rubidium",
+					"quantity": 1
+				}
+			]
+		}
+	]
 }

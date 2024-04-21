@@ -8,6 +8,7 @@ import { ItemData } from "../../../server/models/item";
 import { Entities } from "../repositories/entities";
 import { UISelectedItem } from "../ui/misc/variables";
 import { SceneManager } from "../common/sceneman";
+import { ping } from "../socket/socket";
 
 export class Mouse {
 
@@ -38,7 +39,20 @@ export class Mouse {
         })));
       } else if (intersects.length > 0) {
         const intersectionPoint = intersects[0].point;
-        PlayerInfo.entity.displace(intersectionPoint);
+        if(PlayerInfo.entity.object3d.position.distanceTo(intersectionPoint) < 3 && intersects[0].object.name !== 'chunk' && intersects[0].object.userData.lootable){
+          const chunkObject = intersects[0].object.parent?.parent;
+          if(chunkObject){
+            const chunk = chunkObject.userData.info.chunk;
+            if(intersects[0].object.userData.structure.looted) return;
+            ping('structure:loot', {
+              chunk: chunk.position,
+              entity: PlayerInfo.entity.id,
+              id: intersects[0].object.userData.structure.id
+            });
+          }
+        } else {
+          PlayerInfo.entity.displace(intersectionPoint);
+        }
       }
 
     }

@@ -7,7 +7,7 @@ import { ResourceMap } from "./resources";
 import { THREE } from "enable3d";
 
 
-export function generateWithRule(item, rule, seed, object_rules?: string[]) {
+export function generateWithRule(item, rule, seed, object_rules?: string[], looted?: boolean) {
 	const generationRule = rule.generation_rule;
 
 	const group = new THREE.Group();
@@ -17,7 +17,7 @@ export function generateWithRule(item, rule, seed, object_rules?: string[]) {
 		if (generationRule.hasOwnProperty(key)) {
 			const currentRule = generationRule[key];
 
-			const objects = generateObjects(currentRule, item, group, seed);
+			const objects = generateObjects(currentRule, item, group, seed, '', looted);
 
 			objects.forEach(object => {
 				if(object) group.add(object);
@@ -28,14 +28,14 @@ export function generateWithRule(item, rule, seed, object_rules?: string[]) {
 	return group;
 }
 
-export function generateObjects(rule, item, parent, seed, side = '') {
+export function generateObjects(rule, item, parent, seed, side = '', looted) {
 	const objects: any = [];
 	const count = Array.isArray(rule.count) ? Random.from(rule.count[0], rule.count[1], seed) : rule.count;
 	for (let i = 0; i < count; i++) {
 
-		const name = Array.isArray(rule.name) ? rule.name[Random.from(0, rule.name.length-1, seed)] : rule.name;
+		let name = Array.isArray(rule.name) ? rule.name[Random.from(0, rule.name.length-1, seed)] : rule.name;
 
-		const object = createObject({...rule, name}, item, side, seed, parent);
+		const object = createObject({...rule, name}, item, side, seed, parent, looted);
 		objects.push(object);
 
 		// Handle forEach rule
@@ -45,7 +45,7 @@ export function generateObjects(rule, item, parent, seed, side = '') {
 					const childRuleName = rule.forEach[key];
 					const childRule = rule[childRuleName];
 					if (childRule) {
-						objects.push(...generateObjects(childRule, item, parent, seed, key));
+						objects.push(...generateObjects(childRule, item, parent, seed, key, looted));
 					}
 				}
 			}
@@ -54,17 +54,19 @@ export function generateObjects(rule, item, parent, seed, side = '') {
 	return objects;
 }
 
-function createObject(rule, item, side, seed, parent?: any) {
+function createObject(rule, item, side, seed, parent?: any, looted?: any) {
 	let position = new THREE.Vector3(...rule.position);
 	const size = new THREE.Vector3(...rule.size);
 	const rotation = new THREE.Euler(...rule.rotation);
+
+	const name = looted ? rule.looted : rule.name;
 
 	const g = new THREE.Group();
 	
 	let o;
 
 	item.mesh.traverse(f => {
-		if(f.name == rule.name) o = f.clone();
+		if(f.name == name) o = f.clone();
 	});
 
 	if(o) {
@@ -140,9 +142,13 @@ export class Structures {
 				
 				const object = ResourceMap.find(rule.object)!;
 
-				const structure = generateWithRule(object, object.config!, Seed.rng, rule.object_rules);
+				const structure = generateWithRule(object, object.config!, Seed.rng, rule.object_rules, structureData.looted);
 
 				chunk.object3d.add(structure);
+
+				if(rule.loot){
+					structure.userData.lootable = true;
+				}
 
 				const materialsRule = object!.config!.materials;
 
@@ -154,12 +160,17 @@ export class Structures {
 								mass: 0
 							});
 						}
+						if(rule.loot) item.userData.lootable = true;
+						item.userData.structure = structureData;
 					}
 				});
 
 				if(materialsRule){
 					MaterialManager.applyMaterials(structure, materialsRule, variables);
 				}
+
+
+				structureData.object3d = structure;
 
 			});
 

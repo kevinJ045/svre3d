@@ -1,5 +1,6 @@
 import { Random } from "../common/rand";
 import { noise, seedrng } from "../constant/seed";
+import { Data } from "../db/db";
 import { ChunkData } from "../models/chunk";
 import { ServerData } from "../models/data";
 import { jsonres } from "../models/jsonres";
@@ -11,7 +12,7 @@ import { ResourceMap } from "./resources";
 export class Structures {
 
 
-	static constructStructure(chunk: ChunkData){
+	static async constructStructure(chunk: ChunkData){
 		const biome: jsonres = chunk.biome.reference ? chunk.biome.reference : chunk.biome;
 
 		if(biome.structure_rules){
@@ -37,11 +38,46 @@ export class Structures {
 					biome
 				});
 
+				if(rule.loot){
+					const looted = await Data.collection('loots')
+					.findOne({
+						name: rule.name,
+						position: chunk.position
+					});
+					if(looted){
+						structure.looted = true;
+					}
+				}
+
 				chunk.structures.push(structure);
 			}
 
 		} 
 
+	}
+
+	static selectDropsByChance(drops: typeof StructureData.prototype.rule.drops, numSelections) {
+		let totalChance = 0;
+		for (const drop of drops!) {
+			totalChance += drop.chance || 1; 
+		}
+	
+		const selectedItems: typeof drops = [];
+	
+		for (let i = 0; i < numSelections; i++) {
+			const randomNumber = Math.random() * totalChance;
+	
+			let cumulativeChance = 0;
+			for (const drop of drops!) {
+				cumulativeChance += drop.chance || 1;
+				if (randomNumber <= cumulativeChance) {
+					selectedItems.push(drop);
+					break;
+				}
+			}
+		}
+
+		return selectedItems;
 	}
 
 }

@@ -112,6 +112,17 @@ export class Chunks {
 			Chunks.delete(stringifyChunkPosition(data));
 		});
 
+		pingFrom('structure:loot', (data) => {
+			const chunk = Chunks.find(data.chunk);
+			if(!chunk) return;
+			const structure = chunk.structures.find(i => i.id == data.structure);
+			if(!structure) return;
+			console.log(chunk, structure);
+			structure.looted = true;
+			chunk.object3d.traverse(o => chunk.object3d.remove(o));
+			Structures.loadStrcuture(chunk);
+		});
+
 	}
 
 	static findChunkAtPosition(position: THREE.Vector3): Chunk | null {

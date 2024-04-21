@@ -7,7 +7,6 @@ import { THREE } from "enable3d";
 export class MaterialManager {
 
 	static parseMaterial(mat: string, variables = {}){
-		console.log(mat);
 		const materialOptions = Object.fromEntries(mat.split('(')[1]
 		.split(')')[0]
 		.split(',')
@@ -74,7 +73,7 @@ export class MaterialManager {
 	static makeSegmentMaterial(texture: THREE.Texture, biome: any){
 	
 		const { fragment, vertex, materialOptions } = (ResourceMap.find(biome.shader ? biome.shader+'.shader' : 'm:segment.shader') || {}) as any;
-
+		0x505050
 		const uniforms = {
 			textureMap: { value: texture },
 			// shadowMap: { value: scene.lightSet.directionalLight.shadow.map }
@@ -106,6 +105,7 @@ export class MaterialManager {
 			if(mat){
 				if(Array.isArray(child.material)){
 					if(Array.isArray(mat)) child.material = materialsRule.map(mat => {
+						console.log(mat);
 						return MaterialManager.parse(mat, variables);
 					});
 					else if(typeof mat == "object") {
@@ -120,7 +120,9 @@ export class MaterialManager {
 						child.material = MaterialManager.parse(mat, variables);
 					}
 				} else{
-					child.material = MaterialManager.parse(mat, variables);
+					child.material = typeof mat == 'object' && child.material.name in mat 
+					? MaterialManager.parse(mat[child.material.name], variables)
+					: MaterialManager.parse(mat, variables);
 				}
 			}
 		});

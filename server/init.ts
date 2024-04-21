@@ -6,6 +6,7 @@ import { LoginManager } from "./login/login";
 import { startPing } from "./ping/ping";
 import { Sockets } from "./ping/sockets";
 import { Biomes } from "./repositories/biomes";
+import { Chunks } from "./repositories/chunks";
 import { Entities } from "./repositories/entities";
 import { Items } from "./repositories/items";
 import { Mainloop } from "./repositories/mainloop";
@@ -17,7 +18,7 @@ export async function userConnected(serverData, socket){
 
 	const token = socket.handshake.auth.token;
 
-	const username = token ? await LoginManager.verifyToken(token) : null;
+	const username = token && token !== 'null' ? await LoginManager.verifyToken(token) : null;
 
 	if(username){
 
@@ -27,7 +28,7 @@ export async function userConnected(serverData, socket){
 
 		socket.data.username == username;
 
-		const playerEntity = Entities.spawn('m:player', player!.position, player!.username, player?.variant, player?.inventory, { username, color: player?.color, equipment: player?.equipment }, player!.exp)!;
+		const playerEntity = Entities.spawn('m:player', player!.position, player!.username, player?.variant, player?.inventory, { spawnPoint: player!.spawnPoint, username, color: player?.color, equipment: player?.equipment }, player!.exp)!;
 
 		if(
 			!Entities.entities.find(i => i.data.username == username) || socket.handshake.query.reconnect != 'true'
@@ -43,8 +44,8 @@ export async function userConnected(serverData, socket){
 
 		startPing(serverData, socket);
 
-		setTimeout(() => Entities.spawn('m:goober', { x: 0, y: 0, z: 5 }, 'anji', 'lava', [], { ai: true }), 5000);
-		setTimeout(() => Entities.spawn('m:goober', { x: 0, y: 0, z: -5 }, 'jani', 'grass', [], { ai: true }), 5000);
+		// setTimeout(() => Entities.spawn('m:goober', { x: 0, y: 0, z: 5 }, 'anji', 'lava', [], { ai: true }), 5000);
+		// setTimeout(() => Entities.spawn('m:goober', { x: 0, y: 0, z: -5 }, 'jani', 'grass', [], { ai: true }), 5000);
 		// setTimeout(() => Entities.spawnItem(Items.create('m:rubidium')!, { x: 0, y: 0, z: 2 }), 5000);
 
 		socket.on('disconnect', () => {
@@ -57,11 +58,14 @@ export async function userConnected(serverData, socket){
 		socket.on('login', async ({ username, password }, cb) => {
 
 			const user = await Players.find(username);
-			
+
+			const variant = Random.pick(...variants);
+
 			if(!user) await LoginManager.register(
 				username,
 				password,
-				Random.pick(...variants)
+				variant,
+				Chunks.findSafeSpawnPoint(variant) || { x: 0, z: 0 }
 			);
 
 			const token = await LoginManager.login(username, password);

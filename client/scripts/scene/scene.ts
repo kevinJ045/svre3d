@@ -36,9 +36,9 @@ export class MainScene extends Scene3D {
 	async create() {
 		const { lights } = await this.warpSpeed('camera', 'light', 'sky');
 
-    Lights
-			.setLights(lights!)
-			.initLights();
+		Lights
+		.setLights(lights!)
+		.initLights();
 
 		Chunks.init();
 		const player = Entities.spawn(PlayerInfo.entity)!;

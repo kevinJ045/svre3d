@@ -42,7 +42,7 @@ export class Chunks {
 	static find(key: string){
 		return this.chunks.find(i => i.stringify() == key);
 	}
-
+	select
 	static at(index: number){
 		return this.chunks.at(index);
 	}
@@ -78,4 +78,60 @@ export class Chunks {
 			return chunk;
 		});
 	}
+
+
+	static findSafeSpawnPoint(biomeName) {
+		
+		const minDistanceFromBorders = 5; // blocks
+
+		let spawnPoint: any = null;
+
+		const maxAttempts = 1000000;
+		let attempts = 0;
+
+		while (attempts < maxAttempts) {
+			attempts++;
+
+			const randomX = Math.floor(Math.random() * worldData.nearWidth);
+			const randomZ = Math.floor(Math.random() * worldData.neaDepth);
+
+			const position = { x: randomX, y: 0, z: randomZ };
+
+			const biome = Biomes.getBiome(randomX, randomZ);
+
+			if (biome.reference.name === biomeName) {
+
+				let isSafeSpawnPoint = true;
+				
+				for (let dx = -minDistanceFromBorders; dx <= minDistanceFromBorders; dx += this.chunkSize) {
+					for (let dz = -minDistanceFromBorders; dz <= minDistanceFromBorders; dz += this.chunkSize) {
+						
+						const surroundingPosition = {
+								x: position.x + dx,
+								z: position.z + dz
+						};
+						
+						const surroundingBiome = Biomes.getBiome(surroundingPosition.x, surroundingPosition.z);
+
+						if (surroundingBiome.reference.name !== biomeName) {
+							isSafeSpawnPoint = false;
+							break; 
+						}
+					}
+
+					if (!isSafeSpawnPoint) {
+						break;
+					}
+				}
+
+				if (isSafeSpawnPoint) {
+					return position;
+				}
+				
+			}
+		}
+
+		return spawnPoint;
+	}
+
 }

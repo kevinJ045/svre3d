@@ -13,8 +13,9 @@
 		{
 			"name": "tree",
 			"object": "m:tree-1",
-			"density": 25,
-			"object_rules": ["tree2"]
+			"density": 5,
+			"object_rules": ["tree2"],
+			"random": true
 		}
 	]
 }

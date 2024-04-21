@@ -13,6 +13,8 @@ import { Equipments } from "./equipments";
 import { ItemData } from "../../../server/models/item";
 import { MaterialManager } from "./materials";
 import { SkinPlayer } from "../misc/playerskin";
+import { Settings } from "../settings/settings";
+import { Chunks } from "./chunks";
 
 
 export class Entities {
@@ -42,15 +44,15 @@ export class Entities {
 		const entityMesh = new ExtendedObject3D();
 
 		SceneManager.scene.animationMixers.add(entityMesh.anims.mixer);
-    	entityMesh.anims.mixer.timeScale = 1;
+		entityMesh.anims.mixer.timeScale = 1;
 
 		const refMesh: THREE.Object3D = ref.resource.type == "gltf" ? cloneGltf(ref.load) : ref.mesh.clone();
 		SceneManager.scene.scene.add(refMesh);
 
 		refMesh.traverse(child => {
-      		child.castShadow = true
-      		child.receiveShadow = false
-    	});
+			child.castShadow = true
+			child.receiveShadow = false
+		});
 
 		entityMesh.castShadow = true;
 
@@ -154,7 +156,7 @@ export class Entities {
 			Entities.despawn(typeof entity == "string" ? entity : entity.id);
 		});
 
-		pingFrom('player:respawn', ({ entity }) => {
+		pingFrom('player:respawn', ({ entity, position }) => {
 			const e = this.find(entity)!;
 			if(!e) return;
 			if(e.data.username == PlayerInfo.player.username){
@@ -166,7 +168,8 @@ export class Entities {
 				// });\
 				PlayerInfo.entity.setInventory([]);
 				PhysicsManager.destroy(PlayerInfo.entity.object3d);
-				PlayerInfo.entity.object3d.position.set(0, 3, 0);
+				PlayerInfo.entity.object3d.position.set(position.x || 0, 10, position.z || 0);
+				Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
 				PlayerInfo.entity.addPhysics();
 			}
 		});

@@ -11,7 +11,8 @@ export class Players {
 	static active: string[] = [];
 
 	static async find(username: string){
-		return DBModel.create('player', await Data.collection('players').findOne({ username }));
+		const user = await Data.collection('players').findOne({ username });
+		return user ? DBModel.create('player', user) : null;
 	}
 
 	static isActive(username: string){

@@ -151,7 +151,7 @@ export class Entities {
 				max: entity.health.max,
 				current: entity.health.max
 			});
-			Sockets.emit('player:respawn', { entity });
+			Sockets.emit('player:respawn', { entity, position: entity.data.spawnPoint || Chunks.findSafeSpawnPoint(entity.variant) });
 			Sockets.emit('entity:hp', {entity, hp: entity.health});
 		} else {
 			this.despawn(entity);

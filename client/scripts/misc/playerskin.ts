@@ -18,16 +18,14 @@ import { ResourceMap } from '../repositories/resources';
 
 export class SkinPlayer {
 
-    static createCanvasImage(player: Entity, colors: string[], side: number){
+    static createCanvasImage(player: Entity, colors: string[], side: number,
+        width = 1000, height = 1000){
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d')!;
         
         const rng = seedrandom(player.data.username + (side || '-').toString());
         const noise = new Noise.Noise(rng());
       
-        // Set the size of the canvasusername
-        const width = 1000;
-        const height = 1000;
         canvas.width = width;
         canvas.height = height;
       
@@ -70,14 +68,20 @@ export class SkinPlayer {
         const colors = Array.isArray(biome.map.color) ? [...biome.map.color] : [biome.map.color];
         colors.push(player.data.color);
 
-        const materias = Array(6)
-            .fill(0)
-            .map((_, i) => new THREE.MeshLambertMaterial({
-                map: this.createCanvasImage(player, colors, i)
-            }));
+        const settings = {
+            emissive: 0
+        }
 
         const body = Equipments.entityBody('body', player);
-        body.children[0].material = materias[0];
+        body.children[0].material = new THREE.MeshLambertMaterial({
+            map: this.createCanvasImage(player, colors, 1001),
+            ...settings
+        });
+        colors.pop();
+        body.children[3].material = new THREE.MeshLambertMaterial({
+            map: this.createCanvasImage(player, colors, 110, 150, 400),
+            ...settings
+        });
 
     }
 

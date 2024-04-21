@@ -16,7 +16,8 @@ export const PlayerModel = {
 		level: 1,
 		max: 100,
 		current: 1,
-	}
+	},
+	spawnPoint: { x: 0, z: 0 }
 } as {
 	username: string;
 	position: { x?: number, y?: number, z?: number },

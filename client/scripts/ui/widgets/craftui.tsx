@@ -85,6 +85,7 @@ const CraftingUI = () => {
                     id="item-content-text"
                     value={contentValue}
                     onChange={handleInputChange}
+                    placeholder="Item Content"
                 />
             </div>
             {showChooseItem && (

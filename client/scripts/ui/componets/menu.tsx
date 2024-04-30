@@ -9,6 +9,8 @@ import { Character } from "../widgets/character";
 import { Item } from "../../models/item";
 import { ItemActions } from "../widgets/actions";
 import CraftingUI from "../widgets/craftui";
+import BookComponent from "../widgets/books";
+import { ResourceMap } from "../../repositories/resources";
 
 
 export const Menu = () => {
@@ -49,7 +51,7 @@ export const Menu = () => {
 				<b className="map-icon"></b>
 			</Tab>
 
-			<Tab tab="player-info" setActiveTab={setTab} activeTab={tab}>
+			<Tab tab="book" setActiveTab={setTab} activeTab={tab}>
 				<b className="book-icon"></b>
 			</Tab>
 
@@ -117,19 +119,12 @@ export const Menu = () => {
 				<Map2DWidget activeTab={tab} />
 			</TabPane>
 
-			<TabPane tab="player-info" activeTab={tab}>
-				<h3>Entity Info</h3>
-				<div className="player-info-grid">
-					<div className="info">
-						<h4>Level {PlayerInfo?.entity.exp.level.toString()}</h4>
-					</div>
-					<div className="c-preview">
-						{/* <Character activeTab={tab}></Character> */}
-					</div>
-					<div className="about">
-						hello bro... how are you?
-					</div>
-				</div>
+			<TabPane tab="book" activeTab={tab}>
+				<BookComponent books={
+					ResourceMap.resources.filter(
+						i => i.config?.book
+					).map(i => ({...i.config!.book, id: i.id}))
+				} />
 			</TabPane>
 
 			<TabPane tab="settings" activeTab={tab}>

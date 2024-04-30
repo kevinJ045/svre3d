@@ -18,6 +18,8 @@ export class Keyboard {
 
   static init() {
     window.addEventListener('keydown', (event) => {
+      if((event.target as HTMLElement).localName == 'input') return;
+      
       const key = event.key.toLowerCase();
       if (this.keys[key]) {
 				if(this.keys[key].prevent) event.preventDefault();
@@ -26,6 +28,9 @@ export class Keyboard {
     });
 
     window.addEventListener('keyup', (event) => {
+
+      if((event.target as HTMLElement).localName == 'input') return;
+
       const key = event.key.toLowerCase();
       if (this.keys[key]) {
 				if(this.keys[key].prevent) event.preventDefault();

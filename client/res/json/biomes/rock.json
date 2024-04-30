@@ -14,7 +14,7 @@
 		{
 			"name": "iron-ore",
 			"object": "m:iron-ore",
-			"density": 1,
+			"density": 30,
 			"object_rules": ["ore"],
 			"random": true,
 			"loot": true,

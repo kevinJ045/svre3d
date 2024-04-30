@@ -13,6 +13,8 @@ export const Map2DWidget = (
       Map2D.create(canvas);
     };
 
+    Map2D.activeTab = activeTab;
+
     // Call createCanvas function when canvasRef is loaded
     if (canvasRef.current) {
       createCanvas(canvasRef.current);

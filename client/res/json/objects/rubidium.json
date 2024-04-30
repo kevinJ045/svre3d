@@ -16,7 +16,21 @@
 			}
 		},
 		"item": true,
-		"material": "mat(color: #ac24f6)"
+		"material": "mat(color: #ac24f6)",
+		"book": {
+			"name": "Rubidium",
+			"pages": [
+				{
+					"title": "Rubidium",
+					"children": [
+						{
+							"type": "text",
+							"content": "Rubidium is a gem"
+						}
+					]
+				}
+			]
+		}
 	},
 	"resource": {
 		"type": "obj",

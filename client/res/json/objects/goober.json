@@ -2,6 +2,39 @@
 	"id": "m:goober",
 	"type": "entity",
 	"config": {
+		"book": {
+			"name": "Goobers",
+			"icon": "book-3",
+			"pages": [
+				{
+					"title": "Goobers",
+					"children": [
+						{
+							"type": "image",
+							"image": "/res/tex/goober.png"
+						},
+						{
+							"type": "text",
+							"content": "About Goobers"
+						}
+					]
+				},
+				{
+					"title": "Drops",
+					"children": [
+						{
+							"type": "item",
+							"item": "m:rubidium",
+							"quantity": 1
+						}, {
+							"type": "link",
+							"content": "Rubidium",
+							"page": "m:rubidium"
+						}
+					]
+				}
+			]
+		},
 		"speed": 4,
 		"material": {
 			"eye": "mat(color: #ffffff)"

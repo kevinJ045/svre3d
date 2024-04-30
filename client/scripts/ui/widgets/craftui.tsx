@@ -25,6 +25,7 @@ const CraftingUI = () => {
     };
 
     const slotsUpdate = () => {
+        if(!slotItems.length) return;
         Items.crafting(true, ...slotItems)
         .then(i => {
             setResultItem(i ? Items.create({

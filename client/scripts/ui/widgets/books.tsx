@@ -44,6 +44,7 @@ function PageContent({ children, selectBook }) {
                   itemID: child.item,
                   quantity: child.quantity || 1
                 } as any)}
+                click={false}
               />
             </p>
           )}

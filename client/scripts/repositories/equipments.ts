@@ -3,6 +3,8 @@ import { Item } from "../models/item";
 import { Items } from "./items";
 import * as uuid from "uuid";
 import { MaterialManager } from "./materials";
+import { cloneGltf } from "../lib/gltfclone";
+import { THREE } from "enable3d";
 
 export class Equipments {
 
@@ -39,9 +41,15 @@ export class Equipments {
 
 		const bodyMesh = Equipments.entityBody('body', entity);
 
-		const equipmentMesh = item.reference!.mesh.clone();
+		const equipmentMesh = item.reference!.resource.type == 'gltf' ? cloneGltf(item.reference!.load) : item.reference!.mesh.clone();
+
+		console.log(item.reference!.load)
 
 		const ref = item?.reference;
+
+		if(item.reference.config?.animation){
+			Items.initItemAnimation(item, equipmentMesh);
+		}
 
 		bodyMesh.add(equipmentMesh);
 
@@ -73,6 +81,10 @@ export class Equipments {
 			equipmentMesh.scale.x = ref.config!.scale.x;
 			equipmentMesh.scale.y = ref.config!.scale.y;
 			equipmentMesh.scale.z = ref.config!.scale.z;
+		}
+
+		if(ref.config!.rotateY) {
+			equipmentMesh.rotation.y = THREE.MathUtils.degToRad(ref.config!.rotateY);
 		}
 
 		item.data.wmeshid = equipmentMesh.uuid;

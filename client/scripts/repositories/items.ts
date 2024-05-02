@@ -1,9 +1,11 @@
 import { ServerData } from "../../../server/models/data";
 import { ItemData } from "../../../server/models/item";
+import { SceneManager } from "../common/sceneman";
 import { Item } from "../models/item";
 import { ping } from "../socket/socket";
 import { PlayerInfo } from "./player";
 import { ResourceMap } from "./resources";
+import { THREE } from "enable3d";
 
 
 
@@ -37,6 +39,31 @@ export class Items {
 		.filter(
 			i => i.config?.item
 		);
+	}
+
+
+	static startAnimation(item: Item, animationName: string, itemMesh?: any){
+
+		if(!itemMesh) itemMesh = item.object3d;
+
+		const animation = item.reference.load.animations.find(anim => anim.name == animationName);
+		if(!animation) return;
+		
+		const mixer = itemMesh.userData.mixer = new THREE.AnimationMixer(itemMesh);
+		SceneManager.scene.animationMixers.add(mixer);
+		mixer.timeScale = 1;
+
+		const action = mixer.clipAction(animation);
+		action.play();
+	}
+
+	static initItemAnimation(item: Item, itemMesh?: any){
+		let animation = item.reference.config?.animation;
+		if(Array.isArray(animation)){
+			animation.forEach(animation => this.startAnimation(item, animation, itemMesh));
+		} else {
+			this.startAnimation(item, animation, itemMesh);
+		}
 	}
 
 }

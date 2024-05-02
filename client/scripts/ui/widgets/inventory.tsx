@@ -8,7 +8,8 @@ export const InventoryItem = ({
   item,
   free = false,
   mouse = true,
-  click = true
+  click = true,
+  counter = true
 }) => {
   return (<div 
     onClick={
@@ -21,7 +22,7 @@ export const InventoryItem = ({
     //   () => unselectItem(item)
     // }
     className={free ? '' : "inventory-slot"}>
-      {item ? <SlotItem click={click} item={item}></SlotItem> : ""}
+      {item ? <SlotItem counter={counter} click={click} item={item}></SlotItem> : ""}
     </div>);
 }
 

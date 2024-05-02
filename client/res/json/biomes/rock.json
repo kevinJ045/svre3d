@@ -20,7 +20,7 @@
 			"loot": true,
 			"drops": [
 				{
-					"id": "m:rubidium",
+					"id": "m:iron",
 					"quantity": 1
 				}
 			]

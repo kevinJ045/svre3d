@@ -17,7 +17,7 @@ export const generateItemIcon = (icon) => {
   return iconStyle;
 }
 
-export const SlotItem = ({ item, click = true }: { click?: boolean, item: Item }) => {
+export const SlotItem = ({ item, click = true, counter = true, onClick }: { onClick?: any, counter?: boolean, click?: boolean, item: Item }) => {
   // Check if the item has an icon configuration
   const hasIcon = item?.reference?.config?.icon;
 
@@ -28,6 +28,7 @@ export const SlotItem = ({ item, click = true }: { click?: boolean, item: Item }
   const iconStyle = generateItemIcon(hasIcon);
 
   const onclick = () => {
+    if(onClick) onClick();
     if(!click) return;
     if(item?.reference?.equipment){
       if(item?.data.wid){
@@ -40,7 +41,7 @@ export const SlotItem = ({ item, click = true }: { click?: boolean, item: Item }
 
   return (
     <div className={classNames} onClick={onclick} style={iconStyle}>
-      <span className="item-count">{item.quantity}</span>
+      {counter && <span className="item-count">{item.quantity}</span>}
     </div>
   );
 };

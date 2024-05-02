@@ -11,6 +11,7 @@ import { ItemActions } from "../widgets/actions";
 import CraftingUI from "../widgets/craftui";
 import BookComponent from "../widgets/books";
 import { ResourceMap } from "../../repositories/resources";
+import { DefaultBooks } from "../constants/books";
 
 
 export const Menu = () => {
@@ -124,6 +125,7 @@ export const Menu = () => {
 					ResourceMap.resources.filter(
 						i => i.config?.book
 					).map(i => ({...i.config!.book, id: i.id}))
+					.concat(DefaultBooks())
 				} />
 			</TabPane>
 

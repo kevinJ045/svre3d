@@ -32,4 +32,11 @@ export class Items {
 		return this.crafting_request;
 	}
 
+	static all(){
+		return  ResourceMap.resources
+		.filter(
+			i => i.config?.item
+		);
+	}
+
 }

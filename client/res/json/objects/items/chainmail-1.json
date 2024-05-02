@@ -25,6 +25,7 @@
 				{ "item": "m:rubidium", "count": 1 },
 				{ "item": "m:oreon", "count": 2 }
 			],
+			"tool": "assembler",
 			"count": 1
 		}
 	},

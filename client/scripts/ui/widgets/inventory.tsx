@@ -9,7 +9,9 @@ export const InventoryItem = ({
   free = false,
   mouse = true,
   click = true,
-  counter = true
+  counter = true,
+
+  secondaryClick = (any: any) => {}
 }) => {
   return (<div 
     onClick={
@@ -18,6 +20,10 @@ export const InventoryItem = ({
     onMouseEnter={
       () => mouse ? selectItem(item) : null
     }
+    onContextMenu={(e) => {
+      e.preventDefault();
+      secondaryClick(item);
+    }}
     // onMouseLeave={
     //   () => unselectItem(item)
     // }

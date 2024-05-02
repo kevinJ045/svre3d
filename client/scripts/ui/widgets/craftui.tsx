@@ -5,18 +5,31 @@ import { ping } from "../../socket/socket";
 import { Items } from "../../repositories/items";
 import { Item } from "../../models/item";
 
+const Tool = ({ tool, activeTool, handleActiveToolChange }) => <div onClick={() => handleActiveToolChange(tool)} className="tool"><div className={tool+" "+(activeTool == tool ? 'active' : 'inactive')}></div></div>
+
 const CraftingUI = () => {
     const [slotItems, setSlotItems] = useState([] as any[]);
     const [contentValue, setContentValue] = useState("");
     const [showChooseItem, setShowChooseItem] = useState(false);
     const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
     const [resultItem, setResultItem] = useState<Item | null>(null);
+    const [activeTool, setActiveTool] = useState<string | null>(null);
 
 
     const [rect, setRect] = useState({
         top: 0,
         left: 0
-    })
+    });
+
+    const handleActiveToolChange = (tool: string) => {
+        if(activeTool == tool){
+            setActiveTool(null);
+            slotsUpdate(null);
+        } else {
+            setActiveTool(tool);
+            slotsUpdate(tool);
+        }
+    }
 
     const finishCraft = () => {
         setSlotItems([]);
@@ -24,9 +37,9 @@ const CraftingUI = () => {
         setResultItem(null);
     };
 
-    const slotsUpdate = () => {
+    const slotsUpdate = (tool = activeTool) => {
         if(!slotItems.length) return;
-        Items.crafting(true, ...slotItems)
+        Items.crafting(true, tool || '', ...slotItems)
         .then(i => {
             setResultItem(i ? Items.create({
                 itemID: i.item.itemID || i.item.id,
@@ -36,7 +49,7 @@ const CraftingUI = () => {
     };
 
     const craft = () => {
-        Items.crafting(false, ...slotItems)
+        Items.crafting(false, activeTool || '', ...slotItems)
         .then(i => {
             finishCraft(); 
         });
@@ -58,7 +71,7 @@ const CraftingUI = () => {
     const handleSlotContextMenu = (index, e) => {
         e.preventDefault();
         setSlotItems((slotItems) => {
-            slotItems[index] = [];
+            slotItems.splice(index, 1);
             return slotItems;
         });
         slotsUpdate();
@@ -113,6 +126,18 @@ const CraftingUI = () => {
                         : null
                     }
                 </div>
+            </div>
+
+            <div className="craft-tools">
+                <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="hammer"></Tool>
+            
+                <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="press"></Tool>
+            
+                <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="brush"></Tool>
+            
+                <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="melter"></Tool>
+            
+                <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="assembler"></Tool>
             </div>
         </div>
     );

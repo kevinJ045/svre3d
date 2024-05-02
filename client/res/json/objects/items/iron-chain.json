@@ -1,13 +1,13 @@
 {
-	"id": "m:iron_bar",
-	"type": "processed-ore",
+	"id": "m:iron_chainmail",
+	"type": "item",
 	"config": {
 		"inventory": {
 			"max": 99
 		},
-		"name": "Iron Bar",
+		"name": "Iron Chainmail",
 		"icon": {
-			"src": "/res/tex/iron_bar.png",
+			"src": "/res/tex/iron_chainmail.png",
 			"width": "32px",
 			"height": "32px",
 			"offset": {
@@ -17,18 +17,11 @@
 		},
 		"item": true,
 		"material": "mat(color: #808080, roughness: 0)",
-    "crafting": {
-			"recipe": [
-				{ "item": "m:iron", "quantity": 1 },
-				{ "item": "empty" }
-			],
-			"tool": "melter",
-			"quantity": 1
-		}
+		"powergem": true
 	},
 	"resource": {
 		"type": "obj",
-		"src": "/res/obj/iron_bar.obj"
+		"src": "/res/obj/iron_chainmail.obj"
 	},
 	"loader": {
 		"group": "objects"

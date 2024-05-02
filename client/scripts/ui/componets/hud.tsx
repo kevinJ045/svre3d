@@ -12,7 +12,7 @@ export const HUD = () => {
 
     React.useEffect(() => {
         PlayerInfo?.entity
-            .on('health', () => setVariables(UIVariables()));
+            ?.on('health', () => setVariables(UIVariables()));
         UISelectedItem
             .addEventListener('select', () => setVariables(UIVariables()));
     }, []);

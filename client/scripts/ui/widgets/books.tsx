@@ -1,19 +1,20 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { SlotItem } from './slotitem';
 import { Item } from '../../models/item';
 import { Items } from '../../repositories/items';
 import { InventoryItem } from './inventory';
+import { Context } from '../data/context';
 
 type bookpagechild = {
   type: string,
   [key: string]: any
 }
-type bookpage = {
+export type bookpage = {
   title: string,
   children: bookpagechild[]
 }
-type book = {
+export type book = {
   name: string,
   icon: string,
   id: string,
@@ -102,8 +103,13 @@ function PageContent({ children, selectBook, searchQuery = null }: any) {
 }
 
 function BookComponent({ books }: { books: book[] }) {
-  const [currentBook, setCurrentBook] = useState<book | null>(null);
-  const [currentPage, setCurrentPage] = useState<bookpage | null>(null);
+
+
+  const {
+    currentBook, setCurrentBook,
+    currentPage, setCurrentPage
+  } = useContext(Context);
+
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredBooks = books.filter(book => book.name.toLowerCase().includes(searchQuery.toLowerCase()));

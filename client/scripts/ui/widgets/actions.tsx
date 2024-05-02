@@ -2,6 +2,7 @@ import { Item } from "../../models/item"
 import * as React from "react";
 import { Equipments } from "../../repositories/equipments";
 import { PlayerInfo } from "../../repositories/player";
+import { Context } from "../data/context";
 
 
 
@@ -9,6 +10,12 @@ export const ItemActions = (
     { item } :
     { item: Item }
 ) => {
+
+    const {
+        setCurrentBook,
+        setCurrentPage,
+        setTab
+    } = React.useContext(Context);
 
     const handleWearToggle = () => {
         if(item?.data.wid){
@@ -22,11 +29,22 @@ export const ItemActions = (
         
     };
 
+    const handleOpenBook = () => {
+        setCurrentBook(item.reference.config?.book);
+        setCurrentPage(item.reference.config?.book.pages[0]);
+        setTab('book');
+    }
+
     return (
         <div className="item-actions">
             {item.reference.equipment && (
                 <button onClick={handleWearToggle}>
-                    {item?.data.wid ? "Unwear" : "Wear"}
+                    {item?.data.wid ? "Unequip" : "Equip"}
+                </button>
+            )}
+            {item.reference.config?.book && (
+                <button onClick={handleOpenBook}>
+                    About
                 </button>
             )}
             <button onClick={handleDrop}>Drop</button>

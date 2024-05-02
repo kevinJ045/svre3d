@@ -457,7 +457,7 @@ class OBJLoader extends Loader {
 
 			try {
 
-				onLoad( scope.parse( text ) );
+				onLoad( scope.parse( text, url ) );
 
 			} catch ( e ) {
 
@@ -487,7 +487,7 @@ class OBJLoader extends Loader {
 
 	}
 
-	parse( text ) {
+	parse( text, url ) {
 
 		// @ts-ignore
 		const state = new ParserState();
@@ -709,6 +709,8 @@ class OBJLoader extends Loader {
 
 				// Handle null terminated files without exception
 				if ( line === '\0' ) continue;
+
+				console.log(url, 'is not a proper obj file');
 
 				// console.warn( 'THREE.OBJLoader: Unexpected line: "' + line + '"' );
 

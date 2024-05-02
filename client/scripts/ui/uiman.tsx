@@ -3,6 +3,7 @@ import { Menu } from "./componets/menu";
 import * as React from "react";
 import { Map2D } from "./misc/map";
 import { HUDUi } from "./componets/hud";
+import { MainUI } from "./componets/provider";
 
 export default class UI {
 
@@ -12,9 +13,9 @@ export default class UI {
 	static init(){
 		this.root = createRoot(document.querySelector('#full-menu')!);
 		this.hudRoot = createRoot(document.querySelector('#full-hud')!);
-		this.root.render(<div>
+		this.root.render(<MainUI>
 			<Menu></Menu>
-		</div>);
+		</MainUI>);
 		HUDUi(this.hudRoot);
 	}
 

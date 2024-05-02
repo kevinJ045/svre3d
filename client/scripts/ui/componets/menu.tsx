@@ -12,30 +12,18 @@ import CraftingUI from "../widgets/craftui";
 import BookComponent from "../widgets/books";
 import { ResourceMap } from "../../repositories/resources";
 import { DefaultBooks } from "../constants/books";
+import { Context } from "../data/context";
 
 
 export const Menu = () => {
 
-	// @ts-ignore
-	const [tab, setTab] = React.useState('inventory');
-	
-	const [inventory, setInventory] = React.useState([...(PlayerInfo.entity?.inventory || [])]);
-
-	const [currentItem, setCurrentItem] = React.useState<Item | null>(null)
-
-	React.useEffect(() => {
-		Map2D.activeTab = tab;
-	}, [tab]);
-
-	React.useEffect(() => {
-		PlayerInfo.entity?.on('inventory', () => {
-			setInventory([...PlayerInfo.entity.inventory]);
-		}).on('equip', () => {
-			setInventory([...PlayerInfo.entity.inventory]);
-		}).on('unequip', () => {
-			setInventory([...PlayerInfo.entity.inventory]);
-		});
-	}, []);
+	const { 
+		tab,
+		setTab,
+		currentItem,
+		setCurrentItem,
+		inventory
+	} = React.useContext(Context);
 
 	return (<div className="menu">
 		

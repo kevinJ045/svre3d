@@ -666,7 +666,7 @@ class OBJLoader extends Loader {
 				// the line is parsed but ignored since the loader assumes textures are defined MTL files
 				// (according to https://www.okino.com/conv/imp_wave.htm, 'usemap' is the old-style Wavefront texture reference method)
 
-				console.warn( 'THREE.OBJLoader: Rendering identifier "usemap" not supported. Textures must be defined in MTL files.' );
+				// console.warn( 'THREE.OBJLoader: Rendering identifier "usemap" not supported. Textures must be defined in MTL files.' );
 
 			} else if ( lineFirstChar === 's' ) {
 
@@ -710,7 +710,7 @@ class OBJLoader extends Loader {
 				// Handle null terminated files without exception
 				if ( line === '\0' ) continue;
 
-				console.warn( 'THREE.OBJLoader: Unexpected line: "' + line + '"' );
+				// console.warn( 'THREE.OBJLoader: Unexpected line: "' + line + '"' );
 
 			}
 

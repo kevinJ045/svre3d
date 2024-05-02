@@ -4,6 +4,7 @@ import { SlotItem } from "./slotitem";
 import { ping } from "../../socket/socket";
 import { Items } from "../../repositories/items";
 import { Item } from "../../models/item";
+import { prompt } from "../componets/prompt";
 
 const Tool = ({ tool, activeTool, handleActiveToolChange }) => <div onClick={() => handleActiveToolChange(tool)} className="tool"><div className={tool+" "+(activeTool == tool ? 'active' : 'inactive')}></div></div>
 
@@ -14,20 +15,34 @@ const CraftingUI = () => {
     const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
     const [resultItem, setResultItem] = useState<Item | null>(null);
     const [activeTool, setActiveTool] = useState<string | null>(null);
-
+    const [brushColor, setBrushColor] = useState<string | null>(null);
 
     const [rect, setRect] = useState({
         top: 0,
         left: 0
     });
 
+    const handleBrushColor = (color) => {
+        setBrushColor(color);
+        slotItems.forEach(item => item.options.brushColor = color);
+    }
+
     const handleActiveToolChange = (tool: string) => {
         if(activeTool == tool){
             setActiveTool(null);
             slotsUpdate(null);
+            if(brushColor) handleBrushColor(null);
         } else {
-            setActiveTool(tool);
-            slotsUpdate(tool);
+            if(tool == 'brush'){
+                prompt('Color', (c) => {
+                    handleBrushColor(c);
+                    setActiveTool(tool);
+                    slotsUpdate(tool);
+                });
+            } else {
+                setActiveTool(tool);
+                slotsUpdate(tool);
+            }
         }
     }
 
@@ -83,7 +98,7 @@ const CraftingUI = () => {
 
     const handleChooseItem = (item) => {    
         setSlotItems((slotItems) => {
-            slotItems[selectedSlotIndex!] = item;
+            slotItems[selectedSlotIndex!] = { ...item, options: { brushColor } };
             return slotItems;
         });
         setShowChooseItem(false);

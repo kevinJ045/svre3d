@@ -7,13 +7,18 @@ import { THREE } from "enable3d";
 export class MaterialManager {
 
 	static parseMaterial(mat: string, variables = {}){
-		const materialOptions = Object.fromEntries(mat.split('(')[1]
-		.split(')')[0]
+		const materialOptions = Object.fromEntries(
+		mat.split('(')
+		.splice(1)
+		.join('(')
+		.split(')')
+		.slice(0, -1)
+		.join(')')
 		.split(',')
-		.map(i => i.split(':').map(t => t.trim())));
-	
+		.map(i => i.split(':').map(t => parseVariable(t.trim(), variables))));
+			
 		let fragment = null, vertex = null;
-		
+
 		if(materialOptions.shader){
 			const shader = ResourceMap.find(materialOptions.shader);
 			fragment = shader?.fragment;

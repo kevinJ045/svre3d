@@ -2,6 +2,7 @@ import { Entity } from "../models/entity";
 import { Item } from "../models/item";
 import { Items } from "./items";
 import * as uuid from "uuid";
+import { MaterialManager } from "./materials";
 
 export class Equipments {
 
@@ -43,6 +44,26 @@ export class Equipments {
 		const ref = item?.reference;
 
 		bodyMesh.add(equipmentMesh);
+
+		if(ref.config?.material){
+			const mat = ref.config?.material;
+			if(typeof mat == 'string'){
+				const material = MaterialManager.parse(mat, {...entity.data, ...item.data});
+				
+				equipmentMesh.traverse(i => {
+					equipmentMesh.material = i.material = material;
+				});
+			} else if(typeof mat == 'object'){
+				for(let i in mat){
+					const material = mat[i];
+					const part = Equipments.entityBody(
+						i,
+						{ ...item, object3d: equipmentMesh } as any,
+					);
+					part.material = MaterialManager.parse(material, {...entity.data, ...item.data})
+				}
+			}
+		}
 
 		equipmentMesh.position.x += ref.config!.position.x;
 		equipmentMesh.position.y += ref.config!.position.y;

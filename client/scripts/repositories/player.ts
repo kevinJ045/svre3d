@@ -73,9 +73,18 @@ export class PlayerInfo {
 				)?.data.wid;
 			}
 		}
+
+		const returned: string[] = [];
 		
 		ping('player:equipment', {
-			inventory: PlayerInfo.entity.inventory.filter(i => i.data.wid).concat(PlayerInfo.entity.data.uneqiupped ? [PlayerInfo.entity.data.uneqiupped] : []).map(i => ({ itemID: i.itemID, data: i.data, quantity: i.quantity, id: i.id })),
+			inventory: (PlayerInfo.entity.inventory.filter(i => i.data.wid).concat(PlayerInfo.entity.data.uneqiupped ? [PlayerInfo.entity.data.uneqiupped] : []).map((i, ind, arr) => {
+				return arr.filter(i2 => i2.id == i.id).length > 1 ? (
+					returned.includes(i.id) ? null : (() => {
+						returned.push(i.id);
+						return i;
+					})()
+				) : i;
+			}).filter(i => i !== null) as any[]).map(i => ({ itemID: i.itemID, data: i.data, quantity: i.quantity, id: i.id })),
 			equipment,
 			username: PlayerInfo.username
 		});

@@ -212,6 +212,7 @@ export class Entities {
 			const entity = Entities.find(eid);
 			if(entity){
 				if(full) {
+					console.log(entity);
 					entity.inventory = inventory!.map(i => Items.create(i));
 					entity.emit('inventory', {type: 'reset', inventory: entity.inventory});
 					entity.emit('inventory:reset', entity.inventory);
@@ -245,8 +246,13 @@ export class Entities {
 			if(!inventory) return;
 
 			const entity = Entities.find(eid);
-			entity!.data.equipment = equipment;
 
+			if(!entity) return;
+
+			if(entity.id == PlayerInfo.entity.id) return;
+
+			entity!.data.equipment = equipment;
+			
 			entity!.inventory
 				.filter(i => !inventory.find(i2 => i2.id == i.id))
 				.map(i => {

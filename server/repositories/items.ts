@@ -4,8 +4,6 @@ import { pingFrom } from "../ping/ping";
 import { Entities } from "./entities";
 import { ResourceMap } from "./resources";
 
-
-
 export class Items {
 
 	static items: jsonres[] = [];
@@ -34,7 +32,13 @@ export class Items {
 			item.setReference(ref);
 			item.itemID = id;
 
-			if(data) item.data = data;
+
+			if(ref.config?.data){
+				item.data = {...ref.config?.data, ...item.data,};
+			}
+
+			if(data) item.data = {...item.data, ...data};
+
 
 			return item;
 		}
@@ -59,10 +63,11 @@ export class Items {
 		return false;
 	}
 
-	static fromRecipe(preview = false, tool: string, ...items: ItemData[]): { quantity: number, recipe: { item: string, quantity: number }[], item: jsonres, items?: ItemData[] } | null {
-		const itemsIds = items.map(item => item.itemID).sort();
-		const item = this.craftable().find(i =>
+	static fromRecipe(preview = false, tool: string, ...items: ItemData[]): { quantity: number, recipe: { item: string, quantity: number }[], item: jsonres, items?: ItemData[], tool: string } | null {
+		const itemsIDs = items.map(item => item.itemID).sort();
+		let item = this.craftable().find(i =>
 			{
+				const itemsIds = [...itemsIDs];
 				const itemsr = i.config!.crafting.recipe.map(r => r.item).sort();
 				if(itemsIds.length < itemsr.length) itemsIds.push('empty');
 				else if(itemsIds.length > itemsr.length) itemsIds.indexOf('empty') ? itemsIds.splice(itemsIds.indexOf('empty')) : null;
@@ -70,17 +75,19 @@ export class Items {
 			}
 		);
 
+		
+		if(tool == 'brush') item = items[0].reference;
+
 		if (!item) return null;
 
-		const recipe = item.config!.crafting.recipe.map(r => ({ quantity: 1, ...r }));
+		const recipe = tool == 'brush' ? {} : item.config!.crafting.recipe.map(r => ({ quantity: 1, ...r }));
 
-		if(item.config!.crafting.tool !== tool && item.config!.crafting.tool !== 'any')
+		if(tool != 'brush' && item.config!.crafting.tool !== tool && item.config!.crafting.tool !== 'any')
 			return null;
 
-		const quantity = item.config!.crafting.quantity;
+		const quantity = tool == 'brush' ? 1 : item.config!.crafting.quantity;
 
-		// Check if there are enough items for the recipe
-		for (const { item: recipeItem, quantity: recipeItemCount } of recipe) {
+		if(tool !== 'brush') for (const { item: recipeItem, quantity: recipeItemCount } of recipe) {
 			if(recipeItem == 'empty') continue;
 			const item = items.find(i => i.itemID === recipeItem);
 			if (!item || item.quantity < recipeItemCount) return null;
@@ -90,7 +97,8 @@ export class Items {
 			quantity,
 			recipe,
 			item,
-			items: preview ? [] : items
+			items: preview ? [] : items,
+			tool
 		};
 	}
 
@@ -112,14 +120,24 @@ export class Items {
 			const recipe = Items.fromRecipe(false, tool, ...items.map(i => Items.create(i.itemID, i.quantity)?.setData({ id: i.id })));
 			if(recipe){
 
-				for (const { item: recipeItem, quantity: recipeItemCount } of recipe.recipe) {
+				if(tool !== 'brush') for (const { item: recipeItem, quantity: recipeItemCount } of recipe.recipe) {
 					if(recipeItem == 'empty') continue;
 					const item = recipe.items!.find(i => i.itemID === recipeItem);
 					if(!item?.reference.config?.isTool) entity.removeFromInventory(item!, recipeItemCount);
 				}
 
-				entity.addToInventory(Items.create(recipe.item.id, recipe.quantity)!);
+				if(tool !== 'brush') entity.addToInventory(Items.create(recipe.item.id, recipe.quantity)!);
 				
+				if(tool == 'brush'){
+					entity.inventory = entity.inventory.map(i => {
+						if(i.id == items[0].id){
+							i.data.brush_color = items[0].options.brushColor || "#000000";
+							console.log(i.data, items[0].options);
+						}
+						return i;
+					});
+				}
+
 				socket.broadcast.emit('entity:inventory', { entity: entity.id, full: true, inventory: entity.inventory });
 				socket.emit('entity:inventory', { entity: entity.id, full: true, inventory: entity.inventory });
 				return recipe;

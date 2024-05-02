@@ -17,7 +17,14 @@
 		},
 		"item": true,
 		"material": "mat(color: #808080, roughness: 0)",
-		"powergem": true
+    "crafting": {
+			"recipe": [
+				{ "item": "m:iron_bar", "quantity": 2 },
+				{ "item": "empty" }
+			],
+			"tool": "press",
+			"quantity": 1
+		}
 	},
 	"resource": {
 		"type": "obj",

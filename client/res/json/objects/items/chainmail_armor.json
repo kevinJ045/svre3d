@@ -1,0 +1,47 @@
+{
+	"id": "m:chainmail_armor",
+	"type": "equipment",
+	"equipment": {
+		"type": "armor"
+	},
+	"config": {
+		"position": {
+			"x": -0.1,
+			"y": 0.55,
+			"z": -0.05
+		},
+		"inventory": {
+			"max": 1
+		},
+		"name": "Chainmail Armor",
+		"icon": {
+			"src": "/res/tex/chainmail_armor.png",
+			"width": "32px",
+			"height": "32px",
+			"offset": {
+				"top": "50%",
+				"left": "0"
+			}
+		},
+		"item": true,
+		"data": {
+			"brush_color": "#808080"
+		},
+		"material": "mat(color: $brush_color, roughness: 0)",
+		"crafting": {
+			"recipe": [
+				{ "item": "m:iron_bar", "quantity": 2 },
+				{ "item": "m:iron_chainmail", "quantity": 4 }
+			],
+			"tool": "assembler",
+			"quantity": 1
+		}
+	},
+	"resource": {
+		"type": "obj",
+		"src": "/res/obj/chainmail_armor.obj"
+	},
+	"loader": {
+		"group": "objects"
+	}
+}

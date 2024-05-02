@@ -2,6 +2,7 @@ import React from "react";
 import { InventoryItem } from "./inventory";
 import { PlayerInfo } from "../../repositories/player";
 import { Items } from "../../repositories/items";
+import { prompt } from "../componets/prompt";
 
 const ChooseItemUI = ({ cb, ignore, rect }) => {
     const handleItemClick = (item) => {
@@ -29,18 +30,20 @@ const ChooseItemUI = ({ cb, ignore, rect }) => {
                         
                         secondaryClick={
                             () => {
-                                const q = parseInt(prompt('Quantity') || '');
-                                if(item.quantity > q){
-                                    item.quantity -= q;
-                                    handleItemClick(
-                                        Items.create(
-                                            {
-                                                ...item,
-                                                quantity: 1
-                                            } as typeof item
+                                prompt('Quantity', (i) => {
+                                    const q = parseInt(i || '');
+                                    if(item.quantity > q){
+                                        item.quantity -= q;
+                                        handleItemClick(
+                                            Items.create(
+                                                {
+                                                    ...item,
+                                                    quantity: 1
+                                                } as typeof item
+                                            )
                                         )
-                                    )
-                                } else if(item.quantity == q) handleItemClick(item)
+                                    } else if(item.quantity == q) handleItemClick(item)
+                                });
                             }
                         }
                         />

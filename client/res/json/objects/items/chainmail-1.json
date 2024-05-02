@@ -22,11 +22,11 @@
 		"item": true,
 		"crafting": {
 			"recipe": [
-				{ "item": "m:rubidium", "count": 1 },
-				{ "item": "m:oreon", "count": 2 }
+				{ "item": "m:rubidium", "quantity": 1 },
+				{ "item": "m:oreon", "quantity": 2 }
 			],
 			"tool": "assembler",
-			"count": 1
+			"quantity": 1
 		}
 	},
 	"resource": {

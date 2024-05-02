@@ -24,7 +24,7 @@ export class Items {
 	private static crafting_request: any;
 	static crafting(recipe = true, tool: string, ...items: Item[]){
 		if(this.crafting_request) Promise.resolve(this.crafting_request);
-		this.crafting_request = ping('crafting:'+(recipe ? 'recipe' : 'craft'), {entity: PlayerInfo.entity.id, tool, items:items.map(i => ({ itemID: i.itemID, max: i.max, quantity: i.quantity, id: i.id }))})
+		this.crafting_request = ping('crafting:'+(recipe ? 'recipe' : 'craft'), {entity: PlayerInfo.entity.id, tool, items:items.map(i => ({ itemID: i.itemID, max: i.max, quantity: i.quantity, id: i.id, options: (i as any).options }))})
 		.then((e) => {
 			this.crafting_request = null;
 			return e;

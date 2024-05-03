@@ -2,7 +2,7 @@ manifest:
   id: !id 'grasland'
   type: 'biome'
 biome:
-  ground: !import './segments/grass.yaml'
+  ground: !import './segments/grass.i.yaml'
   tile:
     multicolor: true
     keepdefault: true

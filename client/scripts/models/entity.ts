@@ -33,7 +33,7 @@ export class Entity extends EntityData {
 	private _playAnimation(action: string, speed = 1, loop = true, callback?: () => void){
 
 		let name = action;
-		if(this.reference.animations?.[name]) name = this.reference.config?.animations[name];
+		if(this.reference.animation?.[name]) name = this.reference?.animation[name];
 		if(Array.isArray(name)) name = Random.pick(...name);
 
 		let anim = this.reference.resource.load.animations.find(anim => anim.name == name);
@@ -103,7 +103,7 @@ export class Entity extends EntityData {
 	}
 
 	addPhysics(){
-		PhysicsManager.addPhysics(this.object3d, this.reference!.config?.physics || { shape: 'convex' })
+		PhysicsManager.addPhysics(this.object3d, this.reference.view?.physics || { shape: 'convex' })
 		this.object3d.body.setFriction(0.8);
 		this.object3d.body.setAngularFactor(0, 0, 0);
 		this.object3d.body.on.collision((otherObject, event) => {

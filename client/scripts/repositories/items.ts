@@ -17,8 +17,6 @@ export class Items {
 
 		const ref = ResourceMap.find(item.itemID)!;
 
-		console.log(itemData);
-		
 		item.setReference(ref);
 		item.max = ref.item.inventory.max || 1;
 

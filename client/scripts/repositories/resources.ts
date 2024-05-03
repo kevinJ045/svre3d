@@ -50,6 +50,39 @@ export const resolvePath = (item: ResourceSchema, suffix = 'res') => {
 	return '/resources/'+item.manifest.id.split(':').join('/')+'/'+suffix;
 }
 
+export const loadItem = async (item, scene, suffix = 'res', parent?: ResourceSchema) => {
+	let load: any = null;
+	const type = item.resource.loader;
+
+	if(item.manifest.type.endsWith("_map")){
+		load = [];
+		for(let index in item.resource.sources!){
+			load.push(await loaders[type](
+				resolvePath(parent || item, suffix ? suffix+'.'+index : undefined)
+			));
+		}
+	} else if(type in scene.load) {
+		load = await ((scene.load[type])(resolvePath(parent || item, suffix ? suffix : undefined)));
+	} else if(type in loaders){
+		load = await ((loaders[type])(resolvePath(parent || item, suffix ? suffix : undefined)));
+	}
+
+
+	if(type == "texture") {
+		item.texture = load;
+	} else if(type == "gltf" || type == "obj" || type == "fbx") {
+		item.resource.mesh = type == "gltf" ? load.scene : load;
+	} else if(item.type == "shader"){
+		item.id = item.id+'.shader';
+		if(item.resource.sources){
+			if(!item['vertex']) item['vertex'] = await Utils.loadText(item.resource.sources![0]);
+			if(!item['fragment']) item['fragment'] = await Utils.loadText(item.resource.sources![1]);
+		}
+	}
+
+	item.resource.load = load;
+}
+
 export class ResourceMap {
 
 	static resources: ResourceSchema[] = [];
@@ -58,39 +91,15 @@ export class ResourceMap {
 	static async loadAll(scene: Scene3D){
 
 		for(let undefinedItem of ResourceMap.queue){
-			let load: any = null;
+			
 
 			const item = {...undefinedItem};
 
-			if(item.resource){
 
-				const type = item.resource.loader;
-				
-				if(item.manifest.type.endsWith("_map")){
-					load = [];
-					for(let src of item.resource.sources!){
-						load.push(await loaders[type](src));
-					}
-				} else if(type in scene.load) {
-					load = await ((scene.load[type])(resolvePath(item)));
-				} else if(type in loaders){
-					load = await ((loaders[type])(resolvePath(item)));
-				}
-
-
-				if(type == "texture") {
-					item.texture = load;
-				} else if(type == "gltf" || type == "obj" || type == "fbx") {
-					item.resource.mesh = type == "gltf" ? load.scene : load;
-				} else if(item.type == "shader"){
-					item.id = item.id+'.shader';
-					if(item.resource.sources){
-						if(!item['vertex']) item['vertex'] = await Utils.loadText(item.resource.sources![0]);
-						if(!item['fragment']) item['fragment'] = await Utils.loadText(item.resource.sources![1]);
-					}
-				}
-
-				item.resource.load = load;
+			if(item.manifest.type == 'biome'){
+				await loadItem(item.biome.ground.texture, scene, 'res?prop=biome.ground.texture.resource.sources', item);
+			} else if(item.resource){
+				await loadItem(item, scene);
 			}
 
 			ResourceMap.resources.push(item);

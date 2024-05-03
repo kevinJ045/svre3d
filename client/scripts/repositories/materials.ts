@@ -77,8 +77,8 @@ export class MaterialManager {
 
 	static makeSegmentMaterial(texture: THREE.Texture, biome: any){
 	
-		const { fragment, vertex, materialOptions } = (ResourceMap.find(biome.shader ? biome.shader+'.shader' : 'm:segment.shader') || {}) as any;
-		0x505050
+		const { fragment, vertex, materialOptions } = biome?.ground?.shader || { materialOptions: {} };
+		
 		const uniforms = {
 			textureMap: { value: texture },
 			// shadowMap: { value: scene.lightSet.directionalLight.shadow.map }

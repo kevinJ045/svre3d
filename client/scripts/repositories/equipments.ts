@@ -12,7 +12,7 @@ export class Equipments {
 
 	static entity(entity: Entity){
 
-		if(!entity.data.equipment.brow) entity.data.equipment.brow = 'm:brow-1';
+		if(!entity.data.equipment.brow) entity.data.equipment.brow = 'i:normal-brow';
 
 		for(let i in entity.data.equipment){
 			let item = i == 'brow' ? Items.create({
@@ -41,13 +41,13 @@ export class Equipments {
 
 		const bodyMesh = Equipments.entityBody('body', entity);
 
-		const equipmentMesh = item.reference!.resource.type == 'gltf' ? cloneGltf(item.reference!.load) : item.reference!.mesh.clone();
-
+		const equipmentMesh = item.reference!.resource.loader == 'gltf' ? cloneGltf(item.reference.resource!.load) : item.reference!.resource.mesh.clone();
+		
 		// console.log(item.reference!.load)
 
 		const ref = item?.reference;
 
-		if(item.reference.config?.animation){
+		if(item.reference?.animation){
 			Items.initItemAnimation(item, equipmentMesh);
 		}
 
@@ -73,18 +73,18 @@ export class Equipments {
 			}
 		}
 
-		equipmentMesh.position.x += ref.config!.position.x;
-		equipmentMesh.position.y += ref.config!.position.y;
-		equipmentMesh.position.z += ref.config!.position.z;
+		equipmentMesh.position.x += ref.view.object.position.x;
+		equipmentMesh.position.y += ref.view.object.position.y;
+		equipmentMesh.position.z += ref.view.object.position.z;
 
-		if(ref.config!.scale){
-			equipmentMesh.scale.x = ref.config!.scale.x;
-			equipmentMesh.scale.y = ref.config!.scale.y;
-			equipmentMesh.scale.z = ref.config!.scale.z;
+		if(ref.view.object!.scale){
+			equipmentMesh.scale.x = ref.view.object!.scale.x;
+			equipmentMesh.scale.y = ref.view.object!.scale.y;
+			equipmentMesh.scale.z = ref.view.object!.scale.z;
 		}
 
-		if(ref.config!.rotateY) {
-			equipmentMesh.rotation.y = THREE.MathUtils.degToRad(ref.config!.rotateY);
+		if(ref.view.object!.rotateY) {
+			equipmentMesh.rotation.y = THREE.MathUtils.degToRad(ref.view.object!.rotateY);
 		}
 
 		item.data.wmeshid = equipmentMesh.uuid;
@@ -112,7 +112,7 @@ export class Equipments {
 
 		let ref = entity.reference;
 
-		let part = ref.config?.['3d']?.[partname] || fallback;
+		let part = ref.view?.object?.[partname] || fallback;
 
 		const referee = part ? part.split('.') : [];
 		let object = entity.object3d;

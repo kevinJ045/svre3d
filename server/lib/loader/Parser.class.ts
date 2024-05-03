@@ -3,7 +3,10 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 
-
+const floatifyObject = (obj) => {
+  for(let i in obj) obj[i] = parseFloat(obj[i]);
+  return obj;
+}
 
 export default class Parser {
   parsedFiles: Set<string>;
@@ -16,9 +19,17 @@ export default class Parser {
         kind: 'scalar',
         construct: (data) => this.folderTagHandler(data),
       }),
+      new yaml.Type('!int', {
+        kind: 'scalar',
+        construct: (data) => parseInt(data),
+      }),
+      new yaml.Type('!float', {
+        kind: 'scalar',
+        construct: (data) => parseFloat(data),
+      }),
       new yaml.Type('!xyz', {
         kind: 'mapping',
-        construct: (data) => ({
+        construct: (data) => floatifyObject({
           x: 0,
           y: 0,
           z: 0,

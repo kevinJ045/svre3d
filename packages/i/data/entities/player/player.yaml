@@ -5,12 +5,20 @@ base:
   health: 100
   damage: 10
   speed: 5
-animations:
+animation:
   Sneak: "Sneak"
   Attack: ["Attack", "Attack2"]
 view:
   object:
     body: 0.0.0
+  physics:
+    shape: convex
+    offset: {
+      z: !int 0,
+      y: !float 0.75
+    }
+entity:
+  type: player
 resource:
   src: !realpath '../../../bin/objects/cubixc7.glb'
   loader: gltf

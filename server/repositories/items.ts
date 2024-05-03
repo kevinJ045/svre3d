@@ -61,7 +61,7 @@ export class Items {
 		return false;
 	}
 
-	static fromRecipe(preview = false, tool: string, ...items: ItemData[]): { quantity: number, recipe: { item: string, quantity: number }[], item: jsonres, items?: ItemData[], tool: string } | null {
+	static fromRecipe(preview = false, tool: string, ...items: ItemData[]): { quantity: number, recipe: { item: string, quantity: number }[], item: ResourceSchema, items?: ItemData[], tool: string } | null {
 		const itemsIDs = items.map(item => item.itemID).sort();
 		let item = this.craftable().find(i =>
 			{

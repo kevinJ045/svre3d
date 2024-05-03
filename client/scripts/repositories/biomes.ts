@@ -7,8 +7,8 @@ import { ResourceMap } from "./resources";
 export class Biomes {
 
 	static applyChunkBiome(chunk: Chunk){
-		if(typeof chunk.biome.item !== "object") chunk.biome.item = ResourceMap.find(chunk.biome.item);
-		const materials = 'textures' in chunk.biome ? chunk.biome.textures!.map(i => MaterialManager.makeSegmentMaterial((chunk.biome as any).item.texture[i], chunk.biome)) : MaterialManager.makeSegmentMaterial((chunk.biome as any).item.texture, chunk.biome);
+		chunk.biome.biome.ground.texture = ResourceMap.find(chunk.biome.manifest.id)!.biome.ground.texture;
+		const materials = 'mapping' in chunk.biome.biome.ground ? chunk.biome.biome.ground.mapping!.map(i => MaterialManager.makeSegmentMaterial((chunk.biome as any).biome.ground.texture.resource.load[i], chunk.biome.biome)) : MaterialManager.makeSegmentMaterial(chunk.biome.biome.ground.texture.resource.load, chunk.biome.biome);
 		(chunk.object3d as any).material = materials;
 	}
 
@@ -16,10 +16,10 @@ export class Biomes {
 		return ResourceMap
 			.resources
 			.filter(
-				i => i.type == 'biome'
+				i => i.manifest.type == 'biome'
 			)
 			.find(
-				i => i.name == name
+				i => i.id == name
 			);
 	}
 

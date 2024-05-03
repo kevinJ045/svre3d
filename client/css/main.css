@@ -7,6 +7,8 @@ body {
 	overflow: hidden;
 	user-select: none;
 
+	background: black;
+
 	font-family: "Tilt Neon", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;

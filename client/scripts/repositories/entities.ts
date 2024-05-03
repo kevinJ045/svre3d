@@ -36,8 +36,6 @@ export class Entities {
 		entityData.data.item.itemID
 		: entityData.reference!.manifest.id)!;
 
-		console.log(ref, entityData);
-
 		entity.setReference(ref);
 		entity.speed = ref.base?.speed || 1;
 
@@ -45,14 +43,16 @@ export class Entities {
 
 		const entityMesh = new ExtendedObject3D();
 
+		// entityMesh.add(new THREE.Mesh(new THREE.BoxGeometry(1, 2, 3)))
+
 		SceneManager.scene.animationMixers.add(entityMesh.anims.mixer);
 		entityMesh.anims.mixer.timeScale = 1;
 
-		const refMesh: THREE.Object3D = ref.resource.type == "gltf" ? cloneGltf(ref.resource.load) : ref.resource.mesh.clone();
-		SceneManager.scene.scene.add(refMesh);
+		const refMesh: THREE.Object3D = ref.resource.loader == "gltf" ? cloneGltf(ref.resource.load) : ref.resource.mesh.clone();
+		// SceneManager.scene.scene.add(refMesh);
 
 		refMesh.traverse(child => {
-			child.castShadow = true
+			child.castShadow = true		// SceneManager.scene.scene.add(refMesh);
 			child.receiveShadow = false
 		});
 
@@ -60,7 +60,7 @@ export class Entities {
 
 		entityMesh.add(refMesh);
 
-		entityMesh.position.set(entity.position.x, entity.position.y + 5, entity.position.z);
+		// entityMesh.position.set(entity.position.x, entity.position.y + 5, entity.position.z);
 
 		entity.object3d = entityMesh;
 
@@ -73,7 +73,7 @@ export class Entities {
 
 		this.entities.push(entity);
 
-		if(ref.type == 'player'){
+		if(ref.entity.type == 'player'){
 			Equipments.entity(entity);
 			SkinPlayer.skinPlayer(entity);
 		}

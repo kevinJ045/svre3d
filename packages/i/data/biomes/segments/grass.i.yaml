@@ -1,2 +1,2 @@
-texture: !import '../../textures/segments/grass.yaml'
-textures: [1, 1, 0, 1, 1, 0]
+texture: !import '../../textures/segments/grass.i.yaml'
+mapping: [1, 1, 0, 1, 1, 0]

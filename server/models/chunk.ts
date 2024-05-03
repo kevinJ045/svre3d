@@ -1,5 +1,6 @@
 import { stringifyChunkPosition } from "../common/chunk";
 import { worldData } from "../constant/world";
+import { ResourceSchema } from "../lib/loader/Schema.type";
 import { BiomeData } from "./biome";
 import { ServerData } from "./data";
 import { EntityData } from "./entity";
@@ -13,7 +14,7 @@ export class ChunkData extends ServerData {
 	structures: StructureData[]; // List of structures in the chunk
 	entities: EntityData[]; // List of entities in the chunk
 	position: xyz;
-	biome!: BiomeData | jsonres;
+	biome!: ResourceSchema;
 
 	chunkSize: number; // Chunk Size
 

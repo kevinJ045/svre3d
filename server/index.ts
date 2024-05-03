@@ -11,6 +11,7 @@ import { Sockets } from './ping/sockets';
 import { Data } from './db/db';
 import { env } from './constant/env';
 import { ResourceMap } from './repositories/resources';
+import { getPropStr } from './common/getpropstr';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -63,8 +64,15 @@ async function createApp() {
   });
 
   app.get('/resources/:package/:id/res', (req, res) => {
+    const ref = ResourceMap.findResource(req.params.package+':'+req.params.id);
+    let src = ref?.resource?.src;
+
+    if(req.query.prop){
+      src = getPropStr(ref!, req.query.prop) as any;
+      console.log(src);
+    }
     res.sendFile(
-      ResourceMap.findResource(req.params.package+':'+req.params.id)?.resource.src
+      src
     );
   });
 

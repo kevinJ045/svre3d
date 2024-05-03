@@ -69,7 +69,6 @@ async function createApp() {
 
     if(req.query.prop){
       src = getPropStr(ref!, req.query.prop) as any;
-      console.log(src);
     }
     res.sendFile(
       src

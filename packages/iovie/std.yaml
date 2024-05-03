@@ -4,3 +4,8 @@ package.manifest:
   version: 1.0.0
 package.data:
   lookUp: ''
+entity:
+  view:
+    object:
+    physics:
+      

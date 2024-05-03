@@ -3,9 +3,14 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 
-const floatifyObject = (obj) => {
-  for(let i in obj) obj[i] = parseFloat(obj[i]);
+const floatifyObject = (obj, int) => {
+  for(let i in obj) obj[i] = int ? parseFloat(obj[i]) : parseInt(obj[i]);
   return obj;
+}
+const xyz = {
+  x: 0,
+  y: 0,
+  z: 0
 }
 
 export default class Parser {
@@ -27,14 +32,23 @@ export default class Parser {
         kind: 'scalar',
         construct: (data) => parseFloat(data),
       }),
+      new yaml.Type('!bool', {
+        kind: 'scalar',
+        construct: (data) => data == 'true' ? true : false,
+      }),
+      new yaml.Type('!xyz.int', {
+        kind: 'mapping',
+        construct: (data) => floatifyObject({
+          ...xyz,
+          ...data
+        }, false),
+      }),
       new yaml.Type('!xyz', {
         kind: 'mapping',
         construct: (data) => floatifyObject({
-          x: 0,
-          y: 0,
-          z: 0,
+          ...xyz,
           ...data
-        }),
+        }, true),
       }),
       new yaml.Type('!import', {
         kind: 'scalar',

@@ -1,0 +1,27 @@
+manifest:
+  id: !id chainmail_armor
+  type: item
+item:
+  name: Chainmail Armor
+  craftable: true
+data:
+  brush_color: '#808080'
+ui:
+  icon: 
+    src: !realpath '../../../bin/textures/chainmail_armor.png'
+    width: 32px
+    height: 32px
+    offset: {
+      top: 50%,
+      left: 0
+    }
+view:
+  material: 'mat(color: $brush_color)'
+  object:
+    position: !xyz
+      x: -0.05
+      y: 0.55
+      z: -0.05
+resource:
+  src: !realpath '../../../bin/objects/chainmail_armor.obj'
+  loader: obj

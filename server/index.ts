@@ -10,6 +10,7 @@ import { init, userConnected } from './init';
 import { Sockets } from './ping/sockets';
 import { Data } from './db/db';
 import { env } from './constant/env';
+import { ResourceMap } from './repositories/resources';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -55,10 +56,28 @@ async function createApp() {
     userConnected(serverData, socket);
   });
 
-  // Define backend routes
-  app.get('/api/data', (req, res) => {
-    // Your backend logic here
-    res.json({ message: 'Hello from the backend!' });
+  app.get('/resources/:package/:id/icon', (req, res) => {
+    res.sendFile(
+      ResourceMap.findResource(req.params.package+':'+req.params.id)?.ui?.icon?.src
+    );
+  });
+
+  app.get('/resources/:package/:id/res', (req, res) => {
+    res.sendFile(
+      ResourceMap.findResource(req.params.package+':'+req.params.id)?.resource.src
+    );
+  });
+
+  app.get('/resources/:package/:id', (req, res) => {
+    res.send(
+      ResourceMap.findResource(req.params.package+':'+req.params.id)
+    );
+  });
+
+  app.get('/resources/all', (req, res) => {
+    res.send(
+      ResourceMap.all()
+    );
   });
 
   app.use(vite.middlewares);

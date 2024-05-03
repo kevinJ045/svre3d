@@ -16,9 +16,11 @@ export class Items {
 		const item = ServerData.create(Item, itemData);
 
 		const ref = ResourceMap.find(item.itemID)!;
+
+		console.log(itemData);
 		
 		item.setReference(ref);
-		item.max = ref.config?.inventory?.max || 1;
+		item.max = ref.item.inventory.max || 1;
 
 		return item;
 	}

@@ -34,19 +34,21 @@ export class Entities {
 		const ref = ResourceMap.find(
 		entity.type == 'item' ? 
 		entityData.data.item.itemID
-		: entityData.reference!.id)!;
+		: entityData.reference!.manifest.id)!;
+
+		console.log(ref, entityData);
 
 		entity.setReference(ref);
-		entity.speed = ref.config?.speed || 1;
+		entity.speed = ref.base?.speed || 1;
 
-		entity.inventory = entity.inventory.map(i => Items.create(i));
+		entity.inventory = entity.inventory.filter(Boolean).map(i => Items.create(i));
 
 		const entityMesh = new ExtendedObject3D();
 
 		SceneManager.scene.animationMixers.add(entityMesh.anims.mixer);
 		entityMesh.anims.mixer.timeScale = 1;
 
-		const refMesh: THREE.Object3D = ref.resource.type == "gltf" ? cloneGltf(ref.load) : ref.mesh.clone();
+		const refMesh: THREE.Object3D = ref.resource.type == "gltf" ? cloneGltf(ref.resource.load) : ref.resource.mesh.clone();
 		SceneManager.scene.scene.add(refMesh);
 
 		refMesh.traverse(child => {

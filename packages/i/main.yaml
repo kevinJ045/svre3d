@@ -1,0 +1,5 @@
+manifest: !package.manifest
+  name: 'I'
+  id: 'i'
+data: 
+  lookUp: './data'

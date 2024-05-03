@@ -1,22 +1,24 @@
+import Package from "../lib/loader/Package.class";
+import { ResourceSchema } from "../lib/loader/Schema.type";
 import { jsonres } from "../models/jsonres";
 
 
 export class ResourceMap {
 
-	static resources: {type: string, data: jsonres}[] = [];
+	static resources: Package[] = [];
 
-	static loadJson(json: object, type: string){
-		ResourceMap.resources.push({type, data: json as any});
+	static addPackage(pkg: Package){
+		ResourceMap.resources.push(pkg);
 	}
 
 	static findResource(id: string, type?:string){
-		return ResourceMap.resources.find(i => i.data.id == id && (type ? i.type == type : true));
+		return ResourceMap.resources.find(i => i.findById(id))?.findById(id);
 	}
 
-	static remove(id: string, type?:string){
-		const index = this.resources.indexOf(this.findResource(id, type)!);
-		if(!index) return;
-		this.resources.splice(index, 1);
+	static all(){
+		const res: ResourceSchema[] = [];
+		this.resources.forEach(i => res.push(...i.data));
+		return res;
 	}
 
 }

@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 
-const res_path = path.resolve('./client/res/json');
+const res_path = path.resolve('./packages');
 
 let childProcess;
 
@@ -26,7 +26,7 @@ const startServer = () => {
 fs.watch(res_path, 
 	{ recursive: true },	
 	(event, filename) => {
-		console.log('updated json', filename);
+		console.log('updated yaml', filename);
 		startServer();
 		
 	});

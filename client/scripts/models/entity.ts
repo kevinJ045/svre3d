@@ -33,10 +33,10 @@ export class Entity extends EntityData {
 	private _playAnimation(action: string, speed = 1, loop = true, callback?: () => void){
 
 		let name = action;
-		if(this.reference.config?.animations?.[name]) name = this.reference.config?.animations[name];
+		if(this.reference.animations?.[name]) name = this.reference.config?.animations[name];
 		if(Array.isArray(name)) name = Random.pick(...name);
 
-		let anim = this.reference.load.animations.find(anim => anim.name == name);
+		let anim = this.reference.resource.load.animations.find(anim => anim.name == name);
 
 		if(this.object3d.anims.mixer.timeScale != speed) this.object3d.anims.mixer.timeScale = speed;
 		this.object3d.anims.mixer.stopAllAction();

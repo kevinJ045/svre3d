@@ -1,3 +1,4 @@
+import { ResourceSchema } from "../lib/loader/Schema.type";
 import { ItemData } from "../models/item";
 import { jsonres } from "../models/jsonres";
 import { pingFrom } from "../ping/ping";
@@ -6,15 +7,12 @@ import { ResourceMap } from "./resources";
 
 export class Items {
 
-	static items: jsonres[] = [];
+	static items: ResourceSchema[] = [];
 
 	static filterItems(){
-		Items.items = ResourceMap.resources
+		Items.items = ResourceMap.all()
 		.filter(
-			i => i.data.config?.item
-		)
-		.map(
-			i => i.data
+			i => i.manifest?.type == 'item'
 		);
 	}
 

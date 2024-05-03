@@ -43,7 +43,7 @@ export class Equipments {
 
 		const equipmentMesh = item.reference!.resource.type == 'gltf' ? cloneGltf(item.reference!.load) : item.reference!.mesh.clone();
 
-		console.log(item.reference!.load)
+		// console.log(item.reference!.load)
 
 		const ref = item?.reference;
 

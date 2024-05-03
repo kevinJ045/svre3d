@@ -9,11 +9,11 @@ export class Biomes {
 	static biomes: BiomeData[] = [];
 
 	static registerBiomes(){
-		Biomes.biomes = Random.shuffleArray(ResourceMap.resources
+		Biomes.biomes = Random.shuffleArray(ResourceMap.all()
 		.filter(
-			i => i.data.type == 'biome'
+			i => i.manifest.type == 'biome'
 		)
-		.map(i => new BiomeData().setReference(i.data)), seedrng);
+		.map(i => new BiomeData().setReference(i)), seedrng);
 	}
 
 	static getBiome(x: number, z: number){
@@ -27,9 +27,9 @@ export class Biomes {
 			...Biomes.biomes[index].reference
 		}};
 
-		if(biome.reference.tile_variations?.multicolor){
+		if(biome.reference.tile?.multicolor){
 			const colors = [...biome.reference.map.color];
-			if(biome.reference.tile_variations.keepdefault) colors.unshift('none');
+			if(biome.reference.tile.keepdefault) colors.unshift('none');
 			biome.reference.tile_variation_color = Random.pick(...colors, () => Math.abs(noise.simplex2(x * 0.01, z * 0.01)));
 		}
 

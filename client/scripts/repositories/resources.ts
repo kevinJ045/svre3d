@@ -3,6 +3,7 @@ import { jsonres } from "../common/jsonres";
 import { OBJLoader } from "../lib/OBJLoader";
 import { FontLoader } from "../lib/FontLoader";
 import { Utils } from "../modules/utils";
+import { ResourceSchema } from "../../../server/lib/loader/Schema.type";
 
 const loaders = {
 	obj: async (url: string) => {
@@ -45,11 +46,14 @@ export const resource_types = [
 	'objects', 'textures', 'shaders', 'biomes', 'particles'
 ];
 
+export const resolvePath = (item: ResourceSchema, suffix = 'res') => {
+	return '/resources/'+item.manifest.id.split(':').join('/')+'/'+suffix;
+}
 
 export class ResourceMap {
 
-	static resources: jsonres[] = [];
-	static queue: jsonres[] = [];
+	static resources: ResourceSchema[] = [];
+	static queue: ResourceSchema[] = [];
 
 	static async loadAll(scene: Scene3D){
 
@@ -60,24 +64,24 @@ export class ResourceMap {
 
 			if(item.resource){
 
-				const type = item.resource.type;
+				const type = item.resource.loader;
 				
-				if(item.type.endsWith("_map")){
+				if(item.manifest.type.endsWith("_map")){
 					load = [];
 					for(let src of item.resource.sources!){
 						load.push(await loaders[type](src));
 					}
 				} else if(type in scene.load) {
-					load = await ((scene.load[type])(item.resource.src));
+					load = await ((scene.load[type])(resolvePath(item)));
 				} else if(type in loaders){
-					load = await ((loaders[type])(item.resource.src));
+					load = await ((loaders[type])(resolvePath(item)));
 				}
 
 
 				if(type == "texture") {
 					item.texture = load;
 				} else if(type == "gltf" || type == "obj" || type == "fbx") {
-					item.mesh = type == "gltf" ? load.scene : load;
+					item.resource.mesh = type == "gltf" ? load.scene : load;
 				} else if(item.type == "shader"){
 					item.id = item.id+'.shader';
 					if(item.resource.sources){
@@ -86,17 +90,17 @@ export class ResourceMap {
 					}
 				}
 
-				item.load = load;
+				item.resource.load = load;
 			}
 
-			ResourceMap.resources.push(item as jsonres);
+			ResourceMap.resources.push(item);
 			// ResourceMap.queue.splice(ResourceMap.queue.indexOf(undefinedItem), 1);
 		}
 		while(ResourceMap.queue.length) ResourceMap.queue.pop();
 	}
 
 	static find(id: string, type?:string){
-		return ResourceMap.resources.find(i => i.id == id && (type ? i.type == type : true));
+		return ResourceMap.resources.find(i => i.manifest?.id == id && (type ? i.type == type : true));
 	}
 
 }

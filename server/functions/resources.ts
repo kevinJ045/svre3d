@@ -1,35 +1,23 @@
 import path from "path";
 import fs from "fs";
 import { ResourceMap } from "../repositories/resources";
+import Parser from "../lib/loader/Parser.class";
+import STD from "../lib/loader/STD.class";
+import Package from "../lib/loader/Package.class";
 
 export function loadAllResources(map: typeof ResourceMap){
 
-	// Resources Path
-	const res_path = path.resolve(import.meta.dirname, '../../client/res/json');
+	STD.registerMap(new Parser().parseYAML(path.resolve(import.meta.dirname, '../../packages/iovie/std.yaml')));
 
-	const json_folders = fs.readdirSync(res_path);
+	const packagesPath = path.resolve(import.meta.dirname, '../../packages');
 
-	const readFolder = (folder: string, currentFolder: string) => {
-		const json_folder = path.join(currentFolder, folder);
-		const json_files = fs.readdirSync(json_folder);
+	const packages = fs.readdirSync(packagesPath);
 
-		json_files.forEach(json_file => {
-
-			const filpath = path.join(json_folder, json_file);
-
-			const isDir = fs.lstatSync(filpath).isDirectory();
-
-			if(isDir){
-				readFolder(json_file, json_folder);
-			} else {
-				const json = JSON.parse(fs.readFileSync(filpath, { encoding: 'utf-8' }));
-
-				map.loadJson(json, folder);
-			}
-		});
-
-	}
-
-	json_folders.forEach(file => readFolder(file, res_path));
+	packages.forEach(file => {
+		const packagePath = path.join(packagesPath, file);
+		if(fs.existsSync(path.join(packagePath, 'main.yaml'))){
+			ResourceMap.addPackage(new Package(packagePath));
+		}
+	});
 
 }

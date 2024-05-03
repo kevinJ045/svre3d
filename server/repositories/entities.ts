@@ -11,6 +11,7 @@ import { Vector3 } from "three";
 import { Chunks } from "./chunks";
 import { Random } from "../common/rand";
 import { jsonres } from "../models/jsonres";
+import { ResourceSchema } from "../lib/loader/Schema.type";
 
 
 export class Entities {
@@ -20,22 +21,14 @@ export class Entities {
 	static spawn(type: string, position: xyz, name?: string, variant?: string, inventory?: any[], data?: any, exp?: any){
 		
 		const ref = type == 'item' ? {
-			type: 'entity',
-			data: {
-				type: 'entity',
-				config: {
-					health: {
-						max: 1,
-						current: 1
-					}
-				},
-				resource: {
-					type: "",
-					src: ""
-				},
-				id: ""
-			} as jsonres
-		} : ResourceMap.findResource(type);
+			manifes: {
+				id: 'm:item',
+				type: 'entity'
+			},
+			base: {
+				health: 1
+			}
+		} as any : ResourceMap.findResource(type);
 		
 		if(!ref) return;
 
@@ -53,18 +46,18 @@ export class Entities {
 			}
 		});
 
-		entity.setReference(ref.data);
+		entity.setReference(ref);
 
 
-		const v = (ref.data.config?.variants || []).find(i => i.name == variant);
+		const v = (ref?.variants || []).find(i => i.name == variant);
 
-		let drops = (ref.data.config?.drops || []);
+		let drops = (ref.entity?.drops || []);
 
-		if(ref.data.config?.health){
-			entity.health = { max: ref.data.config.health, current: ref.data.config.health }
+		if(ref.base?.health){
+			entity.health = { max: ref.base.health, current: ref.base.health }
 		}
-		if(ref.data.config?.damage) entity.damage = ref.data.config?.damage;
-		if(ref.data.config?.defense) entity.defense = ref.data.config?.defense;
+		if(ref.base?.damage) entity.damage = ref.base?.damage;
+		if(ref.base?.defense) entity.defense = ref.base?.defense;
 
 		if(v){
 			if(v.drops){
@@ -81,7 +74,7 @@ export class Entities {
 			entity.inventory.push(...drops.map(item => Items.create(item.item, item.quantity, item.data)))
 		}
 
-		if(entity.reference.config?.neutral) entity.isNeutral = true;
+		if(entity.reference.entity?.neutral) entity.isNeutral = true;
 
 		Entities.entities.push(entity);
 
@@ -96,6 +89,7 @@ export class Entities {
 
 	static despawn(entity: string | EntityData){
 		if(typeof entity == 'string') entity = Entities.find(entity)!;
+		if(!entity) return;
 		if(entity.attackTarget) entity.attackTarget = null;
 		Sockets.emit('entity:despawn', { entity });
 		Entities.entities.splice(Entities.entities.indexOf(entity), 1);

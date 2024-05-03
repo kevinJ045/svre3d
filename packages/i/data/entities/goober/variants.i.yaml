@@ -1,0 +1,8 @@
+grass:
+  material: {
+    body: 'goober_grass'
+  }
+lava:
+  material: {
+    body: 'goober_lava'
+  }

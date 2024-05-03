@@ -1,3 +1,4 @@
+import { ResourceSchema } from "../lib/loader/Schema.type";
 import { jsonres } from "./jsonres";
 import * as uuid from 'uuid';
 
@@ -6,7 +7,7 @@ export class ServerData {
 	createdAt: Date; // Date and time when the data was created
 	updatedAt: Date; // Date and time when the data was last updated
 
-	reference!: jsonres;
+	reference!: ResourceSchema;
 
 	constructor() {
 		this.id = uuid.v4();

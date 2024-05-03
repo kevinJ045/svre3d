@@ -28,17 +28,17 @@ export async function userConnected(serverData, socket){
 
 		socket.data.username == username;
 
-		const playerEntity = Entities.spawn('m:player', player!.position, player!.username, player?.variant, player?.inventory, { spawnPoint: player!.spawnPoint, username, color: player?.color, equipment: player?.equipment }, player!.exp)!;
+		const playerEntity = Entities.spawn('i:player', player!.position, player!.username, player?.variant, player?.inventory, { spawnPoint: player!.spawnPoint, username, color: player?.color, equipment: player?.equipment }, player!.exp)!;
 
 		if(
 			!Entities.entities.find(i => i.data.username == username) || socket.handshake.query.reconnect != 'true'
 		) socket.emit('recognize', {
 			player,
 			playerEntity,
-			resources: ResourceMap.resources.map(f => f.data),
+			resources: ResourceMap.all(),
 			worldData: {
 				...worldData,
-				biomeColors: Biomes.biomes.map(i => i.reference.map.color)
+				biomeColors: Biomes.biomes.map(i => i.reference.colors)
 			}
 		});
 

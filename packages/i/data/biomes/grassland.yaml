@@ -1,0 +1,11 @@
+manifest:
+  id: !id 'grasland'
+  type: 'biome'
+biome:
+  ground: !import './segments/grass.yaml'
+  tile:
+    multicolor: true
+    keepdefault: true
+  colors: [ "#00ffff", "#00f0f0", "#09D0D0" ]
+  foliage:
+    color: "#00aaaa"

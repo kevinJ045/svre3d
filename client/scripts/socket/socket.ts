@@ -51,6 +51,8 @@ export async function connectSocket(){
 
 		if(PlayerInfo.player.username) return;
 
+		console.log(playerEntity);
+
 		PlayerInfo.setPlayer(player);
 		PlayerInfo.setPlayerEntity(playerEntity);
 		ResourceMap.queue.push(...resources);

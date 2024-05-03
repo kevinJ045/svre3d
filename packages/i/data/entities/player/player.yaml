@@ -1,0 +1,16 @@
+manifest:
+  id: !id 'player'
+  type: entity
+base:
+  health: 100
+  damage: 10
+  speed: 5
+animations:
+  Sneak: "Sneak"
+  Attack: ["Attack", "Attack2"]
+view:
+  object:
+    body: 0.0.0
+resource:
+  src: !realpath '../../../bin/objects/cubixc7.glb'
+  loader: gltf

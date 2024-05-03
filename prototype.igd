@@ -1,0 +1,14 @@
+
+Namespace Goober;
+
+import "../books/goober.igd"
+
+Entity "m:goober" = with data: {
+	
+}, with resources: {
+	type = "json"
+	src = "/res/"
+}, with book: Goober.book;
+
+
+

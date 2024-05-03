@@ -1,0 +1,9 @@
+manifest:
+  id: !id 'grass_texture'
+  type: texture_map
+resource:
+  loader: texture
+  sources: [
+    !realpath '../../../bin/textures/segment_rock_top.png',
+    !realpath '../../../bin/textures/segment_rock_side.png'
+  ]

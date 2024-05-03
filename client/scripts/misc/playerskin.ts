@@ -67,7 +67,7 @@ export class SkinPlayer {
         
         if(!biome) return; // If biome doesn't exist
 
-        const colors = Array.isArray(biome.map.color) ? [...biome.map.color] : [biome.map.color];
+        const colors = Array.isArray(biome.biome.colors) ? [...biome.biome.colors] : [biome.biome.colors];
         colors.push(player.data.color);
 
         const settings = {

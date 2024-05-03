@@ -1,0 +1,2 @@
+texture: !import '../../textures/segments/swamp.i.yaml'
+mapping: [1, 1, 0, 1, 1, 1]

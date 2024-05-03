@@ -4,6 +4,7 @@ import { OBJLoader } from "../lib/OBJLoader";
 import { FontLoader } from "../lib/FontLoader";
 import { Utils } from "../modules/utils";
 import { ResourceSchema } from "../../../server/lib/loader/Schema.type";
+import { getPropStr } from "../../../server/common/getpropstr";
 
 const loaders = {
 	obj: async (url: string) => {
@@ -96,10 +97,15 @@ export class ResourceMap {
 			const item = {...undefinedItem};
 
 
-			if(item.manifest.type == 'biome'){
-				await loadItem(item.biome.ground.texture, scene, 'res?prop=biome.ground.texture.resource.sources', item);
-			} else if(item.resource){
-				await loadItem(item, scene);
+			if(item.resource){
+				if(item.resource.preload){
+					for(let i of item.resource.preload){
+						let [name, fetchName] = i.match(':') ? i.split(':') : [i, i];
+						await loadItem(getPropStr(item, name), scene, 'res?prop='+fetchName, item);
+					}
+				} else {
+					await loadItem(item, scene);
+				}
 			}
 
 			ResourceMap.resources.push(item);

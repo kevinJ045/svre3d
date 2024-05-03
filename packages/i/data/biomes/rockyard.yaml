@@ -1,0 +1,11 @@
+manifest:
+  id: !id 'rock'
+  type: 'biome'
+biome:
+  ground: !import './segments/rock.i.yaml'
+  tile:
+    multicolor: true
+    keepdefault: true
+  colors: [ "#555555", "#888888", "#909090" ]
+resource: !biome.resource
+  _: ~

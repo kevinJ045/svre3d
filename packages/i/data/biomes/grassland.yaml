@@ -1,5 +1,5 @@
 manifest:
-  id: !id 'grasland'
+  id: !id 'grass'
   type: 'biome'
 biome:
   ground: !import './segments/grass.i.yaml'
@@ -9,3 +9,5 @@ biome:
   colors: [ "#00ffff", "#00f0f0", "#09D0D0" ]
   foliage:
     color: "#00aaaa"
+resource: !biome.resource
+  _: ~

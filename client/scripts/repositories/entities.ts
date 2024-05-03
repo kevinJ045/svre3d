@@ -60,7 +60,7 @@ export class Entities {
 
 		entityMesh.add(refMesh);
 
-		// entityMesh.position.set(entity.position.x, entity.position.y + 5, entity.position.z);
+		entityMesh.position.set(entity.position.x, entity.position.y + 5, entity.position.z);
 
 		entity.object3d = entityMesh;
 

@@ -19,7 +19,7 @@ export class Biomes {
 				i => i.manifest.type == 'biome'
 			)
 			.find(
-				i => i.id == name
+				i => i.manifest.id == 'i:'+name
 			);
 	}
 

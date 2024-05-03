@@ -1,0 +1,11 @@
+manifest:
+  id: !id 'lava'
+  type: 'biome'
+biome:
+  ground: !import './segments/lava.i.yaml'
+  tile:
+    multicolor: true
+    keepdefault: true
+  colors: [ "#ff0000", "#ff7700", "#ff5100" ]
+resource: !biome.resource
+  _: ~

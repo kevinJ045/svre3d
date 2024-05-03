@@ -8,4 +8,6 @@ entity:
   view:
     object:
     physics:
-      
+biome.resource:
+  preload:
+    - "biome.ground.texture:biome.ground.texture.resource.sources"

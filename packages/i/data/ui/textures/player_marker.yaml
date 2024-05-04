@@ -1,0 +1,6 @@
+manifest:
+  id: !id player_marker
+  type: icon
+resource:
+  src: !realpath '../../../bin/textures/player_marker.png'
+  loader: image

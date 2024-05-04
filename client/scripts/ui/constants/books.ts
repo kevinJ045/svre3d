@@ -13,9 +13,9 @@ export const DefaultBooks = () => [
         "children": Items.all().map(item => (
           {
             type: "inventory-item",
-            item: item.id,
+            item: item.manifest.id,
             quantity: 0,
-            link: item.config?.book ? item.id : null
+            link: item?.book ? item.manifest.id : null
           }
         ))
       }

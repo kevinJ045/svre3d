@@ -1,6 +1,7 @@
 import { Random } from "../common/rand.js";
 import { noise, seedrng } from "../constant/seed.js";
 import { Data } from "../db/db.js";
+import { ResourceSchema } from "../lib/loader/Schema.type.ts";
 import { ChunkData } from "../models/chunk.js";
 import { ServerData } from "../models/data.js";
 import { jsonres } from "../models/jsonres.js";
@@ -13,11 +14,11 @@ export class Structures {
 
 
 	static async constructStructure(chunk: ChunkData){
-		const biome: jsonres = chunk.biome.reference ? chunk.biome.reference : chunk.biome;
+		const biome: ResourceSchema = chunk.biome.reference ? chunk.biome.reference : chunk.biome;
 
-		if(biome.structure_rules){
+		if(biome.structures){
 
-			const rule: StructureRule = Random.pick(...biome.structure_rules, seedrng);
+			const rule: StructureRule = Random.pick(...biome.structures, seedrng);
 
 			const density = rule.density;
 	

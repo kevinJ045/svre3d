@@ -17,8 +17,10 @@ export class Items {
 
 		const ref = ResourceMap.find(item.itemID)!;
 
+		console.log(ref, item.itemID);
+
 		item.setReference(ref);
-		item.max = ref.item.inventory.max || 1;
+		item.max = ref.item.inventory?.max || 1;
 
 		return item;
 	}
@@ -37,7 +39,7 @@ export class Items {
 	static all(){
 		return  ResourceMap.resources
 		.filter(
-			i => i.config?.item
+			i => i.manifest?.type == 'item' && !i.item.hidden
 		);
 	}
 

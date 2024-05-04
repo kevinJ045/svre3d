@@ -4,6 +4,8 @@ manifest:
 item:
   name: Chainmail Armor
   craftable: true
+equipment:
+  type: 'armor'
 data:
   brush_color: '#808080'
 ui:
@@ -25,3 +27,5 @@ view:
 resource:
   src: !realpath '../../../bin/objects/chainmail_armor.obj'
   loader: obj
+  preload: 
+    - "!ui.icon.src:image"

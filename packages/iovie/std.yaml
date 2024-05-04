@@ -10,4 +10,5 @@ entity:
     physics:
 biome.resource:
   preload:
-    - "biome.ground.texture:biome.ground.texture.resource.sources"
+    - "biome.ground.texture.resource.sources@biome.ground.texture"
+    - "structures.$1.structure.object.resource.src@structures.*.structure.object"

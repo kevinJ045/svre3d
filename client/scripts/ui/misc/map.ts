@@ -23,7 +23,7 @@ export class Map2D {
 		const mapOffset = { x: 0, y: 0 };
 		let scale = 0.001;
 
-		const playerIcon = ResourceMap.find('m:player_marker')!.load;
+		const playerIcon = ResourceMap.find('i:player_marker')!.resource.load;
 
 		const init = () => {
 

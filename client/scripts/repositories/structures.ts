@@ -7,8 +7,8 @@ import { ResourceMap } from "./resources.js";
 import { THREE } from "enable3d";
 
 
-export function generateWithRule(item, rule, seed, object_rules?: string[], looted?: boolean) {
-	const generationRule = rule.generation_rule;
+export function generateWithRule(item, seed, object_rules?: string[], looted?: boolean) {
+	const generationRule = item.structures;
 
 	const group = new THREE.Group();
 	const keys = object_rules || Object.keys(generationRule);
@@ -65,7 +65,7 @@ function createObject(rule, item, side, seed, parent?: any, looted?: any) {
 	
 	let o;
 
-	item.mesh.traverse(f => {
+	item.resource.mesh.traverse(f => {
 		if(f.name == name) o = f.clone();
 	});
 
@@ -140,9 +140,10 @@ export class Structures {
 					foliage: (structureData.biome.reference || structureData.biome).foliage?.color || "#00ff00"
 				};		
 				
-				const object = ResourceMap.find(rule.object)!;
+				const structureProps = ResourceMap.findLoad(rule.structure.object.manifest.id);
+				
 
-				const structure = generateWithRule(object, object.config!, Seed.rng, rule.object_rules, structureData.looted);
+				const structure = generateWithRule(structureProps, Seed.rng, rule.structure.rule, structureData.looted);
 
 				chunk.object3d.add(structure);
 
@@ -150,7 +151,7 @@ export class Structures {
 					structure.userData.lootable = true;
 				}
 
-				const materialsRule = object!.config!.materials;
+				const materialsRule = structureProps!.view!.material;
 
 				structure.children.forEach(item => {
 					if(item.userData.rule){

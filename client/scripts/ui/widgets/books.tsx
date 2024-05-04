@@ -1,10 +1,10 @@
 
 import React, { useState, useEffect, useContext } from 'react';
-import { SlotItem } from './slotitem';
-import { Item } from '../../models/item';
-import { Items } from '../../repositories/items';
-import { InventoryItem } from './inventory';
-import { Context } from '../data/context';
+import { SlotItem } from './slotitem.js';
+import { Item } from '../../models/item.js';
+import { Items } from '../../repositories/items.js';
+import { InventoryItem } from './inventory.js';
+import { Context } from '../data/context.js';
 
 type bookpagechild = {
   type: string,

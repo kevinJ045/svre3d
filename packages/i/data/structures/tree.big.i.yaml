@@ -10,5 +10,8 @@ structures:
     name: [ 'Tree1', 'Tree2', 'Tree6' ]
 view:
   material:
-    Leaf: !material 'mat(color: mix(#00aaaa, $foliage, 0.5))'
+    Leaf: !material 'mat(color: mix(#00aaaa\, $foliage\, 0.5))'
     Log: !material 'mat(color: #440000)'
+resource:
+  loader: obj
+  src: !realpath '../../bin/objects/trees.obj'

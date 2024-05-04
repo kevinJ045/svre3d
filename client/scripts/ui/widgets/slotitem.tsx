@@ -1,25 +1,12 @@
-import { Item } from "../../models/item"
+import { Item } from "../../models/item.js"
 import * as React from "react";
 import { Equipments } from "../../repositories/equipments.js";
 import { PlayerInfo } from "../../repositories/player.js";
-
-export const generateItemIcon = (icon) => {
-  const iconStyle: React.CSSProperties = {};
-  if (icon) {
-    const { src, width = '100%', height = '100%', offset } = icon;
-    iconStyle.backgroundImage = `url("${src}")`;
-    iconStyle.backgroundSize = `${width} ${height}`;
-    if (offset) {
-      iconStyle.backgroundPosition = `${offset.left} ${offset.top}`;
-    }
-		iconStyle.backgroundRepeat = 'no-repeat';
-  }
-  return iconStyle;
-}
+import { generateItemIcon } from "../misc/itemicon.ts";
 
 export const SlotItem = ({ item, click = true, counter = true, onClick }: { onClick?: any, counter?: boolean, click?: boolean, item: Item }) => {
   // Check if the item has an icon configuration
-  const hasIcon = item?.reference?.config?.icon;
+  const hasIcon = item?.reference?.ui?.icon;
 
   // CSS classes for styling based on whether the item has an icon
   const classNames = `item${hasIcon ? ' with-icon' : ''}`;

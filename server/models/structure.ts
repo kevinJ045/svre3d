@@ -3,9 +3,11 @@ import { ServerData } from "./data.js";
 
 export type StructureRule = {
 	name: string,
-	object: string,
+	structure: {
+		object: any,
+		rule: string[]
+	},
 	density: number,
-	object_rules?: string[],
 	random: boolean,
 	above?: number,
 	under?: number,

@@ -2,6 +2,7 @@ manifest:
   id: !id normal-brow
   type: item
 item:
+  hidden: true
   inventory:
     max: 999
 equipment:

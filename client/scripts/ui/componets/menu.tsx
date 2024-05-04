@@ -3,7 +3,7 @@ import { Tab, TabPane } from "../widgets/tabs.js";
 import { Map2D } from "../misc/map.js";
 import { Map2DWidget } from "../widgets/map.js";
 import { PlayerInfo } from "../../repositories/player.js";
-import { SlotItem, generateItemIcon } from "../widgets/slotitem.js";
+import { SlotItem } from "../widgets/slotitem.js";
 import Inventory, { InventoryItem } from "../widgets/inventory.js";
 import { Character } from "../widgets/character.js";
 import { Item } from "../../models/item.js";
@@ -13,6 +13,7 @@ import BookComponent from "../widgets/books.js";
 import { ResourceMap } from "../../repositories/resources.js";
 import { DefaultBooks } from "../constants/books.js";
 import { Context } from "../data/context.js";
+import { generateItemIcon } from "../misc/itemicon.ts";
 
 
 export const Menu = () => {

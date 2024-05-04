@@ -6,23 +6,23 @@ import { THREE } from "enable3d";
 
 export class MaterialManager {
 
-	static parseMaterial(mat: string, variables = {}){
-		const materialOptions = Object.fromEntries(
+	static parseMaterial(mat: string | object, variables = {}){
+		const materialOptions = typeof mat == "string" ? Object.fromEntries(
 		mat.split('(')
 		.splice(1)
 		.join('(')
 		.split(')')
 		.slice(0, -1)
 		.join(')')
+		.split('\\,').join(';')
 		.split(',')
-		.map(i => i.split(':').map(t => parseVariable(t.trim(), variables))));
+		.map(i => i.split(':').map(t => parseVariable(t.trim().split(';').join(','), variables)))) : mat;
 			
 		let fragment = null, vertex = null;
 
 		if(materialOptions.shader){
-			const shader = ResourceMap.find(materialOptions.shader);
-			fragment = shader?.fragment;
-			vertex = shader?.vertex;
+			fragment = materialOptions.shader?.fragment;
+			vertex = materialOptions.shader?.vertex;
 		}
 	
 		return MaterialManager.makeObjectMaterial({

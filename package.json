@@ -24,14 +24,15 @@
     "mongodb": "^6.5.0",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
+    "tsc": "^2.0.4",
     "uuid": "^9.0.1"
   },
   "type": "module",
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
-    "@types/yaml": "^1.9.7",
     "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.24",
+    "@types/yaml": "^1.9.7",
     "@vitejs/plugin-react": "^4.2.1",
     "@yandeu/keyboard": "^0.1.0",
     "delaunay-triangulate": "^1.1.6",
@@ -43,7 +44,7 @@
     "react-dom": "^18.2.0",
     "seedrandom": "^3.0.5",
     "ts-loader": "^9.2.6",
-    "typescript": "^4.5.2",
+    "typescript": "^4.9.5",
     "vite": "^5.2.7",
     "webpack": "^5.64.4",
     "webpack-cli": "^4.9.1"

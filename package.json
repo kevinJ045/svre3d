@@ -16,8 +16,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@types/js-yaml": "^4.0.9",
-    "@types/yaml": "^1.9.7",
     "bcrypt": "^5.1.1",
     "enable3d": "~0.25.0",
     "express": "^4.19.2",
@@ -29,6 +27,8 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/yaml": "^1.9.7",
     "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.24",
     "@vitejs/plugin-react": "^4.2.1",

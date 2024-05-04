@@ -1,8 +1,8 @@
-import STD from './STD.class';
+import STD from './STD.class.js';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
-import { ResourceSchema } from './Schema.type';
+import { ResourceSchema } from './Schema.type.js';
 
 const floatifyObject = (obj, int) => {
   for(let i in obj) obj[i] = int ? parseFloat(obj[i]) : parseInt(obj[i]);
@@ -42,6 +42,10 @@ export default class Parser {
           ...xyz,
           ...data
         }, false),
+      }),
+      new yaml.Type('!material', {
+        kind: 'scalar',
+        construct: (data) => data,
       }),
       new yaml.Type('!vec3', {
         kind: 'sequence',

@@ -9,5 +9,12 @@ biome:
   colors: [ "#00ff00", "#6aff00", "#0dbc00" ]
   foliage:
     color: "#00ff00"
+structures:
+  - name: tree
+    structure:
+      object: !import '../structures/tree.big.i.yaml'
+      rule: ['tree']
+    density: 5
+    random: true
 resource: !biome.resource
   _: ~

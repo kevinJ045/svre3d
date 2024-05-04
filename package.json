@@ -16,6 +16,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/yaml": "^1.9.7",
     "bcrypt": "^5.1.1",
     "enable3d": "~0.25.0",
     "express": "^4.19.2",

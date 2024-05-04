@@ -43,6 +43,14 @@ export default class Parser {
           ...data
         }, false),
       }),
+      new yaml.Type('!vec3', {
+        kind: 'sequence',
+        construct: (data) => {
+          const vec3 = [0, 0, 0];
+          for(let i in data) vec3[i] = data[i];
+          return vec3;
+        },
+      }),
       new yaml.Type('!xyz', {
         kind: 'mapping',
         construct: (data) => floatifyObject({

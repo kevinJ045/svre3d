@@ -1,0 +1,14 @@
+manifest:
+  id: !id 'big-tree'
+  type: 'structure'
+structures:
+  tree:
+    count: 1
+    position: !vec3 []
+    size: !vec3 []
+    rotation: !vec3 []
+    name: [ 'Tree1', 'Tree2', 'Tree6' ]
+view:
+  material:
+    Leaf: !material 'mat(color: mix(#00aaaa, $foliage, 0.5))'
+    Log: !material 'mat(color: #440000)'

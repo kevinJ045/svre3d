@@ -10,7 +10,8 @@
     "serve": "five-server",
     "bundle": "webpack --config webpack.config.cjs",
     "webpack": "webpack --config webpack.config.cjs --watch",
-    "dev": "vite"
+    "dev": "vite",
+    "build": "tsc --project tsconfig.json"
   },
   "keywords": [],
   "author": "",

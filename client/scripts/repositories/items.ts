@@ -1,10 +1,10 @@
-import { ServerData } from "../../../server/models/data";
-import { ItemData } from "../../../server/models/item";
-import { SceneManager } from "../common/sceneman";
-import { Item } from "../models/item";
-import { ping } from "../socket/socket";
-import { PlayerInfo } from "./player";
-import { ResourceMap } from "./resources";
+import { ServerData } from "../../../server/models/data.js";
+import { ItemData } from "../../../server/models/item.js";
+import { SceneManager } from "../common/sceneman.js";
+import { Item } from "../models/item.js";
+import { ping } from "../socket/socket.js";
+import { PlayerInfo } from "./player.js";
+import { ResourceMap } from "./resources.js";
 import { THREE } from "enable3d";
 
 

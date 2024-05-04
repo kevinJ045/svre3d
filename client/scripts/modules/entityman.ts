@@ -1,7 +1,7 @@
-import { Entity } from "./entity";
-import { Goober } from "./goober";
-import { CustomScene } from "./models/scene";
-import { Player } from "./player";
+import { Entity } from "./entity.js";
+import { Goober } from "./goober.js";
+import { CustomScene } from "./models/scene.js";
+import { Player } from "./player.js";
 
 
 export class Entities {

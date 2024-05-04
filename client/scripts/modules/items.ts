@@ -1,6 +1,6 @@
-import { item } from "./models/item";
-import { Item } from "./models/item2";
-import { CustomScene } from "./models/scene";
+import { item } from "./models/item.js";
+import { Item } from "./models/item2.js";
+import { CustomScene } from "./models/scene.js";
 
 
 

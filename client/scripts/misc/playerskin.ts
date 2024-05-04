@@ -1,7 +1,7 @@
 import * as Noise from 'noisejs'; 
 import seedrandom from 'seedrandom';
-import { Entity } from "../models/entity";
-import { Biomes } from "../repositories/biomes";
+import { Entity } from "../models/entity.js";
+import { Biomes } from "../repositories/biomes.js";
 
 import { THREE } from "enable3d";
 import { Equipments } from '../repositories/equipments';

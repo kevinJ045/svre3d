@@ -1,14 +1,14 @@
 import { ExtendedGroup, ExtendedObject3D, Scene3D, ThirdPersonControls } from "enable3d";
-import { item } from "./item";
-import { ChunkSet } from "../world";
-import { UI } from "../ui";
-import { Entity } from "../entity";
-import { generateUniqueId } from "../bid";
-import { Player } from "../player";
-import { Entities } from "../entityman";
-import { Item } from "./item2";
-import { ParticleSystem } from "../particle";
-import { ItemMan } from "../items";
+import { item } from "./item.js";
+import { ChunkSet } from "../world.js";
+import { UI } from "../ui.js";
+import { Entity } from "../entity.js";
+import { generateUniqueId } from "../bid.js";
+import { Player } from "../player.js";
+import { Entities } from "../entityman.js";
+import { Item } from "./item2.js";
+import { ParticleSystem } from "../particle.js";
+import { ItemMan } from "../items.js";
 
 export class CustomScene extends Scene3D {
   loaded: Record<string, item[]> = {};

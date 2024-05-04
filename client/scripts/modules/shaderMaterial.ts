@@ -1,8 +1,8 @@
-import { item } from "./models/item";
+import { item } from "./models/item.js";
 import { THREE } from "enable3d";
-import { CustomScene } from "./models/scene";
-import { chunktype } from "./world";
-import { basicVariables, parseVariable } from "./variableMixer";
+import { CustomScene } from "./models/scene.js";
+import { chunktype } from "./world.js";
+import { basicVariables, parseVariable } from "./variableMixer.js";
 
 
 export function makeObjectMaterial(shader: any, scene: CustomScene, variables = {}){

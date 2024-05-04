@@ -1,12 +1,12 @@
 import { ExtendedMesh, ExtendedObject3D, THREE } from "enable3d";
-import { item } from "./models/item";
-import { Item } from "./models/item2";
-import { CustomScene } from "./models/scene";
-import { Utils } from "./utils";
-import { makeObjectMaterial, materialParser } from "./shaderMaterial";
-import { ItemEntity } from "./itementity";
-import { TextGeometry } from "../lib/TextGeometry";
-import { Random } from "../../../server/common/rand";
+import { item } from "./models/item.js";
+import { Item } from "./models/item2.js";
+import { CustomScene } from "./models/scene.js";
+import { Utils } from "./utils.js";
+import { makeObjectMaterial, materialParser } from "./shaderMaterial.js";
+import { ItemEntity } from "./itementity.js";
+import { TextGeometry } from "../lib/TextGeometry.js";
+import { Random } from "../../../server/common/rand.js";
 
 export type entityVariant = {
 	name: string,

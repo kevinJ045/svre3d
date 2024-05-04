@@ -1,5 +1,5 @@
 import { ExtendedMesh, THREE } from "enable3d";
-import { Random } from "../../../server/common/rand";
+import { Random } from "../../../server/common/rand.js";
  
 export function makeChunk(size: number, material?: THREE.Material){
 	const geometry = new THREE.BoxGeometry(size, Math.floor(size / 2), size);

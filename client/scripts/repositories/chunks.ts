@@ -1,14 +1,14 @@
-import { stringifyChunkPosition } from "../common/chunk";
-import { SceneManager } from "../common/sceneman";
-import { Chunk } from "../models/chunk";
-import { makeChunk } from "../objects/chunk";
+import { stringifyChunkPosition } from "../common/chunk.js";
+import { SceneManager } from "../common/sceneman.js";
+import { Chunk } from "../models/chunk.js";
+import { makeChunk } from "../objects/chunk.js";
 import { THREE } from "enable3d";
-import { ping, pingFrom } from "../socket/socket";
-import { PhysicsManager } from "../common/physics";
-import { ServerData } from "../../../server/models/data";
-import { Biomes } from "./biomes";
-import { WorldData } from "../world/data";
-import { Structures } from "./structures";
+import { ping, pingFrom } from "../socket/socket.js";
+import { PhysicsManager } from "../common/physics.js";
+import { ServerData } from "../../../server/models/data.js";
+import { Biomes } from "./biomes.js";
+import { WorldData } from "../world/data.js";
+import { Structures } from "./structures.js";
 
 export class Chunks {
 

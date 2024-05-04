@@ -1,9 +1,9 @@
-import { Random } from "../../../server/common/rand";
-import { PhysicsManager } from "../common/physics";
-import { Chunk } from "../models/chunk";
-import { Seed } from "../world/seed";
-import { MaterialManager } from "./materials";
-import { ResourceMap } from "./resources";
+import { Random } from "../../../server/common/rand.js";
+import { PhysicsManager } from "../common/physics.js";
+import { Chunk } from "../models/chunk.js";
+import { Seed } from "../world/seed.js";
+import { MaterialManager } from "./materials.js";
+import { ResourceMap } from "./resources.js";
 import { THREE } from "enable3d";
 
 

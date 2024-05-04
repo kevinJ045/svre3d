@@ -1,18 +1,18 @@
 import * as React from "react";
-import { Tab, TabPane } from "../widgets/tabs";
-import { Map2D } from "../misc/map";
-import { Map2DWidget } from "../widgets/map";
-import { PlayerInfo } from "../../repositories/player";
-import { SlotItem, generateItemIcon } from "../widgets/slotitem";
-import Inventory, { InventoryItem } from "../widgets/inventory";
-import { Character } from "../widgets/character";
-import { Item } from "../../models/item";
-import { ItemActions } from "../widgets/actions";
-import CraftingUI from "../widgets/craftui";
-import BookComponent from "../widgets/books";
-import { ResourceMap } from "../../repositories/resources";
-import { DefaultBooks } from "../constants/books";
-import { Context } from "../data/context";
+import { Tab, TabPane } from "../widgets/tabs.js";
+import { Map2D } from "../misc/map.js";
+import { Map2DWidget } from "../widgets/map.js";
+import { PlayerInfo } from "../../repositories/player.js";
+import { SlotItem, generateItemIcon } from "../widgets/slotitem.js";
+import Inventory, { InventoryItem } from "../widgets/inventory.js";
+import { Character } from "../widgets/character.js";
+import { Item } from "../../models/item.js";
+import { ItemActions } from "../widgets/actions.js";
+import CraftingUI from "../widgets/craftui.js";
+import BookComponent from "../widgets/books.js";
+import { ResourceMap } from "../../repositories/resources.js";
+import { DefaultBooks } from "../constants/books.js";
+import { Context } from "../data/context.js";
 
 
 export const Menu = () => {

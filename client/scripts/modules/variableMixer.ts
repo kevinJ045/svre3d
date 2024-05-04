@@ -1,4 +1,4 @@
-import { mixColors } from "./colors";
+import { mixColors } from "./colors.js";
 
 export const basicVariables = {
 	mix(color1, color2, ratio){

@@ -1,20 +1,20 @@
 import { ExtendedMesh, ExtendedObject3D, THREE } from "enable3d";
-import { SceneManager } from "../common/sceneman";
-import { Entity } from "../models/entity";
-import { ResourceMap } from "./resources";
-import { EntityData } from "../../../server/models/entity";
-import { ServerData } from "../../../server/models/data";
-import { PhysicsManager } from "../common/physics";
-import { ping, pingFrom } from "../socket/socket";
-import { cloneGltf } from "../lib/gltfclone";
-import { Items } from "./items";
-import { PlayerInfo } from "./player";
-import { Equipments } from "./equipments";
-import { ItemData } from "../../../server/models/item";
-import { MaterialManager } from "./materials";
-import { SkinPlayer } from "../misc/playerskin";
-import { Settings } from "../settings/settings";
-import { Chunks } from "./chunks";
+import { SceneManager } from "../common/sceneman.js";
+import { Entity } from "../models/entity.js";
+import { ResourceMap } from "./resources.js";
+import { EntityData } from "../../../server/models/entity.js";
+import { ServerData } from "../../../server/models/data.js";
+import { PhysicsManager } from "../common/physics.js";
+import { ping, pingFrom } from "../socket/socket.js";
+import { cloneGltf } from "../lib/gltfclone.js";
+import { Items } from "./items.js";
+import { PlayerInfo } from "./player.js";
+import { Equipments } from "./equipments.js";
+import { ItemData } from "../../../server/models/item.js";
+import { MaterialManager } from "./materials.js";
+import { SkinPlayer } from "../misc/playerskin.js";
+import { Settings } from "../settings/settings.js";
+import { Chunks } from "./chunks.js";
 
 
 export class Entities {

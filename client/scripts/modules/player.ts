@@ -1,10 +1,10 @@
 import { ExtendedMesh, ExtendedObject3D, THREE } from "enable3d";
-import { item } from "./models/item";
-import { Item } from "./models/item2";
-import { CustomScene } from "./models/scene";
-import { Entity } from "./entity";
-import { Utils } from "./utils";
-import { Entities } from "./entityman";
+import { item } from "./models/item.js";
+import { Item } from "./models/item2.js";
+import { CustomScene } from "./models/scene.js";
+import { Entity } from "./entity.js";
+import { Utils } from "./utils.js";
+import { Entities } from "./entityman.js";
 
 
 

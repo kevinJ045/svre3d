@@ -1,14 +1,14 @@
 import { PointerDrag, PointerLock, THREE } from "enable3d";
-import { Chunks } from "../repositories/chunks";
-import { CameraManager } from "./camera";
-import { PlayerInfo } from "../repositories/player";
-import { Keyboard } from "./keyboard";
-import { Mouse } from "./mouse";
-import { Settings } from "../settings/settings";
-import { KeyMap } from "../settings/keymap";
-import { SceneManager } from "../common/sceneman";
-import { FirstPersonControls } from "../lib/FirstPersonControls";
-import UI from "../ui/uiman";
+import { Chunks } from "../repositories/chunks.js";
+import { CameraManager } from "./camera.js";
+import { PlayerInfo } from "../repositories/player.js";
+import { Keyboard } from "./keyboard.js";
+import { Mouse } from "./mouse.js";
+import { Settings } from "../settings/settings.js";
+import { KeyMap } from "../settings/keymap.js";
+import { SceneManager } from "../common/sceneman.js";
+import { FirstPersonControls } from "../lib/FirstPersonControls.js";
+import UI from "../ui/uiman.js";
 
 
 export class Controls {

@@ -1,4 +1,4 @@
-import { ResourceMap } from "../../repositories/resources";
+import { ResourceMap } from "../../repositories/resources.js";
 
 
 

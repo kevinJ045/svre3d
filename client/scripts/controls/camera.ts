@@ -1,5 +1,5 @@
 import { THREE } from "enable3d";
-import { PlayerInfo } from "../repositories/player";
+import { PlayerInfo } from "../repositories/player.js";
 
 
 export class CameraManager {

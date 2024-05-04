@@ -1,4 +1,4 @@
-import { Items } from "../../repositories/items";
+import { Items } from "../../repositories/items.js";
 
 export const DefaultBooks = () => [
   {

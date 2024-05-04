@@ -1,10 +1,10 @@
 import { ExtendedObject3D, THREE } from "enable3d";
-import { Entity } from "./entity";
-import { CustomScene } from "./models/scene";
-import { Entities } from "./entityman";
-import { makeObjectMaterial, materialParser } from "./shaderMaterial";
-import { Utils } from "./utils";
-import { generateName } from "./variableMixer";
+import { Entity } from "./entity.js";
+import { CustomScene } from "./models/scene.js";
+import { Entities } from "./entityman.js";
+import { makeObjectMaterial, materialParser } from "./shaderMaterial.js";
+import { Utils } from "./utils.js";
+import { generateName } from "./variableMixer.js";
 
 const resolveMaterial = (m, scene) => 
 	typeof m == 'string' ? materialParser(m, scene, {}) : m;

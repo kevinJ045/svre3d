@@ -1,6 +1,6 @@
-import { ChunkData } from "../../../server/models/chunk";
-import { stringifyChunkPosition } from "../common/chunk";
-import { Model } from "./model";
+import { ChunkData } from "../../../server/models/chunk.js";
+import { stringifyChunkPosition } from "../common/chunk.js";
+import { Model } from "./model.js";
 
 
 export class Chunk extends ChunkData {

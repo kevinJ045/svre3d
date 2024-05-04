@@ -1,5 +1,5 @@
-import { item } from "./models/item";
-import { Utils } from "./utils";
+import { item } from "./models/item.js";
+import { Utils } from "./utils.js";
 
 export const types = [
 	'objects', 'textures', 'shaders', 'biomes', 'particles'

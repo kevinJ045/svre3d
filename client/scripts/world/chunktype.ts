@@ -1,6 +1,6 @@
-import { Random } from "../../../server/common/rand";
-import { WorldData } from "./data";
-import { Seed } from "./seed";
+import { Random } from "../../../server/common/rand.js";
+import { WorldData } from "./data.js";
+import { Seed } from "./seed.js";
 
 
 

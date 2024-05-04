@@ -1,9 +1,9 @@
 import { Root, createRoot } from "react-dom/client";
-import { Menu } from "./componets/menu";
+import { Menu } from "./componets/menu.js";
 import * as React from "react";
-import { Map2D } from "./misc/map";
-import { HUDUi } from "./componets/hud";
-import { MainUI } from "./componets/provider";
+import { Map2D } from "./misc/map.js";
+import { HUDUi } from "./componets/hud.js";
+import { MainUI } from "./componets/provider.js";
 
 export default class UI {
 

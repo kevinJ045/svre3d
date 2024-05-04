@@ -1,6 +1,6 @@
-import { Chunk } from "../models/chunk";
-import { MaterialManager } from "./materials";
-import { ResourceMap } from "./resources";
+import { Chunk } from "../models/chunk.js";
+import { MaterialManager } from "./materials.js";
+import { ResourceMap } from "./resources.js";
 
 
 

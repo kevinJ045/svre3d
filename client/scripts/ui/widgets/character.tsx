@@ -1,7 +1,7 @@
 import * as React from "react";
 import { THREE } from "enable3d";
-import { PlayerInfo } from "../../repositories/player";
-import { cloneGltf } from "../../lib/gltfclone";
+import { PlayerInfo } from "../../repositories/player.js";
+import { cloneGltf } from "../../lib/gltfclone.js";
 
 
 export const Character = (

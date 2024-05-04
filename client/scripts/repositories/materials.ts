@@ -1,5 +1,5 @@
-import { basicVariables, parseVariable } from "../modules/variableMixer";
-import { ResourceMap } from "./resources";
+import { basicVariables, parseVariable } from "../modules/variableMixer.js";
+import { ResourceMap } from "./resources.js";
 import { THREE } from "enable3d";
 
 

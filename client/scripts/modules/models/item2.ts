@@ -1,6 +1,6 @@
 import { THREE } from "enable3d";
-import { Player } from "../player";
-import { item } from "./item";
+import { Player } from "../player.js";
+import { item } from "./item.js";
 
 
 

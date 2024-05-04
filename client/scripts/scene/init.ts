@@ -1,10 +1,10 @@
 import { PhysicsLoader, Project } from "enable3d";
-import { MainScene } from "./scene";
-import { ResourceMap } from "../repositories/resources";
-import { Chunks } from "../repositories/chunks";
-import { Items } from "../repositories/items";
-import { Entities } from "../repositories/entities";
-import { Seed } from "../world/seed";
+import { MainScene } from "./scene.js";
+import { ResourceMap } from "../repositories/resources.js";
+import { Chunks } from "../repositories/chunks.js";
+import { Items } from "../repositories/items.js";
+import { Entities } from "../repositories/entities.js";
+import { Seed } from "../world/seed.js";
 
 
 export async function initScene(){

@@ -6,12 +6,12 @@ import path from 'path';
 import fs from 'fs';
 import * as socketIo from 'socket.io';
 import http from "http";
-import { init, userConnected } from './init';
-import { Sockets } from './ping/sockets';
-import { Data } from './db/db';
-import { env } from './constant/env';
-import { ResourceMap } from './repositories/resources';
-import { getPropStr } from './common/getpropstr';
+import { init, userConnected } from './init.js';
+import { Sockets } from './ping/sockets.js';
+import { Data } from './db/db.js';
+import { env } from './constant/env.js';
+import { ResourceMap } from './repositories/resources.js';
+import { getPropStr } from './common/getpropstr.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,7 +28,7 @@ async function createApp() {
   // Create Vite dev server
   
   const vite = await createViteServer({
-    server: { middlewareMode: 'html' }
+    server: { middlewareMode: 'html' as any }
   });
 
   await Data.connect(env.mongoURL);

@@ -1,8 +1,8 @@
-import { TextGeometry } from "../lib/TextGeometry";
-import { CustomScene } from "./models/scene";
+import { TextGeometry } from "../lib/TextGeometry.js";
+import { CustomScene } from "./models/scene.js";
 import { THREE } from "enable3d";
-import { basicVariables, parseVariable, setVector3Var } from "./variableMixer";
-import { materialParser } from "./shaderMaterial";
+import { basicVariables, parseVariable, setVector3Var } from "./variableMixer.js";
+import { materialParser } from "./shaderMaterial.js";
 
 export class Particle {
   velocity;

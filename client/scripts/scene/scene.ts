@@ -1,20 +1,20 @@
 import { Scene3D, THREE } from "enable3d";
-import { Chunks } from "../repositories/chunks";
-import { Settings } from "../settings/settings";
-import { SceneManager } from "../common/sceneman";
-import { ResourceMap } from "../repositories/resources";
-import { PlayerInfo } from "../repositories/player";
-import { Entities } from "../repositories/entities";
-import { ping } from "../socket/socket";
-import { Utils } from "../modules/utils";
-import { CameraManager } from "../controls/camera";
-import { Controls } from "../controls/controls";
-import UI from "../ui/uiman";
-import { Lights } from "./lights";
-import { Items } from "../repositories/items";
-import { ItemData } from "../../../server/models/item";
-import { Item } from "../models/item";
-// import { xyz } from "../common/xyz";
+import { Chunks } from "../repositories/chunks.js";
+import { Settings } from "../settings/settings.js";
+import { SceneManager } from "../common/sceneman.js";
+import { ResourceMap } from "../repositories/resources.js";
+import { PlayerInfo } from "../repositories/player.js";
+import { Entities } from "../repositories/entities.js";
+import { ping } from "../socket/socket.js";
+import { Utils } from "../modules/utils.js";
+import { CameraManager } from "../controls/camera.js";
+import { Controls } from "../controls/controls.js";
+import UI from "../ui/uiman.js";
+import { Lights } from "./lights.js";
+import { Items } from "../repositories/items.js";
+import { ItemData } from "../../../server/models/item.js";
+import { Item } from "../models/item.js";
+// import { xyz } from "../common/xyz.js";
 
 export class MainScene extends Scene3D {
 

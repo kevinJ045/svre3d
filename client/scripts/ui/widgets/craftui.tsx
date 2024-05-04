@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import ChooseItemUI from "./chooseite";
-import { SlotItem } from "./slotitem";
-import { ping } from "../../socket/socket";
-import { Items } from "../../repositories/items";
-import { Item } from "../../models/item";
-import { prompt } from "../componets/prompt";
+import ChooseItemUI from "./chooseite.js";
+import { SlotItem } from "./slotitem.js";
+import { ping } from "../../socket/socket.js";
+import { Items } from "../../repositories/items.js";
+import { Item } from "../../models/item.js";
+import { prompt } from "../componets/prompt.js";
 
 const Tool = ({ tool, activeTool, handleActiveToolChange }) => <div onClick={() => handleActiveToolChange(tool)} className="tool"><div className={tool+" "+(activeTool == tool ? 'active' : 'inactive')}></div></div>
 

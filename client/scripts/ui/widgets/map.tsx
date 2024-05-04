@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Map2D } from "../misc/map";
+import { Map2D } from "../misc/map.js";
 
 export const Map2DWidget = (
 	{ activeTab }

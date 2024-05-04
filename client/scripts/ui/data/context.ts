@@ -1,6 +1,6 @@
 import React from "react";
-import { ItemData } from "../../../../server/models/item";
-import { Item } from "../../models/item";
+import { ItemData } from "../../../../server/models/item.js";
+import { Item } from "../../models/item.js";
 
 
 

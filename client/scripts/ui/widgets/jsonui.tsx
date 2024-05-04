@@ -1,8 +1,8 @@
 import * as React from "react";
-import { parseVariable } from "../../common/stringparse";
-import { UISelectedItem, UIVariables } from "../misc/variables";
-import { UIResources } from "../misc/uires";
-import { PlayerInfo } from "../../repositories/player";
+import { parseVariable } from "../../common/stringparse.js";
+import { UISelectedItem, UIVariables } from "../misc/variables.js";
+import { UIResources } from "../misc/uires.js";
+import { PlayerInfo } from "../../repositories/player.js";
 
 const elements: Record<string, React.ElementType> = {
     text: ({ widget, children, variables }) => <div className="text">{parseVariable(widget.text, variables)}{children}</div>,

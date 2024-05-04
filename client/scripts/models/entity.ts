@@ -1,14 +1,14 @@
 import { ExtendedObject3D, THREE } from "enable3d";
-import { EntityData } from "../../../server/models/entity";
-import { xyz, xyzt } from "../common/xyz";
-import { PhysicsManager } from "../common/physics";
-import { Chunks } from "../repositories/chunks";
-import { Entities } from "../repositories/entities";
-import { ChunkData } from "../../../server/models/chunk";
-import { SceneManager } from "../common/sceneman";
-import { Item } from "./item";
-import { ping, pingFrom } from "../socket/socket";
-import { Random } from "../../../server/common/rand";
+import { EntityData } from "../../../server/models/entity.js";
+import { xyz, xyzt } from "../common/xyz.js";
+import { PhysicsManager } from "../common/physics.js";
+import { Chunks } from "../repositories/chunks.js";
+import { Entities } from "../repositories/entities.js";
+import { ChunkData } from "../../../server/models/chunk.js";
+import { SceneManager } from "../common/sceneman.js";
+import { Item } from "./item.js";
+import { ping, pingFrom } from "../socket/socket.js";
+import { Random } from "../../../server/common/rand.js";
 
 
 

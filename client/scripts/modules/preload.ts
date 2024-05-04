@@ -1,10 +1,10 @@
 import { Scene3D, THREE } from "enable3d";
-import { toload } from "./loader";
-import { CustomScene } from "./models/scene";
-import { specific_load } from "./specific_load";
-import { Utils } from "./utils";
-import { OBJLoader } from "../lib/OBJLoader";
-import { FontLoader } from "../lib/FontLoader";
+import { toload } from "./loader.js";
+import { CustomScene } from "./models/scene.js";
+import { specific_load } from "./specific_load.js";
+import { Utils } from "./utils.js";
+import { OBJLoader } from "../lib/OBJLoader.js";
+import { FontLoader } from "../lib/FontLoader.js";
 
 const loaders = {
 	obj: async (url: string) => {

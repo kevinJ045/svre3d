@@ -1,7 +1,7 @@
 import { ExtendedObject3D } from "enable3d";
-import { CustomScene } from "./models/scene";
-import { Item } from "./models/item2";
-import { applyMaterials } from "./shaderMaterial";
+import { CustomScene } from "./models/scene.js";
+import { Item } from "./models/item2.js";
+import { applyMaterials } from "./shaderMaterial.js";
 
 export class ItemEntity  {
 

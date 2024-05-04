@@ -1,8 +1,8 @@
 import { Item } from "../../models/item"
 import * as React from "react";
-import { Equipments } from "../../repositories/equipments";
-import { PlayerInfo } from "../../repositories/player";
-import { Context } from "../data/context";
+import { Equipments } from "../../repositories/equipments.js";
+import { PlayerInfo } from "../../repositories/player.js";
+import { Context } from "../data/context.js";
 
 
 

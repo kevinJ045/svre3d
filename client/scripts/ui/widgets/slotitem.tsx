@@ -1,7 +1,7 @@
 import { Item } from "../../models/item"
 import * as React from "react";
-import { Equipments } from "../../repositories/equipments";
-import { PlayerInfo } from "../../repositories/player";
+import { Equipments } from "../../repositories/equipments.js";
+import { PlayerInfo } from "../../repositories/player.js";
 
 export const generateItemIcon = (icon) => {
   const iconStyle: React.CSSProperties = {};

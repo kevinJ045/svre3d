@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import * as React from "react";
-import LoginForm from "./form";
-import { LocalDB } from "../localdb/localdb";
+import LoginForm from "./form.js";
+import { LocalDB } from "../localdb/localdb.js";
 
 
 export class Login {

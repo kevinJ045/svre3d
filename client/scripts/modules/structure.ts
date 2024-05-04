@@ -1,5 +1,5 @@
 import { THREE } from "enable3d";
-import { Utils } from "./utils";
+import { Utils } from "./utils.js";
 
 export function generateWithRule(item, rule, seed, object_rules?: string[]) {
 	const generationRule = rule.generation_rule;

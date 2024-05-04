@@ -1,10 +1,10 @@
 import { Scene3D, THREE } from "enable3d";
-import { jsonres } from "../common/jsonres";
-import { OBJLoader } from "../lib/OBJLoader";
-import { FontLoader } from "../lib/FontLoader";
-import { Utils } from "../modules/utils";
-import { ResourceSchema } from "../../../server/lib/loader/Schema.type";
-import { getPropStr } from "../../../server/common/getpropstr";
+import { jsonres } from "../common/jsonres.js";
+import { OBJLoader } from "../lib/OBJLoader.js";
+import { FontLoader } from "../lib/FontLoader.js";
+import { Utils } from "../modules/utils.js";
+import { ResourceSchema } from "../../../server/lib/loader/Schema.type.js";
+import { getPropStr } from "../../../server/common/getpropstr.js";
 
 const loaders = {
 	obj: async (url: string) => {

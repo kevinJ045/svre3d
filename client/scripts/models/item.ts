@@ -1,5 +1,5 @@
 import { ExtendedObject3D } from "enable3d";
-import { ItemData } from "../../../server/models/item";
+import { ItemData } from "../../../server/models/item.js";
 
 
 export class Item extends ItemData {

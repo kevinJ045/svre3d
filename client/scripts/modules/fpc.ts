@@ -1,5 +1,5 @@
-import { CustomScene } from "./models/scene";
-import { Player } from "./player";
+import { CustomScene } from "./models/scene.js";
+import { Player } from "./player.js";
 import { THREE } from "enable3d";
 
 export function firstPersonControls(scene: CustomScene, player: Player){

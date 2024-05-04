@@ -1,10 +1,10 @@
 import * as React from "react";
-import { ResourceMap } from "../../repositories/resources";
-import { JSONUIWidget } from "../widgets/jsonui";
-import { UIResources } from "../misc/uires";
+import { ResourceMap } from "../../repositories/resources.js";
+import { JSONUIWidget } from "../widgets/jsonui.js";
+import { UIResources } from "../misc/uires.js";
 import { Root } from "react-dom/client";
-import { UISelectedItem, UIVariables } from "../misc/variables";
-import { PlayerInfo } from "../../repositories/player";
+import { UISelectedItem, UIVariables } from "../misc/variables.js";
+import { PlayerInfo } from "../../repositories/player.js";
 
 export const HUD = () => {
         

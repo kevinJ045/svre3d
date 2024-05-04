@@ -1,8 +1,8 @@
 import React from "react";
-import { InventoryItem } from "./inventory";
-import { PlayerInfo } from "../../repositories/player";
-import { Items } from "../../repositories/items";
-import { prompt } from "../componets/prompt";
+import { InventoryItem } from "./inventory.js";
+import { PlayerInfo } from "../../repositories/player.js";
+import { Items } from "../../repositories/items.js";
+import { prompt } from "../componets/prompt.js";
 
 const ChooseItemUI = ({ cb, ignore, rect }) => {
     const handleItemClick = (item) => {

@@ -1,14 +1,14 @@
 
 
 import sio from "socket.io-client";
-import { initScene } from "../scene/init";
-import { ResourceMap } from "../repositories/resources";
-import { PlayerInfo } from "../repositories/player";
-import { Entities } from "../repositories/entities";
-import { Seed } from "../world/seed";
-import { WorldData } from "../world/data";
-import { LocalDB } from "../localdb/localdb";
-import { Login } from "../login/login";
+import { initScene } from "../scene/init.js";
+import { ResourceMap } from "../repositories/resources.js";
+import { PlayerInfo } from "../repositories/player.js";
+import { Entities } from "../repositories/entities.js";
+import { Seed } from "../world/seed.js";
+import { WorldData } from "../world/data.js";
+import { LocalDB } from "../localdb/localdb.js";
+import { Login } from "../login/login.js";
 const io = (window as any).io as typeof sio;
 
 let S!: any;

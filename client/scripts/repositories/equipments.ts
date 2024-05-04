@@ -1,9 +1,9 @@
-import { Entity } from "../models/entity";
-import { Item } from "../models/item";
-import { Items } from "./items";
+import { Entity } from "../models/entity.js";
+import { Item } from "../models/item.js";
+import { Items } from "./items.js";
 import * as uuid from "uuid";
-import { MaterialManager } from "./materials";
-import { cloneGltf } from "../lib/gltfclone";
+import { MaterialManager } from "./materials.js";
+import { cloneGltf } from "../lib/gltfclone.js";
 import { THREE } from "enable3d";
 
 export class Equipments {

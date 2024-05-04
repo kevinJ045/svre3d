@@ -26,6 +26,7 @@
     "socket.io-client": "^4.7.5",
     "uuid": "^9.0.1"
   },
+  "type": "module",
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
     "@types/yaml": "^1.9.7",

@@ -1,14 +1,14 @@
-import { CameraManager } from "./camera";
-import { Chunks } from "../repositories/chunks";
-import { Controls } from "./controls";
-import { PlayerInfo } from "../repositories/player";
+import { CameraManager } from "./camera.js";
+import { Chunks } from "../repositories/chunks.js";
+import { Controls } from "./controls.js";
+import { PlayerInfo } from "../repositories/player.js";
 import { THREE } from "enable3d";
-import { Items } from "../repositories/items";
-import { ItemData } from "../../../server/models/item";
-import { Entities } from "../repositories/entities";
-import { UISelectedItem } from "../ui/misc/variables";
-import { SceneManager } from "../common/sceneman";
-import { ping } from "../socket/socket";
+import { Items } from "../repositories/items.js";
+import { ItemData } from "../../../server/models/item.js";
+import { Entities } from "../repositories/entities.js";
+import { UISelectedItem } from "../ui/misc/variables.js";
+import { SceneManager } from "../common/sceneman.js";
+import { ping } from "../socket/socket.js";
 
 export class Mouse {
 

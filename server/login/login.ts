@@ -1,9 +1,9 @@
 import { MongoClient, Db } from 'mongodb';
-import { Data } from '../db/db'; // Assuming this imports your database configuration
-import { DBModel } from '../models/dbmodel';
+import { Data } from '../db/db.js'; // Assuming this imports your database configuration
+import { DBModel } from '../models/dbmodel.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { env } from '../constant/env';
+import { env } from '../constant/env.js';
 
 export class LoginManager { 
 	static async login(username: string, password: string): Promise<string | null> {

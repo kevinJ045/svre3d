@@ -1,5 +1,5 @@
 import { ExtendedMesh, ExtendedObject3D } from "enable3d";
-import { SceneManager } from "./sceneman";
+import { SceneManager } from "./sceneman.js";
 
 
 

@@ -1,4 +1,4 @@
-import { item } from "./models/item";
+import { item } from "./models/item.js";
 import { THREE } from "enable3d";
 
 const colors = [

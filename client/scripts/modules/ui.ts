@@ -1,9 +1,9 @@
-import { ItemEntity } from "./itementity";
-import { Item } from "./models/item2";
-import { CustomScene } from "./models/scene";
-import { Player } from "./player";
+import { ItemEntity } from "./itementity.js";
+import { Item } from "./models/item2.js";
+import { CustomScene } from "./models/scene.js";
+import { Player } from "./player.js";
 import { PointerDrag, PointerLock, THREE } from "enable3d";
-import { getChunkType } from "./world";
+import { getChunkType } from "./world.js";
 
 
 

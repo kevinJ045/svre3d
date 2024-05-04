@@ -1,7 +1,7 @@
-import { Entity } from "../models/entity";
-import { ping } from "../socket/socket";
-import { Entities } from "./entities";
-import { Equipments } from "./equipments";
+import { Entity } from "../models/entity.js";
+import { ping } from "../socket/socket.js";
+import { Entities } from "./entities.js";
+import { Equipments } from "./equipments.js";
 import { THREE } from "enable3d";
 
 export interface PlayerLike {

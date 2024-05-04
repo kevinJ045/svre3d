@@ -1,9 +1,9 @@
-import { Item } from "../../models/item";
-import { PlayerInfo } from "../../repositories/player";
+import { Item } from "../../models/item.js";
+import { PlayerInfo } from "../../repositories/player.js";
 import { Context } from "../data/context"
 import React, { useEffect, useState } from "react";
-import { Map2D } from "../misc/map";
-import { book, bookpage } from "../widgets/books";
+import { Map2D } from "../misc/map.js";
+import { book, bookpage } from "../widgets/books.js";
 
 let listening = false;
 

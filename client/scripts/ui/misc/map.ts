@@ -1,8 +1,8 @@
-import { PlayerInfo } from "../../repositories/player";
-import { ResourceMap } from "../../repositories/resources";
-import { getChunkType } from "../../world/chunktype";
-import { WorldData } from "../../world/data";
-import { Seed } from "../../world/seed";
+import { PlayerInfo } from "../../repositories/player.js";
+import { ResourceMap } from "../../repositories/resources.js";
+import { getChunkType } from "../../world/chunktype.js";
+import { WorldData } from "../../world/data.js";
+import { Seed } from "../../world/seed.js";
 
 
 

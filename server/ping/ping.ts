@@ -1,9 +1,9 @@
 import { Socket } from "socket.io";
-import { Chunks } from "../repositories/chunks.ts";
-import { xyz } from "../models/misc.xyz.ts";
-import { Entities } from "../repositories/entities.ts";
-import { Items } from "../repositories/items.ts";
-import { Players } from "../repositories/players.ts";
+import { Chunks } from "../repositories/chunks.js";
+import { xyz } from "../models/misc.xyz.js";
+import { Entities } from "../repositories/entities.js";
+import { Items } from "../repositories/items.js";
+import { Players } from "../repositories/players.js";
 
 export function pingFrom<T = any, D = any>(socket: Socket, action: string, func: (data: T) => any){
 	socket.on(action, async (data: T, callback: (data: D) => any) => {

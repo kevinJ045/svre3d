@@ -1,6 +1,6 @@
-import { Data } from "../db/db.ts";
-import { DBModel } from "../models/dbmodel.ts";
-import { Entities } from "./entities.ts";
+import { Data } from "../db/db.js";
+import { DBModel } from "../models/dbmodel.js";
+import { Entities } from "./entities.js";
 
 
 

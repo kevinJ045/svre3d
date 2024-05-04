@@ -1,5 +1,5 @@
-import { DBModel } from "./dbmodel.ts";
-import { ItemDBModel } from "./item.db.ts";
+import { DBModel } from "./dbmodel.js";
+import { ItemDBModel } from "./item.db.js";
 
 
 export const PlayerModel = {

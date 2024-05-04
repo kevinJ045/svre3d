@@ -1,5 +1,5 @@
-import { ResourceMap } from "../repositories/resources.ts";
-import { ServerData } from "./data.ts";
+import { ResourceMap } from "../repositories/resources.js";
+import { ServerData } from "./data.js";
 
 
 export class ItemData extends ServerData {

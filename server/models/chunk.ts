@@ -1,12 +1,12 @@
-import { stringifyChunkPosition } from "../common/chunk.ts";
-import { worldData } from "../constant/world.ts";
-import { ResourceSchema } from "../lib/loader/Schema.type.ts";
-import { BiomeData } from "./biome.ts";
-import { ServerData } from "./data.ts";
-import { EntityData } from "./entity.ts";
-import { jsonres } from "./jsonres.ts";
-import { xyz } from "./misc.xyz.ts";
-import { StructureData } from "./structure.ts";
+import { stringifyChunkPosition } from "../common/chunk.js";
+import { worldData } from "../constant/world.js";
+import { ResourceSchema } from "../lib/loader/Schema.type.js";
+import { BiomeData } from "./biome.js";
+import { ServerData } from "./data.js";
+import { EntityData } from "./entity.js";
+import { jsonres } from "./jsonres.js";
+import { xyz } from "./misc.xyz.js";
+import { StructureData } from "./structure.js";
 
 export class ChunkData extends ServerData {
 	// Chunk-specific properties

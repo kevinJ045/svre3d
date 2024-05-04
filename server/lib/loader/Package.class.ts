@@ -1,7 +1,7 @@
 import path from "path";
-import Parser from "./Parser.class.ts";
+import Parser from "./Parser.class.js";
 import fs from 'fs';
-import { ResourceSchema } from "./Schema.type.ts";
+import { ResourceSchema } from "./Schema.type.js";
 
 export default class Package {
 

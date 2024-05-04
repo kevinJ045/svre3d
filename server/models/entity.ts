@@ -1,7 +1,7 @@
-import { BuffData } from "./buff.ts";
-import { ServerData } from "./data.ts";
-import { ItemData } from "./item.ts";
-import { Random } from "../common/rand.ts";
+import { BuffData } from "./buff.js";
+import { ServerData } from "./data.js";
+import { ItemData } from "./item.js";
+import { Random } from "../common/rand.js";
 
 class EntityData extends ServerData {
     // Entity-specific properties

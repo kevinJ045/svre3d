@@ -1,9 +1,9 @@
-import { ChunkData } from "../models/chunk.ts";
-import { EntityData } from "../models/entity.ts";
-import { BiomeData } from "../models/biome.ts";
-import { Random } from "../common/rand.ts";
-import { jsonres } from "../models/jsonres.ts";
-import { Entities } from "./entities.ts";
+import { ChunkData } from "../models/chunk.js";
+import { EntityData } from "../models/entity.js";
+import { BiomeData } from "../models/biome.js";
+import { Random } from "../common/rand.js";
+import { jsonres } from "../models/jsonres.js";
+import { Entities } from "./entities.js";
 
 export class EntitySpawner {
 

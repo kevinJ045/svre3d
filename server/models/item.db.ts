@@ -1,4 +1,4 @@
-import { DBModel } from "./dbmodel.ts";
+import { DBModel } from "./dbmodel.js";
 
 
 

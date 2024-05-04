@@ -147,9 +147,7 @@ export class Chunks {
 	}
 
 
-	static findSafeSpawnPoint(biomeName) {
-		
-		const minDistanceFromBorders = 5; // blocks
+	static findSafeSpawnPoint(biomeName, minDistanceFromBorders = 5) {
 
 		let spawnPoint: any = null;
 
@@ -166,7 +164,7 @@ export class Chunks {
 
 			const biome = Biomes.getBiome(randomX, randomZ);
 
-			if (biome.reference.name === biomeName) {
+			if (biome.reference.manifest.id === biomeName) {
 
 				let isSafeSpawnPoint = true;
 				
@@ -180,7 +178,7 @@ export class Chunks {
 						
 						const surroundingBiome = Biomes.getBiome(surroundingPosition.x, surroundingPosition.z);
 
-						if (surroundingBiome.reference.name !== biomeName) {
+						if (surroundingBiome.reference.manifest.id === biomeName) {
 							isSafeSpawnPoint = false;
 							break; 
 						}
@@ -198,7 +196,11 @@ export class Chunks {
 			}
 		}
 
-		return spawnPoint;
+		return spawnPoint || (
+			minDistanceFromBorders > 2 ?
+			Chunks.findSafeSpawnPoint(biomeName, minDistanceFromBorders - 1) 
+			: null
+		);
 	}
 
 }

@@ -212,7 +212,7 @@ export class Entities {
 				x: 0,
 				y: 0,
 				z: 0
-			}, player.username, player.variant, [], { respawn: true, username: player.username, color: player.color, equipment: { brow: player.equipment?.brow || 'm:brow-1' } })!;
+			}, player.username, player.variant, [], { respawn: true, username: player.username, color: player.color, equipment: { brow: player.equipment?.brow || 'i:normal-brow' } })!;
 		});
 
 		pingFrom(socket, 'entity:inventory', (

@@ -3,11 +3,11 @@
 export const variants = [
 	// 'forest',
 	// 'desert',
-	'swamp',
-	'grass',
-	'lava',
+	'i:swamp',
+	'i:grass',
+	'i:lava',
 	// 'arctic',
 	// 'coastal',
 	// 'underground',
-	'rock'
+	'i:rock'
 ]

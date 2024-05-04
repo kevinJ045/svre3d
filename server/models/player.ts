@@ -6,7 +6,7 @@ export const PlayerModel = {
 	username: "",
 	position: { x: 0, y: 0, z: 0 },
 	variant: "grass",
-	equipment: { brow: 'm:brow-1' },
+	equipment: { brow: 'i:normal-brow' },
 	inventory: [],
 	settings: {
 		renderDistance: 4,

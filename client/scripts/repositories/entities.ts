@@ -74,8 +74,8 @@ export class Entities {
 		this.entities.push(entity);
 
 		if(ref.entity.type == 'player'){
-			// Equipments.entity(entity);
-			// SkinPlayer.skinPlayer(entity);
+			Equipments.entity(entity);
+			SkinPlayer.skinPlayer(entity);
 		}
 
 		if(ref.config?.material){

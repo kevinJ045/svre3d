@@ -1,7 +1,7 @@
 import path from "path";
-import Parser from "./Parser.class";
+import Parser from "./Parser.class.js";
 import fs from 'fs';
-import { ResourceSchema } from "./Schema.type";
+import { ResourceSchema } from "./Schema.type.js";
 
 export default class Package {
 
@@ -20,7 +20,7 @@ export default class Package {
 
     const mainFileData = this.parser.parseYAML(mainfile);
 
-    this.manifest = mainFileData.manifest;
+    this.manifest = mainFileData.manifest as any;
     this.parser.context.currentID = this.manifest.id;
 
     this.lookUp(mainFileData.data.lookUp);

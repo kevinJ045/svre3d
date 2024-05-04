@@ -1,13 +1,13 @@
 import path from "path";
 import fs from "fs";
-import { ResourceMap } from "../repositories/resources";
-import Parser from "../lib/loader/Parser.class";
-import STD from "../lib/loader/STD.class";
-import Package from "../lib/loader/Package.class";
+import { ResourceMap } from "../repositories/resources.js";
+import Parser from "../lib/loader/Parser.class.js";
+import STD from "../lib/loader/STD.class.js";
+import Package from "../lib/loader/Package.class.js";
 
 export function loadAllResources(map: typeof ResourceMap){
 
-	STD.registerMap(new Parser().parseYAML(path.resolve(import.meta.dirname, '../../packages/iovie/std.yaml')));
+	STD.registerMap(new Parser().parseYAML(path.resolve(import.meta.dirname, '../../packages/iovie/std.yaml'))!);
 
 	const packagesPath = path.resolve(import.meta.dirname, '../../packages');
 

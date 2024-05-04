@@ -1,6 +1,6 @@
-import { Data } from "../db/db";
-import { DBModel } from "../models/dbmodel";
-import { Entities } from "./entities";
+import { Data } from "../db/db.js";
+import { DBModel } from "../models/dbmodel.js";
+import { Entities } from "./entities.js";
 
 
 

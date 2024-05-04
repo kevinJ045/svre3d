@@ -1,17 +1,17 @@
-import { stringifyChunkPosition } from "../common/chunk";
-import { Random } from "../common/rand";
-import { worldData } from "../constant/world";
-import { Data } from "../db/db";
-import { ChunkData } from "../models/chunk";
-import { xyz } from "../models/misc.xyz";
-import { pingFrom } from "../ping/ping";
-import { Sockets } from "../ping/sockets";
-import { generateChunkHeight } from "../world/chunks";
-import { Biomes } from "./biomes";
-import { Entities } from "./entities";
-import { Items } from "./items";
-import { EntitySpawner } from "./spawner";
-import { Structures } from "./structures";
+import { stringifyChunkPosition } from "../common/chunk.js";
+import { Random } from "../common/rand.js";
+import { worldData } from "../constant/world.js";
+import { Data } from "../db/db.js";
+import { ChunkData } from "../models/chunk.js";
+import { xyz } from "../models/misc.xyz.js";
+import { pingFrom } from "../ping/ping.js";
+import { Sockets } from "../ping/sockets.js";
+import { generateChunkHeight } from "../world/chunks.js";
+import { Biomes } from "./biomes.js";
+import { Entities } from "./entities.js";
+import { Items } from "./items.js";
+import { EntitySpawner } from "./spawner.js";
+import { Structures } from "./structures.js";
 import { Vector3 } from "three";
 
 

@@ -1,5 +1,5 @@
-import { noise } from "../constant/seed";
-import { Chunks } from "../repositories/chunks";
+import { noise } from "../constant/seed.js";
+import { Chunks } from "../repositories/chunks.js";
 
 export function generateChunkHeight(x: number, z: number, maxHeight: number, chunkSize: number): number {
 	// Scale the coordinates to control the frequency of the noise

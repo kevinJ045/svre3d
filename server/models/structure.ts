@@ -1,5 +1,5 @@
-import { BiomeData } from "./biome";
-import { ServerData } from "./data";
+import { BiomeData } from "./biome.js";
+import { ServerData } from "./data.js";
 
 export type StructureRule = {
 	name: string,

@@ -1,9 +1,9 @@
-import { ResourceSchema } from "../lib/loader/Schema.type";
-import { ItemData } from "../models/item";
-import { jsonres } from "../models/jsonres";
-import { pingFrom } from "../ping/ping";
-import { Entities } from "./entities";
-import { ResourceMap } from "./resources";
+import { ResourceSchema } from "../lib/loader/Schema.type.js";
+import { ItemData } from "../models/item.js";
+import { jsonres } from "../models/jsonres.js";
+import { pingFrom } from "../ping/ping.js";
+import { Entities } from "./entities.js";
+import { ResourceMap } from "./resources.js";
 
 export class Items {
 

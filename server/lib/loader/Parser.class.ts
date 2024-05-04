@@ -2,6 +2,7 @@ import STD from './STD.class';
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
+import { ResourceSchema } from './Schema.type';
 
 const floatifyObject = (obj, int) => {
   for(let i in obj) obj[i] = int ? parseFloat(obj[i]) : parseInt(obj[i]);
@@ -14,10 +15,9 @@ const xyz = {
 }
 
 export default class Parser {
-  parsedFiles: Set<string>;
+  parsedFiles: Record<string, ResourceSchema> = {};
   yamlSchema: yaml.Schema;
   constructor() {
-    this.parsedFiles = new Set();
 
     this.yamlSchema = new yaml.Schema([
       new yaml.Type('!realpath', {
@@ -102,8 +102,8 @@ export default class Parser {
   }
 
   parseYAML(filePath) {
-    if (this.parsedFiles.has(filePath)) {
-      return {};
+    if (this.parsedFiles[filePath]) {
+      return this.parsedFiles[filePath];
     }
     let fileContent = this.lookUpFile(filePath);
 
@@ -111,8 +111,8 @@ export default class Parser {
       schema: this.yamlSchema
     });
 
-    this.parsedFiles.add(filePath);
+    this.parsedFiles[filePath] = (data as ResourceSchema);
 
-    return data;
+    return data as ResourceSchema;
   }
 }

@@ -1,7 +1,7 @@
-import { Random } from "../common/rand";
-import { noise, seedrng } from "../constant/seed";
-import { BiomeData } from "../models/biome";
-import { ResourceMap } from "./resources";
+import { Random } from "../common/rand.js";
+import { noise, seedrng } from "../constant/seed.js";
+import { BiomeData } from "../models/biome.js";
+import { ResourceMap } from "./resources.js";
 
 
 export class Biomes {

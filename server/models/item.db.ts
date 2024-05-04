@@ -1,4 +1,4 @@
-import { DBModel } from "./dbmodel";
+import { DBModel } from "./dbmodel.js";
 
 
 

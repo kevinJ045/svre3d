@@ -1,11 +1,11 @@
-import { Random } from "../common/rand";
-import { noise, seedrng } from "../constant/seed";
-import { Data } from "../db/db";
-import { ChunkData } from "../models/chunk";
-import { ServerData } from "../models/data";
-import { jsonres } from "../models/jsonres";
-import { StructureData, StructureRule } from "../models/structure";
-import { ResourceMap } from "./resources";
+import { Random } from "../common/rand.js";
+import { noise, seedrng } from "../constant/seed.js";
+import { Data } from "../db/db.js";
+import { ChunkData } from "../models/chunk.js";
+import { ServerData } from "../models/data.js";
+import { jsonres } from "../models/jsonres.js";
+import { StructureData, StructureRule } from "../models/structure.js";
+import { ResourceMap } from "./resources.js";
 
 
 

@@ -1,5 +1,5 @@
-import { ServerData } from "./data";
-import { jsonres } from "./jsonres";
+import { ServerData } from "./data.js";
+import { jsonres } from "./jsonres.js";
 
 
 export class BiomeData extends ServerData {

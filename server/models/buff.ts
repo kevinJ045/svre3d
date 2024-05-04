@@ -1,4 +1,4 @@
-import { ServerData } from "./data.js";
+import { ServerData } from "./data.ts";
 
 
 export class BuffData extends ServerData {

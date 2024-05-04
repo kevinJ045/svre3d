@@ -1,17 +1,17 @@
-import { stringifyChunkPosition } from "../common/chunk.js";
-import { Random } from "../common/rand.js";
-import { worldData } from "../constant/world.js";
-import { Data } from "../db/db.js";
-import { ChunkData } from "../models/chunk.js";
-import { xyz } from "../models/misc.xyz.js";
-import { pingFrom } from "../ping/ping.js";
-import { Sockets } from "../ping/sockets.js";
-import { generateChunkHeight } from "../world/chunks.js";
-import { Biomes } from "./biomes.js";
-import { Entities } from "./entities.js";
-import { Items } from "./items.js";
-import { EntitySpawner } from "./spawner.js";
-import { Structures } from "./structures.js";
+import { stringifyChunkPosition } from "../common/chunk.ts";
+import { Random } from "../common/rand.ts";
+import { worldData } from "../constant/world.ts";
+import { Data } from "../db/db.ts";
+import { ChunkData } from "../models/chunk.ts";
+import { xyz } from "../models/misc.xyz.ts";
+import { pingFrom } from "../ping/ping.ts";
+import { Sockets } from "../ping/sockets.ts";
+import { generateChunkHeight } from "../world/chunks.ts";
+import { Biomes } from "./biomes.ts";
+import { Entities } from "./entities.ts";
+import { Items } from "./items.ts";
+import { EntitySpawner } from "./spawner.ts";
+import { Structures } from "./structures.ts";
 import { Vector3 } from "three";
 
 

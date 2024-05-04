@@ -5,6 +5,7 @@ import path from 'path';
 import { spawn } from 'child_process';
 
 const res_path = path.resolve('./packages');
+const server_path = path.resolve('./server');
 
 let childProcess;
 
@@ -16,7 +17,7 @@ const startServer = () => {
   }
 
   // Start the server as a child process
-  childProcess = spawn('bun', ['--watch','server/index.ts'], {
+  childProcess = spawn('bun', ['server/index.ts'], {
     stdio: 'inherit', 
    });
 
@@ -26,10 +27,16 @@ const startServer = () => {
 fs.watch(res_path, 
 	{ recursive: true },	
 	(event, filename) => {
+    console.clear();
 		console.log('updated yaml', filename);
 		startServer();
 		
 	});
-
+fs.watch(server_path, 
+  { recursive: true },	
+  (event, filename) => {
+    console.clear();
+    startServer();
+  });
 
 startServer();

@@ -1,5 +1,5 @@
-import { ResourceSchema } from "../lib/loader/Schema.type.js";
-import { jsonres } from "./jsonres.js";
+import { ResourceSchema } from "../lib/loader/Schema.type.ts";
+import { jsonres } from "./jsonres.ts";
 import * as uuid from 'uuid';
 
 export class ServerData {

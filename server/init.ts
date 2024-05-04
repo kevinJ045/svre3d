@@ -1,17 +1,17 @@
-import { Random } from "./common/rand.js";
-import { variants } from "./constant/player_variant.js";
-import { worldData } from "./constant/world.js";
-import { loadAllResources } from "./functions/resources.js";
-import { LoginManager } from "./login/login.js";
-import { startPing } from "./ping/ping.js";
-import { Sockets } from "./ping/sockets.js";
-import { Biomes } from "./repositories/biomes.js";
-import { Chunks } from "./repositories/chunks.js";
-import { Entities } from "./repositories/entities.js";
-import { Items } from "./repositories/items.js";
-import { Mainloop } from "./repositories/mainloop.js";
-import { Players } from "./repositories/players.js";
-import { ResourceMap } from "./repositories/resources.js";
+import { Random } from "./common/rand.ts";
+import { variants } from "./constant/player_variant.ts";
+import { worldData } from "./constant/world.ts";
+import { loadAllResources } from "./functions/resources.ts";
+import { LoginManager } from "./login/login.ts";
+import { startPing } from "./ping/ping.ts";
+import { Sockets } from "./ping/sockets.ts";
+import { Biomes } from "./repositories/biomes.ts";
+import { Chunks } from "./repositories/chunks.ts";
+import { Entities } from "./repositories/entities.ts";
+import { Items } from "./repositories/items.ts";
+import { Mainloop } from "./repositories/mainloop.ts";
+import { Players } from "./repositories/players.ts";
+import { ResourceMap } from "./repositories/resources.ts";
 
 
 export async function userConnected(serverData, socket){

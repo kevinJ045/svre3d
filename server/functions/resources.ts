@@ -1,9 +1,9 @@
 import path from "path";
 import fs from "fs";
-import { ResourceMap } from "../repositories/resources.js";
-import Parser from "../lib/loader/Parser.class.js";
-import STD from "../lib/loader/STD.class.js";
-import Package from "../lib/loader/Package.class.js";
+import { ResourceMap } from "../repositories/resources.ts";
+import Parser from "../lib/loader/Parser.class.ts";
+import STD from "../lib/loader/STD.class.ts";
+import Package from "../lib/loader/Package.class.ts";
 
 export function loadAllResources(map: typeof ResourceMap){
 

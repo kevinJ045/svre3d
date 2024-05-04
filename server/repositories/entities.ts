@@ -1,17 +1,17 @@
 import { Socket } from "socket.io";
-import { ServerData } from "../models/data.js";
-import { EntityData } from "../models/entity.js";
-import { xyz } from "../models/misc.xyz.js";
-import { ResourceMap } from "./resources.js";
-import { ping, pingFrom } from "../ping/ping.js";
-import { Sockets } from "../ping/sockets.js";
-import { ItemData } from "../models/item.js";
-import { Items } from "./items.js";
+import { ServerData } from "../models/data.ts";
+import { EntityData } from "../models/entity.ts";
+import { xyz } from "../models/misc.xyz.ts";
+import { ResourceMap } from "./resources.ts";
+import { ping, pingFrom } from "../ping/ping.ts";
+import { Sockets } from "../ping/sockets.ts";
+import { ItemData } from "../models/item.ts";
+import { Items } from "./items.ts";
 import { Vector3 } from "three";
-import { Chunks } from "./chunks.js";
-import { Random } from "../common/rand.js";
-import { jsonres } from "../models/jsonres.js";
-import { ResourceSchema } from "../lib/loader/Schema.type.js";
+import { Chunks } from "./chunks.ts";
+import { Random } from "../common/rand.ts";
+import { jsonres } from "../models/jsonres.ts";
+import { ResourceSchema } from "../lib/loader/Schema.type.ts";
 
 
 export class Entities {

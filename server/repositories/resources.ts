@@ -1,6 +1,6 @@
-import Package from "../lib/loader/Package.class.js";
-import { ResourceSchema } from "../lib/loader/Schema.type.js";
-import { jsonres } from "../models/jsonres.js";
+import Package from "../lib/loader/Package.class.ts";
+import { ResourceSchema } from "../lib/loader/Schema.type.ts";
+import { jsonres } from "../models/jsonres.ts";
 
 
 export class ResourceMap {

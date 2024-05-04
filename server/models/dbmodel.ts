@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { PlayerModel } from "./player.js";
+import { PlayerModel } from "./player.ts";
 
 export class DBModel {
 

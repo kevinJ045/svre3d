@@ -2,25 +2,26 @@ manifest:
   id: !id 'goober'
   type: 'entity'
 base:
-  health: 50
+  health: !int 50
   speed: 4
-  demage: 10
+  damage: 10
 view:
   material:
-    shader: !import '../../bin/shaders/some.glsl'
+    variant: true
+    eye: 'mat(color: #ffffff)'
   object:
     body: 0.0.2
     eye: 0.0.3
 entity:
   ai: 
-    enabled: true
-    behaviors:
-      movement:
-        random_movement: true
-        movement_biome: self
-      attack:
-        attackBack: true
-        attack: []
+    movement:
+      random: true
+      biome: self
+    attack:
+      attackBack: true
+      targets: 
+        - id: !id goober
+          variant: self
   variants: !import "./variants.i.yaml"
 resource:
   src: !realpath '../../../bin/objects/goober_e.gltf'

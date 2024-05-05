@@ -30,6 +30,7 @@ export class Items {
 		if(this.crafting_request) Promise.resolve(this.crafting_request);
 		this.crafting_request = ping('crafting:'+(recipe ? 'recipe' : 'craft'), {entity: PlayerInfo.entity.id, tool, items:items.map(i => ({ itemID: i.itemID, max: i.max, quantity: i.quantity, id: i.id, options: (i as any).options }))})
 		.then((e) => {
+			console.log(e);
 			this.crafting_request = null;
 			return e;
 		});
@@ -48,7 +49,7 @@ export class Items {
 
 		if(!itemMesh) itemMesh = item.object3d;
 
-		const animation = item.reference.load.animations.find(anim => anim.name == animationName);
+		const animation = item.reference.resource.load.animations.find(anim => anim.name == animationName);
 		if(!animation) return;
 		
 		const mixer = itemMesh.userData.mixer = new THREE.AnimationMixer(itemMesh);
@@ -60,7 +61,7 @@ export class Items {
 	}
 
 	static initItemAnimation(item: Item, itemMesh?: any){
-		let animation = item.reference.config?.animation;
+		let animation = item.reference.view.animation;
 		if(Array.isArray(animation)){
 			animation.forEach(animation => this.startAnimation(item, animation, itemMesh));
 		} else {

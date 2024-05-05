@@ -1,0 +1,22 @@
+manifest:
+  id: !id rubidium
+  type: item
+item:
+  name: Rubidium
+  inventory:
+    max: 99
+  gem: true
+  ore: true
+ui:
+  icon: !item.ui.icon
+    src: !realpath '../../../bin/textures/rubidium.png'
+view:
+  material: 'mat(color: #ac24f6)'
+  object:
+    position: !xyz
+      x: -0.05
+      y: 0.55
+      z: -0.05
+resource: !item.resource
+  src: !realpath '../../../bin/objects/rubidium.obj'
+  loader: obj

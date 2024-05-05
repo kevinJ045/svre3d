@@ -17,6 +17,6 @@ view:
       x: 1
       y: 1.2
       z: 1
-resource:
+resource: 
   src: !realpath '../../../bin/objects/brow-1.glb'
   loader: gltf

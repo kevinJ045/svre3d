@@ -1,0 +1,22 @@
+manifest:
+  id: !id oreon
+  type: item
+item:
+  name: Oreon
+  inventory:
+    max: 99
+  gem: true
+  ore: true
+ui:
+  icon: !item.ui.icon
+    src: !realpath '../../../bin/textures/oreon.png'
+view:
+  material: 'mat(color: #ffa500)'
+  object:
+    position: !xyz
+      x: -0.05
+      y: 0.55
+      z: -0.05
+resource: !item.resource
+  src: !realpath '../../../bin/objects/oreon.obj'
+  loader: obj

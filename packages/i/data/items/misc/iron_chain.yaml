@@ -1,0 +1,26 @@
+manifest:
+  id: !id iron_chainmail
+  type: item
+item:
+  name: Iron Chainmail
+  inventory:
+    max: 99
+  craftable: true
+ui:
+  icon: !item.ui.icon
+    src: !realpath '../../../bin/textures/iron_chainmail.png'
+view:
+  material: 'mat(color: #808080)'
+  object:
+    position: !xyz
+      x: -0.05
+      y: 0.55
+      z: -0.05
+crafting:
+  recipe:
+    - { item: i:iron_bar, quantity: 2 }
+  tool: press
+  quantity: 1
+resource: !item.resource
+  src: !realpath '../../../bin/objects/iron_chainmail.obj'
+  loader: obj

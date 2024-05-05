@@ -39,7 +39,7 @@ export class Equipments {
 
 		entity.data.equipment[type] = wid;
 
-		const bodyMesh = Equipments.entityBody('body', entity);
+		const bodyMesh = Equipments.entityBody(entity.reference.view.object.bone ? 'bone': 'body', entity);
 
 		const equipmentMesh = item.reference!.resource.loader == 'gltf' ? cloneGltf(item.reference.resource!.load) : item.reference!.resource.mesh.clone();
 		
@@ -47,11 +47,17 @@ export class Equipments {
 
 		const ref = item?.reference;
 
-		if(item.reference?.animation){
+		console.log(item.reference.view?.animation);
+
+		if(item.reference.view?.animation){
 			Items.initItemAnimation(item, equipmentMesh);
 		}
 
 		bodyMesh.add(equipmentMesh);
+		bodyMesh.userData.attachment = [
+			...(bodyMesh.userData.attachment || []),
+			equipmentMesh
+		]
 
 		if(ref.config?.material){
 			const mat = ref.config?.material;
@@ -89,6 +95,8 @@ export class Equipments {
 
 		item.data.wmeshid = equipmentMesh.uuid;
 
+		equipmentMesh.userData.defaultPosition = ref.view.object.position;
+
 		entity.emit('equip');
 	}
 
@@ -100,6 +108,8 @@ export class Equipments {
 		const equipmentMesh = bodyMesh.children.find(i => i.uuid == item.data.wmeshid)!;
 
 		bodyMesh.remove(equipmentMesh);
+		const attachment = (bodyMesh.userData.attachment || []);
+		bodyMesh.userData.attachment = attachment.indexOf(equipmentMesh) > -1 ? attachment.splice(attachment.indexOf(equipmentMesh), 1) : attachment;
 
 		delete item.data.wmeshid;
 		delete item.data.wid;

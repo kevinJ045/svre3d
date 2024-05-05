@@ -17,22 +17,22 @@ export class Items {
 	}
 
 	static find(id: string){
-		return Items.items.find(i => i.id == id);
+		return Items.items.find(i => i.manifest.id == id);
 	}
 
 	static create(id: string, quantity = 1, data?: any){
 		const ref = Items.find(id);
 		if(ref){
 			const item = new ItemData();
-			item.max = ref.config?.inventory.max || 1;
+			item.max = ref.item.inventory?.max || 1;
 			item.quantity = quantity;
 
 			item.setReference(ref);
 			item.itemID = id;
 
 
-			if(ref.config?.data){
-				item.data = {...ref.config?.data, ...item.data,};
+			if(ref.data){
+				item.data = {...ref.data, ...item.data};
 			}
 
 			if(data) item.data = {...item.data, ...data};
@@ -44,14 +44,14 @@ export class Items {
 	}
 
 	static craftable(){
-		return this.items.filter(i => i.config?.crafting);
+		return this.items.filter(i => i.item.craftable);
 	}
 
 	static gemEnchant(item1: ItemData, item2: ItemData){
 		if(!item1 || !item2) return false;
-		if(item2.reference.config?.powergem
-		  && (item1.reference.config?.powergems !== false)
-		  && !(item1.reference.config?.exclude_gems || []).includes(item2.itemID)){
+		if(item2.reference.item?.gem
+		  && (item1.reference?.item.gems !== false)
+		  && !(item1.reference.item?.exclude_gems || []).includes(item2.itemID)){
 
 			return {
 				item: item1,
@@ -66,7 +66,7 @@ export class Items {
 		let item = this.craftable().find(i =>
 			{
 				const itemsIds = [...itemsIDs];
-				const itemsr = i.config!.crafting.recipe.map(r => r.item).sort();
+				const itemsr = i!.crafting.recipe.map(r => r.item).sort();
 				if(itemsIds.length < itemsr.length) itemsIds.push('empty');
 				else if(itemsIds.length > itemsr.length) itemsIds.indexOf('empty') ? itemsIds.splice(itemsIds.indexOf('empty')) : null;
 				return itemsr.join(',') === itemsIds.sort().join(',')
@@ -78,12 +78,12 @@ export class Items {
 
 		if (!item) return null;
 
-		const recipe = tool == 'brush' ? {} : item.config!.crafting.recipe.map(r => ({ quantity: 1, ...r }));
+		const recipe = tool == 'brush' ? {} : item!.crafting.recipe.map(r => ({ quantity: 1, ...r }));
 
-		if(tool != 'brush' && item.config!.crafting.tool !== tool && item.config!.crafting.tool !== 'any')
+		if(tool != 'brush' && item!.crafting.tool !== tool && item!.crafting.tool !== 'any')
 			return null;
 
-		const quantity = tool == 'brush' ? 1 : item.config!.crafting.quantity;
+		const quantity = tool == 'brush' ? 1 : item!.crafting.quantity;
 
 		if(tool !== 'brush') for (const { item: recipeItem, quantity: recipeItemCount } of recipe) {
 			if(recipeItem == 'empty') continue;
@@ -121,10 +121,10 @@ export class Items {
 				if(tool !== 'brush') for (const { item: recipeItem, quantity: recipeItemCount } of recipe.recipe) {
 					if(recipeItem == 'empty') continue;
 					const item = recipe.items!.find(i => i.itemID === recipeItem);
-					if(!item?.reference.config?.isTool) entity.removeFromInventory(item!, recipeItemCount);
+					if(!item?.reference.item?.isTool) entity.removeFromInventory(item!, recipeItemCount);
 				}
 
-				if(tool !== 'brush') entity.addToInventory(Items.create(recipe.item.id, recipe.quantity)!);
+				if(tool !== 'brush') entity.addToInventory(Items.create(recipe.item.manifest.id, recipe.quantity)!);
 				
 				if(tool == 'brush'){
 					entity.inventory = entity.inventory.map(i => {

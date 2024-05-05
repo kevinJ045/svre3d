@@ -139,7 +139,7 @@ export class Entities {
 			}
 		});
 
-		if(entity.type == 'm:player'){
+		if(entity.type == 'i:player'){
 			entity.inventory = []
 			Entities.hp(entity.id, {
 				max: entity.health.max,
@@ -208,7 +208,7 @@ export class Entities {
 		});
 
 		pingFrom(socket, 'player:respawn', (player) => {
-			Entities.spawn('m:player', {
+			Entities.spawn('i:player', {
 				x: 0,
 				y: 0,
 				z: 0
@@ -306,10 +306,10 @@ export class Entities {
 
 	static selectRandomTarget(entity){
 		let chunks = Chunks.chunks;
-		const ai = entity.reference.config?.ai;
+		const ai = entity.reference.entity?.ai;
 		if(ai){
-			if(ai.movement_biome){
-				chunks = chunks.filter(chunk => (chunk.biome as any).name == (ai.movement_biome == 'self' ? entity.variant : ai.movement_biome))
+			if(ai.movement?.biome){
+				chunks = chunks.filter(chunk => (chunk.biome as any).manifest.id == (ai.movement.biome == 'self' ? entity.variant : ai.movement.biome))
 			}
 		}
 		if(chunks.length) entity.targetPosition = Random.pick(...chunks).position;
@@ -319,7 +319,7 @@ export class Entities {
 		const damage = entity.damage;
 		const finalDamage = damage - (target.defense || 0);
 
-		if(entity.reference.config?.ai && entity.attackInfo.current > 0){
+		if(entity.reference.entity?.ai && entity.attackInfo.current > 0){
 			entity.attackInfo.current  -= 1;
 			return;
 		}
@@ -335,29 +335,29 @@ export class Entities {
 		
 		entity.attackInfo.current = entity.attackInfo.cooldown;
 		
-		if(target.reference.config?.ai?.attackBack){
-			if(target.reference.config?.ai?.attackBack == 'first'
+		if(target.reference.entity?.ai?.attack.attackBack){
+			if(target.reference.entity?.ai?.attack.attackBack == 'first'
 				? true : !target.attackTarget) target.attackTarget = entity;
 		}
 	}
 
 	static selectAttackTarget(entity: EntityData) {
-    const range = entity.reference.config?.viewRange || 10;  // Define the attack range here (e.g., 5 units)
+    const range = entity.reference.entity?.viewRange || 10;  // Define the attack range here (e.g., 5 units)
     const possibleTargets = this.entities.filter(
 			target => target.id !== entity.id &&  
-			(entity.reference.config!.ai.attackNeutrals ? true : target.isNeutral !== true) && 
-			entity.reference.config!.ai.attack.map(i => i.id).includes(target.type) &&
-			(entity.reference.config!.ai.attack.find(i => i.id == target.type).variant ? 
+			(entity.reference.entity!.ai.attack?.neutrals ? true : target.isNeutral !== true) && 
+			entity.reference.entity!.ai.attack?.targets.map(i => i.id).includes(target.type) &&
+			(entity.reference.entity!.ai.attack?.targets.find(i => i.id == target.type).variant ? 
 				(
-					entity.reference.config!.ai.attack.find(i => i.id == target.type).variant == 'self'
+					entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant == 'self'
 					? target.variant == entity.variant :
 					(
-						entity.reference.config!.ai.attack.find(i => i.id == target.type).variant == '!self'
+						entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant == '!self'
 						? target.variant !== entity.variant
 						: (
-							target.variant === entity.reference.config!.ai.attack.find(i => i.id == target.type).variant.startsWith('!')
-							? target.variant !== entity.reference.config!.ai.attack.find(i => i.id == target.type).variant.split('!')[1]
-							: target.variant ===  entity.reference.config!.ai.attack.find(i => i.id == target.type).variant 
+							target.variant === entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant.startsWith('!')
+							? target.variant !== entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant.split('!')[1]
+							: target.variant ===  entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant 
 						)
 					)
 				)
@@ -422,7 +422,7 @@ export class Entities {
 
 	static thinkAttackTarget(entity: EntityData){
 		if(entity.attackTarget){
-			const reach = entity.reference.config?.reachRange || 5;  // Define the attack range here (e.g., 5 units)
+			const reach = entity.reference.entity?.reachRange || 5;  // Define the attack range here (e.g., 5 units)
     
 			const position = new Vector3(
 				entity.position.x,
@@ -462,15 +462,19 @@ export class Entities {
 		}
 	}
 
-	static think(entity){
+	static think(entity: EntityData){
 
-		const ai = entity.reference.config!.ai || {};
+		const ai = entity.reference.entity?.ai || {};
 
 		if(ai.attack){
 			Entities.thinkAttackTarget(entity);
-		} else if(ai.random_movement){
+		} else if(ai.movement.random){
 			if(entity.targetPosition) Entities.moveTowardsTarget(entity);
 			else Entities.thinkNoAttackTarget(entity);   
+		}
+
+		if(entity.health.current <= 0) {
+			this.kill(entity);
 		}
 
 	}
@@ -478,7 +482,7 @@ export class Entities {
 	static update(){
 
 		const entitiesWithAi = this.entities.filter(
-			e => e.reference.config?.ai && e.data.ai !== false
+			e => e.reference.entity?.ai && e.data.ai !== false
 		);
 
 		entitiesWithAi.forEach(e => {

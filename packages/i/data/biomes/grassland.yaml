@@ -16,5 +16,10 @@ structures:
       rule: ['tree']
     density: 10
     random: true
+spawn:
+  - name: Goobers
+    entity: !id goober
+    rarity: 10
+    variant: !id grass
 resource: !biome.resource
   _: ~

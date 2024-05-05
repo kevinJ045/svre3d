@@ -4,16 +4,17 @@ import { BiomeData } from "../models/biome.js";
 import { Random } from "../common/rand.js";
 import { jsonres } from "../models/jsonres.js";
 import { Entities } from "./entities.js";
+import { ResourceSchema } from "../lib/loader/Schema.type.ts";
 
 export class EntitySpawner {
 
   static spawnAtChunk(chunk: ChunkData){
 
-		const biome: jsonres = chunk.biome.reference ? chunk.biome.reference : chunk.biome;
+		const biome: ResourceSchema = chunk.biome.reference ? chunk.biome.reference : chunk.biome;
 
-		if(biome.spawn_rules){
+		if(biome.spawn){
 
-			const rule = Random.pick(...biome.spawn_rules);
+			const rule = Random.pick(...biome.spawn);
 
 			const rarity = rule.rarity;
 	

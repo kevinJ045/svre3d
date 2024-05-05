@@ -1,8 +1,8 @@
-grass:
+- name: !id grass
   material: {
-    body: 'goober_grass'
+    body: 'mat(color: #00ff00)'
   }
-lava:
+- name: !id lava
   material: {
-    body: 'goober_lava'
+    body: 'mat(color: #ff00000)'
   }

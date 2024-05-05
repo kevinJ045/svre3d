@@ -57,7 +57,7 @@ const CraftingUI = () => {
         Items.crafting(true, tool || '', ...slotItems)
         .then(i => {
             setResultItem(i ? Items.create({
-                itemID: i.item.itemID || i.item.id,
+                itemID: i.item.itemID || i.item.manifest.id,
                 quantity: i.quantity
             } as any) : null);
         });

@@ -1,0 +1,21 @@
+manifest:
+  id: !id iron
+  type: item
+item:
+  name: Iron
+  inventory:
+    max: 99
+  ore: true
+ui:
+  icon: !item.ui.icon
+    src: !realpath '../../../bin/textures/iron.png'
+view:
+  material: 'mat(color: #808080)'
+  object:
+    position: !xyz
+      x: -0.05
+      y: 0.55
+      z: -0.05
+resource: !item.resource
+  src: !realpath '../../../bin/objects/iron.obj'
+  loader: obj

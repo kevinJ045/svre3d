@@ -1,0 +1,22 @@
+manifest: 
+  id: !id aqua_horn
+  type: item
+item:
+  name: Aqua Horn
+  inventory:
+    max: 1
+equipment:
+  type: 'hat'
+view:
+  object:
+    position: !xyz
+      x: -0.75
+      y: 1.75
+      z: -1.25
+ui:
+  icon: !item.ui.icon
+    src: !realpath '../../../bin/textures/horn-1.icon.png'
+    height: 24.309178743961354px
+resource: !item.resource
+  src: !realpath '../../../bin/objects/horn-1.glb'
+  loader: gltf

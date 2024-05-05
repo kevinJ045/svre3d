@@ -1,0 +1,23 @@
+manifest: 
+  id: !id craftsman_hat
+  type: item
+item:
+  name: Craftsman Hat
+  inventory:
+    max: 1
+equipment:
+  type: 'hat'
+view:
+  object:
+    position: !xyz
+      x: 0
+      y: 2.25
+      z: -0.4
+    rotateY: 90
+  animation: ["GearAction", "Gear.001Action"]
+ui:
+  icon: !item.ui.icon
+    src: !realpath '../../../bin/textures/craftsman_hat.png'
+resource: !item.resource
+  src: !realpath '../../../bin/objects/craftsman_hat.glb'
+  loader: gltf

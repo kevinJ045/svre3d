@@ -292,6 +292,42 @@ export class Entity extends EntityData {
 		}
 	}
 
+	fixEquipmentLayers(){
+		this.object3d.traverse(node => {
+			if ((node as any).isBone && node.userData.attachment) {
+				const attachment = node.userData.attachment;
+
+				attachment.forEach((attachment) => {
+					const parentBoneMatrix = new THREE.Matrix4().copy(attachment.parent.matrixWorld);
+					const attachmentMatrix = new THREE.Matrix4().copy(node.matrix);
+					const parentPos = new THREE.Vector3();
+					parentPos.setFromMatrixPosition(parentBoneMatrix);
+
+					// Get the attachment's position relative to its parent bone
+					const attachmentMatrixInWorldSpace = attachmentMatrix.multiply(parentBoneMatrix);
+					const position = new THREE.Vector3();
+					position.setFromMatrixPosition(attachmentMatrixInWorldSpace);
+
+					// Get the z offset from attachment's user data
+					const defaultZOffset = attachment.userData?.defaultPosition?.z || 0;
+
+					// Calculate the z position with the offset relative to the parent bone
+					let z = position.y - (parentPos.y + defaultZOffset);
+
+					// Ensure z position doesn't go below the specified default position
+					if (z < defaultZOffset) {
+						z = defaultZOffset;
+					}
+
+					if(z > 0) z = -z;
+
+					attachment.position.z = z;
+				});
+				
+			}
+		});
+	}
+
 	rotateTowardsTarget(target?: THREE.Vector3) {
     	if (this.targetLocation || target) {
 			const rotationSpeed = 10;
@@ -419,7 +455,7 @@ export class Entity extends EntityData {
 		}
 
 		if(this.type == 'player'){
-			
+			this.fixEquipmentLayers();
 		}
 	}
 

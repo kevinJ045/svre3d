@@ -4,19 +4,15 @@ manifest:
 item:
   name: Chainmail Armor
   craftable: true
+  inventory:
+    max: 1
 equipment:
   type: 'armor'
 data:
   brush_color: '#808080'
 ui:
-  icon: 
+  icon: !item.ui.icon
     src: !realpath '../../../bin/textures/chainmail_armor.png'
-    width: 32px
-    height: 32px
-    offset: {
-      top: 50%,
-      left: 0
-    }
 view:
   material: 'mat(color: $brush_color)'
   object:
@@ -24,8 +20,12 @@ view:
       x: -0.05
       y: 0.55
       z: -0.05
-resource:
+crafting:
+  recipe:
+    - { item: i:iron_bar, quantity: 2 }
+    - { item: i:iron_chainmail, quantity: 4 }
+  tool: assembler
+  quantity: 1
+resource: !item.resource
   src: !realpath '../../../bin/objects/chainmail_armor.obj'
   loader: obj
-  preload: 
-    - "!ui.icon.src:image"

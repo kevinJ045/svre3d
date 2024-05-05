@@ -34,7 +34,7 @@ export class Mouse {
 
       if(intersectsPlayer.length > 0){
         PlayerInfo.entity.addToInventory(Items.create(new ItemData().setData({
-          itemID: 'm:rubidium',
+          itemID: 'i:rubidium',
           quantity: 1
         })));
       } else if (intersects.length > 0) {

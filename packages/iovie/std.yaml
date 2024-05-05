@@ -12,3 +12,15 @@ biome.resource:
   preload:
     - "biome.ground.texture.resource.sources@biome.ground.texture"
     - "structures.$1.structure.object.resource.src@structures.*.structure.object"
+item.resource:
+  preload: 
+    - "!ui.icon.src:image"
+item.ui.icon:
+  src: ''
+  width: 32px
+  height: 32px
+  offset: {
+    top: 50%,
+    left: 0
+  }
+    

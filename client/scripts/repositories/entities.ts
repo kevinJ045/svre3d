@@ -77,21 +77,20 @@ export class Entities {
 			Equipments.entity(entity);
 			SkinPlayer.skinPlayer(entity);
 		}
-
-		if(ref.config?.material){
+		if(ref.view?.material){
 			const variant = 
-				((ref.config?.variants || []).find(
-					i => i.name == entity.variant
-				) || {}).material || {};
-			if(typeof ref.config!.material == 'string'){
+				((ref.entity?.variants || [])
+				.find(i => i.name == entity.variant)?.material || {});
+			if(typeof ref.view!.material == 'string'){
 				const part = Equipments.entityBody('body', entity, '0.0');
-				part.material = MaterialManager.parse(ref.config!.material, {});
+				part.material = MaterialManager.parse(ref.view!.material, {});
 			} else {
 				const material = {
-					...ref.config!.material,
+					...ref.view!.material,
 					...variant
 				};
 				for(let i in material){
+					if(i == 'variant') continue;
 					const part = Equipments.entityBody(i, entity);
 					part.material = MaterialManager.parse(material[i], {});
 				}
@@ -123,6 +122,7 @@ export class Entities {
 
 	static despawn(entity: string | Entity){
 		if(typeof entity == 'string') entity = Entities.find(entity)!;
+		console.log(entity);
 		if(!entity) return;
 		entity.destroy();
 		Entities.entities.splice(Entities.entities.indexOf(entity), 1);

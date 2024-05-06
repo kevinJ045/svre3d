@@ -4,8 +4,10 @@ import { ItemDBModel } from "./item.db.js";
 
 export const PlayerModel = {
 	username: "",
+	email: "",
 	position: { x: 0, y: 0, z: 0 },
 	variant: "grass",
+	verified: false,
 	equipment: { brow: 'i:normal-brow' },
 	inventory: [],
 	settings: {

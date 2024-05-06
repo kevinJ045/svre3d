@@ -1,7 +1,8 @@
 export type ResourceSchema = {
   manifest: {
     id: string,
-    type: string
+    type: string,
+    [key: string]: any
   }
   resource: {
     src: string,

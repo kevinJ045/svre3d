@@ -64,8 +64,8 @@ export async function connectSocket(){
 
 	});
 
-	socket.on('unrecognized', () => {
-		Login.init(socket);
+	socket.on('unrecognized', ({biomes}) => {
+		Login.init(socket, biomes);
 	});
 
 	socket.on('disconnect', () => {

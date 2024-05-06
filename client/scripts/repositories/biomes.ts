@@ -23,5 +23,13 @@ export class Biomes {
 			);
 	}
 
+	static findAll(){
+		return ResourceMap
+		.resources
+		.filter(
+			i => i.manifest.type == 'biome'
+		);
+	}
+
 
 }

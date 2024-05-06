@@ -21,6 +21,10 @@ export class LoginManager {
 				throw new Error('User not found');
 			}
 
+			if(!user.verified){
+				throw new Error('Email not verified');
+			}
+
 			// Verify the password
 			const secret = await secretsCollection.findOne({ username });
 			if (!secret || !(await bcrypt.compare(password, secret.password))) {
@@ -54,7 +58,7 @@ export class LoginManager {
 	}
 
 
-	static async register(username: string, password: string, variant: string, spawnPoint = { x: 0, z: 0 }): Promise<void> {
+	static async register(username: string, password: string, variant: string, email: string, spawnPoint = { x: 0, z: 0 }): Promise<void> {
 		try {
 			const db = Data.db; // MongoDB database
 
@@ -71,7 +75,7 @@ export class LoginManager {
 			const hashedPassword = await bcrypt.hash(password, 10); // 10 is the salt rounds
 
 				// Create a new player using the DBModel
-			const newPlayer = await DBModel.create('player', { variant, username, spawnPoint, position: { x: spawnPoint.x || 0, z: spawnPoint.z || 0, y: 5 } });
+			const newPlayer = await DBModel.create('player', { variant, username, spawnPoint, email, position: { x: spawnPoint.x || 0, z: spawnPoint.z || 0, y: 5 } });
 
 			await playersCollection.insertOne(newPlayer);
 

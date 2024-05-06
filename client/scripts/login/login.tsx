@@ -6,17 +6,21 @@ import { LocalDB } from "../localdb/localdb.js";
 
 export class Login {
 
-	static init(S: any){
+	static init(S: any, types: any[]){
 
 		const roote = document.createElement('div');
 		document.querySelector('body')!.appendChild(roote);
 
 		const root = createRoot(roote);
 
-		root.render(<LoginForm onSubmit={(username, password) => {
+		root.render(<LoginForm types={types} onSubmit={(username, password, setRegister) => {
 			S.emit('login', { username, password }, (token) => {
-				LocalDB.cookie.set('token', token);
-				location.reload();
+				if(token){
+					LocalDB.cookie.set('token', token);
+					location.reload();
+				} else {
+					setRegister(true);
+				}
 			});
 		}}></LoginForm>)
 

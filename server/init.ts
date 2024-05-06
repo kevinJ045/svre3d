@@ -53,21 +53,28 @@ export async function userConnected(serverData, socket){
 		})
 
 	} else {
-		socket.emit('unrecognized');
+		socket.emit('unrecognized', { biomes: Biomes.biomes.map(i => i.reference) });
+
+		socket.on('register', async ({ variant, username, password, email }, cb) => {
+			if(!variants.includes(variant)) return cb(null);
+			await LoginManager.register(
+				username,
+				password,
+				email,
+				variant,
+				Chunks.findSafeSpawnPoint(variant) || { x: 0, z: 0 }
+			);
+
+			const token = await LoginManager.login(username, password);
+			cb(token);
+		});
 
 		socket.on('login', async ({ username, password }, cb) => {
 
 			const user = await Players.find(username);
 
-			const variant = Random.pick(...variants);
-
-			if(!user) await LoginManager.register(
-				username,
-				password,
-				variant,
-				Chunks.findSafeSpawnPoint(variant) || { x: 0, z: 0 }
-			);
-
+			if(!user) return cb()
+			
 			const token = await LoginManager.login(username, password);
 			
 			cb(token);

@@ -1,6 +1,7 @@
 manifest:
   id: !id 'grass'
   type: 'biome'
+  name: Grass
 biome:
   ground: !import './segments/grass.i.yaml'
   tile:

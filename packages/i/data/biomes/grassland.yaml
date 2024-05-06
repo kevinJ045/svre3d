@@ -21,5 +21,8 @@ spawn:
     entity: !id goober
     rarity: 10
     variant: !id grass
+  # - name: Elf Girl
+  #   entity: !id elf_girl
+  #   rarity: 10
 resource: !biome.resource
   _: ~

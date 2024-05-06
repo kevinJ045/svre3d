@@ -56,6 +56,10 @@ export class Entities {
 			child.receiveShadow = false
 		});
 
+		if(ref.view.bodyScale){
+			refMesh.scale.setScalar(ref.view.bodyScale);
+		}
+
 		entityMesh.castShadow = true;
 
 		entityMesh.add(refMesh);

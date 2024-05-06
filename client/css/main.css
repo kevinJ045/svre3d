@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Tilt+Neon&family=Yarndings+12&display=swap');
-
 html,
 body {
 	margin: 0;
@@ -749,4 +748,203 @@ a{
 
 .craft-tools .tool > div.active, .craft-tools .tool > div:hover{
 	margin-bottom: 0;
+}
+
+.login-page{
+	color: white;
+	width: 100dvw;
+	height: 100dvh;
+	position: relative;
+	background: url('/res/img/bg.png');
+	background-size: 100% 100%;
+}
+
+.login-bg{
+	display: block;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+}
+
+.login-page::before{
+	content: "";
+	width: 100%;
+	display: block;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.4);
+	position: absolute;
+	backdrop-filter: blur(4px);
+}
+
+.login-form{
+	--background: #111111;
+	position: absolute;
+	width: 320px;
+	height: 100%;
+	max-width: 100%;
+	right: 10%;
+	padding: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	gap: 10px;
+	z-index: 1;
+}
+
+.login-form::after{
+	content: "";
+	background-color: inherit;
+	display: block;
+	position: absolute;
+	bottom: -53px;
+	width: 320px;
+	height: 53px;
+	clip-path: path('M 0 0 L 0 53.672176 L 11.843205 53.672176 L 11.843205 40.060087 L 20.277315 40.060087 L 20.277315 47.344914 L 28.289229 47.344914 L 28.289229 39.849247 L 35.668624 39.849247 L 35.668624 22.34954 L 44.102218 22.34954 L 44.102218 44.691329 L 51.021175 44.691329 L 60.087805 44.691329 L 60.087805 53.672176 L 67.505957 53.672176 L 67.505957 32.259013 L 75.939551 32.259013 L 75.939551 40.486418 L 88.590458 40.486418 L 88.590458 28.042216 L 97.024052 28.042216 L 97.024052 53.672176 L 109.67496 53.672176 L 109.67496 43.855204 L 118.10855 43.855204 L 118.10855 47.643087 L 130.08767 47.643087 L 133.7107 47.643087 L 133.7107 33.313212 L 142.14481 33.313212 L 142.14481 39.208976 L 156.69276 39.208976 L 156.69276 28.885575 L 165.12635 28.885575 L 165.12635 53.672176 L 176.8166 53.672176 L 176.8166 44.066044 L 176.72306 44.066044 L 176.72306 18.343583 L 185.15666 18.343583 L 185.15666 43.31932 L 185.25071 43.31932 L 185.25071 53.672176 L 200.33713 53.672176 L 200.33713 39.849247 L 208.77124 39.849247 L 208.77124 53.672176 L 227.95766 53.672176 L 227.95766 47.018319 L 236.39177 47.018319 L 236.39177 49.118966 L 250.0576 49.118966 L 252.83728 49.118966 L 252.83728 39.005888 L 261.27087 39.005888 L 261.27087 53.672176 L 277.08438 53.672176 L 277.08438 35.210771 L 285.51797 35.210771 L 285.51797 44.691329 L 293.31905 44.691329 L 293.31905 40.903446 L 300.9098 40.903446 L 300.9098 35.210771 L 309.34339 35.210771 L 309.34339 53.672176 L 319.89985 53.672176 L 319.89985 0 L 0 0 z ')
+}
+
+.login-form input {
+	width: 100%;
+	height: 40px;
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+
+
+.cube {
+  --width: 40px;
+  --height: 40px;
+  --cube-color: #09D0D0;
+  --cube-sides: var(--cube-color);
+  --cube-tops: var(--cube-color);
+  --cube-side-left: var(--cube-sides);
+  --cube-side-right: var(--cube-sides);
+  --cube-side-front: var(--cube-sides);
+  --cube-side-back: var(--cube-sides);
+  --cube-side-top: var(--cube-tops);
+  --cube-side-bottom: var(--cube-tops);
+  position: relative;
+  width: var(--width);
+  height: var(--height);
+  transform-style: preserve-3d;
+  transform: rotateX(-20deg) rotateY(-40deg);
+  animation: rotateCube 5s linear infinite;
+  margin: calc(var(--height) / 2) calc(var(--width) / 2);
+}
+.cube.mini {
+  --width: 20px;
+  --height: 20px;
+}
+.cube .cube-face {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: background-color 500ms;
+}
+.cube .cube-front {
+  transform: translateZ(calc(var(--width) / 2));
+  background: var(--cube-side-front);
+}
+.cube .cube-back {
+  transform: rotateY(180deg) translateZ(calc(var(--width) / 2));
+  background: var(--cube-side-back);
+}
+.cube .cube-bottom {
+  transform: rotateX(-90deg) translateZ(calc(var(--width) / 2));
+  background: var(--cube-side-bottom);
+}
+.cube .cube-top {
+  transform: rotateX(90deg) translateZ(calc(var(--width) / 2));
+  background: var(--cube-side-top);
+}
+.cube .cube-left {
+  transform: rotateY(-90deg) translateZ(calc(var(--width) / 2));
+  background: var(--cube-side-left);
+}
+.cube .cube-right {
+  transform: rotateY(90deg) translateZ(calc(var(--width) / 2));
+  background: var(--cube-side-right);
+}
+
+.cube.gloom-jump {
+  margin-top: 400px;
+  animation: 1s infinite jumpCube;
+}
+.cube{
+	--cube-color: var(--color);
+}
+
+.cube.gloom {
+  --cube-color: radial-gradient(var(--color), var(--color-2));
+}
+
+.gloom-face {
+  --cube-side-right:
+    linear-gradient(to bottom, var(--color) 0%, var(--color) 40%, transparent 40%, transparent 80%, var(--color) 80%, var(--color) 100%),
+    linear-gradient(to right, var(--color) 0%, var(--color) 20%, white 15%, white 80%, var(--color) 80%, var(--color) 100%);
+  position: relative;
+}
+.gloom-face::before, .gloom-face::after {
+  content: "";
+  position: absolute;
+  background: black;
+  display: block;
+}
+.gloom-face::before {
+  width: 30%;
+  height: 30%;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+}
+.gloom-face::after {
+  width: 80%;
+  height: 20%;
+  left: 50%;
+  top: 25%;
+  transform: translate(-50%, 0);
+}
+
+@keyframes jumpCube {
+  0% {
+    transform: rotateX(-20deg) rotateY(-40deg) translateY(0) scaleY(0.6) scaleX(1.4) scaleZ(1.4);
+  }
+  17% {
+    transform: rotateX(-20deg) rotateY(-40deg) translateY(0%) scaleY(1);
+  }
+  34% {
+    transform: rotateX(-20deg) rotateY(-40deg) translateY(-10%) scaleY(1.4);
+  }
+  51% {
+    transform: rotateX(-20deg) rotateY(-40deg) translateY(-400%) scaleY(1);
+  }
+  68% {
+    transform: rotateX(-20deg) rotateY(-40deg) translateY(-10%) scaleY(0.6) scaleX(1.4) scaleZ(1.4);
+  }
+  85% {
+    transform: rotateX(-20deg) rotateY(-40deg) translateY(0%) scaleY(0.6) scaleX(1.4) scaleZ(1.4);
+  }
+  100% {
+    transform: rotateX(-20deg) rotateY(-40deg) translateY(0) scaleY(0.6) scaleX(1.4) scaleZ(1.4);
+  }
+}
+
+.monochrome-bg{
+	position: absolute;
+	--background: inherit;
+	left: 0;
+	top: 0;
+	z-index: -1;
+}
+
+.bg-glow{
+	width: 100%;
+	height: 70%;
+	top: 0;
+	position: absolute;
+	z-index: -1;
+	background: #111111;
+	filter: blur(10px);
 }

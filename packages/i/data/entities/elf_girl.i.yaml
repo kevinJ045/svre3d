@@ -1,0 +1,19 @@
+manifest:
+  id: !id 'elf_girl'
+  type: 'entity'
+base:
+  health: !int 50
+  speed: 4
+  damage: 10
+view:
+  object:
+    body: 0.0.2
+    eye: 0.0.3
+  bodyScale: 0.1
+entity:
+  ai: 
+    movement:
+      random: true
+resource:
+  src: !realpath '../../bin/objects/elf_girl.glb'
+  loader: gltf

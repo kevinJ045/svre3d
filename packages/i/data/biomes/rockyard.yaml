@@ -7,5 +7,16 @@ biome:
     multicolor: true
     keepdefault: true
   colors: [ "#555555", "#888888", "#909090" ]
+structures:
+  - name: iron-ore
+    structure: 
+      object: !import '../structures/iron_ore.i.yaml'
+      rule: ['ore']
+    density: 30
+    random: true
+    loot: true
+    drops: 
+      - id: !id iron
+        quantity: !int 1
 resource: !biome.resource
   _: ~

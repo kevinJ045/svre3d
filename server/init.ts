@@ -60,13 +60,11 @@ export async function userConnected(serverData, socket){
 			await LoginManager.register(
 				username,
 				password,
-				email,
 				variant,
+				email,
 				Chunks.findSafeSpawnPoint(variant) || { x: 0, z: 0 }
 			);
-
-			const token = await LoginManager.login(username, password);
-			cb(token);
+			cb(true);
 		});
 
 		socket.on('login', async ({ username, password }, cb) => {
@@ -77,7 +75,7 @@ export async function userConnected(serverData, socket){
 			
 			const token = await LoginManager.login(username, password);
 			
-			cb(token);
+			cb(token || 'wrong');
 		});
 	}
 

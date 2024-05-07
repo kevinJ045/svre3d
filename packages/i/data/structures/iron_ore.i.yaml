@@ -1,0 +1,18 @@
+manifest:
+  id: !id 'iron-ore'
+  type: 'structure'
+structures:
+  ore:
+    count: 1
+    position: !vec3 [0, 2, 0]
+    size: !vec3 []
+    rotation: !vec3 []
+    name: "Full"
+    looted: "Empty"
+view:
+  material:
+    - Ore: !material 'mat(color: #ffffff)'
+      Stone: !material 'mat(color: #505050)'
+resource:
+  loader: obj
+  src: !realpath '../../bin/objects/iron_ore.obj'

@@ -137,7 +137,8 @@ export class Structures {
 				const rule = structureData.rule;
 
 				const variables = {
-					foliage: (structureData.biome.reference || structureData.biome).foliage?.color || "#00ff00"
+					foliage: (structureData.biome.reference || structureData.biome).foliage?.color || "#00ff00",
+					log: true
 				};		
 				
 				const structureProps = ResourceMap.findLoad(rule.structure.object.manifest.id);
@@ -147,7 +148,7 @@ export class Structures {
 
 				chunk.object3d.add(structure);
 
-				if(rule.loot){
+				if(rule.loot){structure
 					structure.userData.lootable = true;
 				}
 

@@ -31,6 +31,8 @@ export class Structures {
 
 			const shouldPlaceStructure =  rule.random ? (randomPlacement && (above || under)) : ( above || under ); // Adjust threshold as needed
 
+			console.log(shouldPlaceStructure);
+
 			if (shouldPlaceStructure) {
 
 				// Add the structure to the chunk

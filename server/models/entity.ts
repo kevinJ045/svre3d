@@ -51,6 +51,8 @@ class EntityData extends ServerData {
 	addToInventory(item: ItemData): void | string {
 		const existingItem = this.findItemTypeInInventory(item);
         if (existingItem) {
+            if(!isNaN(existingItem.quantity)) existingItem.quantity = parseInt(existingItem.quantity as any);
+            if(!isNaN(item.quantity)) item.quantity = parseInt(item.quantity as any);
 			if (existingItem.quantity + item.quantity <= existingItem.max) {
 				existingItem.quantity += item.quantity;
                 return 'increase';

@@ -58,7 +58,7 @@ export const Menu = () => {
 				<div className="inventory">
 
 					{currentItem ? <div className="inventory-item-info">
-						<div className="item-title"><div className="item-icon" style={generateItemIcon(currentItem.reference?.config?.icon)}></div>{currentItem.reference.config?.name || currentItem.itemID}<span>{currentItem.quantity}</span></div>
+						<div className="item-title"><div className="item-icon" style={generateItemIcon(currentItem.reference?.ui?.icon)}></div>{currentItem.reference.item?.name || currentItem.itemID}<span>{currentItem.quantity}</span></div>
 						<p className="item-about">{currentItem.data.content}</p>
 						<ItemActions item={currentItem} />
 					</div> : null}

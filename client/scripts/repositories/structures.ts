@@ -137,7 +137,7 @@ export class Structures {
 				const rule = structureData.rule;
 
 				const variables = {
-					foliage: (structureData.biome.reference || structureData.biome).foliage?.color || "#00ff00",
+					foliage: (structureData.biome.reference || structureData.biome).biome?.foliage?.color || "#00ff00",
 					log: true
 				};		
 				

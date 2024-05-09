@@ -7,18 +7,56 @@ import { ServerData } from "../models/data.js";
 import { jsonres } from "../models/jsonres.js";
 import { StructureData, StructureRule } from "../models/structure.js";
 import { ResourceMap } from "./resources.js";
-
+import { Vector3 } from "three";
 
 
 export class Structures {
 
+	static swarmChunks: {
+		chunk: ChunkData,
+		rule: StructureRule,
+		swarm: number,
+		swarmed: number
+	}[] = [];
+
+	static addChunkSwarming(chunk: ChunkData, rule: StructureRule){
+		this.swarmChunks.push({
+			chunk,
+			rule,
+			swarm: rule.swarm!,
+			swarmed: rule.swarm!
+		})
+	};
+
+	static checkSwarmArea(chunk: ChunkData){
+		if(this.swarmChunks.length){
+			const swarmChunk = this.swarmChunks[0].chunk;
+			const swarmChunkPos = new Vector3(swarmChunk.position.x, swarmChunk.position.y, swarmChunk.position.z);
+			const currentChunkPos = new Vector3(chunk.position.x, chunk.position.y, chunk.position.z);
+
+			if(chunk.biome.manifest.id !== swarmChunk.biome.manifest.id) return false;
+
+			const distance = swarmChunkPos.distanceTo(currentChunkPos) / chunk.chunkSize;
+
+			let swarm_this = distance <= this.swarmChunks[0].swarm ? {
+				rule: this.swarmChunks[0].rule,
+				distance:  Math.floor(distance)
+			} : false;
+
+			if(swarm_this) this.swarmChunks[0].swarmed--;
+			if(this.swarmChunks[0].swarmed <= 0) this.swarmChunks.shift();
+			return swarm_this;
+		} else {
+			return false;
+		}
+	}
 
 	static async constructStructure(chunk: ChunkData){
 		const biome: ResourceSchema = chunk.biome.reference ? chunk.biome.reference : chunk.biome;
 
 		if(biome.structures){
 
-			const rule: StructureRule = Random.pick(...biome.structures, seedrng);
+			let rule: StructureRule = Random.pick(...biome.structures, seedrng);
 
 			const density = rule.density;
 	
@@ -29,9 +67,18 @@ export class Structures {
 
 			const randomPlacement = randomThreshold == Math.floor(density / 2);
 
-			const shouldPlaceStructure =  rule.random ? (randomPlacement && (above || under)) : ( above || under ); // Adjust threshold as needed
+			let shouldPlaceStructure =  rule.random ? (randomPlacement && (above || under)) : ( above || under ); // Adjust threshold as needed
 
-			console.log(shouldPlaceStructure);
+			if(rule.random && rule.swarm){
+				this.addChunkSwarming(chunk, rule);
+			} else if(rule.random){
+				const swarm = this.checkSwarmArea(chunk);
+
+				if(swarm){
+					rule = swarm.rule;
+					shouldPlaceStructure = Random.from(0, swarm.distance, seedrng) == Math.round(swarm.distance / 2);
+				}
+			}
 
 			if (shouldPlaceStructure) {
 

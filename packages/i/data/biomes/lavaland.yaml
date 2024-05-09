@@ -7,5 +7,27 @@ biome:
     multicolor: true
     keepdefault: true
   colors: [ "#ff0000", "#ff7700", "#ff5100" ]
+structures:
+  - name: oreon-chunk
+    structure: 
+      object: !import '../structures/oreon_chunk.i.yaml'
+      rule: ['chunk']
+    density: 50
+    random: true
+    loot: true
+    drops: 
+      - id: !id oreon
+        quantity: !int 1
+  - name: oreon-cluster
+    structure: 
+      object: !import '../structures/oreon_cluster.i.yaml'
+      rule: ['cluster']
+    density: 200
+    swarm: 5
+    random: true
+    loot: true
+    drops: 
+      - id: !id oreon
+        quantity: [2, 5]
 resource: !biome.resource
   _: ~

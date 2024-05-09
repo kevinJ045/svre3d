@@ -106,6 +106,7 @@ export class MaterialManager {
 	static applyMaterials(obj: any, mat: string | any[], variables = {}){
 		const materialsRule = Array.isArray(mat) ? mat : [mat];
 		obj.children.forEach((child: any, index: number) => {
+			if(child.isGroup) return;
 			const mat = materialsRule.length > 1 ? materialsRule[index] : materialsRule[0];
 			if(mat){
 				if(Array.isArray(child.material)){

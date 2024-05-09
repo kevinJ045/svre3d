@@ -12,6 +12,7 @@ export type StructureRule = {
 	above?: number,
 	under?: number,
 	loot?: boolean,
+	swarm?: number,
 	drops?: { id: string, quantity: number, chance?: number, data?: any }[],
 	randomDrops?: boolean,
 	dropsCount?: number

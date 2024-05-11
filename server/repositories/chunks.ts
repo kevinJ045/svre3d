@@ -8,7 +8,7 @@ import { xyz } from "../models/misc.xyz.js";
 import { pingFrom } from "../ping/ping.js";
 import { Sockets } from "../ping/sockets.js";
 import { generateChunkHeight } from "../world/chunks.js";
-import { EventEmitter } from "./Events.ts";
+import { EventEmitter } from "./events.ts";
 import { Biomes } from "./biomes.js";
 import { Entities } from "./entities.js";
 import { Items } from "./items.js";
@@ -31,7 +31,7 @@ export class Chunks {
 		const chunk = ChunkData.create<ChunkData>(ChunkData, { position, chunkSize: this.chunkSize, biome: Biomes.getBiome(position.x, position.z).reference });
 
 		await Structures.constructStructure(chunk);
-		// EntitySpawner.spawnAtChunk(chunk);
+		EntitySpawner.spawnAtChunk(chunk);
 
 		EventEmitter.chunkListeners(chunk);
 

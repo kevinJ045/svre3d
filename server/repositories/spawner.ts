@@ -20,7 +20,13 @@ export class EntitySpawner {
 	
 			const randomThreshold = Random.from(0, rarity);
 
-			const randomPlacement = randomThreshold == Math.floor(rarity / 2);
+			let randomPlacement = randomThreshold == Math.floor(rarity / 2);
+
+			if(rule.flags) randomPlacement = randomPlacement && 
+				!rule.flags.map((flag: string) => flag.startsWith('!') ? 
+				!chunk.flags.includes(flag.replace('!', '')) :
+				chunk.flags.includes(flag)
+			).includes(false);
 
 			if(randomPlacement){
 

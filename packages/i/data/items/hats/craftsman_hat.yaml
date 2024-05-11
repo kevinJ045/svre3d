@@ -5,6 +5,7 @@ item:
   name: Craftsman Hat
   inventory:
     max: 1
+  flags: [ 'craftsman' ]
 equipment:
   type: 'hat'
 view:

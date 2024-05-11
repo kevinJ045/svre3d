@@ -2,7 +2,9 @@ import { Random } from "../../../server/common/rand.js";
 import { mixColors } from "../common/colors.ts";
 import { PhysicsManager } from "../common/physics.js";
 import { SceneManager } from "../common/sceneman.ts";
+import { GPUComputationRenderer } from "../lib/GPUCompRendr.ts";
 import { Chunk } from "../models/chunk.js";
+import { WorldData } from "../world/data.ts";
 import { Seed } from "../world/seed.js";
 import { MaterialManager } from "./materials.js";
 import { ResourceMap } from "./resources.js";
@@ -136,8 +138,9 @@ export class Structures {
 		const fullHeight = chunk.chunkSize/2;
 
 		const height = (heightPercent / 100) * fullHeight;
-		const object = new THREE.Mesh(new THREE.BoxGeometry(chunk.chunkSize, height, chunk.chunkSize), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+		const object = new THREE.Mesh(new THREE.PlaneGeometry(chunk.chunkSize, chunk.chunkSize), new THREE.MeshBasicMaterial({ color: 0xffffff }));
 		
+		object.rotation.x = - Math.PI / 2;
 		
 		resource.wrapS = resource.wrapT = THREE.RepeatWrapping;
 
@@ -201,7 +204,7 @@ export class Structures {
 		(object as any).material = waterMaterial;
 
 		g.add(object);
-		g.position.set(0, fullHeight / 2, 0);
+		g.position.set(0, structureProps.useWorldHeight ? WorldData.get('waterHeight', 3.75) - chunk.position.y : height, 0);
 
 		if(!chunk.data.liquids) chunk.data.liquids = [];
 		chunk.data.liquids.push(object);

@@ -6,6 +6,7 @@ view:
     type: liquid
     vertex: !import '../../bin/shaders/liquid.vertex.glsl'
     fragment: !import '../../bin/shaders/liquid.fragment.glsl'
+    useWorldHeight: !bool true
 resource:
   loader: texture
   src: !realpath '../../bin/textures/water.png'

@@ -5,6 +5,7 @@ import * as uuid from "uuid";
 import { MaterialManager } from "./materials.js";
 import { cloneGltf } from "../lib/gltfclone.js";
 import { THREE } from "enable3d";
+import { ping } from "../socket/socket.ts";
 
 export class Equipments {
 
@@ -47,7 +48,7 @@ export class Equipments {
 
 		const ref = item?.reference;
 
-		console.log(item.reference.view?.animation);
+		// console.log(item.reference.view?.animation);
 
 		if(item.reference.view?.animation){
 			Items.initItemAnimation(item, equipmentMesh);
@@ -97,7 +98,35 @@ export class Equipments {
 
 		equipmentMesh.userData.defaultPosition = ref.view.object.position;
 
+		this.updateFlags('add', item, entity);
 		entity.emit('equip');
+	}
+
+	static updateFlags(type: 'add' | 'remove', item: Item, entity: Entity){
+		const ref = item?.reference;
+		if(ref.item?.flags){
+			const flags: string[] = ref.item?.flags;
+			const excludeFlags: string[] = [];
+			for(let i in (entity.data.equipment || {})){
+				let e = (entity.data.equipment || {})[i];
+				if(typeof e == 'string') continue;
+				if(e.reference.item?.flags){
+					excludeFlags.push(...e.reference.item?.flags);
+				}
+			}
+			if(type == 'remove') flags
+				.filter(i => !excludeFlags.includes(i))
+				.forEach(i => {
+					entity.flags.splice(entity.flags.indexOf(i), 1);
+				});
+			else if(type == 'add') flags
+				.filter(i => !excludeFlags.includes(i))
+				.forEach(i => {
+					entity.flags.push(i);
+				});
+			
+			entity.emit('flags');
+		}
 	}
 
 	static unequip(entity: Entity, type: string, item: Item){
@@ -115,6 +144,7 @@ export class Equipments {
 		delete item.data.wid;
 
 		entity.data.uneqiupped = item;
+		this.updateFlags('remove', item, entity);
 		entity.emit('unequip');
 	}
 

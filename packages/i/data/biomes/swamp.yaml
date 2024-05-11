@@ -11,6 +11,11 @@ biome:
     color: "#00ff00"
   water:
     color: "#00aa00"
+spawn:
+  - name: Goobers
+    entity: !id goober
+    rarity: 10
+    variant: !id swamp
 structures:
   - name: tree
     structure:

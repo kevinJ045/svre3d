@@ -79,6 +79,8 @@ export class MainScene extends Scene3D {
 
 		Entities.ping();
 
+		player.emit('flags');
+
 		CameraManager.setCamera(this.camera);
 		UI.init();
 		Controls.initControls(this.canvas);

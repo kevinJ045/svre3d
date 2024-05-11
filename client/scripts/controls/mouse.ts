@@ -33,10 +33,11 @@ export class Mouse {
       const intersectsPlayer = raycaster.intersectObjects([PlayerInfo.entity.object3d]);
 
       if(intersectsPlayer.length > 0){
-        PlayerInfo.entity.addToInventory(Items.create(new ItemData().setData({
-          itemID: 'i:rubidium',
-          quantity: 1
-        })));
+        // PlayerInfo.entity.addToInventory(Items.create(new ItemData().setData({
+        //   itemID: 'i:rubidium',
+        //   quantity: 1
+        // })));
+        console.log(PlayerInfo.entity.flags);
       } else if (intersects.length > 0) {
         const intersectionPoint = intersects[0].point;
         if(PlayerInfo.entity.object3d.position.distanceTo(intersectionPoint) < 3 && intersects[0].object.name !== 'chunk' && intersects[0].object.userData.lootable){
@@ -51,7 +52,7 @@ export class Mouse {
             });
           }
         } else {
-          PlayerInfo.entity.displace(intersectionPoint);
+          PlayerInfo.entity.displace(intersectionPoint, true);
         }
       }
 

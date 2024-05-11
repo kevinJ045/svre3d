@@ -20,6 +20,8 @@ export class ChunkData extends ServerData {
 
 	data: any = {};
 
+	flags: string[] = ['chunk'];
+
 	constructor() {
 		super();
 		this.terrainHeightMap = [[]]; // Initialize with an empty 2D array

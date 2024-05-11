@@ -13,6 +13,7 @@ import { Random } from "../common/rand.js";
 import { jsonres } from "../models/jsonres.js";
 import { ResourceSchema } from "../lib/loader/Schema.type.js";
 import { stringifyChunkPosition } from "../common/chunk.ts";
+import { xyzTv } from "../../client/scripts/common/xyz.ts";
 
 
 export class Entities {
@@ -60,6 +61,10 @@ export class Entities {
 		if(ref.base?.damage) entity.damage = ref.base?.damage;
 		if(ref.base?.defense) entity.defense = ref.base?.defense;
 
+		if(ref.entity?.flags){
+			entity.flags.push(...entity.reference.entity.flags);
+		} 
+
 		if(v){
 			if(v.drops){
 				drops.push(...v.drops);
@@ -69,6 +74,7 @@ export class Entities {
 			}
 			if(v.damage) entity.damage = v.damage;
 			if(v.defense) entity.defense = v.defense;
+			if(v.flags) entity.flags.push(...v.flags);
 		}
 
 		if(drops.length){
@@ -81,16 +87,8 @@ export class Entities {
 
 		Sockets.emit('entity:spawn', { entity });
 
-
-		entity.on('burn', () => {
-			Entities.hp(entity.id, {
-				current: entity.health.current - 10,
-				max: entity.health.max
-			});
-			Sockets.emit('entity:hp', {
-				entity: entity.id,
-				hp: entity.health
-			});
+		entity.on('hurt', (damage: number, timeout = 100) => {
+			Entities.directDamageEntity(entity, damage, timeout);
 		});
 
 		return entity;
@@ -286,7 +284,7 @@ export class Entities {
 	}
 
 
-	static moveTowardsTarget(entity) {
+	static moveTowardsTarget(entity: EntityData) {
 		if (entity.targetPosition) {
 			const position = new Vector3(entity.position.x, 0, entity.position.z);
 			const targetPosition = new Vector3(entity.targetPosition.x, 0, entity.targetPosition.z);
@@ -296,7 +294,7 @@ export class Entities {
 
 			direction.normalize();
 
-			const speed = parseInt(entity.speed) || 1; 
+			const speed = parseInt(entity.speed as any) || 1; 
 
 			const distanceToTarget = position.distanceTo(targetPosition);
 
@@ -314,7 +312,8 @@ export class Entities {
 							direction,
 							position: entity.position,
 							speed,
-							entity: entity.id
+							entity: entity.id,
+							attack: entity.attackTarget ? true : false
 					});
 
 			}
@@ -322,7 +321,8 @@ export class Entities {
 	}
 
 	static selectRandomTarget(entity){
-		let chunks = Chunks.chunks;
+		let chunks = Chunks.chunks
+		.filter(chunk => xyzTv(chunk.position).distanceTo(xyzTv(entity.position)) > chunk.chunkSize);
 		const ai = entity.reference.entity?.ai;
 		if(ai){
 			if(ai.movement?.biome){
@@ -496,6 +496,23 @@ export class Entities {
 
 	}
 
+	static directDamageEntity(entity: EntityData, damage: number, timeout = 300){
+		if(entity.data.directDamageTimeout == null) entity.data.directDamageTimeout = timeout;
+		if(entity.data.directDamageTimeout <= 10){
+			entity.data.directDamageTimeout = timeout;
+			Entities.hp(entity.id, {
+				current: entity.health.current - damage,
+				max: entity.health.max
+			});
+			Sockets.emit('entity:hp', {
+				entity: entity.id,
+				hp: entity.health
+			});
+		} else {
+			entity.data.directDamageTimeout--;
+		}
+	}
+
 	static update(){
 
 		const entitiesWithAi = this.entities.filter(
@@ -512,13 +529,7 @@ export class Entities {
 			if(entity.stepOn !== pos && closest) closest.emit('stepStart', { target: entity }); 
 			entity.stepOn = pos;
 			if(closest) {
-				if(entity.data.burnTimeout == null) entity.data.burnTimeout = 300;
-				if(entity.data.burnTimeout <= 0){
-					entity.data.burnTimeout = 300;
-					closest.emit('step', { target: entity });
-				} else {
-					entity.data.burnTimeout--;
-				} 
+				closest.emit('step', { target: entity });
 			}
 		});
 

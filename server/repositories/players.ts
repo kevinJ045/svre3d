@@ -46,10 +46,13 @@ export class Players {
 		socket.on('player:equipment', ({
 			inventory,
 			equipment,
-			username
+			username,
+			flags
 		}) => {			
 
 			const entity = Entities.entities.find(i => i.data.username == username);
+
+			if(!entity) return;
 
 			Data
 				.collection('players')
@@ -69,9 +72,23 @@ export class Players {
 					.emit('player:equipment', {
 						inventory,
 						equipment,
-						entity: entity!.id
+						entity: entity!.id,
+						flags
 					})
 		});
+
+		socket.on('player:flags', ({
+			flags,
+			id
+		}) => {
+			console.log('Changing Flags');
+			Entities.entities.map(e => {
+				if(e.id == id){
+					e.flags = flags;
+				} 
+				return e;
+			});
+		})
 
 	}
 

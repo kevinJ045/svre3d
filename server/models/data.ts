@@ -9,6 +9,8 @@ export class ServerData {
 
 	reference!: ResourceSchema;
 
+	flags: string[] = [];
+
 	constructor() {
 		this.id = uuid.v4();
 		this.createdAt = new Date();

@@ -78,10 +78,25 @@ export class Entity extends EntityData {
 		return this._playAnimation(name, speed, loop, callback);
 	}
 
-	targetLocation: xyzt | null = null;
-	displace(position: xyzt | null){
+	targetLocationList: xyzt[] = [];
+	displace(position: xyzt | null, removePrevious = false){
+		if(removePrevious) this.targetLocationList = [];
 		this.targetLocation = position;
 		this.emit('setTarget', this.targetLocation);
+	}
+
+
+
+	get targetLocation(){
+		return this.targetLocationList.length ? this.targetLocationList[0] : null; 
+	}
+
+	set targetLocation(position: xyzt | null){
+		if(position){
+			this.targetLocationList.push(position);
+		} else {
+			this.targetLocationList.shift();
+		}
 	}
 
 	destroy(){

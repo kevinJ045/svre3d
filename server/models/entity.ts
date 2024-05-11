@@ -2,6 +2,7 @@ import { BuffData } from "./buff.js";
 import { ServerData } from "./data.js";
 import { ItemData } from "./item.js";
 import { Random } from "../common/rand.js";
+import { xyz } from "./misc.xyz.ts";
 
 
 class EntityData extends ServerData {
@@ -13,7 +14,6 @@ class EntityData extends ServerData {
     defense!: number; // Defense of the entity
     damage!: number; // Damage of the entity
     attackTarget!: EntityData | null; // ID of the entity's attack target, if any
-    targetPosition!: { x: number; y: number; z: number } | null; // Target position of the entity
     exp!: {
         level: number;
         max: number;
@@ -35,6 +35,8 @@ class EntityData extends ServerData {
 
     stepOn: string = "";
 
+    flags: string[] = ['entity'];
+
 	data: Record<string, any> = {};
     constructor() {
         super();
@@ -49,7 +51,20 @@ class EntityData extends ServerData {
         this.health = { max: 1, current: 1 };
     }
 
+    // targetPositionList: xyz[] = [];
 
+    // get targetPosition(){
+    //     return this.targetPositionList.length ? this.targetPositionList[0] : null; 
+    // }
+
+    // set targetPosition(position: xyz | null){
+    //     if(position){
+    //         this.targetPositionList.push(position);
+    //     } else {
+    //         this.targetPositionList.shift();
+    //     }
+    // }
+    targetPosition!: xyz | null;
 	// Method to add an item to the inventory
 	addToInventory(item: ItemData): void | string {
 		const existingItem = this.findItemTypeInInventory(item);

@@ -46,6 +46,14 @@ export class PlayerInfo {
 				position: entity.position
 			});
 		});
+
+		entity.on('flags', () => {
+			console.log('Changing Flags');
+			ping('player:flags', {
+				flags: entity.flags,
+				id: entity.id
+			});
+		});
 	}	
 
 	static get username(){
@@ -86,7 +94,8 @@ export class PlayerInfo {
 				) : i;
 			}).filter(i => i !== null) as any[]).map(i => ({ itemID: i.itemID, data: i.data, quantity: i.quantity, id: i.id })),
 			equipment,
-			username: PlayerInfo.username
+			username: PlayerInfo.username,
+			flags: PlayerInfo.entity.flags
 		});
 	}
 

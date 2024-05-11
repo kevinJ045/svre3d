@@ -180,10 +180,15 @@ export class Entities {
 			}
 		});
 
-		pingFrom('entity:move', ({entity:se, direction, position}) => {
+		pingFrom('entity:move', ({entity:se, direction, position, attack}) => {
 			const entity = Entities.find(se);
 			if(entity){
-				if(!entity.targetLocation) entity.displace(new THREE.Vector3(position.x, position.y, position.z));
+				if(!entity.targetLocation) 
+					entity.displace(new THREE.Vector3(position.x, position.y, position.z));
+
+				if(attack){
+					entity.targetLocationList.unshift(new THREE.Vector3(position.x, position.y, position.z));
+				}
 				// entity.run({
 				// 	x: direction.x * entity.speed,
 				// 	z: direction.z * entity.speed
@@ -246,7 +251,8 @@ export class Entities {
 		pingFrom('player:equipment', ({
 			entity: eid,
 			inventory,
-			equipment
+			equipment,
+			flags
 		}) => {
 
 			if(!inventory) return;
@@ -267,6 +273,8 @@ export class Entities {
 				});
 			
 			Equipments.entity(entity!);
+
+			if(flags) entity.flags = flags;
 		})
 	}
 

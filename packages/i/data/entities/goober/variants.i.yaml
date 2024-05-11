@@ -6,3 +6,7 @@
   material: {
     body: 'mat(color: #ff00000)'
   }
+- name: !id swamp
+  material: {
+    body: 'mat(color: #00ff00)'
+  }

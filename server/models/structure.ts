@@ -17,7 +17,8 @@ export type StructureRule = {
 	drops?: { id: string, quantity: number, chance?: number, data?: any }[],
 	randomDrops?: boolean,
 	dropsCount?: number,
-	allowStructures?: string[]
+	allowStructures?: string[],
+	flags?: string[]
 }
 export class StructureData extends ServerData {
 	type: string = "";_looted

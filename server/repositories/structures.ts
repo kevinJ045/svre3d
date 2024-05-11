@@ -118,6 +118,7 @@ export class Structures {
 				}
 
 				chunk.structures.push(structure);
+				if(rule.flags) chunk.flags.push(...rule.flags);
 			}
 
 			if(rule2){
@@ -126,6 +127,12 @@ export class Structures {
 					biome
 				});
 				chunk.structures.push(structure);
+
+				if(rule2.flags) chunk.flags.push(...rule2.flags)
+			}
+
+			if(shouldPlaceStructure || rule2){
+				chunk.flags.push('structure');
 			}
 
 		} 

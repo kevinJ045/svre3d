@@ -3,8 +3,8 @@
 export class WorldData {
 	static worldData = {};
 
-	static get(key: string){
-		return WorldData.worldData[key];
+	static get(key: string, ifNil?: any){
+		return WorldData.worldData[key] || ifNil;
 	}
 
 	static set(key: string, value: any){

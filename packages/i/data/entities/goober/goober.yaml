@@ -21,7 +21,7 @@ entity:
       attackBack: true
       targets: 
         - id: !id goober
-          variant: self
+          variant: \!self
   variants: !import "./variants.i.yaml"
 events:
   death:

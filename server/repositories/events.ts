@@ -10,7 +10,8 @@ type Events = {
     action: 'emit',
     target: string,
     if?: string,
-    emit: string
+    emit: string,
+    emitData?: any[]
   } | {
     action: string,
     [key: string]: any
@@ -40,7 +41,7 @@ export class EventEmitter {
         if(ifState){
           Array.isArray(target) ?
           target.forEach(i => i.emit(action.emit)) :
-          target.emit(action.emit);
+          target.emit(action.emit, ...action.emitData);
         }
       }
     });

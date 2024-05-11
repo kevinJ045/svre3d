@@ -29,5 +29,12 @@ structures:
     drops: 
       - id: !id oreon
         quantity: [2, 5]
+events:
+  # on stepped, if not a lava variant, burn them
+  step:
+    - action: emit
+      target: context.trigger.entity()
+      if: context.$target.isVariant('!lava') && context.$target.hasProp('!fire_resistant')
+      emit: burn
 resource: !biome.resource
   _: ~

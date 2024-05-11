@@ -27,9 +27,10 @@ const elements: Record<string, React.ElementType> = {
 }
 
 const widgetChildren = (widget) => {
+    console.log(widget);
     return (widget.widgets || [])
     .concat(
-        widget.children ? UIResources.parent(widget.children) : []
+        widget.children ? UIResources.parent(widget.children).map(i => i.ui) : []
     );
 }
 

@@ -1,0 +1,10 @@
+manifest:
+  type: "ui"
+  id: !id ui.hud.hpbar
+ui:
+  widgets:
+    - type: bar
+      bar:
+        current: "$(player.health.current)"
+        max: "$(player.health.max)"
+  parent: !id ui.hud.bottom.center

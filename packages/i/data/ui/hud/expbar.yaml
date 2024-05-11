@@ -1,0 +1,14 @@
+manifest:
+  type: "ui"
+  id: !id ui.hud.expbar
+ui:
+  widgets:
+    - type: bar
+      widgets:
+        - type: text
+          text: $(player.exp.level)
+      bar:
+        current: "$(player.exp.current)"
+        max: "$(player.exp.max)"
+        width: "60px"
+  parent: !id ui.hud.bottom.center

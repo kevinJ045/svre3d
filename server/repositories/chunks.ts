@@ -1,3 +1,4 @@
+import { xyzTv } from "../../client/scripts/common/xyz.ts";
 import { stringifyChunkPosition } from "../common/chunk.js";
 import { Random } from "../common/rand.js";
 import { worldData } from "../constant/world.js";
@@ -7,6 +8,7 @@ import { xyz } from "../models/misc.xyz.js";
 import { pingFrom } from "../ping/ping.js";
 import { Sockets } from "../ping/sockets.js";
 import { generateChunkHeight } from "../world/chunks.js";
+import { EventEmitter } from "./Events.ts";
 import { Biomes } from "./biomes.js";
 import { Entities } from "./entities.js";
 import { Items } from "./items.js";
@@ -31,6 +33,8 @@ export class Chunks {
 		await Structures.constructStructure(chunk);
 		// EntitySpawner.spawnAtChunk(chunk);
 
+		EventEmitter.chunkListeners(chunk);
+
 		this.chunks.push(chunk);
 
 		return chunk;
@@ -48,7 +52,12 @@ export class Chunks {
 	static find(key: string){
 		return this.chunks.find(i => i.stringify() == key);
 	}
-	select
+	
+	static findClose(pos: xyz){
+		const p = xyzTv(pos);
+		return [...this.chunks].sort((a, b) => xyzTv(a.position).distanceTo(p) - xyzTv(b.position).distanceTo(p))[0];
+	}
+
 	static at(index: number){
 		return this.chunks.at(index);
 	}
@@ -164,40 +173,44 @@ export class Chunks {
 
 			const biome = Biomes.getBiome(randomX, randomZ);
 
-			if (biome.reference.manifest.id === biomeName) {
 
-				let isSafeSpawnPoint = true;
+			if (biome.reference.manifest.id === biomeName) {
+				console.log('Found', biome.reference.manifest.id);
+
+				let isSafeSpawnPoint = minDistanceFromBorders;
 				
-				for (let dx = -minDistanceFromBorders; dx <= minDistanceFromBorders; dx += this.chunkSize) {
-					for (let dz = -minDistanceFromBorders; dz <= minDistanceFromBorders; dz += this.chunkSize) {
+				for (let dx = -(minDistanceFromBorders * this.chunkSize); dx <= (minDistanceFromBorders * this.chunkSize); dx += this.chunkSize) {
+					for (let dz = -(minDistanceFromBorders * this.chunkSize); dz <= (minDistanceFromBorders * this.chunkSize); dz += this.chunkSize) {
 						
 						const surroundingPosition = {
-								x: position.x + dx,
-								z: position.z + dz
+							x: position.x + dx,
+							z: position.z + dz
 						};
 						
 						const surroundingBiome = Biomes.getBiome(surroundingPosition.x, surroundingPosition.z);
 
 						if (surroundingBiome.reference.manifest.id === biomeName) {
-							isSafeSpawnPoint = false;
+							isSafeSpawnPoint--;
 							break; 
 						}
+
+						// console.log(surroundingBiome.reference.manifest.id);
 					}
 
-					if (!isSafeSpawnPoint) {
+					console.log(isSafeSpawnPoint);
+
+					if (isSafeSpawnPoint < minDistanceFromBorders/2) {
 						break;
 					}
 				}
 
-				if (isSafeSpawnPoint) {
-					return position;
-				}
+				spawnPoint = position;
 				
 			}
 		}
 
 		return spawnPoint || (
-			minDistanceFromBorders > 2 ?
+			minDistanceFromBorders > 3 ?
 			Chunks.findSafeSpawnPoint(biomeName, minDistanceFromBorders - 1) 
 			: null
 		);

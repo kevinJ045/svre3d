@@ -102,7 +102,6 @@ export class Chunks {
 	}
 
 	static init(){
-
 		pingFrom('chunk:load', (data) => {
 			if(!Chunks.has(stringifyChunkPosition(data.position)))
 			 Chunks.loadChunk(Chunks.chunkFromData(data));
@@ -138,6 +137,21 @@ export class Chunks {
     }
     return null;
   }
+
+	static loop(clock: any){
+		var time = clock.getElapsedTime();
+
+		this.chunks.forEach(chunk => {
+
+			if(chunk.data.liquids){
+				chunk.data.liquids.forEach(liquid => {
+					liquid.material.uniforms.time.value = time;
+				});	
+			}
+
+		});
+
+	}
 
 	static update(playerPosition, renderDistance){
 		const chunkSize = WorldData.get('chunkSize');

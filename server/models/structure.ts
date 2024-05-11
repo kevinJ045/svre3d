@@ -5,7 +5,8 @@ export type StructureRule = {
 	name: string,
 	structure: {
 		object: any,
-		rule: string[]
+		rule: string[],
+		object_rules?: any
 	},
 	density: number,
 	random: boolean,
@@ -15,7 +16,8 @@ export type StructureRule = {
 	swarm?: number,
 	drops?: { id: string, quantity: number, chance?: number, data?: any }[],
 	randomDrops?: boolean,
-	dropsCount?: number
+	dropsCount?: number,
+	allowStructures?: string[]
 }
 export class StructureData extends ServerData {
 	type: string = "";_looted

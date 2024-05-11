@@ -1,0 +1,11 @@
+manifest:
+  id: !id 'water'
+  type: 'structure'
+view:
+  object:
+    type: liquid
+    vertex: !import '../../bin/shaders/liquid.vertex.glsl'
+    fragment: !import '../../bin/shaders/liquid.fragment.glsl'
+resource:
+  loader: texture
+  src: !realpath '../../bin/textures/water.png'

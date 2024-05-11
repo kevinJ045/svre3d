@@ -128,7 +128,7 @@ export class ResourceMap {
 								const elt = prop[index];
 								let eltprop = itemProps.length ? getPropStr(elt, itemProps) : elt;
 								let fn = fetchName.replace(/\$([0-9]+)/g, (_, n) => index.toString());
-								await loadItem(eltprop, scene, 'res?prop=' + fn, item);
+								if(eltprop.resource) await loadItem(eltprop, scene, 'res?prop=' + fn, item);
 							}
 						} else {
 							if (independent) {

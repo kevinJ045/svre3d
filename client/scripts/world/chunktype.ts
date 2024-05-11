@@ -11,5 +11,5 @@ export function getChunkType(x, z, scale, offset){
 	const index = Math.min(Math.abs(Math.floor(noiseValue * types.length-1)), types.length-1);
 
 
-	return Array.isArray(types[index]) ? Random.pick(...types[index], () => Math.abs(Seed.noise.simplex2(x, z))) : types[index];
+	return Array.isArray(types[index]) ? Random.pick(...types[index], () => Math.abs(Seed.noise.simplex2(x * scale, z * scale))) : types[index];
 }

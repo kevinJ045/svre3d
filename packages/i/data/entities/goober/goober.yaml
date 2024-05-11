@@ -23,6 +23,12 @@ entity:
         - id: !id goober
           variant: self
   variants: !import "./variants.i.yaml"
+events:
+  death:
+    - action: emit
+      target: entities.range(5)
+      if: isVariant('lava')
+      emit: burn
 resource:
   src: !realpath '../../../bin/objects/goober_e.gltf'
   loader: gltf

@@ -3,6 +3,7 @@ import { ServerData } from "./data.js";
 import { ItemData } from "./item.js";
 import { Random } from "../common/rand.js";
 
+
 class EntityData extends ServerData {
     // Entity-specific properties
     type!: string; // Type of the entity
@@ -31,6 +32,8 @@ class EntityData extends ServerData {
         cooldown: 60,
         current: 0
     };
+
+    stepOn: string = "";
 
 	data: Record<string, any> = {};
     constructor() {

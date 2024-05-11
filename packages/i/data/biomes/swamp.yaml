@@ -9,6 +9,8 @@ biome:
   colors: [ "#00ff00", "#6aff00", "#0dbc00" ]
   foliage:
     color: "#00ff00"
+  water:
+    color: "#00aa00"
 structures:
   - name: tree
     structure:
@@ -16,5 +18,11 @@ structures:
       rule: ['tree']
     density: 5
     random: true
+  - name: water
+    structure: 
+      object: !import '../structures/water.i.yaml'
+    under: 2
+    random: !bool false
+    allowStructures: []
 resource: !biome.resource
   _: ~

@@ -55,8 +55,26 @@ export class Structures {
 		const biome: ResourceSchema = chunk.biome.reference ? chunk.biome.reference : chunk.biome;
 
 		if(biome.structures){
+			
+			let rule: StructureRule = Random.pick(...biome.structures.filter(i => !i.under && !i.above), seedrng);
 
-			let rule: StructureRule = Random.pick(...biome.structures, seedrng);
+			let rule2 = (biome.structures as StructureRule[]).find(
+				struct => {
+					if(struct.random) return;
+					else if(struct.above){
+						return chunk.position.y >= struct.above!;
+					} else if (struct.under){
+						return chunk.position.y <= struct.under!;
+					}
+				}
+			);
+
+			if(rule2 && rule2.allowStructures){
+				if(!rule2.allowStructures.includes(rule.name)){
+					rule = rule2;
+					rule2 = undefined;
+				}
+			}
 
 			const density = rule.density;
 	
@@ -99,6 +117,14 @@ export class Structures {
 					}
 				}
 
+				chunk.structures.push(structure);
+			}
+
+			if(rule2){
+				const structure = ServerData.create(StructureData, {
+					rule: rule2,
+					biome
+				});
 				chunk.structures.push(structure);
 			}
 

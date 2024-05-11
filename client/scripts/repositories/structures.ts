@@ -1,5 +1,7 @@
 import { Random } from "../../../server/common/rand.js";
+import { mixColors } from "../common/colors.ts";
 import { PhysicsManager } from "../common/physics.js";
+import { SceneManager } from "../common/sceneman.ts";
 import { Chunk } from "../models/chunk.js";
 import { Seed } from "../world/seed.js";
 import { MaterialManager } from "./materials.js";
@@ -128,6 +130,84 @@ function getPositionForKey(key, parentObject, childRule, seed) {
 
 export class Structures { 
 
+	static createStructureTemplate(structureProps: any, resource: THREE.Texture, chunk: Chunk, variables: any){
+		const g = new THREE.Group();
+		const heightPercent = structureProps.height || 50;
+		const fullHeight = chunk.chunkSize/2;
+
+		const height = (heightPercent / 100) * fullHeight;
+		const object = new THREE.Mesh(new THREE.BoxGeometry(chunk.chunkSize, height, chunk.chunkSize), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+		
+		
+		resource.wrapS = resource.wrapT = THREE.RepeatWrapping;
+
+		var uniforms = {
+			time: {
+				value: 0
+			},
+			threshold: {
+				value: structureProps.threshold || 0.1
+			},
+			tDudv: {
+				value: null
+			},
+			tDepth: {
+				value: null
+			},
+			cameraNear: {
+				value: 0
+			},
+			cameraFar: {
+				value: 0
+			},
+			resolution: {
+				value: new THREE.Vector2()
+			},
+			foamColor: {
+				value: new THREE.Color(mixColors(variables.water || '#00aaaa', '#ffffff', 0.3))
+			},
+			waterColor: {
+				value: new THREE.Color(variables.water || '#00aaaa')
+			}
+		};
+
+		const liquidShaderVertex = structureProps.vertex || '';
+		const liquidShaderFragment = structureProps.fragment || '';
+
+		var waterMaterial = new THREE.ShaderMaterial({
+			defines: {
+				DEPTH_PACKING: 1,
+				ORTHOGRAPHIC_CAMERA: 0
+			},
+			uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib["fog"], uniforms]),
+			vertexShader: liquidShaderVertex,
+			fragmentShader: liquidShaderFragment,
+			fog: true
+		});
+
+		waterMaterial.uniforms.cameraNear.value = 0.1;
+		waterMaterial.uniforms.cameraFar.value = 100000000;
+		waterMaterial.uniforms.resolution.value.set(
+			window.innerWidth * 1,
+			window.innerHeight * 1
+		);
+
+		object.userData.renderTarget = new THREE.WebGL3DRenderTarget(SceneManager.scene.renderer.domElement.width, SceneManager.scene.renderer.domElement.height);
+
+		waterMaterial.uniforms.tDudv.value = resource;
+		waterMaterial.uniforms.tDepth.value = object.userData.renderTarget.depthTexture;
+
+		
+		(object as any).material = waterMaterial;
+
+		g.add(object);
+		g.position.set(0, fullHeight / 2, 0);
+
+		if(!chunk.data.liquids) chunk.data.liquids = [];
+		chunk.data.liquids.push(object);
+		return g;
+	}
+
 
 	static loadStrcuture(chunk: Chunk){
 
@@ -138,13 +218,15 @@ export class Structures {
 
 				const variables = {
 					foliage: (structureData.biome.reference || structureData.biome).biome?.foliage?.color || "#00ff00",
+					water: (structureData.biome.reference || structureData.biome).biome?.water?.color || "#0000ff",
 					log: true
 				};		
 				
 				const structureProps = ResourceMap.findLoad(rule.structure.object.manifest.id);
-				
 
-				const structure = generateWithRule(structureProps, Seed.rng, rule.structure.rule, structureData.looted);
+				const structureIsLiquid = rule.structure.object?.view?.object?.type == "liquid";
+
+				const structure = structureIsLiquid ? this.createStructureTemplate(rule.structure.object.view.object, structureProps!.texture, chunk, variables) : generateWithRule(structureProps, Seed.rng, rule.structure.rule, structureData.looted);
 
 				chunk.object3d.add(structure);
 
@@ -152,7 +234,7 @@ export class Structures {
 					structure.userData.lootable = true;
 				}
 
-				const materialsRule = structureProps!.view!.material;
+				const materialsRule = structureIsLiquid ? null : structureProps!.view!.material;
 
 				structure.children.forEach(item => {
 					if(item.userData.rule){

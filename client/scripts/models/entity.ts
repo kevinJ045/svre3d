@@ -15,19 +15,6 @@ import { Random } from "../../../server/common/rand.js";
 export class Entity extends EntityData {
 
 	object3d!: ExtendedObject3D;
-
-	private _eventListeners: {type:string,f:CallableFunction}[] = [];
-	on(type:string,f:CallableFunction){
-		this._eventListeners.push({type, f});
-		return this;
-	}
-	emit(type:string,...args: any[]){
-		this._eventListeners
-		.filter(e => e.type == type)
-		.forEach(e => e.f(...args));
-		return this;
-	}
-
 	
 	private _animationTimeout: any = 0;
 	private _playAnimation(action: string, speed = 1, loop = true, callback?: () => void){

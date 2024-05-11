@@ -93,4 +93,6 @@ export function init(serverData: any){
 
 
 	Mainloop.start();
+
+	// console.log(Chunks.findSafeSpawnPoint('i:swamp'));
 }

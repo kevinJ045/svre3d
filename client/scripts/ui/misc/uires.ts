@@ -6,12 +6,12 @@ export class UIResources {
 
     static all(){
         return ResourceMap.resources
-        .filter(i => i.type == 'ui');
+        .filter(i => i.manifest.type == 'ui');
     }
 
     static parent(id: string){
         return this.all()
-        .filter(i => i.parent === id);
+        .filter(i => i.ui.parent === id);
     }
 
 }

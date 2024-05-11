@@ -12,6 +12,7 @@ import { Chunks } from "./chunks.js";
 import { Random } from "../common/rand.js";
 import { jsonres } from "../models/jsonres.js";
 import { ResourceSchema } from "../lib/loader/Schema.type.js";
+import { stringifyChunkPosition } from "../common/chunk.ts";
 
 
 export class Entities {
@@ -80,6 +81,18 @@ export class Entities {
 
 		Sockets.emit('entity:spawn', { entity });
 
+
+		entity.on('burn', () => {
+			Entities.hp(entity.id, {
+				current: entity.health.current - 10,
+				max: entity.health.max
+			});
+			Sockets.emit('entity:hp', {
+				entity: entity.id,
+				hp: entity.health
+			});
+		});
+
 		return entity;
 	}
 
@@ -127,6 +140,8 @@ export class Entities {
 
 		if(!entity) return;
 
+		entity.emit('death');
+
 		if(entity.inventory.length){
 			entity.inventory.forEach(item => {
 				this.spawnItem(item, (entity as EntityData).position);
@@ -155,6 +170,8 @@ export class Entities {
 	static hp(id, hp){
 		this.entities.forEach(entity => {
 			if(entity.id == id){
+				if(entity.health.current > hp.current) entity.emit('hurt');
+				else if(entity.health.current < hp.current) entity.emit('heal');
 				entity.health = hp;
 				if(entity.health.current <= 0){
 					this.kill(entity);
@@ -487,6 +504,22 @@ export class Entities {
 
 		entitiesWithAi.forEach(e => {
 			Entities.think(e);
+		});
+
+		this.entities.forEach(entity => {
+			let closest = Chunks.findClose(entity.position);
+			let pos = closest?.position ? stringifyChunkPosition(closest?.position) : "";
+			if(entity.stepOn !== pos && closest) closest.emit('stepStart', { target: entity }); 
+			entity.stepOn = pos;
+			if(closest) {
+				if(entity.data.burnTimeout == null) entity.data.burnTimeout = 300;
+				if(entity.data.burnTimeout <= 0){
+					entity.data.burnTimeout = 300;
+					closest.emit('step', { target: entity });
+				} else {
+					entity.data.burnTimeout--;
+				} 
+			}
 		});
 
 	}

@@ -1,5 +1,13 @@
-import { THREE } from "enable3d";
+import { Vector3 } from "three";
 
-export const xyz = THREE.Vector3;
+export const xyz = Vector3;
 
-export type xyzt = THREE.Vector3;
+export const xyzTv = (xyzv: any) => {
+  return new xyz(
+    xyzv.x,
+    xyzv.y,
+    xyzv.z
+  );
+}
+
+export type xyzt = Vector3;

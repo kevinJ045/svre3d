@@ -41,15 +41,15 @@ export class Map2D {
 			const playerX = Math.floor(playerPosition.x / chunkSize) * chunkSize;
 			const playerZ = Math.floor(playerPosition.z / chunkSize) * chunkSize;
 	
-			for (let z = playerZ - half_height + Y; z < playerZ + half_height + Y; z += chunkSize) {
-				for (let x = playerX - half_width + X; x < playerX + half_width + X; x += chunkSize) {
+			for (let z = playerZ - half_height + Y; z < playerZ + half_height + Y; z += 1) {
+				for (let x = playerX - half_width + X; x < playerX + half_width + X; x += 1) {
 					const offset = 0;
 					const color = getChunkType(x, z, scale, offset);
 					// const scaleDelta = Math.abs(scale - 0.01) * 100;
 					ctx.fillStyle = color;
 					// ctx.strokeStyle = 'black'; // Set border color
     			// ctx.lineWidth = 1;
-					ctx.fillRect(x + half_width - playerX - X, z + half_height - playerZ - Y, chunkSize, chunkSize);
+					ctx.fillRect(x + half_width - playerX - X, z + half_height - playerZ - Y, 1, 1);
 					// ctx.strokeRect(x + half_width - playerX - X, z + half_height - playerZ - Y, chunkSize, chunkSize);
 				}
 			}

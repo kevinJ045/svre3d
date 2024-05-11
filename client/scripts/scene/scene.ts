@@ -83,6 +83,10 @@ export class MainScene extends Scene3D {
 		UI.init();
 		Controls.initControls(this.canvas);
 
+		var supportsDepthTextureExtension = !!this.renderer.extensions.get(
+			"WEBGL_depth_texture"
+		);
+
 		// player.addToInventory(Items.create(new ItemData().setData({
 		// 	itemID: 'm:horn-1',
 		// 	quantity: 1
@@ -102,11 +106,17 @@ export class MainScene extends Scene3D {
 
 	}
 
+	resize(){
+		this.renderer.setSize(window.innerWidth, window.innerHeight);
+	}
+
 	update(){
 
 		Entities.update();
 		Controls.update();
 		UI.update();
+
+		Chunks.loop(this.clock);
 
 	}
 

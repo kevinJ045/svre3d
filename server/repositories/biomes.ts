@@ -27,16 +27,26 @@ export class Biomes {
 			...Biomes.biomes[index].reference
 		}};
 
-		if(biome.reference.tile?.multicolor){
-			const colors = [...biome.reference.colors];
-			if(biome.reference.tile.keepdefault) colors.unshift('none');
-			biome.reference.tile_variation_color = Random.pick(...colors, () => Math.abs(noise.simplex2(x * 0.01, z * 0.01)));
+		if(biome.reference.biome.tile?.multicolor){
+			const colors = [...biome.reference.biome.colors];
+			if(biome.reference.biome.tile.keepdefault) colors.unshift('none');
+			biome.reference.biome.tile.variation_color = Random.pick(...colors, () => Math.abs(noise.simplex2(x * 0.01, z * 0.01)));
 		}
 
 		if(Array.isArray(biome.reference.item)) {
 			biome.reference.item = Random.pick(...biome.reference.item, () => Math.abs(noise.simplex2(x * 0.01, z * 0.01)));
 		}
 
+		if(biome.reference.biome?.ground?.substitutes && biome.reference.biome.ground.mapping){
+			const substitutes = biome.reference.biome?.ground?.substitutes;
+			const substitute = Random.pick(...substitutes, () => Math.abs(noise.simplex2(x * 0.01, z * 0.01)))
+			biome.reference.biome.ground.mapping = biome.reference.biome?.ground.mapping
+				.join(',')
+				.replaceAll(substitute[0][0], substitute[1][0])
+				.replaceAll(substitute[0][1], substitute[1][1])
+				.split(',');
+			if(substitute[2]) biome.flags.push(...substitute[2]);
+		}
 
 		return biome;
 	}

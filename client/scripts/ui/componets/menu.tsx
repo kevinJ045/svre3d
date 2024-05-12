@@ -14,6 +14,7 @@ import { ResourceMap } from "../../repositories/resources.js";
 import { DefaultBooks } from "../constants/books.js";
 import { Context } from "../data/context.js";
 import { generateItemIcon } from "../misc/itemicon.ts";
+import ChatsUI from "../chats/chats.tsx";
 
 
 export const Menu = () => {
@@ -26,7 +27,7 @@ export const Menu = () => {
 		inventory
 	} = React.useContext(Context);
 
-	return (<div className="menu">
+	return (<div className="player-menu" id="full-menu"><div className="menu">
 		
 		<div className="tabs">
 			<Tab tab="inventory" setActiveTab={setTab} activeTab={tab}>
@@ -43,6 +44,10 @@ export const Menu = () => {
 
 			<Tab tab="book" setActiveTab={setTab} activeTab={tab}>
 				<b className="book-icon"></b>
+			</Tab>
+
+			<Tab tab="chats" setActiveTab={setTab} activeTab={tab}>
+				<b className="chats-icon"></b>
 			</Tab>
 
 			<Tab tab="settings" setActiveTab={setTab} activeTab={tab}>
@@ -118,10 +123,14 @@ export const Menu = () => {
 				} />
 			</TabPane>
 
+			<TabPane tab="chats" activeTab={tab}>
+				<ChatsUI.init></ChatsUI.init>
+			</TabPane>
+			
 			<TabPane tab="settings" activeTab={tab}>
 				settings
 			</TabPane>
 
 		</div>
-	</div>);
+	</div></div>);
 }

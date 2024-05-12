@@ -9,6 +9,7 @@ import { Seed } from "../world/seed.js";
 import { WorldData } from "../world/data.js";
 import { LocalDB } from "../localdb/localdb.js";
 import { Login } from "../login/login.js";
+import GlobalEmitter from "../misc/globalEmitter.ts";
 const io = (window as any).io as typeof sio;
 
 let S!: any;
@@ -22,7 +23,7 @@ export function ping<T = any, D = any>(action: string, data: D){
 }
 
 export function pingFrom<T = any, D = any>(action: string, func: (data: T) => any){
-	S.on(action, async (data: T) => {
+	if(S) S.on(action, async (data: T) => {
 		await func(data);
 	});
 }
@@ -61,7 +62,6 @@ export async function connectSocket(){
 		S = socket;
 
 		initScene();
-
 	});
 
 	socket.on('unrecognized', ({biomes}) => {

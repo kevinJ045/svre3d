@@ -80,10 +80,4 @@ export const HUD = () => {
     )
 }
 
-export const HUDUi = (root: Root) => {
-    
-    
-    root.render(
-        <HUD></HUD>
-    )
-}
+export const HUDUi = () => <HUD></HUD>;

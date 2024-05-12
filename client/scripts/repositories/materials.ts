@@ -86,8 +86,8 @@ export class MaterialManager {
 
 		const colorOptions: any = {};
 
-		if(biome.tile_variation_color && biome.tile_variation_color !== 'none'){
-			colorOptions.color = biome.tile_variation_color;
+		if(biome.tile.variation_color && biome.tile.variation_color !== 'none'){
+			colorOptions.color = biome.tile.variation_color;
 		}
 	
 		const mat = materialOptions ? new THREE.MeshStandardMaterial({

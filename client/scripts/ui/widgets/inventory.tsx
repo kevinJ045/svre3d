@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SlotItem } from './slotitem';
+import { SlotItem } from './slotitem.js';
 
 
 export const InventoryItem = ({

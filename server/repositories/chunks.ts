@@ -31,7 +31,7 @@ export class Chunks {
 		const chunk = ChunkData.create<ChunkData>(ChunkData, { position, chunkSize: this.chunkSize, biome: Biomes.getBiome(position.x, position.z).reference });
 
 		await Structures.constructStructure(chunk);
-		EntitySpawner.spawnAtChunk(chunk);
+		// EntitySpawner.spawnAtChunk(chunk);
 
 		EventEmitter.chunkListeners(chunk);
 

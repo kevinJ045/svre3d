@@ -5,5 +5,7 @@ resource:
   loader: texture
   sources: [
     !realpath '../../../bin/textures/segment_swamp_top.png',
-    !realpath '../../../bin/textures/segment_swamp_side.png'
+    !realpath '../../../bin/textures/segment_swamp_side.png',
+    !realpath '../../../bin/textures/segment_rock_top.png',
+    !realpath '../../../bin/textures/segment_rock_side.png'
   ]

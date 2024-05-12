@@ -4,6 +4,8 @@ import * as React from "react";
 import { Map2D } from "./misc/map.js";
 import { HUDUi } from "./componets/hud.js";
 import { MainUI } from "./componets/provider.js";
+import ChatsUI from "./chats/chats.tsx";
+import { Context } from "./data/context.ts";
 
 export default class UI {
 
@@ -11,12 +13,12 @@ export default class UI {
 	static hudRoot: Root;
 
 	static init(){
-		this.root = createRoot(document.querySelector('#full-menu')!);
-		this.hudRoot = createRoot(document.querySelector('#full-hud')!);
+		this.root = createRoot(document.querySelector('#full-ui')!);
 		this.root.render(<MainUI>
 			<Menu></Menu>
+			<HUDUi></HUDUi>
+			<div onClick={() => UI.show()} className="menu-button"></div>
 		</MainUI>);
-		HUDUi(this.hudRoot);
 	}
 
 	static toggle(){

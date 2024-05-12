@@ -1,9 +1,12 @@
 import { Item } from "../../models/item.js";
 import { PlayerInfo } from "../../repositories/player.js";
-import { Context } from "../data/context"
+import { Context } from "../data/context.js"
 import React, { useEffect, useState } from "react";
 import { Map2D } from "../misc/map.js";
 import { book, bookpage } from "../widgets/books.js";
+import { Chat } from "../../../../server/common/chat.ts";
+import GlobalEmitter from "../../misc/globalEmitter.ts";
+import { pingFrom } from "../../socket/socket.ts";
 
 let listening = false;
 
@@ -17,13 +20,33 @@ export const MainUI = ({ children }) => {
   const [currentBook, setCurrentBook] = useState<book | null>(null);
   const [currentPage, setCurrentPage] = useState<bookpage | null>(null);
 
+  const [chats, setChats] = useState<Chat[]>([]);
+
+  const addChat = (chat: Chat) => {
+    setChats(prevChats => [...prevChats, chat]);
+  }
+
+  const removeChat = (chat: Chat) => {
+    setChats(chats => chats.filter(c => chat.message.id !== c.message.id));
+  }
+
+  const editChatContent = (chat: Chat) => {
+    setChats(chats => chats.map(c => {
+      if(chat.message.id !== c.message.id){
+        c.message.text = chat.message.text;
+      }
+      return c;
+    }));
+  }
 
   const data = {
     tab, setTab,
     inventory, setInventory,
     currentItem, setCurrentItem,
     currentBook, setCurrentBook,
-    currentPage, setCurrentPage
+    currentPage, setCurrentPage,
+    chats, setChats,
+    addChat, removeChat, editChatContent
   };
 
   useEffect(() => {
@@ -36,6 +59,10 @@ export const MainUI = ({ children }) => {
 		}).on('unequip', () => {
 			setInventory([...PlayerInfo.entity.inventory]);
 		});
+
+    pingFrom('chat:send', (msg: Chat) => {
+      addChat(msg);
+    });
   }, []);
 
 

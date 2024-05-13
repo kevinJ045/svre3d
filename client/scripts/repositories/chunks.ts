@@ -14,14 +14,14 @@ export class Chunks {
 
 	static chunks: Chunk[] = [];
 
-	static chunkFromData(chunk: Record<string, any>){
+	static chunkFromData(chunk: Record<string, any>) {
 		return ServerData.create(Chunk, chunk).setData({
 			position: new THREE.Vector3(chunk.position.x, chunk.position.y, chunk.position.z),
 			biome: chunk.biome
 		});
 	}
 
-	static loadChunk(chunk: Chunk){
+	static loadChunk(chunk: Chunk) {
 		const chunkObject = makeChunk(chunk.chunkSize);
 		chunkObject.userData.info = {
 			type: 'chunk',
@@ -36,7 +36,7 @@ export class Chunks {
 			shape: 'box',
 
 			width: chunk.chunkSize,
-			height: Math.floor(chunk.chunkSize/2),
+			height: Math.floor(chunk.chunkSize / 2),
 			depth: chunk.chunkSize,
 
 			mass: 0,
@@ -44,11 +44,11 @@ export class Chunks {
 		this.chunks.push(chunk);
 	}
 
-	static chunkObjects(){
+	static chunkObjects() {
 		return this.chunks.map(chunk => chunk.object3d);
 	}
 
-	static unloadChunk(chunk: Chunk){
+	static unloadChunk(chunk: Chunk) {
 		const key = chunk.stringify();
 		const found = Chunks.find(key);
 		if (found) {
@@ -56,60 +56,60 @@ export class Chunks {
 		}
 	}
 
-	static clear(){
+	static clear() {
 		this.chunks = [];
 		return this;
 	}
 
-	static find(key: string){
+	static find(key: string) {
 		return this.chunks.find(i => i.stringify() == key);
 	}
 
-	static at(index: number){
+	static at(index: number) {
 		return this.chunks.at(index);
 	}
 
-	static index(found: any){
+	static index(found: any) {
 		return this.chunks.indexOf(found);
 	}
 
-	static entries(){
+	static entries() {
 		return [...this.chunks];
 	}
 
-	static has(key: string){
+	static has(key: string) {
 		return this.find(key) ? true : false;
 	}
 
-	static delete(key: string){
+	static delete(key: string) {
 		const found = this.find(key);
-		if(found){
+		if (found) {
 			SceneManager.scene.scene.remove(found.object3d);
 			this.chunks.splice(this.index(found), 1);
 		}
 		return this;
 	}
 
-	static requestLoadChunk(position: THREE.Vector3){
+	static requestLoadChunk(position: THREE.Vector3) {
 
-		ping('chunk:request', {position, type: 'load'});
+		ping('chunk:request', { position, type: 'load' });
 
 	}
-	
-	static requestUnloadChunk(position: THREE.Vector3){
 
-		ping('chunk:request', {position, type: 'unload'});
+	static requestUnloadChunk(position: THREE.Vector3) {
+
+		ping('chunk:request', { position, type: 'unload' });
 	}
 
-	static init(){
+	static init() {
 		pingFrom('chunk:load', (data) => {
-			if(!Chunks.has(stringifyChunkPosition(data.position))){
+			if (!Chunks.has(stringifyChunkPosition(data.position))) {
 				Chunks.loadChunk(Chunks.chunkFromData(data));
-				Chunks.loadRequests.splice(
-					Chunks.loadRequests.indexOf(stringifyChunkPosition(data.position)),
-					1
-				);
 			}
+			Chunks.loadRequests.splice(
+				Chunks.loadRequests.indexOf(stringifyChunkPosition({ ...data.position, y: 0 })),
+				1
+			);
 		});
 
 		pingFrom('chunk:unload', (data) => {
@@ -122,9 +122,9 @@ export class Chunks {
 
 		pingFrom('structure:loot', (data) => {
 			const chunk = Chunks.find(data.chunk);
-			if(!chunk) return;
+			if (!chunk) return;
 			const structure = chunk.structures.find(i => i.id == data.structure);
-			if(!structure) return;
+			if (!structure) return;
 			console.log(chunk, structure);
 			structure.looted = true;
 			chunk.object3d.traverse(o => chunk.object3d.remove(o));
@@ -134,28 +134,28 @@ export class Chunks {
 	}
 
 	static findChunkAtPosition(position: THREE.Vector3): Chunk | null {
-    for (const chunk of this.chunks) {
-      if (
-        position.x >= chunk.object3d.position.x &&
-        position.x < chunk.object3d.position.x + chunk.chunkSize &&
-        position.z >= chunk.object3d.position.z &&
-        position.z < chunk.object3d.position.z + chunk.chunkSize
-      ) {
-        return chunk;
-      }
-    }
-    return null;
-  }
+		for (const chunk of this.chunks) {
+			if (
+				position.x >= chunk.object3d.position.x &&
+				position.x < chunk.object3d.position.x + chunk.chunkSize &&
+				position.z >= chunk.object3d.position.z &&
+				position.z < chunk.object3d.position.z + chunk.chunkSize
+			) {
+				return chunk;
+			}
+		}
+		return null;
+	}
 
-	static loop(clock: any){
+	static loop(clock: any) {
 		var time = clock.getElapsedTime();
 
 		this.chunks.forEach(chunk => {
 
-			if(chunk.data.liquids){
+			if (chunk.data.liquids) {
 				chunk.data.liquids.forEach(liquid => {
 					liquid.material.uniforms.time.value = time;
-				});	
+				});
 			}
 
 		});
@@ -164,7 +164,7 @@ export class Chunks {
 
 	static unloadRequests: string[] = [];
 	static loadRequests: string[] = [];
-	static update(playerPosition, renderDistance){
+	static update(playerPosition, renderDistance) {
 		const chunkSize = WorldData.get('chunkSize');
 		const playerChunkPosition = playerPosition.clone().divideScalar(chunkSize).floor();
 
@@ -173,7 +173,7 @@ export class Chunks {
 		const endX = Math.ceil(playerChunkPosition.x + renderDistance);
 		const startZ = Math.floor(playerChunkPosition.z - renderDistance);
 		const endZ = Math.ceil(playerChunkPosition.z + renderDistance);
-		
+
 		const unloadStartX = Math.floor(playerChunkPosition.x - 2 * renderDistance);
 		const unloadEndX = Math.ceil(playerChunkPosition.x + 2 * renderDistance);
 		const unloadStartZ = Math.floor(playerChunkPosition.z - 2 * renderDistance);
@@ -181,39 +181,40 @@ export class Chunks {
 
 		// Unload chunks that are outside the range
 		for (let i = Chunks.chunks.length - 1; i >= 0; i--) {
-				const chunk = Chunks.chunks[i];
-				const chunkPosition = chunk.position.clone().divideScalar(chunkSize).floor();
+			const chunk = Chunks.chunks[i];
+			const chunkPosition = chunk.position.clone().divideScalar(chunkSize).floor();
 
-				// Check if the chunk is outside the range of loaded chunks
-				
+			// Check if the chunk is outside the range of loaded chunks
 
-				if(!Chunks.unloadRequests.includes(
-					stringifyChunkPosition(chunkPosition)
-				)){
-					if (chunkPosition.x < unloadStartX || chunkPosition.x > unloadEndX || chunkPosition.z < unloadStartZ || chunkPosition.z > unloadEndZ) {
-						Chunks.requestUnloadChunk(chunk.position);
-						Chunks.unloadRequests.push(
-							stringifyChunkPosition(chunk.position)
-						);
-					}
-					
+
+			if (!Chunks.unloadRequests.includes(
+				stringifyChunkPosition(chunkPosition)
+			)) {
+				if (chunkPosition.x < unloadStartX || chunkPosition.x > unloadEndX || chunkPosition.z < unloadStartZ || chunkPosition.z > unloadEndZ) {
+					Chunks.requestUnloadChunk(chunk.position);
+					Chunks.unloadRequests.push(
+						stringifyChunkPosition(chunk.position)
+					);
 				}
+
+			}
 		}
 
 		// Load chunks within the range around the player
 		for (let x = startX; x <= endX; x++) {
-				for (let z = startZ; z <= endZ; z++) {
-					// if(!Chunks.has(stringifyChunkPosition({ x, z })))
-						if(!Chunks.loadRequests.includes(
-							stringifyChunkPosition({ x, y: 0, z })
-						)){
-							Chunks.requestLoadChunk(new THREE.Vector3(x * chunkSize, 0, z * chunkSize));
-							Chunks.loadRequests.push(
-								stringifyChunkPosition({ x, y: 0, z })
-							);
-						}
-						
+			for (let z = startZ; z <= endZ; z++) {
+				// if(!Chunks.has(stringifyChunkPosition({ x, z })))
+				const pos = new THREE.Vector3(x * chunkSize, 0, z * chunkSize);
+				if (!Chunks.loadRequests.includes(
+					stringifyChunkPosition(pos)
+				)) {
+					Chunks.requestLoadChunk(pos);
+					Chunks.loadRequests.push(
+						stringifyChunkPosition(pos)
+					);
 				}
+
+			}
 		}
 	}
 

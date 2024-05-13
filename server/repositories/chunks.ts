@@ -99,6 +99,8 @@ export class Chunks {
 
 			this.loadingChunks.splice(this.loadingChunks.indexOf(pid), 1);
 
+			console.log("Chunk", type+':', pid);
+
 			return chunk;
 		});
 

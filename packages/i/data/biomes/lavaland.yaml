@@ -34,7 +34,8 @@ events:
   step:
     - action: emit
       target: context.trigger.entity()
-      if: context.$target.isVariant('!lava') && context.$target.hasProp('!fire_resistant')
-      emit: burn
+      if: context.$target.isVariant('!lava') && context.$target.hasFlag('!fire_resistant')
+      emit: hurt
+      emitData: [5, 100]
 resource: !biome.resource
   _: ~

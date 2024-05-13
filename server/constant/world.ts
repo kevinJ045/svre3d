@@ -3,7 +3,7 @@
 
 export const worldData = {
 	chunkSize: 5,
-	seed: 'joeman',
+	seed: 'skyLine',
 
 	width: 32000000,
 	height: 32000000,

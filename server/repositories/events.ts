@@ -20,7 +20,11 @@ type Events = {
 export class EventEmitter {
 
   static evaluateString(string: string, context: any){
-    return eval('('+string+')');
+    try{
+      return eval('('+string+')');
+    } catch(e){
+      return false;
+    }
   };
 
   static itemFunctionalData(item: ServerData | ServerData[]){
@@ -41,7 +45,7 @@ export class EventEmitter {
         if(ifState){
           Array.isArray(target) ?
           target.forEach(i => i.emit(action.emit)) :
-          target.emit(action.emit, ...action.emitData);
+          target.emit(action.emit, ...(action.emitData || []));
         }
       }
     });

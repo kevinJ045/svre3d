@@ -1,0 +1,29 @@
+manifest:
+  id: !id 'croc'
+  type: 'entity'
+base:
+  health: !int 200
+  speed: 4
+  damage: 3
+view:
+  object:
+    body: 0.0.2
+    eye: 0.0.3
+  physics:
+    shape: convex
+    offset: {
+      y: !float -1
+    }
+entity:
+  ai: 
+    movement:
+      random: true
+      biome: !id 'swamp'
+      flags:
+        - swamp
+    attack:
+      attackBack: true
+      targets: []
+resource:
+  src: !realpath '../../bin/objects/croc2.glb'
+  loader: gltf

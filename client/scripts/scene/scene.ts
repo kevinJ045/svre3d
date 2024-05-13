@@ -106,6 +106,7 @@ export class MainScene extends Scene3D {
 
 		// Items.crafting(...player.inventory.slice(1, 3) as any);
 
+		// this.physics.debug?.enable();
 	}
 
 	resize(){

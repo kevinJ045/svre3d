@@ -328,6 +328,13 @@ export class Entities {
 			if(ai.movement?.biome){
 				chunks = chunks.filter(chunk => (chunk.biome as any).manifest.id == (ai.movement.biome == 'self' ? entity.variant : ai.movement.biome))
 			}
+			if(ai.movement?.flags){
+				chunks = chunks
+					.filter(chunk => !ai.movement?.flags.map((flag: string) => flag.startsWith('!') ? 
+					!chunk.flags.includes(flag.replace('!', '')) :
+					chunk.flags.includes(flag)
+				).includes(false))
+			}
 		}
 		if(chunks.length) entity.targetPosition = Random.pick(...chunks).position;
 	}

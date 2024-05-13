@@ -103,12 +103,21 @@ export class Chunks {
 
 	static init(){
 		pingFrom('chunk:load', (data) => {
-			if(!Chunks.has(stringifyChunkPosition(data.position)))
-			 Chunks.loadChunk(Chunks.chunkFromData(data));
+			if(!Chunks.has(stringifyChunkPosition(data.position))){
+				Chunks.loadChunk(Chunks.chunkFromData(data));
+				Chunks.loadRequests.splice(
+					Chunks.loadRequests.indexOf(stringifyChunkPosition(data.position)),
+					1
+				);
+			}
 		});
 
 		pingFrom('chunk:unload', (data) => {
 			Chunks.delete(stringifyChunkPosition(data));
+			Chunks.unloadRequests.splice(
+				Chunks.unloadRequests.indexOf(stringifyChunkPosition(data)),
+				1
+			);
 		});
 
 		pingFrom('structure:loot', (data) => {
@@ -153,6 +162,8 @@ export class Chunks {
 
 	}
 
+	static unloadRequests: string[] = [];
+	static loadRequests: string[] = [];
 	static update(playerPosition, renderDistance){
 		const chunkSize = WorldData.get('chunkSize');
 		const playerChunkPosition = playerPosition.clone().divideScalar(chunkSize).floor();
@@ -174,8 +185,18 @@ export class Chunks {
 				const chunkPosition = chunk.position.clone().divideScalar(chunkSize).floor();
 
 				// Check if the chunk is outside the range of loaded chunks
-				if (chunkPosition.x < unloadStartX || chunkPosition.x > unloadEndX || chunkPosition.z < unloadStartZ || chunkPosition.z > unloadEndZ) {
-					Chunks.requestUnloadChunk(chunk.position);
+				
+
+				if(!Chunks.unloadRequests.includes(
+					stringifyChunkPosition(chunkPosition)
+				)){
+					if (chunkPosition.x < unloadStartX || chunkPosition.x > unloadEndX || chunkPosition.z < unloadStartZ || chunkPosition.z > unloadEndZ) {
+						Chunks.requestUnloadChunk(chunk.position);
+						Chunks.unloadRequests.push(
+							stringifyChunkPosition(chunk.position)
+						);
+					}
+					
 				}
 		}
 
@@ -183,7 +204,15 @@ export class Chunks {
 		for (let x = startX; x <= endX; x++) {
 				for (let z = startZ; z <= endZ; z++) {
 					// if(!Chunks.has(stringifyChunkPosition({ x, z })))
-						Chunks.requestLoadChunk(new THREE.Vector3(x * chunkSize, 0, z * chunkSize));
+						if(!Chunks.loadRequests.includes(
+							stringifyChunkPosition({ x, y: 0, z })
+						)){
+							Chunks.requestLoadChunk(new THREE.Vector3(x * chunkSize, 0, z * chunkSize));
+							Chunks.loadRequests.push(
+								stringifyChunkPosition({ x, y: 0, z })
+							);
+						}
+						
 				}
 		}
 	}

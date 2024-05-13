@@ -12,10 +12,15 @@ biome:
   water:
     color: "#00aa00"
 spawn:
-  - name: Goobers
-    entity: !id goober
-    rarity: 10
-    variant: !id swamp
+  # - name: Goobers
+  #   entity: !id goober
+  #   rarity: 10
+  #   variant: !id swamp
+  - name: Crocs
+    entity: !id croc
+    rarity: 20
+    flags:
+      - swamp
 structures:
   - name: tree
     structure:
@@ -29,5 +34,7 @@ structures:
     under: 2
     random: !bool false
     allowStructures: []
+    flags: 
+      - swamp
 resource: !biome.resource
   _: ~

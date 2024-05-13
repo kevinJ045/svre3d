@@ -82,14 +82,23 @@ export class Chunks {
 		return this;
 	}
 
-
+	
+	static loadingChunks: string[] = [];
 	static startPing(socket, serverData){
 		pingFrom(socket, 'chunk:request', async ({position, type}) => {
+
+			const pid = stringifyChunkPosition(position); // position ID
+			if(this.loadingChunks.includes(pid)) return;
+
+			this.loadingChunks.push(pid);
 
 			const chunk = type == 'load' ? await Chunks.loadChunk(position) : Chunks.unloadChunk(position);
 			
 			socket.broadcast.emit('chunk:'+type, chunk || position);
 			socket.emit('chunk:'+type, chunk || position);
+
+			this.loadingChunks.splice(this.loadingChunks.indexOf(pid), 1);
+
 			return chunk;
 		});
 

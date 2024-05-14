@@ -1,4 +1,4 @@
-import { Scene3D, THREE } from "enable3d";
+import { EffectComposer, RenderPass, Scene3D, THREE } from "enable3d";
 import { Chunks } from "../repositories/chunks.js";
 import { Settings } from "../settings/settings.js";
 import { SceneManager } from "../common/sceneman.js";
@@ -14,6 +14,8 @@ import { Lights } from "./lights.js";
 import { Items } from "../repositories/items.js";
 import { ItemData } from "../../../server/models/item.js";
 import { Item } from "../models/item.js";
+import { UnrealBloomPass } from "../lib/UnrealBloomPass.ts";
+import { RenderPixelatedPass } from "../lib/RenderPixelatedPass.ts";
 // import { xyz } from "../common/xyz.js";
 
 export class MainScene extends Scene3D {
@@ -107,6 +109,12 @@ export class MainScene extends Scene3D {
 		// Items.crafting(...player.inventory.slice(1, 3) as any);
 
 		// this.physics.debug?.enable();
+		this.composer = new EffectComposer(this.renderer);
+		let r = new RenderPass(this.scene, this.camera);
+		this.composer.addPass(r);
+		this.composer.addPass(new RenderPixelatedPass(2, this.scene, this.camera) as any);
+		this.composer.addPass(new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1, 0.5, 0.4) as any);
+		// this.composer.addPass(new OutputPass());
 	}
 
 	resize(){

@@ -5,12 +5,12 @@ biome:
   ground: !import './segments/swamp.i.yaml'
   tile:
     multicolor: true
-    keepdefault: true
-  colors: [ "#00ff00", "#6aff00", "#0dbc00" ]
+    keepdefault: !bool false
+  colors: [ "#547c3d", "#395429", "#789d62" ]
   foliage:
     color: "#00ff00"
   water:
-    color: "#00aa00"
+    color: "#17a221"
 spawn:
   # - name: Goobers
   #   entity: !id goober

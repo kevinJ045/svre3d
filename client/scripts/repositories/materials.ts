@@ -86,7 +86,7 @@ export class MaterialManager {
 
 		const colorOptions: any = {};
 
-		if(biome.tile.variation_color && biome.tile.variation_color !== 'none'){
+		if(biome.tile?.variation_color && biome.tile?.variation_color !== 'none'){
 			colorOptions.color = biome.tile.variation_color;
 		}
 	

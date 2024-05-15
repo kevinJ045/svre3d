@@ -6,6 +6,7 @@ import { HUDUi } from "./componets/hud.js";
 import { MainUI } from "./componets/provider.js";
 import ChatsUI from "./chats/chats.tsx";
 import { Context } from "./data/context.ts";
+import { ToggleButton } from "./widgets/toggle.tsx";
 
 export default class UI {
 
@@ -17,20 +18,23 @@ export default class UI {
 		this.root.render(<MainUI>
 			<Menu></Menu>
 			<HUDUi></HUDUi>
-			<div onClick={() => UI.show()} className="menu-button"></div>
+			<ToggleButton click={() => UI.toggle()}></ToggleButton>
 		</MainUI>);
 	}
 
 	static toggle(){
 		document.querySelector('#full-menu')?.classList.toggle('active');
+		document.querySelector('#menu-button')?.classList.toggle('menu-open');
 	}
 
 	static show(){
 		document.querySelector('#full-menu')?.classList.add('active');
+		document.querySelector('#menu-button')?.classList.add('menu-open');
 	}
 
 	static hide(){
 		document.querySelector('#full-menu')?.classList.remove('active');
+		document.querySelector('#menu-button')?.classList.remove('menu-open');
 	}
 
 	static update(){

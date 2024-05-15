@@ -18,35 +18,19 @@ export default class EffectManager {
   }
 
   static ssaoPass(scene: MainScene){
-    if(!Settings.get('ssao')) return;
     const ssaoPass = new SSAOPass(scene.scene, scene.camera, scene.renderer.getSize(new THREE.Vector2()).x, scene.renderer.getSize(new THREE.Vector2()).y);
 		ssaoPass.kernelRadius = 16;
 		ssaoPass.minDistance = 0.02;
 		ssaoPass.maxDistance = Infinity;
-    scene.composer.addPass(ssaoPass);
-
-    Settings.on('change:ssao', () => {
-      if(!Settings.get('ssao'))
-        scene.composer.removePass(ssaoPass);
-      else 
-        scene.composer.addPass(ssaoPass);
-    });
+    EffectManager.passUpdate(scene, ssaoPass, 'ssao');
   }
 
   static bloom(scene: MainScene){
-    if(!Settings.get('enableBloom')) return;
     const pass = new UnrealBloomPass( scene.renderer.getSize(new THREE.Vector2()), 1, 0.5, 0.4) as any;
-    scene.composer.addPass(pass);
-    Settings.on('change:enableBloom', () => {
-      if(!Settings.get('enableBloom'))
-        scene.composer.removePass(pass);
-      else 
-        scene.composer.addPass(pass);
-    });
+    EffectManager.passUpdate(scene, pass, 'enableBloom');
   }
 
   static pixel(scene: MainScene){
-    if(!Settings.get('enablePixels')) return;
     const pass = new RenderPixelatedPass(Settings.get('pixelLevel', 2), scene.scene, scene.camera) as any;
     EffectManager.passUpdate(scene, pass, 'enablePixels', [
       ['pixelLevel', 'pixelSize']
@@ -54,8 +38,10 @@ export default class EffectManager {
   }
 
   static passUpdate(scene: MainScene, pass: any, key: string, keymap?: string[][]){
-    scene.composer.addPass(pass);
-    (pass as any).added = true;
+    if(Settings.get(key)) {
+      scene.composer.addPass(pass);
+      (pass as any).added = true;
+    }
     Settings.on('change:'+key, () => {
       if(Settings.get(key) == true){
         if((pass as any).added) return;

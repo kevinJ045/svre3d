@@ -30,7 +30,7 @@ export const ChatBar = () => {
             <div className="content">{
               chat.message.text.split(' ').map(i => 
                 i.startsWith('@') ? <a href={"#"+i.split('@')[1]} className="username">{i} </a>
-                : i
+                : i+' '
               )
             }</div>
           </div>

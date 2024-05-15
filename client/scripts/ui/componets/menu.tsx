@@ -36,7 +36,7 @@ export const Menu = () => {
 			</Tab>
 
 			<Tab tab="crafting" setActiveTab={setTab} activeTab={tab}>
-				<b className="craft-icon"></b>
+				<b className="crafting-icon"></b>
 			</Tab>
 
 			<Tab tab="map" setActiveTab={setTab} activeTab={tab}>

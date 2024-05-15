@@ -1,5 +1,6 @@
-import { RenderPass, Scene3D, THREE } from "enable3d";
+import { RenderPass, Scene3D, ShaderPass, THREE } from "enable3d";
 import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass.js";
+import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
 import { UnrealBloomPass } from "../lib/UnrealBloomPass.ts";
 import { RenderPixelatedPass } from "../lib/RenderPixelatedPass.ts";
 import { MainScene } from "../scene/scene.ts";
@@ -15,6 +16,7 @@ export default class EffectManager {
     this.bloom(scene);
     this.ssaoPass(scene);
     this.pixel(scene);
+    this.fxaa(scene);
   }
 
   static ssaoPass(scene: MainScene){
@@ -35,6 +37,20 @@ export default class EffectManager {
     EffectManager.passUpdate(scene, pass, 'enablePixels', [
       ['pixelLevel', 'pixelSize']
     ]);
+  }
+
+  static fxaa(scene: MainScene){
+    
+    const pass = new ShaderPass(FXAAShader);
+    // EffectManager.passUpdate(scene, pass, 'enablePixels', [
+    //   ['pixelLevel', 'pixelSize']
+    // ]);
+    pass.uniforms["resolution"].value.set(
+      1 / scene.renderer.domElement.width,
+      1 / scene.renderer.domElement.height
+    );
+    pass.renderToScreen = true;
+    scene.composer.addPass(pass);
   }
 
   static passUpdate(scene: MainScene, pass: any, key: string, keymap?: string[][]){

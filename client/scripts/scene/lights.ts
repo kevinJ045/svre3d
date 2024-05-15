@@ -19,7 +19,9 @@ export class Lights {
 	}
 
 	static initLights(){
-		const { directionalLight } = this.lights!;
+		const { directionalLight, ambientLight } = this.lights!;
+
+		// ambientLight.intensity = 2;
 
     var d = 20;
 		directionalLight.castShadow = true;

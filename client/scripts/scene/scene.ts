@@ -1,4 +1,4 @@
-import { EffectComposer, RenderPass, Scene3D, THREE } from "enable3d";
+import { EffectComposer, Scene3D, THREE } from "enable3d";
 import { Chunks } from "../repositories/chunks.js";
 import { Settings } from "../settings/settings.js";
 import { SceneManager } from "../common/sceneman.js";
@@ -14,9 +14,10 @@ import { Lights } from "./lights.js";
 import { Items } from "../repositories/items.js";
 import { ItemData } from "../../../server/models/item.js";
 import { Item } from "../models/item.js";
+import EffectManager from "../repositories/effects.ts";
 import { UnrealBloomPass } from "../lib/UnrealBloomPass.ts";
-import { RenderPixelatedPass } from "../lib/RenderPixelatedPass.ts";
 // import { xyz } from "../common/xyz.js";
+import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass.js";
 
 export class MainScene extends Scene3D {
 
@@ -38,6 +39,8 @@ export class MainScene extends Scene3D {
 	async create() {
 		const { lights } = await this.warpSpeed('camera', 'light');
 
+		// this.scene.add(lights!.directionalLight)
+
 		Lights
 		.setLights(lights!)
 		.initLights();
@@ -55,7 +58,7 @@ export class MainScene extends Scene3D {
 		// player.displace(new THREE.Vector3(Utils.randFrom(-10, 10), 0, Utils.randFrom(-10, 10)));
 		Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
 		player.on('move', () => {
-
+			Lights.updateLightPosition(PlayerInfo.entity.object3d.position.clone());
 			Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
 		});
 
@@ -87,9 +90,11 @@ export class MainScene extends Scene3D {
 		UI.init();
 		Controls.initControls(this.canvas);
 
-		var supportsDepthTextureExtension = !!this.renderer.extensions.get(
-			"WEBGL_depth_texture"
-		);
+		Lights.updateLightPosition(PlayerInfo.entity.object3d.position.clone());
+
+		// var supportsDepthTextureExtension = !!this.renderer.extensions.get(
+		// 	"WEBGL_depth_texture"
+		// );
 
 		// player.addToInventory(Items.create(new ItemData().setData({
 		// 	itemID: 'm:horn-1',
@@ -105,20 +110,40 @@ export class MainScene extends Scene3D {
 		// 	itemID: 'm:oreon',
 		// 	quantity: 5
 		// })));
+		this.composer = new EffectComposer(this.renderer);
+		EffectManager.init(this);
 
 		// Items.crafting(...player.inventory.slice(1, 3) as any);
 
 		// this.physics.debug?.enable();
-		this.composer = new EffectComposer(this.renderer);
-		let r = new RenderPass(this.scene, this.camera);
-		this.composer.addPass(r);
-		this.composer.addPass(new RenderPixelatedPass(2, this.scene, this.camera) as any);
-		this.composer.addPass(new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1, 0.5, 0.4) as any);
+		
+		// this.composer.addPass(new RenderPixelatedPass(2, this.scene, this.camera) as any);
+		// this.composer.addPass(new UnrealBloomPass( this.renderer.getSize(new THREE.Vector2()), 1, 0.5, 0.4) as any);
 		// this.composer.addPass(new OutputPass());
+		const ssaoPass = new SSAOPass(this.scene, this.camera, this.renderer.getSize(new THREE.Vector2()).x, this.renderer.getSize(new THREE.Vector2()).y);
+		ssaoPass.kernelRadius = 16;
+		ssaoPass.minDistance = 0.02;
+		ssaoPass.maxDistance = Infinity;
+		// this.composer.addPass(ssaoPass);
+
+		// this.renderer.shadowMap = THREE.PCFShadowMap;
+
+
+
+		// const shadowHelper = new THREE.CameraHelper( Lights.lights.directionalLight.shadow.camera )
+		// this.scene.add(shadowHelper);
+
+
+		window.addEventListener('resize', () => this.resize());
+		
 	}
+
+	ssaoPass!: SSAOPass;
+	unrealBloomPass!: UnrealBloomPass;
 
 	resize(){
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
+		EffectManager.resize(this);
 	}
 
 	update(){
@@ -129,6 +154,7 @@ export class MainScene extends Scene3D {
 
 		Chunks.loop(this.clock);
 
+		// // Lights.lights.directionalLight.lookAt()
 	}
 
 }

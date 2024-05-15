@@ -38,29 +38,33 @@ const LuminosityHighPassShader = {
 
 	fragmentShader: /* glsl */`
 
-		uniform sampler2D tDiffuse;
-		uniform vec3 defaultColor;
-		uniform float defaultOpacity;
-		uniform float luminosityThreshold;
-		uniform float smoothWidth;
-
-		varying vec2 vUv;
-
-		void main() {
-
+	uniform sampler2D tDiffuse;
+	uniform vec3 defaultColor;
+	uniform float defaultOpacity;
+	uniform float luminosityThreshold;
+	uniform float smoothWidth;
+	
+	varying vec2 vUv;
+	
+	void main() {
 			vec4 texel = texture2D( tDiffuse, vUv );
-
-			vec3 luma = vec3( 0.299, 0.587, 0.114 );
-
-			float v = dot( texel.xyz, luma );
-
-			vec4 outputColor = vec4( defaultColor.rgb, defaultOpacity );
-
-			float alpha = smoothstep( luminosityThreshold, luminosityThreshold + smoothWidth, v );
-
-			gl_FragColor = mix( outputColor, texel, alpha );
-
-		}`
+	
+			// Extract emissive color from the texture
+			vec3 emissiveColor = texel.rgb;
+	
+			// Calculate the luminosity of the pixel
+			float luminosity = dot(emissiveColor, vec3(0.299, 0.587, 0.114));
+	
+			// Output color and opacity for non-emissive pixels
+			vec4 outputColor = vec4(defaultColor.rgb, defaultOpacity);
+	
+			// If the luminosity exceeds the threshold, include the pixel in the bloom effect
+			float alpha = smoothstep(luminosityThreshold, luminosityThreshold + smoothWidth, luminosity);
+	
+			// Mix the output color with the original pixel color based on alpha
+			gl_FragColor = mix(outputColor, texel, alpha);
+	}
+	`
 
 };
 

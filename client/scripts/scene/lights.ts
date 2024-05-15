@@ -1,3 +1,5 @@
+import { THREE } from "enable3d";
+
 
 export type lights = {
 	ambientLight: THREE.AmbientLight;
@@ -19,14 +21,33 @@ export class Lights {
 	static initLights(){
 		const { directionalLight } = this.lights!;
 
-    var d = 100;
+    var d = 20;
+		directionalLight.castShadow = true;
     directionalLight.shadow.camera.left = - d;
     directionalLight.shadow.camera.right = d;
     directionalLight.shadow.camera.top = d;
     directionalLight.shadow.camera.bottom = - d;
+
     
     directionalLight.shadow.camera.near = 1;
-    directionalLight.shadow.camera.far = 1000000 * 10000;
+    directionalLight.shadow.camera.far = 10000;
+
+		// directionalLight.shadow.camera.
+	}
+
+	static updateLightPosition(v: THREE.Vector3){
+		const { directionalLight } = this.lights!;
+		if(!directionalLight.userData.offset) directionalLight.userData.offset = directionalLight.position.clone();
+		const pos = v.clone().sub(directionalLight.target.position);
+		directionalLight.target.position.add(
+			pos
+		);
+		directionalLight.target.updateMatrixWorld();
+		const pos2 = v.clone().sub(directionalLight.position);
+		directionalLight.position.add(
+			pos2.add(directionalLight.userData.offset)
+		);
+		directionalLight.updateMatrixWorld();
 	}
 
 }

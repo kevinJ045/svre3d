@@ -4,16 +4,8 @@ import { Entity } from "../models/entity.js";
 import { Biomes } from "../repositories/biomes.js";
 
 import { THREE } from "enable3d";
-import { Equipments } from '../repositories/equipments';
-import { Random } from '../../../server/common/rand';
-import { SceneManager } from '../common/sceneman';
-import { ResourceMap } from '../repositories/resources';
-
-
-
-
-
-
+import { Equipments } from '../repositories/equipments.js';
+import { Random } from '../../../server/common/rand.js';
 
 
 export class SkinPlayer {
@@ -71,16 +63,17 @@ export class SkinPlayer {
         colors.push(player.data.color);
 
         const settings = {
-            emissive: 0
+            emissiveIntensity: 0,
+            emissive: 0x000000
         }
 
         const body = Equipments.entityBody('body', player);
-        body.children[0].material = new THREE.MeshLambertMaterial({
+        body.children[0].material = new THREE.MeshStandardMaterial({
             map: this.createCanvasImage(player, colors, 1001),
-            ...settings
+            ...settings,
         });
         colors.pop();
-        body.children[3].material = new THREE.MeshLambertMaterial({
+        body.children[3].material = new THREE.MeshStandardMaterial({
             map: this.createCanvasImage(player, colors, 110, 150, 400),
             ...settings
         });

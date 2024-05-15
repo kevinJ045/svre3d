@@ -50,7 +50,9 @@ export class Entities {
 
 		const refMesh: THREE.Object3D = ref.resource.loader == "gltf" ? cloneGltf(ref.resource.load) : ref.resource.mesh.clone();
 		// SceneManager.scene.scene.add(refMesh);
-
+		
+		refMesh.castShadow = true;
+		refMesh.receiveShadow = true;
 		refMesh.traverse(child => {
 			child.castShadow = true		// SceneManager.scene.scene.add(refMesh);
 			child.receiveShadow = false

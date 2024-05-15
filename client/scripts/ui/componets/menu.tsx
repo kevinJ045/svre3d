@@ -15,6 +15,7 @@ import { DefaultBooks } from "../constants/books.js";
 import { Context } from "../data/context.js";
 import { generateItemIcon } from "../misc/itemicon.ts";
 import ChatsUI from "../chats/chats.tsx";
+import { SettingsUI } from "../widgets/settings.tsx";
 
 
 export const Menu = () => {
@@ -128,7 +129,7 @@ export const Menu = () => {
 			</TabPane>
 			
 			<TabPane tab="settings" activeTab={tab}>
-				settings
+				<SettingsUI></SettingsUI>
 			</TabPane>
 
 		</div>

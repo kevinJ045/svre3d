@@ -9,8 +9,19 @@ biome:
   colors: [ "#582186", "#861ac5", "#e75190" ]
   foliage:
     color: "#861ac5"
-
 structures:
+  - name: orbs
+    structure:
+      object: !import '../structures/orbs.i.yaml'
+      rule: ['orbs']
+    density: 5
+    random: true
+  - name: mushroom
+    structure:
+      object: !import '../structures/shroom.i.yaml'
+      rule: ['mushroom']
+    density: 5
+    random: true
   - name: tree-big
     structure:
       object: !import '../structures/tree.big.i.yaml'

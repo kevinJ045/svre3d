@@ -28,7 +28,7 @@ export default class EffectManager {
   }
 
   static bloom(scene: MainScene){
-    const pass = new UnrealBloomPass( scene.renderer.getSize(new THREE.Vector2()), 1, 0.5, 0.4) as any;
+    const pass = new UnrealBloomPass( scene.scene, scene.camera, scene.renderer.getSize(new THREE.Vector2()), 1, 0.5, 0.4) as any;
     EffectManager.passUpdate(scene, pass, 'enableBloom');
   }
 

@@ -1,0 +1,16 @@
+manifest:
+  id: !id 'orbs'
+  type: 'structure'
+structures:
+  orbs:
+    count: 1
+    position: !vec3 [0, 1, 0]
+    size: !vec3 [0.1, 0.1, 0.1]
+    rotation: !vec3 []
+    name: ["Orbs"]
+view:
+  material:
+    - Orbs: !material 'mat(color: #e75190, emissiveIntensity: 1, emissive: #e75190, transparent: true, opacity: 0.3)'
+resource:
+  loader: gltf
+  src: !realpath '../../bin/objects/orbs.glb'

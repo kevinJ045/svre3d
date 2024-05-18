@@ -1,0 +1,18 @@
+manifest:
+  id: !id 'mushroom'
+  type: 'structure'
+structures:
+  mushroom:
+    count: 4
+    position: !vec3 [0, 1, 0]
+    size: !vec3 [[0.1, 0.1, 0.1], [0.5, 0.5, 0.5]]
+    rotation: !vec3 []
+    name: ["Mushroom1"]
+view:
+  material:
+    Mushroom: !material 'mat(color: #3a1864)'
+    MushroomDot: !material 'mat(color: #cd18a6, emissive: #cd18a6, emissiveIntensity: 1)'
+    MushroomStem: !material 'mat(color: #dedede, emissive: #0000000, emissiveIntensity: 0)'
+resource:
+  loader: obj
+  src: !realpath '../../bin/objects/mushroom.obj'

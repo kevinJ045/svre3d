@@ -1,0 +1,31 @@
+manifest:
+  id: !id 'magicforest'
+  type: 'biome'
+biome:
+  ground: !import './segments/magic.i.yaml'
+  tile:
+    multicolor: true
+    keepdefault: true
+  colors: [ "#582186", "#861ac5", "#e75190" ]
+  foliage:
+    color: "#861ac5"
+
+structures:
+  - name: tree-big
+    structure:
+      object: !import '../structures/tree.big.i.yaml'
+      rule: ['tree']
+    density: 5
+    random: true
+    flags: 
+      - '!color_0'
+  - name: tree-small
+    structure:
+      object: !import '../structures/tree.small.i.yaml'
+      rule: ['tree']
+    density: 5
+    random: true
+    flags:
+      - '!color_0'
+resource: !biome.resource
+  _: ~

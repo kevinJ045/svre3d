@@ -56,7 +56,11 @@ export class Structures {
 
 		if(biome.structures){
 			
-			let rule: StructureRule = Random.pick(...biome.structures.filter(i => !i.under && !i.above), seedrng);
+			let rule: StructureRule = Random.pick(...biome.structures.filter(i => !i.under && !i.above)
+			.filter(rule => rule.flags ? !rule.flags.map((flag: string) => flag.startsWith('!') ? 
+				!chunk.flags.includes(flag.replace('!', '')) :
+				chunk.flags.includes(flag)
+			).includes(false) : true), seedrng);
 
 			let rule2 = (biome.structures as StructureRule[]).find(
 				struct => {

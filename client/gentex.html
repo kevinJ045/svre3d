@@ -52,8 +52,11 @@
       <input type="text" bind="color3"><br><br>
     </span>
 
+    <label for="invertColors">Invert Colors:</label>
+    <input type="checkbox" id="invertColors" name="invertColors" value="false"><br><br>
+
     <span showif="specklePattern">
-      <label for="usecolor3">Use Color 3:</label>
+      <label for="usecolor3">Use All Colors:</label>
       <input type="checkbox" id="usecolor3" name="usecolor3" value="false"><br><br>
     </span>
 
@@ -94,6 +97,7 @@
       const color2 = form.color2.value;
       const color3 = form.color3.value;
       const usecolor3 = form.usecolor3.checked;
+      const invertColors = form.invertColors.checked;
       const threshold1 = parseFloat(form.threshold1.value);
       const threshold2 = parseFloat(form.threshold2.value);
       const threshold3 = parseFloat(form.threshold3.value);
@@ -102,7 +106,9 @@
       canvas.height = size;
 
       const ctx = canvas.getContext('2d');
-      const colors = [color2, color1, color3];
+      let colors = invertColors ? [color1, color2] : [color2, color1];
+
+      colors.push(color3);
 
       function drawTopSide(color = 0) {
         for (let y = 0; y < canvas.height; y += pixelSize) {
@@ -134,7 +140,7 @@
       }
 
       function drawSpecklePattern() {
-        drawTopSide(usecolor3 ? 2 : 1);
+        drawTopSide(usecolor3 ? 0 : 1);
 
         const placed = [];
 
@@ -156,7 +162,7 @@
                 if (!isIsolated) break;
               }
               if (isIsolated) {
-                ctx.fillStyle = colors[0];
+                ctx.fillStyle = colors[2];
                 ctx.fillRect(x, y, pixelSize, pixelSize);
                 console.log(x, y);
                 placed.push(`${x},${y}`);
@@ -184,13 +190,22 @@
           e.style.display = 'none';
         }
       });
+
+      return true;
     }
-    form.oninput = () => updateCanvas();
+    function saveForm(e){
+      localStorage.setItem((e.target.getAttribute('bind') ?? e.target.name) + '-value', e.target.value);
+    }
+    form.oninput = (e) => updateCanvas() && saveForm(e);
     canvas.onclick = () => setRandomSeed(Math.random()) && updateCanvas();
+    form.querySelectorAll('input')?.forEach((e) => {
+      let v = localStorage.getItem(e.name + '-value');
+      if(v) e.value = v;
+    });
     form.querySelectorAll('input[bind]')?.forEach((e) => {
       const bind = e.getAttribute('bind');
       const bindEl = form[bind];
-      e.value = bind.value;
+      e.value = bindEl.value;
       e.oninput = () => bindEl.value = e.value;
       bindEl.oninput = () => e.value = bindEl.value;
     });

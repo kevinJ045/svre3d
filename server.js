@@ -30,13 +30,15 @@ fs.watch(res_path,
     console.clear();
 		console.log('updated yaml', filename);
 		startServer();
-		
 	});
-fs.watch(server_path, 
-  { recursive: true },	
-  (event, filename) => {
-    console.clear();
-    startServer();
-  });
+
+// if(process.argv.includes('node')){
+  fs.watch(server_path, 
+    { recursive: true },	
+    (event, filename) => {
+      console.clear();
+      startServer();
+    });
+// }
 
 startServer();

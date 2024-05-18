@@ -28,7 +28,10 @@ export class Chunks {
 		if(this.has(stringifyChunkPosition(position))) return this.find(stringifyChunkPosition(position));
 		position.y = generateChunkHeight(position.x, position.z, this.maxHeight, this.chunkSize);
 
-		const chunk = ChunkData.create<ChunkData>(ChunkData, { position, chunkSize: this.chunkSize, biome: Biomes.getBiome(position.x, position.z).reference });
+		const flags = [];
+		const biome = Biomes.getBiome(position.x, position.z, flags);
+		const chunk = ChunkData.create<ChunkData>(ChunkData, { position, chunkSize: this.chunkSize, biome: biome.reference });
+		chunk.flags.push(...flags);
 
 		await Structures.constructStructure(chunk);
 		// EntitySpawner.spawnAtChunk(chunk);

@@ -42,10 +42,11 @@ export class MaterialManager {
 		};
 	
 		if(materialOptions.texture){
-			const texture = ResourceMap.find(materialOptions.texture);
+			const texture = ResourceMap.find(parseVariable(materialOptions.texture, variables));
+			console.log(texture);
 			if(texture) {
-				uniforms.textureMap = { value: texture.texture };
-				materialOptions.map = texture.texture;
+				uniforms.textureMap = { value: texture.texture.clone() };
+				materialOptions.map = texture.texture.clone();
 			}
 			delete materialOptions.texture;
 		}
@@ -69,10 +70,10 @@ export class MaterialManager {
 	}
 
 	static parse(mat: string, variables){
-		return mat.startsWith('mat(') ? MaterialManager.parseMaterial(mat, variables): MaterialManager.makeObjectMaterial(
+		return typeof mat == "string" ? mat.startsWith('mat(') ? MaterialManager.parseMaterial(mat, variables): MaterialManager.makeObjectMaterial(
 			ResourceMap.find(mat),
 			variables
-		)
+		) : MaterialManager.parseMaterial(mat, variables);
 	}
 
 	static makeSegmentMaterial(texture: THREE.Texture, biome: any){
@@ -115,6 +116,10 @@ export class MaterialManager {
 						return MaterialManager.parse(mat, variables);
 					});
 					else if(typeof mat == "object") {
+						if(mat.variables){
+							variables = {...variables, ...mat.variables};
+							delete mat.variables;
+						}
 						child.material = child.material.map(mate => {
 							if(mate.name in mat){
 								return MaterialManager.parse(mat[mate.name], variables);

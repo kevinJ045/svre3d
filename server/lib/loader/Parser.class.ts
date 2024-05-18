@@ -47,6 +47,10 @@ export default class Parser {
         kind: 'scalar',
         construct: (data) => data,
       }),
+      new yaml.Type('!material', {
+        kind: 'mapping',
+        construct: (data) => data,
+      }),
       new yaml.Type('!vec3', {
         kind: 'sequence',
         construct: (data) => {

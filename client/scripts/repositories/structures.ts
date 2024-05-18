@@ -6,6 +6,7 @@ import { GPUComputationRenderer } from "../lib/GPUCompRendr.ts";
 import { Chunk } from "../models/chunk.js";
 import { WorldData } from "../world/data.ts";
 import { Seed } from "../world/seed.js";
+import { Items } from "./items.ts";
 import { MaterialManager } from "./materials.js";
 import { ResourceMap } from "./resources.js";
 import { THREE } from "enable3d";
@@ -225,11 +226,16 @@ export class Structures {
 					log: true
 				};		
 				
-				const structureProps = ResourceMap.findLoad(rule.structure.object.manifest.id);
+				const structureProps = ResourceMap.findLoad(rule.structure.object.manifest.id)!;
+
 
 				const structureIsLiquid = rule.structure.object?.view?.object?.type == "liquid";
 
 				const structure = structureIsLiquid ? this.createStructureTemplate(rule.structure.object.view.object, structureProps!.texture, chunk, variables) : generateWithRule(structureProps, Seed.rng, rule.structure.rule, structureData.looted);
+
+				if(structureProps.view?.animation){
+					Items.initItemAnimation({reference: structureProps} as any, structure);
+				}
 
 				chunk.object3d.add(structure);
 

@@ -16,7 +16,7 @@ export class Biomes {
 		.map(i => new BiomeData().setReference(i)), seedrng);
 	}
 
-	static getBiome(x: number, z: number){
+	static getBiome(x: number, z: number, flags: string[]){
 
 		const scale = 0.0001;
 		const offset = 0;
@@ -30,7 +30,9 @@ export class Biomes {
 		if(biome.reference.biome.tile?.multicolor){
 			const colors = [...biome.reference.biome.colors];
 			if(biome.reference.biome.tile.keepdefault) colors.unshift('none');
-			biome.reference.biome.tile.variation_color = Random.pick(...colors, () => Math.abs(noise.simplex2(x * 0.01, z * 0.01)));
+			const color = Random.pick(...colors, () => Math.abs(noise.simplex2(x * 0.01, z * 0.01)));
+			biome.reference.biome.tile.variation_color = color;
+			flags.push(`color_${colors.indexOf(color)}`);
 		}
 
 		if(Array.isArray(biome.reference.item)) {

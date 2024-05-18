@@ -1,0 +1,9 @@
+manifest:
+  id: !id 'magic_ground_texture'
+  type: texture_map
+resource:
+  loader: texture
+  sources: [
+    !realpath '../../../bin/textures/segment_magic_top.png',
+    !realpath '../../../bin/textures/segment_magic_side.png'
+  ]

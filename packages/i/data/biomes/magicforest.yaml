@@ -14,7 +14,7 @@ structures:
     structure:
       object: !import '../structures/orbs.i.yaml'
       rule: ['orbs']
-    density: 5
+    density: 20
     random: true
   - name: mushroom
     structure:
@@ -22,6 +22,10 @@ structures:
       rule: ['mushroom']
     density: 5
     random: true
+    loot: true
+    drops: 
+      - id: !id rubidium
+        quantity: !int 1
   - name: tree-big
     structure:
       object: !import '../structures/tree.big.i.yaml'

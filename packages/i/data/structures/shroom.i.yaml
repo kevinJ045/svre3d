@@ -8,6 +8,7 @@ structures:
     size: !vec3 [0.6, 0.6, 0.6]
     rotation: !vec3 []
     name: ["Mushroom1"]
+    looted: "Mushroom1E"
 view:
   material:
     Mushroom: !material 

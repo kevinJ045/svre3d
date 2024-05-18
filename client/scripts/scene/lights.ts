@@ -19,9 +19,16 @@ export class Lights {
 	}
 
 	static initLights(){
-		const { directionalLight, ambientLight } = this.lights!;
+		const { directionalLight, ambientLight, hemisphereLight } = this.lights!;
 
 		// ambientLight.intensity = 2;
+
+		const intensity = 4;
+		
+		hemisphereLight.intensity = intensity / 3;
+		ambientLight.intensity = intensity / 3;
+		directionalLight.intensity = Math.floor(intensity / 2);
+		hemisphereLight.color = new THREE.Color(0xffffff);
 
     var d = 20;
 		directionalLight.castShadow = true;

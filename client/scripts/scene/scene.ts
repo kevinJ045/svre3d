@@ -18,6 +18,7 @@ import EffectManager from "../repositories/effects.ts";
 import { UnrealBloomPass } from "../lib/UnrealBloomPass.ts";
 // import { xyz } from "../common/xyz.js";
 import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass.js";
+import { Biomes } from "../repositories/biomes.ts";
 
 export class MainScene extends Scene3D {
 
@@ -60,6 +61,7 @@ export class MainScene extends Scene3D {
 		player.on('move', () => {
 			Lights.updateLightPosition(PlayerInfo.entity.object3d.position.clone());
 			Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
+			Biomes.updateSky(PlayerInfo.entity.object3d.position);
 		});
 
 		player.on('inventory', () => {
@@ -113,19 +115,13 @@ export class MainScene extends Scene3D {
 		this.composer = new EffectComposer(this.renderer);
 		EffectManager.init(this);
 
+		this.renderer.setClearAlpha(0);
+		document.body.classList.add('sky');
+
 		// Items.crafting(...player.inventory.slice(1, 3) as any);
 
 		// this.physics.debug?.enable();
 		
-		// this.composer.addPass(new RenderPixelatedPass(2, this.scene, this.camera) as any);
-		// this.composer.addPass(new UnrealBloomPass( this.renderer.getSize(new THREE.Vector2()), 1, 0.5, 0.4) as any);
-		// this.composer.addPass(new OutputPass());
-		const ssaoPass = new SSAOPass(this.scene, this.camera, this.renderer.getSize(new THREE.Vector2()).x, this.renderer.getSize(new THREE.Vector2()).y);
-		ssaoPass.kernelRadius = 16;
-		ssaoPass.minDistance = 0.02;
-		ssaoPass.maxDistance = Infinity;
-		// this.composer.addPass(ssaoPass);
-
 		// this.renderer.shadowMap = THREE.PCFShadowMap;
 
 

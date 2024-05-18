@@ -1,4 +1,5 @@
 import { Chunk } from "../models/chunk.js";
+import { Chunks } from "./chunks.ts";
 import { MaterialManager } from "./materials.js";
 import { ResourceMap } from "./resources.js";
 
@@ -31,5 +32,15 @@ export class Biomes {
 		);
 	}
 
+	static firstUpdate = false;
+	static updateSky(v: THREE.Vector3){
+		const chunk = Chunks.findChunkAtPosition(v);
+		if(chunk){
+			const colors = chunk.biome.biome.colors;
+			for(let i in colors){
+				document.body.style.setProperty('--biome-colors-'+i, colors[i]);
+			}
+		}
+	}
 
 }

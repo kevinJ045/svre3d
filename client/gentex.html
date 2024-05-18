@@ -1,0 +1,202 @@
+<html>
+
+<head>
+  <title>Generate IOVIE Textures</title>
+  <style>
+    body {
+      background: black;
+      color: white;
+      display: flex;
+      gap: 10px;
+    }
+
+    #canvas-container {
+      padding: 10px;
+    }
+
+    #canvas {
+      user-select: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="canvas-container">
+    <canvas id="canvas"></canvas>
+  </div>
+  <form id="controlForm">
+    <label for="pixelSize">Pixels:</label>
+    <input type="number" id="pixelSize" name="pixelSize" value="16"><br><br>
+
+    <label for="size">Canvas Size:</label>
+    <input type="number" id="size" name="size" value="500" step="10"><br><br>
+
+    <label for="drawFunction">Draw Function:</label>
+    <select id="drawFunction" name="drawFunction">
+      <option value="topSide">Top Side</option>
+      <option value="sidePattern">Side Pattern</option>
+      <option value="specklePattern">Speckle Pattern</option>
+    </select><br><br>
+
+    <label for="color1">Color 1:</label>
+    <input type="color" id="color1" name="color1" value="#0000FF">
+    <input type="text" bind="color1"><br><br>
+
+    <label for="color2">Color 2:</label>
+    <input type="color" id="color2" name="color2" value="#FF0000">
+    <input type="text" bind="color2"><br><br>
+
+    <span showif="specklePattern">
+      <label for="color3">Color 3:</label>
+      <input type="color" id="color3" name="color3" value="#FFFF00">
+      <input type="text" bind="color3"><br><br>
+    </span>
+
+    <span showif="specklePattern">
+      <label for="usecolor3">Use Color 3:</label>
+      <input type="checkbox" id="usecolor3" name="usecolor3" value="false"><br><br>
+    </span>
+
+    <span showif="specklePattern,topSide">
+      <label for="threshold1">Threshold 1 (Top Pattern Density):</label>
+      <input type="range" id="threshold1" name="threshold1" min="0.1" max="0.9" step="0.1" value="0.2"><br><br>
+    </span>
+
+    <span showif="specklePattern">
+      <label for="threshold1">Threshold 3 (Speckle Pattern Distance):</label>
+      <input type="range" id="threshold3" name="threshold3" min="1" max="5" step="1" value="1"><br><br>
+    </span>
+
+    <span showif="sidePattern">
+      <label for="threshold2">Threshold 2 (Side Pattern):</label>
+      <input type="range" id="threshold2" name="threshold2" min="0.1" max="0.9" step="0.1" value="0.5"><br><br>
+    </span>
+
+  </form>
+
+  <script type="module">
+    const form = document.getElementById('controlForm');
+    const canvas = document.querySelector('#canvas');
+
+    let seedrng = () => 0.1;
+
+    function setRandomSeed(seed){
+      // seedrng = seedrandom(seed);
+      seedrng = () => Math.random();
+      return true;
+    }
+
+    function updateCanvas() {
+      const size = parseFloat(form.size.value);
+      const pixelSize = size / parseFloat(form.pixelSize.value);
+      const drawFunction = form.drawFunction.value;
+      const color1 = form.color1.value;
+      const color2 = form.color2.value;
+      const color3 = form.color3.value;
+      const usecolor3 = form.usecolor3.checked;
+      const threshold1 = parseFloat(form.threshold1.value);
+      const threshold2 = parseFloat(form.threshold2.value);
+      const threshold3 = parseFloat(form.threshold3.value);
+
+      canvas.width = size;
+      canvas.height = size;
+
+      const ctx = canvas.getContext('2d');
+      const colors = [color2, color1, color3];
+
+      function drawTopSide(color = 0) {
+        for (let y = 0; y < canvas.height; y += pixelSize) {
+          for (let x = 0; x < canvas.width; x += pixelSize) {
+            ctx.fillStyle = seedrng() < threshold1 ? colors[1] : colors[color];
+            ctx.fillRect(x, y, pixelSize, pixelSize);
+          }
+        }
+      }
+
+      function drawSidePattern() {
+        canvas.height = canvas.height / 4;
+
+        const rows = canvas.height / pixelSize;
+        const cols = canvas.width / pixelSize;
+        const indexes = {};
+
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
+            if (y === 0) {
+              ctx.fillStyle = seedrng() < 0.7 ? colors[0] : colors[1];
+            } else {
+              ctx.fillStyle = (seedrng() < threshold2) && indexes[[x, y - 1]] === colors[0] ? colors[0] : colors[1];
+            }
+            indexes[[x, y]] = ctx.fillStyle;
+            ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+          }
+        }
+      }
+
+      function drawSpecklePattern() {
+        drawTopSide(usecolor3 ? 2 : 1);
+
+        const placed = [];
+
+        for (let y = 0; y < canvas.height; y += pixelSize) {
+          for (let x = 0; x < canvas.width; x += pixelSize) {
+            if (seedrng() < threshold1) {
+              let isIsolated = true;
+              for (let dy = -threshold3; dy <= threshold3; dy++) {
+                for (let dx = -threshold3; dx <= threshold3; dx++) {
+                  // if (dy === 0 && dx === 0) continue; // Skip the current cell
+                  const neighborX = x + dx * pixelSize;
+                  const neighborY = y + dy * pixelSize;
+                  console.log(neighborY, neighborX);
+                  if (placed.includes(`${neighborX},${neighborY}`)) {
+                    isIsolated = false;
+                    break;
+                  }
+                }
+                if (!isIsolated) break;
+              }
+              if (isIsolated) {
+                ctx.fillStyle = colors[0];
+                ctx.fillRect(x, y, pixelSize, pixelSize);
+                console.log(x, y);
+                placed.push(`${x},${y}`);
+              }
+            }
+          }
+        }
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (drawFunction === 'topSide') {
+        drawTopSide();
+      } else if (drawFunction === 'specklePattern') {
+        drawSpecklePattern();
+      } else {
+        drawSidePattern();
+      }
+
+      form.querySelectorAll('[showif]')?.forEach((e) => {
+        const showif = e.getAttribute('showif').split(',');
+        if(showif.includes(drawFunction)){
+          e.style.display = 'block';
+        } else {
+          e.style.display = 'none';
+        }
+      });
+    }
+    form.oninput = () => updateCanvas();
+    canvas.onclick = () => setRandomSeed(Math.random()) && updateCanvas();
+    form.querySelectorAll('input[bind]')?.forEach((e) => {
+      const bind = e.getAttribute('bind');
+      const bindEl = form[bind];
+      e.value = bind.value;
+      e.oninput = () => bindEl.value = e.value;
+      bindEl.oninput = () => e.value = bindEl.value;
+    });
+    setRandomSeed(Math.random());
+    updateCanvas();
+  </script>
+</body>
+
+</html>

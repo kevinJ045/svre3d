@@ -9,6 +9,7 @@ import { ServerData } from "../../../server/models/data.js";
 import { Biomes } from "./biomes.js";
 import { WorldData } from "../world/data.js";
 import { Structures } from "./structures.js";
+import { PlayerInfo } from "./player.ts";
 
 export class Chunks {
 
@@ -105,6 +106,10 @@ export class Chunks {
 		pingFrom('chunk:load', (data) => {
 			if (!Chunks.has(stringifyChunkPosition(data.position))) {
 				Chunks.loadChunk(Chunks.chunkFromData(data));
+				if(!Biomes.firstUpdate) {
+					Biomes.updateSky(data.position);
+					Biomes.firstUpdate = true;
+				}
 			}
 			Chunks.loadRequests.splice(
 				Chunks.loadRequests.indexOf(stringifyChunkPosition({ ...data.position, y: 0 })),

@@ -1252,3 +1252,9 @@ a{
 	--path: path('');
 }
 
+
+body.sky{
+	--biome-colors-0: #008cff;
+	--biome-colors-1: #3e5bff;
+	background: linear-gradient(var(--biome-colors-0), var(--biome-colors-1));
+}

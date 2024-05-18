@@ -5,7 +5,7 @@ structures:
   orbs:
     count: 1
     position: !vec3 [0, 1, 0]
-    size: !vec3 [0.1, 0.1, 0.1]
+    size: !vec3 []
     rotation: !vec3 []
     name: ["Orbs"]
 view:

@@ -64,16 +64,19 @@ export class SkinPlayer {
 
         const settings = {
             emissiveIntensity: 0,
-            emissive: 0x000000
+            emissive: 0x000000,
+            roughness: 1,
+            color: 0xbbbbbb,
+            toneMapped: false
         }
 
         const body = Equipments.entityBody('body', player);
-        body.children[0].material = new THREE.MeshStandardMaterial({
+        body.children[0].material = new THREE.MeshPhongMaterial({
             map: this.createCanvasImage(player, colors, 1001),
-            ...settings,
+            ...settings
         });
         colors.pop();
-        body.children[3].material = new THREE.MeshStandardMaterial({
+        body.children[3].material = new THREE.MeshPhongMaterial({
             map: this.createCanvasImage(player, colors, 110, 150, 400),
             ...settings
         });

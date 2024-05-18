@@ -136,6 +136,7 @@ export class MainScene extends Scene3D {
 
 	ssaoPass!: SSAOPass;
 	unrealBloomPass!: UnrealBloomPass;
+	composer2!: EffectComposer;
 
 	resize(){
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -149,6 +150,10 @@ export class MainScene extends Scene3D {
 		UI.update();
 
 		Chunks.loop(this.clock);
+
+		if(this.composer2){
+			this.composer2.render();
+		}
 
 		// // Lights.lights.directionalLight.lookAt()
 	}

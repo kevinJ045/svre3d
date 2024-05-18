@@ -6,7 +6,7 @@ biome:
   tile:
     multicolor: true
     keepdefault: true
-  colors: [ "#582186", "#861ac5", "#e75190" ]
+  colors: [ "#582186", "#861ac5", "#9931cc" ]
   foliage:
     color: "#861ac5"
 structures:

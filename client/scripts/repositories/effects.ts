@@ -5,6 +5,8 @@ import { UnrealBloomPass } from "../lib/UnrealBloomPass.ts";
 import { RenderPixelatedPass } from "../lib/RenderPixelatedPass.ts";
 import { MainScene } from "../scene/scene.ts";
 import { Settings } from "../settings/settings.ts";
+import { GlowLayer } from "../effects/glowlayer.ts";
+import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 
 
 
@@ -13,10 +15,11 @@ export default class EffectManager {
   static init(scene: MainScene){
     let r = new RenderPass(scene.scene, scene.camera);
 		scene.composer.addPass(r);
-    this.bloom(scene);
     this.ssaoPass(scene);
     this.pixel(scene);
     this.fxaa(scene);
+    this.bloom(scene);
+    scene.composer.addPass(new OutputPass());
   }
 
   static ssaoPass(scene: MainScene){
@@ -28,7 +31,10 @@ export default class EffectManager {
   }
 
   static bloom(scene: MainScene){
-    const pass = new UnrealBloomPass( scene.scene, scene.camera, scene.renderer.getSize(new THREE.Vector2()), 1, 0.5, 0.4) as any;
+    // const pass = new GlowLayer( scene.renderer, scene.scene, scene.camera) as any;
+    // scene.composer2 = pass;
+    // pass.render();
+    const pass = new UnrealBloomPass( new THREE.Vector2( scene.renderer.domElement.width, scene.renderer.domElement.height ), 0.2, 0.0, 1.01 );
     EffectManager.passUpdate(scene, pass, 'enableBloom');
   }
 

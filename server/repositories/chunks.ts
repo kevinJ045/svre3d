@@ -185,7 +185,7 @@ export class Chunks {
 
 			const position = { x: randomX, y: 0, z: randomZ };
 
-			const biome = Biomes.getBiome(randomX, randomZ);
+			const biome = Biomes.getBiome(randomX, randomZ, []);
 
 
 			if (biome.reference.manifest.id === biomeName) {
@@ -201,7 +201,7 @@ export class Chunks {
 							z: position.z + dz
 						};
 						
-						const surroundingBiome = Biomes.getBiome(surroundingPosition.x, surroundingPosition.z);
+						const surroundingBiome = Biomes.getBiome(surroundingPosition.x, surroundingPosition.z, []);
 
 						if (surroundingBiome.reference.manifest.id === biomeName) {
 							isSafeSpawnPoint--;

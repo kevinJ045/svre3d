@@ -8,9 +8,7 @@ import {
 	UniformsUtils,
 	Vector2,
 	Vector3,
-	WebGLRenderTarget,
-	LinearFilter,
-	RGBAFormat
+	WebGLRenderTarget
 } from 'three';
 import { Pass, FullScreenQuad } from './Pass.js';
 import { CopyShader } from './CopyShader.js';
@@ -25,60 +23,9 @@ import { LuminosityHighPassShader } from './LuminosityHighPassShader.js';
  * Reference:
  * - https://docs.unrealengine.com/latest/INT/Engine/Rendering/PostProcessEffects/Bloom/
  */
-
-class EmissiveObjectsPass extends Pass {
-	constructor(scene, camera) {
-			super();
-			this.scene = scene;
-			this.camera = camera;
-			this.renderTarget = new WebGLRenderTarget(window.innerWidth, window.innerHeight, {
-					minFilter: LinearFilter,
-					magFilter: LinearFilter,
-					format: RGBAFormat,
-			});
-			this.emissiveMaterial = new MeshBasicMaterial({ color: 0x000000 });
-
-			this.originalMaterials = new Map();
-	}
-
-	render(renderer, writeBuffer, readBuffer, deltaTime, maskActive) {
-			this.scene.traverse((child) => {
-					if (child.isMesh) {
-							this.originalMaterials.set(child, child.material);
-							if (child.material.emissive && child.material.emissiveIntensity > 0) {
-									this.emissiveMaterial.color.copy(child.material.emissive).multiplyScalar(child.material.emissiveIntensity);
-									child.material = this.emissiveMaterial;
-							}
-					}
-			});
-
-			renderer.setRenderTarget(this.renderTarget);
-			renderer.clear();
-			renderer.render(this.scene, this.camera);
-
-			this.scene.traverse((child) => {
-					if (child.isMesh) {
-							child.material = this.originalMaterials.get(child);
-					}
-			});
-	}
-
-	setSize(width, height) {
-			this.renderTarget.setSize(width, height);
-	}
-
-	dispose() {
-			this.renderTarget.dispose();
-			this.emissiveMaterial.dispose();
-	}
-}
-
-export { EmissiveObjectsPass };
-
-
 class UnrealBloomPass extends Pass {
 
-	constructor( scene, camera, resolution, strength, radius, threshold ) {
+	constructor( resolution, strength, radius, threshold ) {
 
 		super();
 
@@ -198,9 +145,6 @@ class UnrealBloomPass extends Pass {
 
 		this.fsQuad = new FullScreenQuad( null );
 
-		this.emissiveObjectsPass = new EmissiveObjectsPass(scene, camera); // Add this line
-
-
 	}
 
 	dispose() {
@@ -287,12 +231,6 @@ class UnrealBloomPass extends Pass {
 		this.highPassUniforms[ 'tDiffuse' ].value = readBuffer.texture;
 		this.highPassUniforms[ 'luminosityThreshold' ].value = this.threshold;
 		this.fsQuad.material = this.materialHighPassFilter;
-
-		this.emissiveObjectsPass.render(renderer, writeBuffer, readBuffer, deltaTime, maskActive);
-
-		// Use the emissive objects render target for the high pass filter
-		this.highPassUniforms['tDiffuse'].value = this.emissiveObjectsPass.renderTarget.texture;
-
 
 		renderer.setRenderTarget( this.renderTargetBright );
 		renderer.clear();

@@ -23,7 +23,7 @@ export class Settings {
 			value: 2
 		},
 		enableBloom: {
-			value: false
+			value: true
 		},
 		ssao: {
 			value: false

@@ -61,6 +61,7 @@ export function generateObjects(rule, item, parent, seed, side = '', looted) {
 
 function createObject(rule, item, side, seed, parent?: any, looted?: any) {
 	let position = new THREE.Vector3(...rule.position);
+	if(!rule.size.length) rule.size = Array(3).fill(0);
 	const size = new THREE.Vector3(...rule.size);
 	const rotation = new THREE.Euler(...rule.rotation);
 
@@ -78,6 +79,8 @@ function createObject(rule, item, side, seed, parent?: any, looted?: any) {
 		if(side) position = getPositionForKey(side, parent, rule, seed);
 		else if (Array.isArray(rule.position[0])) position = getRandomPos(rule.position, seed);
 		
+		if(!rule.size.includes(0)) o.scale.set(...size);
+
 		o.castShadow = o.receiveShadow = true;
 		o.position.copy(position);
 	}

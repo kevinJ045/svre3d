@@ -13,15 +13,20 @@ view:
     body: 0.0.2
     eye: 0.0.3
 entity:
+  reachRange: 10
   ai: 
     movement:
       random: true
-      biome: self
+      # biome: self
     attack:
       attackBack: true
+      projectile: 
+        speed: !float 0.25
+        object: ''
+        timeout: !int 100
       targets: 
         - id: !id goober
-          variant: \!self
+          variant: self
   variants: !import "./variants.i.yaml"
 events:
   death:

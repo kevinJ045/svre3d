@@ -76,6 +76,56 @@ export class Mouse {
 
     const place = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1, 0.5), new THREE.MeshBasicMaterial({ color: 0x000fff, opacity: 0.5 }));
 
+    const _glowItems: any[] = [];
+    const glowItem = (object, remove) => {
+      const hi = object => {
+        
+        if(Array.isArray((object as any).material)){
+          (object as any).material.forEach(mat => {
+            if(remove){
+              if(mat.userData.originalIntensity) {
+                mat.emissiveIntensity = mat.userData.originalIntensity;
+                delete mat.userData.originalIntensity;
+              }
+            }
+            else
+              if(mat.emissiveIntensity > 0 && !mat.userData.originalIntensity){
+                mat.userData.originalIntensity = mat.emissiveIntensity;
+                mat.emissiveIntensity = 100;
+              }
+          });
+        } else {
+          if(remove)
+            if((object as any).material && (object as any).material.userData.originalIntensity){
+              (object as any).material.emissiveIntensity = (object as any).material.userData.originalIntensity;
+              delete (object as any).material.userData.originalIntensity;
+            }
+          else 
+            if((object as any).material && (object as any).material.emissiveIntensity > 0 && !(object as any).material.userData.originalIntensity){
+              (object as any).material.userData.originalIntensity = (object as any).material.emissiveIntensity;
+              (object as any).material.emissiveIntensity = 100;
+            }
+        }
+
+      };
+      object.traverse(hi);
+    }
+    const glowItems = (intersects) => {
+      if(!intersects) intersects = [];
+      if(intersects[0]?.object.name !== 'chunk' && intersects[0]?.object.userData.lootable){
+        const chunkObject = intersects[0].object.parent?.parent;
+        if(chunkObject){
+          if(_glowItems.indexOf(intersects) < 0) _glowItems.push(intersects);
+          glowItem(chunkObject, false);
+        }
+      }
+      _glowItems.forEach(item => {
+        if(intersects[0]?.object.uuid !== item[0].object.uuid){
+          glowItem(item[0].object.parent?.parent, true);
+        }
+      });
+    }
+
     const itemInfo = (event) => {
       const raycaster = new THREE.Raycaster();
       const mouse = new THREE.Vector2();
@@ -123,14 +173,42 @@ export class Mouse {
             place.position.copy(point);
             SceneManager.scene.scene.add(place);
           }
+
+          
           if(Controls.controlMode) UISelectedItem.unselect();
         } else {
           SceneManager.scene.scene.remove(place);
+          if(intersects[0].object.name !== 'chunk' && intersects[0].object.userData.lootable){
+            const chunkObject = intersects[0].object.parent?.parent;
+            if(chunkObject){
+              chunkObject.userData.originalMaterial = (chunkObject as any).material;
+              
+              const hi = object => {
+                if((object as any).material && (object as any).material.userData.originalIntensity){
+                  (object as any).material.emissiveIntensity = (object as any).material.userData.originalIntensity;
+                  delete (object as any).material.userData.originalIntensity;
+                }
+
+                
+                if(Array.isArray((object as any).material)){
+                  (object as any).material.forEach(mat => {
+                    if(mat.userData.originalIntensity)
+                      mat.emissiveIntensity = mat.userData.originalIntensity;
+                      delete mat.userData.originalIntensity;
+                  });
+                }
+              };
+              chunkObject.traverse(hi);
+            }
+          }
         }
       } else {
         SceneManager.scene.scene.remove(place);
-        if(Controls.controlMode) UISelectedItem.unselect();
+        if(Controls.controlMode) {
+          UISelectedItem.unselect();
+        }
       }
+      if(!Controls.controlMode) glowItems(intersects);
     }
 
     canvas.addEventListener('mousemove', itemInfo);

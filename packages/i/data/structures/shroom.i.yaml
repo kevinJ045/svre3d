@@ -15,7 +15,7 @@ view:
       color: '#3a1864'
       texture: !id 'leaf_texture'
     MushroomDot: !material 'mat(color: #cd18a6, emissive: #cd18a6, emissiveIntensity: 5)'
-    MushroomStem: !material 'mat(color: #e8d5b7, emissive: #0000000, emissiveIntensity: 0)'
+    MushroomStem: !material 'mat(color: #e8d5b7, emissive: #000000, emissiveIntensity: 0)'
 resource:
   loader: obj
   src: !realpath '../../bin/objects/mushroom.obj'

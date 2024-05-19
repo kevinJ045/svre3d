@@ -37,8 +37,8 @@ export class Controls {
 			if (!this.pointerLock) return;
 			if (!this.pointerLock.isLocked()) return;
 			const { x, y } = delta;
-			Controls.move.y = -y * Settings.get('sensitivity')
-			Controls.move.x = x * Settings.get('sensitivity')
+			Controls.move.y = -y * (Settings.get('sensitivity') as number)
+			Controls.move.x = x * (Settings.get('sensitivity') as number)
 		});
 
 		(SceneManager.scene as any).controls = new FirstPersonControls(CameraManager.camera as any, PlayerInfo.entity.object3d, {
@@ -64,6 +64,10 @@ export class Controls {
 		
 		Keyboard.listen(KeyMap.getKey('ui.inventory'), () => {
 			UI.toggle();
+		});
+
+		Keyboard.listen(KeyMap.getKey('ui.chats'), () => {
+			UI.openChats();
 		});
 	}
 

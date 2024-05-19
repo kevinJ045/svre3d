@@ -7,6 +7,7 @@ import { MainUI } from "./componets/provider.js";
 import ChatsUI from "./chats/chats.tsx";
 import { Context } from "./data/context.ts";
 import { ToggleButton } from "./widgets/toggle.tsx";
+import GlobalEmitter from "../misc/globalEmitter.ts";
 
 export default class UI {
 
@@ -20,6 +21,11 @@ export default class UI {
 			<HUDUi></HUDUi>
 			<ToggleButton click={() => UI.toggle()}></ToggleButton>
 		</MainUI>);
+	}
+
+	static openChats(){
+		GlobalEmitter.emit('openChats');
+		this.show();
 	}
 
 	static toggle(){

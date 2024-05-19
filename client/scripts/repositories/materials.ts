@@ -43,7 +43,7 @@ export class MaterialManager {
 	
 		if(materialOptions.texture){
 			const texture = ResourceMap.find(parseVariable(materialOptions.texture, variables));
-			console.log(texture);
+			// console.log(texture);
 			if(texture) {
 				uniforms.textureMap = { value: texture.texture.clone() };
 				materialOptions.map = texture.texture.clone();
@@ -114,7 +114,7 @@ export class MaterialManager {
 			if(mat){
 				if(Array.isArray(child.material)){
 					if(Array.isArray(mat)) child.material = materialsRule.map(mat => {
-						console.log(mat);
+						// console.log(mat);
 						return MaterialManager.parse(mat, variables);
 					});
 					else if(typeof mat == "object") {

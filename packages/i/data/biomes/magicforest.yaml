@@ -9,6 +9,11 @@ biome:
   colors: [ "#582186", "#861ac5", "#9931cc" ]
   foliage:
     color: "#861ac5"
+spawn:
+  - name: Goobers
+    entity: !id goober
+    rarity: 10
+    variant: !id grass
 structures:
   - name: orbs
     structure:
@@ -16,6 +21,8 @@ structures:
       rule: ['orbs']
     density: 20
     random: true
+    flags: 
+      - '!color_2'
   - name: mushroom
     structure:
       object: !import '../structures/shroom.i.yaml'
@@ -32,15 +39,11 @@ structures:
       rule: ['tree']
     density: 5
     random: true
-    flags: 
-      - '!color_0'
   - name: tree-small
     structure:
       object: !import '../structures/tree.small.i.yaml'
       rule: ['tree']
     density: 5
     random: true
-    flags:
-      - '!color_0'
 resource: !biome.resource
   _: ~

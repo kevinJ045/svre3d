@@ -179,10 +179,10 @@ export class Chunks {
 		const startZ = Math.floor(playerChunkPosition.z - renderDistance);
 		const endZ = Math.ceil(playerChunkPosition.z + renderDistance);
 
-		const unloadStartX = Math.floor(playerChunkPosition.x - 2 * renderDistance);
-		const unloadEndX = Math.ceil(playerChunkPosition.x + 2 * renderDistance);
-		const unloadStartZ = Math.floor(playerChunkPosition.z - 2 * renderDistance);
-		const unloadEndZ = Math.ceil(playerChunkPosition.z + 2 * renderDistance);
+		const unloadStartX = Math.floor(playerChunkPosition.x - 1.1 * renderDistance);
+		const unloadEndX = Math.ceil(playerChunkPosition.x + 1.1 * renderDistance);
+		const unloadStartZ = Math.floor(playerChunkPosition.z - 1.1 * renderDistance);
+		const unloadEndZ = Math.ceil(playerChunkPosition.z + 1.1 * renderDistance);
 
 		// Unload chunks that are outside the range
 		for (let i = Chunks.chunks.length - 1; i >= 0; i--) {

@@ -13,6 +13,7 @@ export class KeyMap {
 		'move.sneak': 'shift',
 
 		'ui.inventory': 'E',
+		'ui.chats': '/',
 		'ui.pause': 'Escape',
 		
 		'controls.mode': 'F',

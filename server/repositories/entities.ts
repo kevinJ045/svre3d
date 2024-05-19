@@ -14,6 +14,7 @@ import { jsonres } from "../models/jsonres.js";
 import { ResourceSchema } from "../lib/loader/Schema.type.js";
 import { stringifyChunkPosition } from "../common/chunk.ts";
 import { xyzTv } from "../../client/scripts/common/xyz.ts";
+import Projectiles from "./projectiles.ts";
 
 
 export class Entities {
@@ -149,6 +150,10 @@ export class Entities {
 		this.entities.forEach(e => {
 			if(e.attackTarget?.id == (entity as any).id){
 				e.attackTarget = null;
+				Sockets.emit('entity:attackTarget', {
+					entity: e.id,
+					target: null
+				});
 			}
 		});
 
@@ -339,11 +344,11 @@ export class Entities {
 		if(chunks.length) entity.targetPosition = Random.pick(...chunks).position;
 	}
 
-	static attackTarget(entity: EntityData, target: EntityData) {
+	static attackTarget(entity: EntityData, target: EntityData, timeout = true) {
 		const damage = entity.damage;
 		const finalDamage = damage - (target.defense || 0);
 
-		if(entity.reference.entity?.ai && entity.attackInfo.current > 0){
+		if(timeout && entity.reference.entity?.ai && entity.attackInfo.current > 0){
 			entity.attackInfo.current  -= 1;
 			return;
 		}
@@ -357,11 +362,17 @@ export class Entities {
 			hp: target.health
 		});
 		
-		entity.attackInfo.current = entity.attackInfo.cooldown;
+		if(timeout) entity.attackInfo.current = entity.attackInfo.cooldown;
 		
 		if(target.reference.entity?.ai?.attack.attackBack){
 			if(target.reference.entity?.ai?.attack.attackBack == 'first'
-				? true : !target.attackTarget) target.attackTarget = entity;
+				? true : !target.attackTarget) {
+					target.attackTarget = entity;
+					Sockets.emit('entity:attackTarget', {
+						entity: target.id,
+						target: entity.id
+					});
+				}
 		}
 	}
 
@@ -422,6 +433,10 @@ export class Entities {
     if (possibleTargets.length > 0) {
 			const target = possibleTargets[0];
 			entity.attackTarget = target;
+			Sockets.emit('entity:attackTarget', {
+				entity: entity.id,
+				target: target.id
+			});
 			return true;
     }
     return false;
@@ -468,7 +483,29 @@ export class Entities {
 					});
 				}
 
-				this.attackTarget(entity, entity.attackTarget);
+				if(entity.reference.entity.ai?.attack?.projectile){
+					// this.attackTarget(entity, entity.attackTarget);
+					const direction = new Vector3();
+					direction.subVectors(xyzTv(entity.attackTarget.position), position);
+					if(entity.data.projectileTimeout == undefined) entity.data.projectileTimeout = 0;
+					if(entity.data.projectileTimeout <= 0){
+						entity.data.projectileTimeout = entity.reference.entity.ai?.attack?.projectile.timeout || 100;
+						Projectiles.createProjectile(
+							entity,
+							direction,
+							entity.reference.entity.ai?.attack?.projectile.speed,
+							entity.damage,
+							entity.reference.entity.ai?.attack?.projectile.object,
+							100
+						).on('hit', ({ target }) => {
+							if(target) this.attackTarget(entity, target, false);
+						});
+					} else {
+						entity.data.projectileTimeout--;
+					}
+				} else {
+					this.attackTarget(entity, entity.attackTarget);
+				}
 			} else if(!entity.targetPosition){
 				entity.targetPosition = {
 					x: newPosition.x,
@@ -479,10 +516,10 @@ export class Entities {
 				Entities.moveTowardsTarget(entity);
 			} 
 		} else {
-			Entities.selectAttackTarget(entity);
-
-			if(entity.targetPosition) Entities.moveTowardsTarget(entity);
-			else Entities.thinkNoAttackTarget(entity);
+			if(!Entities.selectAttackTarget(entity)){
+				if(entity.targetPosition) Entities.moveTowardsTarget(entity);
+				else Entities.thinkNoAttackTarget(entity);
+			}
 		}
 	}
 

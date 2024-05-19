@@ -6,10 +6,17 @@ export class LocalDB {
 	static cookie = class Cookie {
 		static getCookieJson(){
 			if(!document.cookie) document.cookie = '{}';
-			// if(document.cookie.indexOf(';')){
-			// 	document.cookie = document.cookie.split(';')[1].trim();
-			// }
-			return JSON.parse(document.cookie || '{}');
+			let cookie = document.cookie;
+			if(cookie.indexOf(';')){
+				cookie = cookie.split(';').find(r => {
+					try{
+						JSON.parse(r);
+						return true;
+					} catch(e){}
+					return false;
+				})!;
+			}
+			return JSON.parse(cookie || '{}');
 		}
 	
 		static setCookieJson(object){

@@ -128,7 +128,6 @@ export class Entities {
 
 	static despawn(entity: string | Entity){
 		if(typeof entity == 'string') entity = Entities.find(entity)!;
-		console.log(entity);
 		if(!entity) return;
 		entity.destroy();
 		Entities.entities.splice(Entities.entities.indexOf(entity), 1);
@@ -148,6 +147,23 @@ export class Entities {
 			if(entity){
 				entity.displace(new THREE.Vector3(position.x, position.y, position.z));
 			} else {}
+		});
+
+		pingFrom('entity:setpos', ({entity:se, position}) => {
+			const entity = Entities.find(se);
+			if(entity){
+				entity.rmPhysics();
+				entity.object3d.position.set(position.x, 5, position.z);
+				entity.addPhysics();
+				entity.emit('move');
+			}
+		});
+		
+		pingFrom('entity:attackTarget', ({entity:se, target}) => {
+			const entity = Entities.find(se);
+			if(entity){
+				entity.attackTarget = target ? Entities.find(target)! : null; // t
+			}
 		});
 
 		pingFrom('entity:spawn', ({entity}) => {
@@ -201,7 +217,6 @@ export class Entities {
 		pingFrom('entity:reach', ({entity:se, position}) => {
 			const entity = Entities.find(se);
 			if(entity){
-				console.log('reach on server');
 				const pos = new THREE.Vector3(position.x, position.y, position.z);
 				const distance = pos.distanceTo(entity.object3d.position);
 				if(distance < 1.5) entity.displace(null);

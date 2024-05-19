@@ -11,6 +11,7 @@ import { Entities } from "./repositories/entities.js";
 import { Items } from "./repositories/items.js";
 import { Mainloop } from "./repositories/mainloop.js";
 import { Players } from "./repositories/players.js";
+import Projectiles from "./repositories/projectiles.ts";
 import { ResourceMap } from "./repositories/resources.js";
 
 
@@ -89,7 +90,9 @@ export function init(serverData: any){
 
 	Mainloop.register(() => {
 		Entities.update();
+		Projectiles.moveProjectiles(Entities.entities);
 	});
+
 
 
 	Mainloop.start();

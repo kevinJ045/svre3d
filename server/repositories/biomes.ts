@@ -30,7 +30,7 @@ export class Biomes {
 		if(biome.reference.biome.tile?.multicolor){
 			const colors = [...biome.reference.biome.colors];
 			if(biome.reference.biome.tile.keepdefault) colors.unshift('none');
-			const color = Random.pick(...colors, () => Math.abs(noise.simplex2(x * 0.01, z * 0.01)));
+			const color = Random.pick(...colors, () => Math.abs(noise.perlin2(x * 0.01, z * 0.01)));
 			biome.reference.biome.tile.variation_color = color;
 			flags.push(`color_${colors.indexOf(color)}`);
 		}

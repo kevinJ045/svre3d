@@ -63,6 +63,10 @@ export const MainUI = ({ children }) => {
     pingFrom('chat:send', (msg: Chat) => {
       addChat(msg);
     });
+
+    GlobalEmitter.on('openChats', () => {
+      setTab('chats');
+    });
   }, []);
 
 

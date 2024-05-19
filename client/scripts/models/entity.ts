@@ -1,6 +1,6 @@
 import { ExtendedObject3D, THREE } from "enable3d";
 import { EntityData } from "../../../server/models/entity.js";
-import { xyz, xyzt } from "../common/xyz.js";
+import { xyz, xyzTv, xyzt } from "../common/xyz.js";
 import { PhysicsManager } from "../common/physics.js";
 import { Chunks } from "../repositories/chunks.js";
 import { Entities } from "../repositories/entities.js";
@@ -100,8 +100,12 @@ export class Entity extends EntityData {
 	}
 
 	destroy(){
-		PhysicsManager.destroy(this.object3d);
+		this.rmPhysics();
 		SceneManager.scene.scene.remove(this.object3d);
+	}
+
+	rmPhysics(){
+		PhysicsManager.destroy(this.object3d);
 	}
 
 	addPhysics(){
@@ -373,18 +377,18 @@ export class Entity extends EntityData {
 		return false;
 	}
 
-	moveTowardsTarget() {
-    	if (this.targetLocation) {
-			this.targetLocation.y = this.object3d.position.y;
+	moveTowardsTarget(pos?: any) {
+    	if (this.targetLocation || pos) {
+			(this.targetLocation || pos).y = this.object3d.position.y;
 			const direction = new THREE.Vector3();
-			direction.subVectors(this.targetLocation, this.object3d.position);
+			direction.subVectors(this.targetLocation || pos, this.object3d.position);
 			direction.y = 0; 
 
 			direction.normalize();
 
 			const speed = (this.speed) / (this.isState('Sneak') ? 2 : 1); 
 
-			const distanceToTarget = this.object3d.position.distanceTo(this.targetLocation);
+			const distanceToTarget = this.object3d.position.distanceTo(this.targetLocation || pos);
 
 			// const box = new THREE.Box3().setFromObject(this.object3d);
 			// const sizeParent = new THREE.Vector3();
@@ -445,7 +449,11 @@ export class Entity extends EntityData {
 	}
 
 	update(){
-		if(this.targetLocation) this.moveTowardsTarget();
+		if(this.attackTarget){
+			this.moveTowardsTarget(this.attackTarget.position ? xyzTv(this.attackTarget.position) : (this.attackTarget as Entity).object3d.position);
+		} else if(this.targetLocation) {
+			this.moveTowardsTarget();
+		}
 
 		if(this.runDirection.x || this.runDirection.z){
 			if(this.hasBlockNextStep()){

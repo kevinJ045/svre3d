@@ -19,6 +19,7 @@ import { UnrealBloomPass } from "../lib/UnrealBloomPass.ts";
 // import { xyz } from "../common/xyz.js";
 import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass.js";
 import { Biomes } from "../repositories/biomes.ts";
+import Projectiles from "../repositories/projectiles.ts";
 
 export class MainScene extends Scene3D {
 
@@ -58,10 +59,14 @@ export class MainScene extends Scene3D {
 
 		// player.displace(new THREE.Vector3(Utils.randFrom(-10, 10), 0, Utils.randFrom(-10, 10)));
 		Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
+		let t;
 		player.on('move', () => {
 			Lights.updateLightPosition(PlayerInfo.entity.object3d.position.clone());
 			Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
 			Biomes.updateSky(PlayerInfo.entity.object3d.position);
+
+			clearTimeout(t);
+			t = setTimeout(() => ping('player:position', { username: PlayerInfo.username, position: PlayerInfo.entity.object3d.position }), 2500);
 		});
 
 		player.on('inventory', () => {
@@ -85,6 +90,7 @@ export class MainScene extends Scene3D {
 		});
 
 		Entities.ping();
+		Projectiles.ping();
 
 		player.emit('flags');
 
@@ -107,6 +113,15 @@ export class MainScene extends Scene3D {
 		// 	itemID: 'm:rubidium',
 		// 	quantity: 1
 		// })));
+
+		// setTimeout(() => {
+		// 	ping('projectile:create', {
+		// 		owner: player.id,
+		// 		direction: { x: 0, y: 0, z: 1 },
+		// 		speed: 0.1, damage: 1, objectId: 'i:rubidium',
+		// 		maxDistance: 10
+		// 	});
+		// }, 10000);
 
 		// player.addToInventory(Items.create(new ItemData().setData({
 		// 	itemID: 'm:oreon',
@@ -146,6 +161,7 @@ export class MainScene extends Scene3D {
 	update(){
 
 		Entities.update();
+		Projectiles.update();
 		Controls.update();
 		UI.update();
 

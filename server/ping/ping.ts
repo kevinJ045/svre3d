@@ -5,6 +5,7 @@ import { Entities } from "../repositories/entities.js";
 import { Items } from "../repositories/items.js";
 import { Players } from "../repositories/players.js";
 import { Chats } from "../repositories/chats.ts";
+import Projectiles from "../repositories/projectiles.ts";
 
 export function pingFrom<T = any, D = any>(socket: Socket, action: string, func: (data: T) => any){
 	socket.on(action, async (data: T, callback: (data: D) => any) => {
@@ -28,5 +29,6 @@ export function startPing(serverData, socket: Socket){
 	Items.startPing(socket);
 	Players.startPing(socket);
 	Chats.startPing(socket);
+	Projectiles.startPing(socket, Entities.entities);
 
 }

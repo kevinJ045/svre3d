@@ -81,13 +81,29 @@ export class Players {
 			flags,
 			id
 		}) => {
-			console.log('Changing Flags');
 			Entities.entities.map(e => {
 				if(e.id == id){
 					e.flags = flags;
 				} 
 				return e;
 			});
+		})
+
+		socket.on('player:position', ({
+			username,
+			position
+		}) => {
+			Data.db.collection('players')
+			.updateOne({ username },
+				{
+					$set: {
+						position: {
+							...position,
+							y: 5
+						}
+					}
+				}
+			);
 		})
 
 	}

@@ -82,7 +82,7 @@ export class Structures {
 
 			const density = rule.density;
 	
-			const randomThreshold = Random.from(0, density, () => Math.abs(noise.perlin2(chunk.position.x * 0.01, chunk.position.z * 0.01)));
+			const randomThreshold = Random.from(0, density, seedrng);
 
 			const above = rule.above ? chunk.position.y >= rule.above : (rule.random ? true : false);
 			const under = rule.under ? chunk.position.y <= rule.under : (rule.random ? true : false);
@@ -98,7 +98,7 @@ export class Structures {
 
 				if(swarm){
 					rule = swarm.rule;
-					shouldPlaceStructure = Random.from(0, swarm.distance, () => Math.abs(noise.perlin2(chunk.position.x * 0.01, chunk.position.z * 0.01))) == Math.round(swarm.distance / 2);
+					shouldPlaceStructure = Random.from(0, swarm.distance, seedrng) == Math.round(swarm.distance / 2);
 				}
 			}
 

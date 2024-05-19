@@ -9,8 +9,8 @@ export class Seed {
 
 	static setSeed(seed: string){
 		this.seed = seed;
-		this.rng = seedrandom('joeman');
-		this.noise = new Noise.Noise(this.rng);
+		this.rng = seedrandom(seed);
+		this.noise = new Noise.Noise(this.rng());
 	}
 
 }

@@ -12,6 +12,8 @@ import { Data } from './db/db.js';
 import { env } from './constant/env.js';
 import { ResourceMap } from './repositories/resources.js';
 import { getPropStr } from './common/getpropstr.js';
+import { worldData } from './constant/world.ts';
+import { Biomes } from './repositories/biomes.ts';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -84,6 +86,18 @@ async function createApp() {
   app.get('/resources/all', (req, res) => {
     res.send(
       ResourceMap.all()
+    );
+  });
+  
+  app.get('/world-data/biomeColors', (req, res) => {
+    res.send(
+      Biomes.biomes.map(i => i.reference.biome.colors)
+    );
+  });
+
+  app.get('/world-data/:key', (req, res) => {
+    res.send(
+      worldData[req.params.key]
     );
   });
 

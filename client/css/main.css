@@ -293,6 +293,23 @@ body {
 	background: black;
 }
 
+
+.tab-pane#map .info-area{
+	position: absolute;
+	left: 5px;
+	top: 5px;
+	z-index: 1;
+	color: #000;
+}
+
+.tab-pane#map .zoom-range{
+	position: absolute;
+	z-index: 1;
+	right: -40px;
+	top: 50%;
+	rotate: -90deg;
+}
+
 .player-menu .tab-pane#craft-ui .item-content-editor{
 	width: 100%;
 	height: 40px;

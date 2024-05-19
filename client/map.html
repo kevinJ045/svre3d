@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Map Drawing</title>
+</head>
+
+<body style="margin: 0; overflow: hidden;">
+	<div style="position: absolute;" id="infoDiv"></div>
+	<input min="0.075" max="1.5" step="0.1" id="zoomRange" type="range" style="transform: rotate(-90deg);position: absolute;right: -30px;top: 50%;" />
+	<canvas id="mapCanvas"></canvas>
+
+	<script type="module">
+		import { Seed } from "./scripts/world/seed.ts";
+		import { WorldData } from "./scripts/world/data.ts";
+		import { getChunkType } from "./scripts/world/chunktype.ts";
+
+		Seed.setSeed('joemanss');
+
+		fetch('/world-data/biomeColors')
+			.then(r => r.json())
+			.then(biomeColors => {
+				WorldData.setData({
+					biomeColors
+				});
+
+				const chunkSize = 50;
+				const playerPosition = { x: 125, y: 75 };
+				let offsetX = 0;
+				let offsetY = 0;
+				let scale = 1;
+				let isPanning = false;
+				let startX, startY;
+
+				const canvas = document.getElementById('mapCanvas');
+				const ctx = canvas.getContext('2d');
+				canvas.width = window.innerWidth;
+				canvas.height = window.innerHeight;
+
+				let squares = [];
+
+				function drawMap() {
+					const scaledChunkSize = chunkSize * scale;
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+					squares = [];
+
+					const startCol = Math.floor(-offsetX / scaledChunkSize);
+					const endCol = Math.floor((canvas.width - offsetX) / scaledChunkSize);
+					const startRow = Math.floor(-offsetY / scaledChunkSize);
+					const endRow = Math.floor((canvas.height - offsetY) / scaledChunkSize);
+
+					for (let col = startCol; col <= endCol; col++) {
+						for (let row = startRow; row <= endRow; row++) {
+							const x = col * scaledChunkSize + offsetX;
+							const y = row * scaledChunkSize + offsetY;
+							const color = getChunkType(col, row, 0.02, 0);
+
+							ctx.fillStyle = color;
+							ctx.fillRect(x, y, scaledChunkSize, scaledChunkSize);
+							squares.push({ x, y, row, col, color });
+						}
+					}
+
+					const playerScreenX = playerPosition.x * scale + offsetX;
+					const playerScreenY = playerPosition.y * scale + offsetY;
+
+					ctx.fillStyle = '#FF0000';
+					ctx.beginPath();
+					ctx.arc(playerScreenX, playerScreenY, 5, 0, 2 * Math.PI);
+					ctx.fill();
+				}
+
+				function drawCenter() {
+					const centerX = canvas.width / 2;
+					const centerY = canvas.height / 2;
+
+					offsetX = centerX - (playerPosition.x * scale);
+					offsetY = centerY - (playerPosition.y * scale);
+
+					drawMap();
+				}
+
+				function drawSquareInfo(hoveredSquare) {
+					const info = `Position: (${hoveredSquare.col * chunkSize}, ${hoveredSquare.row * chunkSize})`;
+
+					infoDiv.innerText = info;
+				}
+
+				canvas.addEventListener('dblclick', () => {
+					drawCenter();
+				});
+
+				canvas.addEventListener('mousedown', (e) => {
+					isPanning = true;
+					startX = e.clientX - offsetX;
+					startY = e.clientY - offsetY;
+				});
+
+				canvas.addEventListener('mousemove', (e) => {
+					if (isPanning) {
+						offsetX = e.clientX - startX;
+						offsetY = e.clientY - startY;
+						drawMap();
+					} else {
+						const mouseX = e.clientX;
+						const mouseY = e.clientY;
+
+						// Find the square that the mouse is currently hovering over
+						const hoveredSquare = squares.find(square => {
+							return mouseX >= square.x && mouseX <= square.x + chunkSize * scale &&
+           		mouseY >= square.y && mouseY <= square.y + chunkSize * scale;
+						});
+
+						if (hoveredSquare) {
+							drawSquareInfo(hoveredSquare);
+						}
+					}
+				});
+
+				canvas.addEventListener('mouseup', () => {
+					isPanning = false;
+				});
+
+				canvas.addEventListener('mouseout', () => {
+					isPanning = false;
+				});
+
+				canvas.addEventListener('wheel', (e) => {
+					e.preventDefault();
+
+					const zoomFactor = 1.1;
+					const mouseX = e.clientX - canvas.offsetLeft;
+					const mouseY = e.clientY - canvas.offsetTop;
+
+					const wheel = e.deltaY < 0 ? 1 : -1;
+					const zoom = wheel > 0 ? zoomFactor : 1 / zoomFactor;
+
+					const newScale = Math.max(Math.min(scale * zoom, 1.5), 0.075);
+					const scaleChange = newScale - scale;
+
+					offsetX -= mouseX * scaleChange;
+					offsetY -= mouseY * scaleChange;
+
+					zoomRange.value = newScale;
+
+					scale = newScale;
+
+					drawMap();
+				});
+
+				zoomRange.addEventListener('input', () => {
+					scale = parseFloat(zoomRange.value);
+					drawMap();
+				});
+				
+				drawCenter();
+			});
+	</script>
+</body>
+
+</html>

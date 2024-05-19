@@ -2,113 +2,150 @@ import { PlayerInfo } from "../../repositories/player.js";
 import { ResourceMap } from "../../repositories/resources.js";
 import { getChunkType } from "../../world/chunktype.js";
 import { WorldData } from "../../world/data.js";
-import { Seed } from "../../world/seed.js";
-
 
 
 export class Map2D {
 
-	static canvas: HTMLCanvasElement;
+  static canvas: HTMLCanvasElement;
 
-	static activeTab: any;
-
-	static create(canvas: HTMLCanvasElement){
+  static create(canvas: HTMLCanvasElement, infoDiv: HTMLDivElement, zoomRange: HTMLInputElement) {
     const ctx = canvas.getContext('2d')!;
-    const width = canvas.width;
-    const height = canvas.height;
-		const chunkSize = WorldData.get('chunkSize');
+    const chunkSize = 5;
+    const playerPosition = { x: PlayerInfo.entity.object3d.position.x, y: PlayerInfo.entity.object3d.position.z };
+    let offsetX = 0;
+    let offsetY = 0;
+    let scale = 1;
+    let isPanning = false;
+    let startX: number, startY: number;
 
-		this.canvas = canvas;
+    this.canvas = canvas;
 
-		const mapOffset = { x: 0, y: 0 };
-		let scale = 0.001;
+    let squares: {x: number, y: number, color: string, col: number, row: number}[] = [];
 
-		const playerIcon = ResourceMap.find('i:player_marker')!.resource.load;
+    function drawMap() {
+			ctx.scale(1, 1);
+      const scaledChunkSize = chunkSize * scale;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-		const init = () => {
+      squares = [];
 
-			if(this.activeTab != 'map') return;
+      const startCol = Math.floor(-offsetX / scaledChunkSize);
+      const endCol = Math.floor((canvas.width - offsetX) / scaledChunkSize);
+      const startRow = Math.floor(-offsetY / scaledChunkSize);
+      const endRow = Math.floor((canvas.height - offsetY) / scaledChunkSize);
 
-			const X = mapOffset.x;
-			const Y = mapOffset.y;
-	
-			const playerPosition = PlayerInfo.entity?.object3d.position;
+      for (let col = startCol; col <= endCol; col++) {
+        for (let row = startRow; row <= endRow; row++) {
+          const x = col * scaledChunkSize + offsetX;
+          const y = row * scaledChunkSize + offsetY;
+          const color = getChunkType(col, row, 0.02, 0);
 
-			if(!playerPosition) return;
-	
-			const half_height = height / 2;
-			const half_width = width / 2;
-			const playerX = Math.floor(playerPosition.x / chunkSize) * chunkSize;
-			const playerZ = Math.floor(playerPosition.z / chunkSize) * chunkSize;
-	
-			for (let z = playerZ - half_height + Y; z < playerZ + half_height + Y; z += 1) {
-				for (let x = playerX - half_width + X; x < playerX + half_width + X; x += 1) {
-					const offset = 0;
-					const color = getChunkType(x, z, scale, offset);
-					// const scaleDelta = Math.abs(scale - 0.01) * 100;
-					ctx.fillStyle = color;
-					// ctx.strokeStyle = 'black'; // Set border color
-    			// ctx.lineWidth = 1;
-					ctx.fillRect(x + half_width - playerX - X, z + half_height - playerZ - Y, 1, 1);
-					// ctx.strokeRect(x + half_width - playerX - X, z + half_height - playerZ - Y, chunkSize, chunkSize);
-				}
-			}
-			
-			const playerIndicatorX = half_width - X + (playerPosition.x % chunkSize);
-			const playerIndicatorZ = half_height - Y + (playerPosition.z % chunkSize);
+          ctx.fillStyle = color;
+          ctx.fillRect(x, y, scaledChunkSize, scaledChunkSize);
+          squares.push({ x, y, row, col, color });
+        }
+      }
 
-			// Draw the player icon at the calculated position
-			ctx.drawImage(playerIcon, playerIndicatorX - playerIcon.width / 2, playerIndicatorZ - playerIcon.height / 2);
-			
-		}
+      const playerScreenX = playerPosition.x * scale + offsetX;
+      const playerScreenY = playerPosition.y * scale + offsetY;
+
+      ctx.fillStyle = '#FF00FF';
+      ctx.beginPath();
+      ctx.arc(playerScreenX, playerScreenY, 5, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+
+    function drawCenter() {
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+
+      offsetX = centerX - (playerPosition.x * scale);
+      offsetY = centerY - (playerPosition.y * scale);
+
+      drawMap();
+    }
+
+    function drawSquareInfo(hoveredSquare) {
+      if (infoDiv) {
+        const info = `Position: (${Math.round(hoveredSquare.x)}, ${Math.round(hoveredSquare.y)})`;
+        infoDiv.innerText = info;
+      }
+    }
+
+    canvas.addEventListener('dblclick', () => {
+      drawCenter();
+    });
+
+    canvas.addEventListener('mousedown', (e) => {
+			const rect = canvas.getBoundingClientRect();
+			isPanning = true;
+			startX = e.clientX - rect.left - offsetX;
+			startY = e.clientY - rect.top - offsetY;
+		});
 		
+		canvas.addEventListener('mousemove', (e) => {
+			const rect = canvas.getBoundingClientRect();
+			if (isPanning) {
+				offsetX = e.clientX - rect.left - startX;
+				offsetY = e.clientY - rect.top - startY;
+				drawMap();
+			} else {
+				const mouseX = e.clientX - rect.left;
+				const mouseY = e.clientY - rect.top;
 
-		let isDragging = false;
-		let lastX = 0;
-		let lastY = 0;
+        // Find the square that the mouse is currently hovering over
+        const hoveredSquare = squares.find(square => {
+          return mouseX >= square.x && mouseX <= square.x + chunkSize * scale &&
+            mouseY >= square.y && mouseY <= square.y + chunkSize * scale;
+        });
 
-		canvas.addEventListener('mousedown', (event) => {
-			isDragging = true;
-			lastX = event.clientX;
-			lastY = event.clientY;
-		});
+        if (hoveredSquare) {
+          drawSquareInfo(hoveredSquare);
+        }
+      }
+    });
 
-		canvas.addEventListener('mousemove', (event) => {
-			if (!isDragging) return;
+    canvas.addEventListener('mouseup', () => {
+      isPanning = false;
+    });
 
-			const deltaX = event.clientX - lastX;
-			const deltaY = event.clientY - lastY;
+    canvas.addEventListener('mouseout', () => {
+      isPanning = false;
+    });
 
-			// Update mapOffset based on deltaX and deltaY
-			mapOffset.x -= deltaX * 3;
-			mapOffset.y -= deltaY * 3;
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+			const rect = canvas.getBoundingClientRect();
 
-			lastX = event.clientX;
-			lastY = event.clientY;
-		});
+      const zoomFactor = 1.1;
 
-		canvas.addEventListener('mouseup', (e) => {
-			isDragging = false;
-		});
+      const wheel = e.deltaY < 0 ? 1 : -1;
+      const zoom = wheel > 0 ? zoomFactor : 1 / zoomFactor;
 
-		canvas.addEventListener('dblclick', () => {
-			mapOffset.x = mapOffset.y = 0;
-		});
+      const newScale = Math.max(Math.min(scale * zoom, 1.5), 0.075);
+      const scaleChange = newScale - scale;
 
-		canvas.addEventListener('wheel', (event) => {
-			const scaleChange = event.deltaY > 0 ? 0.0001 : -0.0001;
-			scale += scaleChange;
-			scale = Math.max(0.0001, Math.min(0.1, scale));
-		});
+			const mouseX = e.clientX - rect.left;
+			const mouseY = e.clientY - rect.top;
 
-    canvas.addEventListener('reinit', (event) => {
-			init();
-		});
-	}
+      offsetX -= mouseX * scaleChange;
+      offsetY -= mouseY * scaleChange;
 
-	static update(){
-		if(this.canvas instanceof HTMLCanvasElement)
-			this.canvas.dispatchEvent(new Event('reinit'));
-	}
+			zoomRange.value = newScale.toString();
+			scale = newScale;
 
+      drawMap();
+    });
+
+    if (zoomRange) {
+      zoomRange.addEventListener('input', () => {
+        scale = parseFloat(zoomRange.value);
+        drawMap();
+      });
+    }
+
+    drawCenter();
+  }
+
+	static update(){}
 }

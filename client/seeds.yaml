@@ -1,0 +1,9 @@
+seeds:
+  - seed: 1001203
+    biomes:
+      rock: 40%
+      swamp: 40%
+      grass: 10%
+      lava: 8%
+      magic: 2%
+  - seed: 

@@ -46,8 +46,8 @@ export class Map2D {
         }
       }
 
-      const playerScreenX = playerPosition.x * scale + offsetX;
-      const playerScreenY = playerPosition.y * scale + offsetY;
+      const playerScreenX = (playerPosition.x / scaledChunkSize) * scale + offsetX;
+      const playerScreenY = (playerPosition.y / scaledChunkSize) * scale + offsetY;
 
       ctx.fillStyle = '#FF00FF';
       ctx.beginPath();

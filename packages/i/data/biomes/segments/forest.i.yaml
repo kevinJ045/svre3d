@@ -1,0 +1,7 @@
+texture: !import '../../textures/segments/forest.i.yaml'
+mapping: [1, 1, 0, 1, 1, 1]
+# substitutes:
+#   - replace: [[0, 1], [0, 1]]
+#   - replace: [[0, 1], [2, 3]]
+#     flags: ['mud', 'no_variation']
+#     chance: 0.99

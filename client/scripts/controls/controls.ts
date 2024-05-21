@@ -69,6 +69,10 @@ export class Controls {
 		Keyboard.listen(KeyMap.getKey('ui.chats'), () => {
 			UI.openChats();
 		});
+
+		Keyboard.listen(KeyMap.getKey('ui.interact'), () => {
+			PlayerInfo.attack();
+		});
 	}
 
 	static toggleFirstPerson(){

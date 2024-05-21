@@ -12,7 +12,8 @@ export class KeyMap {
 		'move.jump': ' ',
 		'move.sneak': 'shift',
 
-		'ui.inventory': 'E',
+		'ui.interact': 'E',
+		'ui.inventory': 'I',
 		'ui.chats': '/',
 		'ui.pause': 'Escape',
 		

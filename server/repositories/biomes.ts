@@ -24,8 +24,9 @@ export class Biomes {
 		const index = Math.min(Math.abs(Math.floor(noiseValue * Biomes.biomes.length-1)), Biomes.biomes.length-1);
 
 		const biome = {...Biomes.biomes[index], reference: {
-			...Biomes.biomes[index].reference
+			...Biomes.biomes[index].reference,
 		}};
+		biome.flags = [];
 
 		if(biome.reference.biome.tile?.multicolor){
 			const colors = [...biome.reference.biome.colors];
@@ -41,13 +42,21 @@ export class Biomes {
 
 		if(biome.reference.biome?.ground?.substitutes && biome.reference.biome.ground.mapping){
 			const substitutes = biome.reference.biome?.ground?.substitutes;
-			const substitute = Random.pick(...substitutes, () => Math.abs(noise.simplex2(x * 0.01, z * 0.01)))
+			const substitute = Random.pick(...substitutes.filter(i => i.chance ? (
+				seedrng() > i.chance
+			) : true), () => Math.abs(noise.simplex2(x * 0.01, z * 0.01)));
 			biome.reference.biome.ground.mapping = biome.reference.biome?.ground.mapping
 				.join(',')
-				.replaceAll(substitute[0][0], substitute[1][0])
-				.replaceAll(substitute[0][1], substitute[1][1])
+				.replaceAll(substitute.replace[0][0], substitute.replace[1][0])
+				.replaceAll(substitute.replace[0][1], substitute.replace[1][1])
 				.split(',');
-			if(substitute[2]) biome.flags.push(...substitute[2]);
+			if(Array.isArray(substitute.flags)) biome.flags.push(...substitute.flags);
+
+			if(substitute.variation_color) biome.reference.biome.tile.variation_color = substitute.variation_color;
+		}
+
+		if(biome.flags.includes('no_variation')){
+			delete biome.reference.biome.tile.variation_color;
 		}
 
 		return biome;

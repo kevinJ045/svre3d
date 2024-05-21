@@ -1,0 +1,11 @@
+manifest:
+  id: !id 'forest_ground_texture'
+  type: texture_map
+resource:
+  loader: texture
+  sources: [
+    !realpath '../../../bin/textures/segment_forest_top.png',
+    !realpath '../../../bin/textures/segment_forest_side.png',
+    !realpath '../../../bin/textures/segment_forest2_top.png',
+    !realpath '../../../bin/textures/segment_forest2_side.png'
+  ]

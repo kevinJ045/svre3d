@@ -2,13 +2,13 @@ manifest:
   id: !id 'forest'
   type: 'biome'
 biome:
-  ground: !import './segments/magic.i.yaml'
+  ground: !import './segments/forest.i.yaml'
   tile:
     multicolor: true
-    keepdefault: true
-  colors: [ "#582186", "#861ac5", "#9931cc" ]
+    # keepdefault: true
+  colors: [ "#335443", "#385848", "#44624e" ]
   foliage:
-    color: "#861ac5"
+    color: "#385848"
 spawn:
   - name: Goobers
     entity: !id goober

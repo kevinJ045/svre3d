@@ -3,6 +3,7 @@ import { variants } from "./constant/player_variant.js";
 import { worldData } from "./constant/world.js";
 import { loadAllResources } from "./functions/resources.js";
 import { LoginManager } from "./login/login.js";
+import { ServerData } from "./models/data.ts";
 import { startPing } from "./ping/ping.js";
 import { Sockets } from "./ping/sockets.js";
 import { Biomes } from "./repositories/biomes.js";
@@ -45,12 +46,15 @@ export async function userConnected(serverData, socket){
 
 		startPing(serverData, socket);
 
+		serverData.emit('connect', { username, playerEntity });
+
 		// setTimeout(() => Entities.spawn('m:goober', { x: 0, y: 0, z: 5 }, 'anji', 'lava', [], { ai: true }), 5000);
 		// setTimeout(() => Entities.spawn('m:goober', { x: 0, y: 0, z: -5 }, 'jani', 'grass', [], { ai: true }), 5000);
 		// setTimeout(() => Entities.spawnItem(Items.create('m:rubidium')!, { x: 0, y: 0, z: 2 }), 5000);
 
 		socket.on('disconnect', () => {
 			Entities.despawn(playerEntity!);
+			serverData.emit('disconnect', { username, playerEntity });
 		})
 
 	} else {
@@ -82,8 +86,8 @@ export async function userConnected(serverData, socket){
 
 }
 
-export function init(serverData: any){
-	loadAllResources(ResourceMap);
+export function init(serverData: ServerData){
+	loadAllResources(ResourceMap, serverData);
 	Items.filterItems();
 	Biomes.registerBiomes();
 
@@ -93,9 +97,8 @@ export function init(serverData: any){
 		Projectiles.moveProjectiles(Entities.entities);
 	});
 
-
-
 	Mainloop.start();
+	serverData.emit('ready');
 
 	// console.log(Chunks.findSafeSpawnPoint('i:swamp'));
 }

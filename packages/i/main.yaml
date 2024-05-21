@@ -3,3 +3,4 @@ manifest: !package.manifest
   id: 'i'
 data: 
   lookUp: './data'
+  script: './scripts/main.coffee'

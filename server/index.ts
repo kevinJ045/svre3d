@@ -14,17 +14,12 @@ import { ResourceMap } from './repositories/resources.js';
 import { getPropStr } from './common/getpropstr.js';
 import { worldData } from './constant/world.ts';
 import { Biomes } from './repositories/biomes.ts';
+import { ServerData } from './models/data.ts';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const serverData =  {
-  seed: "jimba",
-  players: [],
-  users: {
-    'u': 'makano'
-  }
-}
+const serverData = new ServerData();
 
 async function createApp() {
   // Create Vite dev server
@@ -118,10 +113,8 @@ async function createApp() {
 
   // Start Express server
   httpServer.listen(PORT, () => {
-    
-    init(serverData);
-    
     console.log(`Server is running on http://localhost:${PORT}`);
+    init(serverData);
   });
 }
 

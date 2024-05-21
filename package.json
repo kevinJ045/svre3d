@@ -17,7 +17,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@types/coffeescript": "^2.5.7",
     "bcrypt": "^5.1.1",
+    "coffeescript": "^2.7.0",
     "enable3d": "~0.25.0",
     "express": "^4.19.2",
     "js-yaml": "^4.1.0",
@@ -26,7 +28,8 @@
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
     "tsc": "^2.0.4",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "vm": "^0.1.0"
   },
   "type": "module",
   "devDependencies": {

@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import { ResourceSchema } from './Schema.type.js';
+import Coffee from './Coffee.class.ts';
 
 const floatifyObject = (obj, int) => {
   for(let i in obj) obj[i] = int ? parseFloat(obj[i]) : parseInt(obj[i]);
@@ -122,5 +123,10 @@ export default class Parser {
     this.parsedFiles[filePath] = (data as ResourceSchema);
 
     return data as ResourceSchema;
+  }
+
+  parseCoffee(filePath, src){
+    new Coffee(filePath, src)
+    .exec();
   }
 }

@@ -1,0 +1,31 @@
+manifest:
+  id: !id 'forest'
+  type: 'biome'
+biome:
+  ground: !import './segments/magic.i.yaml'
+  tile:
+    multicolor: true
+    keepdefault: true
+  colors: [ "#582186", "#861ac5", "#9931cc" ]
+  foliage:
+    color: "#861ac5"
+spawn:
+  - name: Goobers
+    entity: !id goober
+    rarity: 10
+    variant: !id grass
+structures:
+  - name: tree-big
+    structure:
+      object: !import '../structures/tree.big.i.yaml'
+      rule: ['tree']
+    density: 5
+    random: true
+  - name: tree-small
+    structure:
+      object: !import '../structures/tree.small.i.yaml'
+      rule: ['tree']
+    density: 5
+    random: true
+resource: !biome.resource
+  _: ~

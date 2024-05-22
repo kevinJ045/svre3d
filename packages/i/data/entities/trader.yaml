@@ -1,0 +1,36 @@
+manifest:
+  id: !id 'trader'
+  type: 'entity'
+base:
+  health: !int 10000
+  speed: 4
+  damage: 10
+view:
+  object:
+    body: 0.0.2
+    eye: 0.0.3
+  physics:
+    shape: convex
+    offset: {
+      y: !float 2,
+    }
+  material:
+    byName: !bool true
+    Weird: !material 'mat(color: #121a35)'
+    Hats: !material 'mat(color: #121a35)'
+    Bag1: !material 'mat(color: #121a35)'
+    Bag1d: !material 'mat(color: #121a35)'
+    Glow: !material 'mat(color: #00ffff)'
+    BagGlow: !material 'mat(color: #00ffff)'
+    Glower2: !material 'mat(color: #00ffff)'
+    Glowers: !material 'mat(color: #00ffff, emissive: #00ffff, emissiveIntensity: 4)'
+
+entity:
+  ai: 
+    movement: !bool false
+    attack:
+      attackBack: true
+      targets: []
+resource:
+  src: !realpath '../../bin/objects/trader.glb'
+  loader: gltf

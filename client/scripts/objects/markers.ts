@@ -3,9 +3,16 @@ import { SceneManager } from "../common/sceneman.ts";
 import { Chunk } from "../models/chunk.ts";
 import { THREE } from "enable3d";
 import { PlayerInfo } from "../repositories/player.ts";
-import { randomHexColor } from "../common/colors.ts";
+// import { randomHexColor } from "../common/colors.ts";
 import { WorldData } from "../world/data.ts";
 import { Settings } from "../settings/settings.ts";
+import { Random } from "../../../server/common/rand.ts";
+
+
+function randomHexColor(){
+	return '#'+Random.from(0, 16777215).toString(16);
+}
+
 
 export type Marker = {
   position: xyz,

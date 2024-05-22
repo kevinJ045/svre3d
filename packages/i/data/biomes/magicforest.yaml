@@ -1,5 +1,5 @@
 manifest:
-  id: !id 'magicforest'
+  id: !id 'magic'
   type: 'biome'
 biome:
   ground: !import './segments/magic.i.yaml'

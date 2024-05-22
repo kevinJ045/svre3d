@@ -1,0 +1,27 @@
+manifest:
+  id: !id 'weird_guy'
+  type: 'entity'
+base:
+  health: !int 300
+  speed: 4
+  damage: 10
+view:
+  object:
+    body: 0.0.2
+    eye: 0.0.3
+  physics:
+    shape: box
+    offset: {
+      y: !float 1.5
+    }
+entity:
+  ai: 
+    movement:
+      random: true
+      biome: !id 'magic'
+    attack:
+      attackBack: true
+      targets: []
+resource:
+  src: !realpath '../../bin/objects/weird_guy.glb'
+  loader: gltf

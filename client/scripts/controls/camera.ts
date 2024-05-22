@@ -12,6 +12,7 @@ export class CameraManager {
 
 	static cameraPosition : { offset: THREE.Vector3, diagonal: number, lookat: THREE.Vector3 | false, angles: THREE.Vector3[], current: number } = {
     offset: new THREE.Vector3(15, 15, -15),
+    // offset: new THREE.Vector3(0, 3, -5),
     diagonal: 10,
     lookat: false,
     angles: [

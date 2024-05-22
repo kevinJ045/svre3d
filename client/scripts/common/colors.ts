@@ -11,6 +11,10 @@ export function mixColors(color1, color2, ratio) {
 	return arrayToHex([newR, newY, newB]);
 }
 
+export function randomHexColor(){
+	return '#'+Random.from(0, 16777215).toString(16);
+}
+
 function hexToArray(hex) {
 	var hex = hex.replace("#", '');
 	var r = parseInt(hex.substr(0, 2), 16);
@@ -34,6 +38,3 @@ function arrayToHex(rgbArray) {
 	return "#" + rHex + gHex + bHex;
 }
 
-export function randomHexColor(){
-	return '#'+Random.from(0, 16777215).toString(16);
-}

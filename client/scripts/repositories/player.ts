@@ -1,5 +1,7 @@
+import InteractionControl from "../controls/interaction.ts";
 import { Entity } from "../models/entity.js";
 import { ping } from "../socket/socket.js";
+import { Chunks } from "./chunks.ts";
 import { Entities } from "./entities.js";
 import { Equipments } from "./equipments.js";
 import { THREE } from "enable3d";
@@ -129,5 +131,41 @@ export class PlayerInfo {
 		});
 
 		this.entity!.attack(potentialTargets);
+	}
+
+	static interact(act = true){
+		let entityDirection = this.entity.object3d.getWorldDirection(new THREE.Vector3());
+	
+		entityDirection = entityDirection.multiplyScalar(-1);
+
+    const maxDistance = this.entity.data.maxReachDistance || 5; 
+		
+    const raycaster = new THREE.Raycaster(new THREE.Vector3(
+			this.entity.object3d.position.x,
+			this.entity.object3d.position.y + 1,
+			this.entity.object3d.position.z
+		), entityDirection, 0, maxDistance);
+
+		const interactable: THREE.Object3D[] = [];
+		Chunks.chunkObjects().forEach(chunk => {
+			interactable.push(...chunk.children);
+		})
+
+		const intersects = raycaster.intersectObjects(interactable)
+			.filter(i => i.object.userData.lootable)
+			.map(i => { i.object.userData.interactionType = 'structure' ; return i; })
+			.concat(raycaster.intersectObjects(Entities.entities.map(i => i.object3d)))
+			.sort((a, b) => a.distanceToRay! - b.distanceToRay!);
+
+
+		if(act) {
+			if(intersects.length){
+				InteractionControl.interact(intersects[0]);
+			}
+	
+			this.entity!.attack();
+		}
+
+		return intersects;
 	}
 }

@@ -22,11 +22,9 @@ export async function userConnected(serverData, socket) {
 
 	const username = token && token !== 'null' ? await LoginManager.verifyToken(token) : null;
 
-	if (username) {
+	const player = username ? await Players.find(username) : null;
 
-		const player = await Players.find(username)!;
-
-		// console.log(player);
+	if (username && player) {
 
 		socket.data.username == username;
 

@@ -3,3 +3,4 @@
 /package-lock.json
 /www/bundle.js
 index.js
+dist/

@@ -1,7 +1,7 @@
-import InteractionControl from "../controls/interaction.ts";
+import InteractionControl from "../controls/interaction.js";
 import { Entity } from "../models/entity.js";
 import { ping } from "../socket/socket.js";
-import { Chunks } from "./chunks.ts";
+import { Chunks } from "./chunks.js";
 import { Entities } from "./entities.js";
 import { Equipments } from "./equipments.js";
 import { THREE } from "enable3d";
@@ -19,7 +19,7 @@ export class PlayerInfo {
 
 	static player: PlayerLike = {
 		username: "",
-		position: { x:0, y:0, z:0 },
+		position: { x: 0, y: 0, z: 0 },
 		inventory: [],
 		equipment: {
 			brow: 'brow-1'
@@ -28,13 +28,13 @@ export class PlayerInfo {
 
 	static entity: Entity;
 
-	static setPlayer(player: PlayerLike){
+	static setPlayer(player: PlayerLike) {
 		this.player = player;
-	}	
+	}
 
-	static setPlayerEntity(entity: Entity){
+	static setPlayerEntity(entity: Entity) {
 		this.entity = entity;
-		if(!entity.object3d) return;
+		if (!entity.object3d) return;
 		entity.object3d.userData.player = entity;
 
 		entity.on('move', () => {
@@ -56,26 +56,26 @@ export class PlayerInfo {
 				id: entity.id
 			});
 		});
-	}	
+	}
 
-	static get username(){
+	static get username() {
 		return this.player.username;
 	}
 
-	static get inventory(){
+	static get inventory() {
 		return this.player.inventory;
 	}
 
-	static get position(){
+	static get position() {
 		return this.player.position;
 	}
 
 
-	static updateEquipmentData(){
+	static updateEquipmentData() {
 		const equipment = {};
 
-		for(let i in PlayerInfo.entity.data.equipment){
-			if(i == 'brow'){
+		for (let i in PlayerInfo.entity.data.equipment) {
+			if (i == 'brow') {
 				equipment[i] = Equipments.brows[PlayerInfo.entity.data.equipment[i]];
 			} else {
 				equipment[i] = PlayerInfo.entity.findItemByData('wid',
@@ -85,7 +85,7 @@ export class PlayerInfo {
 		}
 
 		const returned: string[] = [];
-		
+
 		ping('player:equipment', {
 			inventory: (PlayerInfo.entity.inventory.filter(i => i.data.wid).concat(PlayerInfo.entity.data.uneqiupped ? [PlayerInfo.entity.data.uneqiupped] : []).map((i, ind, arr) => {
 				return arr.filter(i2 => i2.id == i.id).length > 1 ? (
@@ -101,7 +101,7 @@ export class PlayerInfo {
 		});
 	}
 
-	static attack(){
+	static attack() {
 		const entityDirection = this.entity.object3d.getWorldDirection(new THREE.Vector3()); // Reverse the direction vector
 
 		// Define a maximum angle within which targets are considered to be in front of the entity
@@ -112,7 +112,7 @@ export class PlayerInfo {
 
 		// Filter potential targets
 		const potentialTargets = Entities.entities.filter(entity => {
-			if(entity.id == this.entity.id) return;
+			if (entity.id == this.entity.id) return;
 			// Calculate the vector pointing from your entity to the potential target
 			const toTarget = entity.object3d.position.clone().sub(this.entity.object3d.position);
 
@@ -133,14 +133,14 @@ export class PlayerInfo {
 		this.entity!.attack(potentialTargets);
 	}
 
-	static interact(act = true){
+	static interact(act = true) {
 		let entityDirection = this.entity.object3d.getWorldDirection(new THREE.Vector3());
-	
+
 		entityDirection = entityDirection.multiplyScalar(-1);
 
-    const maxDistance = this.entity.data.maxReachDistance || 5; 
-		
-    const raycaster = new THREE.Raycaster(new THREE.Vector3(
+		const maxDistance = this.entity.data.maxReachDistance || 5;
+
+		const raycaster = new THREE.Raycaster(new THREE.Vector3(
 			this.entity.object3d.position.x,
 			this.entity.object3d.position.y + 1,
 			this.entity.object3d.position.z
@@ -153,16 +153,16 @@ export class PlayerInfo {
 
 		const intersects = raycaster.intersectObjects(interactable)
 			.filter(i => i.object.userData.lootable)
-			.map(i => { i.object.userData.interactionType = 'structure' ; return i; })
+			.map(i => { i.object.userData.interactionType = 'structure'; return i; })
 			.concat(raycaster.intersectObjects(Entities.entities.map(i => i.object3d)))
 			.sort((a, b) => a.distanceToRay! - b.distanceToRay!);
 
 
-		if(act) {
-			if(intersects.length){
+		if (act) {
+			if (intersects.length) {
 				InteractionControl.interact(intersects[0]);
 			}
-	
+
 			this.entity!.attack();
 		}
 

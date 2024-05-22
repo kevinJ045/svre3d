@@ -1,16 +1,16 @@
-import { xyz } from "../../../server/models/misc.xyz.ts";
-import { SceneManager } from "../common/sceneman.ts";
-import { Chunk } from "../models/chunk.ts";
+import { xyz } from "../../../server/models/misc.xyz.js";
+import { SceneManager } from "../common/sceneman.js";
+import { Chunk } from "../models/chunk.js";
 import { THREE } from "enable3d";
-import { PlayerInfo } from "../repositories/player.ts";
-// import { randomHexColor } from "../common/colors.ts";
-import { WorldData } from "../world/data.ts";
-import { Settings } from "../settings/settings.ts";
-import { Random } from "../../../server/common/rand.ts";
+import { PlayerInfo } from "../repositories/player.js";
+// import { randomHexColor } from "../common/colors.js";
+import { WorldData } from "../world/data.js";
+import { Settings } from "../settings/settings.js";
+import { Random } from "../../../server/common/rand.js";
 
 
-function randomHexColor(){
-	return '#'+Random.from(0, 16777215).toString(16);
+function randomHexColor() {
+  return '#' + Random.from(0, 16777215).toString(16);
 }
 
 
@@ -27,7 +27,7 @@ export default class Markers {
 
   static add(marker: Marker) {
 
-    if(!marker.color) marker.color = randomHexColor();
+    if (!marker.color) marker.color = randomHexColor();
 
     // Create the marker object
     const markerGeometry = new THREE.BoxGeometry(1, 1, 1);

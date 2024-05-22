@@ -1,12 +1,12 @@
-import { ServerData } from "../../../server/models/data.ts";
-import { ProjectileData } from "../../../server/models/projectile.ts";
-import { stringifyChunkPosition } from "../common/chunk.ts";
-import { SceneManager } from "../common/sceneman.ts";
-import { xyzTv } from "../common/xyz.ts";
-import { Projectile } from "../models/projectile.ts";
-import { pingFrom } from "../socket/socket.ts";
+import { ServerData } from "../../../server/models/data.js";
+import { ProjectileData } from "../../../server/models/projectile.js";
+import { stringifyChunkPosition } from "../common/chunk.js";
+import { SceneManager } from "../common/sceneman.js";
+import { xyzTv } from "../common/xyz.js";
+import { Projectile } from "../models/projectile.js";
+import { pingFrom } from "../socket/socket.js";
 import { THREE } from "enable3d";
-import { Entities } from "./entities.ts";
+import { Entities } from "./entities.js";
 
 
 
@@ -14,7 +14,7 @@ export default class Projectiles {
 
   static projectiles: Projectile[] = [];
 
-  static createProjectile(projectileData: ProjectileData){
+  static createProjectile(projectileData: ProjectileData) {
     const projectile = ServerData.create(Projectile, {
       ...projectileData,
       direction: xyzTv(projectileData.direction),
@@ -38,17 +38,17 @@ export default class Projectiles {
     this.projectiles.push(projectile);
   }
 
-  static moveProjectile(id: string, position: any){
+  static moveProjectile(id: string, position: any) {
     const projectile = this.projectiles.find(i => i.id == id);
     // projectile?.setPosition(position);
   }
 
-  static ping(){
+  static ping() {
 
     pingFrom('projectile:create', (projectile) => {
       Projectiles.createProjectile(projectile);
       const owner = Entities.find(projectile.owner.id || projectile.owner);
-      if(owner){
+      if (owner) {
         owner.position = projectile.owner.position;
         owner.object3d.position.set(
           projectile.position.x,
@@ -60,14 +60,14 @@ export default class Projectiles {
 
     pingFrom('projectile:hit', (projectile) => {
       const p = this.projectiles.find(i => projectile.id == i.id);
-      if(!p) return;
+      if (!p) return;
       this.projectiles.splice(this.projectiles.indexOf(p), 1);
       SceneManager.scene.scene.remove(p.object3d);
     });
 
-  } 
+  }
 
-  static update(){
+  static update() {
     this.projectiles.forEach(projectile => {
       projectile.position.add(projectile.direction.clone().multiplyScalar(projectile.speed));
       projectile.object3d.position.add(projectile.direction.clone().multiplyScalar(projectile.speed));

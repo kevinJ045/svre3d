@@ -1,5 +1,5 @@
 import { Chunk } from "../models/chunk.js";
-import { Chunks } from "./chunks.ts";
+import { Chunks } from "./chunks.js";
 import { MaterialManager } from "./materials.js";
 import { ResourceMap } from "./resources.js";
 
@@ -7,13 +7,13 @@ import { ResourceMap } from "./resources.js";
 
 export class Biomes {
 
-	static applyChunkBiome(chunk: Chunk){
+	static applyChunkBiome(chunk: Chunk) {
 		chunk.biome.biome.ground.texture = ResourceMap.find(chunk.biome.manifest.id)!.biome.ground.texture;
 		const materials = 'mapping' in chunk.biome.biome.ground ? chunk.biome.biome.ground.mapping!.map(i => MaterialManager.makeSegmentMaterial((chunk.biome as any).biome.ground.texture.resource.load[i], chunk.biome.biome)) : MaterialManager.makeSegmentMaterial(chunk.biome.biome.ground.texture.resource.load, chunk.biome.biome);
 		(chunk.object3d as any).material = materials;
 	}
 
-	static find(name){
+	static find(name) {
 		return ResourceMap
 			.resources
 			.filter(
@@ -24,21 +24,21 @@ export class Biomes {
 			);
 	}
 
-	static findAll(){
+	static findAll() {
 		return ResourceMap
-		.resources
-		.filter(
-			i => i.manifest.type == 'biome'
-		);
+			.resources
+			.filter(
+				i => i.manifest.type == 'biome'
+			);
 	}
 
 	static firstUpdate = false;
-	static updateSky(v: THREE.Vector3){
+	static updateSky(v: THREE.Vector3) {
 		const chunk = Chunks.findChunkAtPosition(v);
-		if(chunk){
+		if (chunk) {
 			const colors = chunk.biome.biome.colors;
-			for(let i in colors){
-				document.body.style.setProperty('--biome-colors-'+i, colors[i]);
+			for (let i in colors) {
+				document.body.style.setProperty('--biome-colors-' + i, colors[i]);
 			}
 		}
 	}

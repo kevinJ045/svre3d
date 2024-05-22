@@ -1,7 +1,7 @@
 import React from "react";
 import { ItemData } from "../../../../server/models/item.js";
 import { Item } from "../../models/item.js";
-import { Chat } from "../../../../server/common/chat.ts";
+import { Chat } from "../../../../server/common/chat.js";
 
 
 

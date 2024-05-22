@@ -1,14 +1,14 @@
-import { ExtendedMesh, ExtendedObject3D, Scene3D, THREE }  from 'enable3d';
+import { ExtendedMesh, ExtendedObject3D, Scene3D, THREE } from 'enable3d';
 import Noise from 'noisejs';
 import seedrandom from "seedrandom";
-import { ImprovedNoise } from '../lib/ImprovedNoise';
-import * as BufferGeometryUtils from "../lib/BufferGeometryUtils"
-import { item } from './models/item';
-import { CustomScene } from './models/scene';
-import { Utils } from './utils';
-import { generateWithRule } from './structure';
-import { applyMaterials, makeObjectMaterial, makeSegmentMaterial, materialParser } from './shaderMaterial';
-import { Entity } from './entity';
+import { ImprovedNoise } from '../lib/ImprovedNoise.js';
+import * as BufferGeometryUtils from "../lib/BufferGeometryUtils.js"
+import { item } from './models/item.js';
+import { CustomScene } from './models/scene.js';
+import { Utils } from './utils.js';
+import { generateWithRule } from './structure.js';
+import { applyMaterials, makeObjectMaterial, makeSegmentMaterial, materialParser } from './shaderMaterial.js';
+import { Entity } from './entity.js';
 
 export type chunktype = {
 	item: item,
@@ -36,19 +36,19 @@ export class ChunkSet {
 
 	segment_object!: THREE.Object3D;
 
-	constructor(scene: CustomScene, seed: string){
+	constructor(scene: CustomScene, seed: string) {
 		this.scene = scene;
 		this.rng = seedrandom(seed);
 		this.noise = new Noise.Noise(this.rng());
 	}
 
-	add(key: string, chunk: any){
+	add(key: string, chunk: any) {
 		this.chunks.push({ key, chunk });
 		this.addChunk(chunk);
 		return this;
 	}
 
-	addChunk(chunk: any){
+	addChunk(chunk: any) {
 		chunk.name = 'chunk';
 		chunk.position.y -= 10;
 		this.scene.scene.add(chunk);
@@ -57,7 +57,7 @@ export class ChunkSet {
 			mass: 0,
 			// collisionFlags: 1,
 			autoCenter: false,
-			
+
 			width: this.scene.chunkSize,
 			depth: this.scene.chunkSize,
 			height: 2
@@ -66,63 +66,63 @@ export class ChunkSet {
 		this.scene.emit('chunk:load', chunk);
 	}
 
-	removeChunk(chunk: any){
+	removeChunk(chunk: any) {
 		this.scene.physics.destroy(chunk.body)
 		this.scene.scene.remove(chunk);
 		this.scene.emit('chunk:unload', chunk);
 	}
 
-	clear(){
+	clear() {
 		this.chunks = [];
 		return this;
 	}
 
-	find(key: string){
+	find(key: string) {
 		return this.chunks.find(i => i.key == key);
 	}
 
-	at(index: number){
+	at(index: number) {
 		return this.chunks.at(index);
 	}
 
-	index(found: any){
+	index(found: any) {
 		return this.chunks.indexOf(found);
 	}
 
-	entries(){
+	entries() {
 		return [...this.chunks];
 	}
 
-	has(key: string){
+	has(key: string) {
 		return this.find(key) ? true : false;
 	}
 
-	delete(key: string){
+	delete(key: string) {
 		const found = this.find(key);
-		if(found){
+		if (found) {
 			this.removeChunk(found.chunk);
 			this.chunks.splice(this.index(found), 1);
 		}
 		return this;
 	}
-	
-	chunkObjects(){
+
+	chunkObjects() {
 		return this.chunks.map(i => i.chunk);
 	}
 
 }
 
-function stringifyChunkPosition(pos){
-	return pos.x+', '+pos.y+', '+pos.z;
+function stringifyChunkPosition(pos) {
+	return pos.x + ', ' + pos.y + ', ' + pos.z;
 }
 
-export function getChunkType(noiseValue, chunkSize, loadedChunks: ChunkSet){
+export function getChunkType(noiseValue, chunkSize, loadedChunks: ChunkSet) {
 	// const num = 1/loadedChunks.chunkTypes.length * 0.1;
 	const types = loadedChunks.chunkTypes;
 
 	// const value = Math.abs(noiseValue);
 
-	const index = Math.min(Math.abs(Math.floor(noiseValue * types.length-1)), types.length-1);
+	const index = Math.min(Math.abs(Math.floor(noiseValue * types.length - 1)), types.length - 1);
 
 	return types[index];
 }
@@ -131,7 +131,7 @@ export function getChunkType(noiseValue, chunkSize, loadedChunks: ChunkSet){
 
 let f = false;
 // Function to load a chunk
-function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: number, loadedChunks: ChunkSet }) {
+function loadChunk(chunkPosition, { chunkSize, loadedChunks }: { chunkSize: number, loadedChunks: ChunkSet }) {
 
 	const scale = 0.0001;
 	const offset = 0;
@@ -139,7 +139,7 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 
 	const geometry = new THREE.BoxGeometry(chunkSize, 2, chunkSize);
 
-	const chunkType = getChunkType(noiseValue, chunkSize, loadedChunks);	
+	const chunkType = getChunkType(noiseValue, chunkSize, loadedChunks);
 
 	const materials = 'textures' in chunkType ? chunkType.textures!.map(i => makeSegmentMaterial(chunkType.item.texture[i], chunkType, loadedChunks.scene)) : makeSegmentMaterial(chunkType.item.texture, chunkType, loadedChunks.scene);
 
@@ -147,14 +147,14 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 
 	chunk.receiveShadow = true;
 	chunk.castShadow = true;
-	
+
 	chunk.userData.type = chunkType;
 
 	chunk.position.copy(chunkPosition).multiplyScalar(chunkSize);
 
 	loadedChunks.add(stringifyChunkPosition(chunkPosition), chunk);
 
-	if(chunkType.structure_rules){
+	if (chunkType.structure_rules) {
 
 		const rule = Utils.pickRandom(...chunkType.structure_rules, loadedChunks.rng);
 
@@ -168,7 +168,7 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 
 		const randomThreshold = Math.floor(loadedChunks.rng() * density) * (noiseAtPosition < 0 ? -1 : 1);
 
-		if (noiseAtPosition === randomThreshold){
+		if (noiseAtPosition === randomThreshold) {
 			const object = loadedChunks.scene.findLoadedResource(rule.object, 'objects');
 
 			const item = generateWithRule(object, object!.config!, loadedChunks.rng, rule.object_rules);
@@ -178,8 +178,8 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 			const materialsRule = object!.config!.materials;
 
 			item.children.forEach(item => {
-				if(item.userData.rule){
-					if(item.userData.rule.physics === true){
+				if (item.userData.rule) {
+					if (item.userData.rule.physics === true) {
 						loadedChunks.scene.physics.add.existing(item as any, {
 							shape: 'convex',
 							mass: 0
@@ -188,38 +188,38 @@ function loadChunk(chunkPosition, { chunkSize, loadedChunks } : { chunkSize: num
 				}
 			});
 
-			if(materialsRule){
+			if (materialsRule) {
 				applyMaterials(item, materialsRule, loadedChunks.scene, variables);
 			}
 		}
 
 	}
 
-	if(chunkType.spawn_rules?.s){
+	if (chunkType.spawn_rules?.s) {
 		const rule = Utils.pickRandom(...chunkType.spawn_rules, loadedChunks.rng);
 		const rarity = rule.rarity;
 
 		const variables = {};
 		const pos = new THREE.Vector3(chunkPosition.x, chunk.position.y += 2, chunkPosition.z);
-		
+
 		const noiseAtPosition = Utils.randFrom(0, rarity, () => loadedChunks.rng());
 
 		const randomThreshold = Math.floor(loadedChunks.rng() * rarity) * (noiseAtPosition < 0 ? -1 : 1);
 
-		if (noiseAtPosition === randomThreshold){
+		if (noiseAtPosition === randomThreshold) {
 			spawnEntity(loadedChunks, rule, variables, pos);
 		}
-		
+
 	}
 
 }
 
-function spawnEntity(loadedChunks, rule, variables, pos){
+function spawnEntity(loadedChunks, rule, variables, pos) {
 	const entity: Entity = loadedChunks.scene.entities.summon(rule.entity, '', pos);
 
-	if(rule.variant){
+	if (rule.variant) {
 		const variant = (entity.entityData.config?.variants || []).find(v => v.name == rule.variant)
-		if(variant) entity.setVariant(variant, variables);
+		if (variant) entity.setVariant(variant, variables);
 	}
 }
 
@@ -228,8 +228,8 @@ function unloadChunk(chunkPosition, { loadedChunks }) {
 	const key = stringifyChunkPosition(chunkPosition);
 	const chunk = loadedChunks.find(key);
 	if (chunk) {
-			// scene.remove(chunk);
-			loadedChunks.delete(key);
+		// scene.remove(chunk);
+		loadedChunks.delete(key);
 	}
 }
 
@@ -252,9 +252,9 @@ function createCurvedGrassGeometry(width, curveHeight, curveWidth) {
 
 	// Create a curved shape for the grass
 	const curve = new THREE.CatmullRomCurve3([
-			new THREE.Vector3(0, 0, 0),
-			new THREE.Vector3(curveWidth / 2, curveHeight, 0),
-			new THREE.Vector3(curveWidth, 0, 0)
+		new THREE.Vector3(0, 0, 0),
+		new THREE.Vector3(curveWidth / 2, curveHeight, 0),
+		new THREE.Vector3(curveWidth, 0, 0)
 	]);
 
 	// Create the grass blade geometry along the curve
@@ -267,30 +267,30 @@ function createCurvedGrassGeometry(width, curveHeight, curveWidth) {
 	const indices: number[] = [];
 
 	for (let i = 0; i < points.length; i++) {
-			const point = points[i];
-			const tangent = curve.getTangentAt(i / divisions).normalize();
-			const normal = new THREE.Vector3().crossVectors(tangent, new THREE.Vector3(0, 0, 1)).normalize();
+		const point = points[i];
+		const tangent = curve.getTangentAt(i / divisions).normalize();
+		const normal = new THREE.Vector3().crossVectors(tangent, new THREE.Vector3(0, 0, 1)).normalize();
 
-			// Add vertices for the grass blade
-			const angle = Math.PI / 2;
-			const offset = new THREE.Vector3(width * Math.cos(angle), width * Math.sin(angle), 0);
-			const vertex1 = new THREE.Vector3().copy(point).sub(offset);
-			const vertex2 = new THREE.Vector3().copy(point).add(offset);
+		// Add vertices for the grass blade
+		const angle = Math.PI / 2;
+		const offset = new THREE.Vector3(width * Math.cos(angle), width * Math.sin(angle), 0);
+		const vertex1 = new THREE.Vector3().copy(point).sub(offset);
+		const vertex2 = new THREE.Vector3().copy(point).add(offset);
 
-			vertices.push(vertex1.x, vertex1.y, vertex1.z);
-			vertices.push(vertex2.x, vertex2.y, vertex2.z);
+		vertices.push(vertex1.x, vertex1.y, vertex1.z);
+		vertices.push(vertex2.x, vertex2.y, vertex2.z);
 
-			// Add normals for the grass blade
-			normals.push(normal.x, normal.y, normal.z);
-			normals.push(normal.x, normal.y, normal.z);
+		// Add normals for the grass blade
+		normals.push(normal.x, normal.y, normal.z);
+		normals.push(normal.x, normal.y, normal.z);
 
-			// Add uvs for the grass blade
-			uvs.push(0, 0);
-			uvs.push(1, 0);
+		// Add uvs for the grass blade
+		uvs.push(0, 0);
+		uvs.push(1, 0);
 
-			// Add indices for the faces
-			const indexOffset = i * 2;
-			indices.push(indexOffset, indexOffset + 1, (indexOffset + 2) % (points.length * 2));
+		// Add indices for the faces
+		const indexOffset = i * 2;
+		indices.push(indexOffset, indexOffset + 1, (indexOffset + 2) % (points.length * 2));
 	}
 
 	grassGeometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
@@ -321,7 +321,7 @@ function generateGrassSpikes(groundMesh, density = 10, heightRange = [0.2, 0.5])
 
 		const grassGeometry = createCurvedGrassGeometry(1, 1, 0.1); // Adjust dimensions as needed
 		const grassMesh = new THREE.Mesh(grassGeometry, grassMaterial);
-		
+
 		grassMesh.position.set(randomX, max.y + randomHeight / 2, randomZ); // Adjust height position
 
 		groundMesh.add(grassMesh);
@@ -333,11 +333,11 @@ export function updateChunks(player, worldGroup, chunkSize, maxHeight, loadedChu
 	const playerChunkPosition = player.position.clone().divideScalar(chunkSize).floor();
 
 	// Unload chunks that are too far from the player
-	for (const {key, chunk} of loadedChunks.entries()) {
+	for (const { key, chunk } of loadedChunks.entries()) {
 		const chunkPosition = new THREE.Vector3(...key.split(',').map(Number));
 		// chunkPosition.y = playerChunkPosition.y;
 		const distance = chunkPosition.clone().sub(playerChunkPosition).length();
-		if (distance > renderDistance*2) {
+		if (distance > renderDistance * 2) {
 			unloadChunk(chunkPosition, { loadedChunks });
 		}
 	}

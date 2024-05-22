@@ -43,8 +43,6 @@ Commands.register('tp', (ctx, x, z) => {
   ctx.playerEntity.position.z = parseInt(z) || 0;
   Sockets.emit('entity:setpos', { entity: ctx.playerEntity.id, position: ctx.playerEntity.position });
 });
-<<<<<<< HEAD
-=======
 
 
 Commands.register('give', (ctx, itemName, quantity = 1) => {
@@ -57,4 +55,3 @@ Commands.register('give', (ctx, itemName, quantity = 1) => {
     action: 'add'
   });
 });
->>>>>>> upstream/main

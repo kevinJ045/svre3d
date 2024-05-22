@@ -4,17 +4,17 @@ import * as React from "react";
 import { Map2D } from "./misc/map.js";
 import { HUDUi } from "./componets/hud.js";
 import { MainUI } from "./componets/provider.js";
-import ChatsUI from "./chats/chats.tsx";
-import { Context } from "./data/context.ts";
-import { ToggleButton } from "./widgets/toggle.tsx";
-import GlobalEmitter from "../misc/globalEmitter.ts";
+import ChatsUI from "./chats/chats.jsx";
+import { Context } from "./data/context.js";
+import { ToggleButton } from "./widgets/toggle.jsx";
+import GlobalEmitter from "../misc/globalEmitter.js";
 
 export default class UI {
 
 	static root: Root;
 	static hudRoot: Root;
 
-	static init(){
+	static init() {
 		this.root = createRoot(document.querySelector('#full-ui')!);
 		this.root.render(<MainUI>
 			<Menu></Menu>
@@ -23,27 +23,27 @@ export default class UI {
 		</MainUI>);
 	}
 
-	static openChats(){
+	static openChats() {
 		GlobalEmitter.emit('openChats');
 		this.show();
 	}
 
-	static toggle(){
+	static toggle() {
 		document.querySelector('#full-menu')?.classList.toggle('active');
 		document.querySelector('#menu-button')?.classList.toggle('menu-open');
 	}
 
-	static show(){
+	static show() {
 		document.querySelector('#full-menu')?.classList.add('active');
 		document.querySelector('#menu-button')?.classList.add('menu-open');
 	}
 
-	static hide(){
+	static hide() {
 		document.querySelector('#full-menu')?.classList.remove('active');
 		document.querySelector('#menu-button')?.classList.remove('menu-open');
 	}
 
-	static update(){
+	static update() {
 		Map2D.update();
 	}
 

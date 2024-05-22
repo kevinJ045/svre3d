@@ -1,6 +1,6 @@
 // @ts-nocheck
-import {THREE} from 'enable3d';
-import { Pass } from './Pass.ts';
+import { THREE } from 'enable3d';
+import { Pass } from './Pass.js';
 
 
 const UnrealBloomShader = {
@@ -163,7 +163,7 @@ export class CustomUnrealBloomPass extends Pass {
             this.blurPassUniforms['tDiffuse'].value = inputRenderTarget.texture;
             this.blurPassUniforms['resolution'].value.set(inputRenderTarget.width, inputRenderTarget.height);
             this.blurPassUniforms['radius'].value = this.radius;
-            renderer.setRenderTarget(this            .renderTargetsHorizontal[i]);
+            renderer.setRenderTarget(this.renderTargetsHorizontal[i]);
             renderer.clear();
             renderer.render(this.scene, this.camera);
 

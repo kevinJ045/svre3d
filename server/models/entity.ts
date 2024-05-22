@@ -2,7 +2,7 @@ import { BuffData } from "./buff.js";
 import { ServerData } from "./data.js";
 import { ItemData } from "./item.js";
 import { Random } from "../common/rand.js";
-import { xyz } from "./misc.xyz.ts";
+import { xyz } from "./misc.xyz.js";
 
 
 class EntityData extends ServerData {
@@ -37,7 +37,7 @@ class EntityData extends ServerData {
 
     flags: string[] = ['entity'];
 
-	data: Record<string, any> = {};
+    data: Record<string, any> = {};
     constructor() {
         super();
         this.type = "";
@@ -65,54 +65,54 @@ class EntityData extends ServerData {
     //     }
     // }
     targetPosition!: xyz | null;
-	// Method to add an item to the inventory
-	addToInventory(item: ItemData): void | string {
-		const existingItem = this.findItemTypeInInventory(item);
+    // Method to add an item to the inventory
+    addToInventory(item: ItemData): void | string {
+        const existingItem = this.findItemTypeInInventory(item);
         if (existingItem) {
-            if(!isNaN(existingItem.quantity)) existingItem.quantity = parseInt(existingItem.quantity as any);
-            if(!isNaN(item.quantity)) item.quantity = parseInt(item.quantity as any);
-			if (existingItem.quantity + item.quantity <= existingItem.max) {
-				existingItem.quantity += item.quantity;
+            if (!isNaN(existingItem.quantity)) existingItem.quantity = parseInt(existingItem.quantity as any);
+            if (!isNaN(item.quantity)) item.quantity = parseInt(item.quantity as any);
+            if (existingItem.quantity + item.quantity <= existingItem.max) {
+                existingItem.quantity += item.quantity;
                 return 'increase';
-			} else {
-				const remainingCount = existingItem.max - existingItem.quantity;
-				existingItem.quantity = existingItem.max;
-				item.quantity -= remainingCount;
-				this.inventory.push(item);
+            } else {
+                const remainingCount = existingItem.max - existingItem.quantity;
+                existingItem.quantity = existingItem.max;
+                item.quantity -= remainingCount;
+                this.inventory.push(item);
                 return 'add';
-			}
-		} else {
+            }
+        } else {
             this.inventory.push(item);
             return 'add';
-		}
-	}
+        }
+    }
 
-	// Method to remove an item from the inventory
-	removeFromInventory(item: ItemData, count: number = 1): void | string {
-		const existingItem = this.findItemTypeInInventory(item);
-		if (!existingItem) return;
+    // Method to remove an item from the inventory
+    removeFromInventory(item: ItemData, count: number = 1): void | string {
+        const existingItem = this.findItemTypeInInventory(item);
+        if (!existingItem) return;
 
-		if (existingItem.quantity > count) {
+        if (existingItem.quantity > count) {
             existingItem.quantity -= count;
             return 'decrease';
-		} else {
+        } else {
             this.inventory.splice(this.inventory.indexOf(existingItem), 1);
             return 'remove';
-		}
-		
-	}
+        }
 
-	findItemTypeInInventory(item: ItemData) {
-		return this.inventory.find(i => i.itemID === item.itemID);
-	}
+    }
+
+    findItemTypeInInventory(item: ItemData) {
+        return this.inventory.find(i => i.itemID === item.itemID);
+    }
 
     findItemInInventory(item: ItemData | string) {
-		return this.inventory.find(i => i.id === (typeof item == "string" ? item : item.id));
-	}
+        return this.inventory.find(i => i.id === (typeof item == "string" ? item : item.id));
+    }
 
     findItemByData(key: string, value: any) {
-		return this.inventory.find(i => i.data[key] == value);
-	}
+        return this.inventory.find(i => i.data[key] == value);
+    }
 
     restTime = {
         current: 0,
@@ -122,7 +122,7 @@ class EntityData extends ServerData {
     };
 
     init = false;
-    
+
 }
 
 export { EntityData };

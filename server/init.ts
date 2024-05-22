@@ -3,7 +3,7 @@ import { variants } from "./constant/player_variant.js";
 import { worldData } from "./constant/world.js";
 import { loadAllResources } from "./functions/resources.js";
 import { LoginManager } from "./login/login.js";
-import { ServerData } from "./models/data.ts";
+import { ServerData } from "./models/data.js";
 import { startPing } from "./ping/ping.js";
 import { Sockets } from "./ping/sockets.js";
 import { Biomes } from "./repositories/biomes.js";
@@ -12,17 +12,17 @@ import { Entities } from "./repositories/entities.js";
 import { Items } from "./repositories/items.js";
 import { Mainloop } from "./repositories/mainloop.js";
 import { Players } from "./repositories/players.js";
-import Projectiles from "./repositories/projectiles.ts";
+import Projectiles from "./repositories/projectiles.js";
 import { ResourceMap } from "./repositories/resources.js";
 
 
-export async function userConnected(serverData, socket){
+export async function userConnected(serverData, socket) {
 
 	const token = socket.handshake.auth.token;
 
 	const username = token && token !== 'null' ? await LoginManager.verifyToken(token) : null;
 
-	if(username){
+	if (username) {
 
 		const player = await Players.find(username)!;
 
@@ -31,8 +31,8 @@ export async function userConnected(serverData, socket){
 		socket.data.username == username;
 
 		const playerEntity = Entities.spawn('i:player', player!.position, player!.username, player?.variant, player?.inventory, { spawnPoint: player!.spawnPoint, username, color: player?.color, equipment: player?.equipment }, player!.exp)!;
-		
-		if(
+
+		if (
 			!Entities.entities.find(i => i.data.username == username) || socket.handshake.query.reconnect != 'true'
 		) socket.emit('recognize', {
 			player,
@@ -61,7 +61,7 @@ export async function userConnected(serverData, socket){
 		socket.emit('unrecognized', { biomes: Biomes.biomes.map(i => i.reference) });
 
 		socket.on('register', async ({ variant, username, password, email }, cb) => {
-			if(!variants.includes(variant)) return cb(null);
+			if (!variants.includes(variant)) return cb(null);
 			await LoginManager.register(
 				username,
 				password,
@@ -76,17 +76,17 @@ export async function userConnected(serverData, socket){
 
 			const user = await Players.find(username);
 
-			if(!user) return cb()
-			
+			if (!user) return cb()
+
 			const token = await LoginManager.login(username, password);
-			
+
 			cb(token || 'wrong');
 		});
 	}
 
 }
 
-export function init(serverData: ServerData){
+export function init(serverData: ServerData) {
 	loadAllResources(ResourceMap, serverData);
 	Items.filterItems();
 	Biomes.registerBiomes();

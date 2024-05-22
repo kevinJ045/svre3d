@@ -2,7 +2,7 @@ import { Item } from "../../models/item.js"
 import * as React from "react";
 import { Equipments } from "../../repositories/equipments.js";
 import { PlayerInfo } from "../../repositories/player.js";
-import { generateItemIcon } from "../misc/itemicon.ts";
+import { generateItemIcon } from "../misc/itemicon.js";
 
 export const SlotItem = ({ item, click = true, counter = true, onClick }: { onClick?: any, counter?: boolean, click?: boolean, item: Item }) => {
   // Check if the item has an icon configuration
@@ -15,10 +15,10 @@ export const SlotItem = ({ item, click = true, counter = true, onClick }: { onCl
   const iconStyle = generateItemIcon(hasIcon);
 
   const onclick = () => {
-    if(onClick) onClick();
-    if(!click) return;
-    if(item?.reference?.equipment){
-      if(item?.data.wid){
+    if (onClick) onClick();
+    if (!click) return;
+    if (item?.reference?.equipment) {
+      if (item?.data.wid) {
         Equipments.unequip(PlayerInfo.entity, item?.reference!.equipment!.type!, item);
       } else {
         Equipments.equip(PlayerInfo.entity, item?.reference!.equipment!.type!, item);

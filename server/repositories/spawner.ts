@@ -4,31 +4,31 @@ import { BiomeData } from "../models/biome.js";
 import { Random } from "../common/rand.js";
 import { jsonres } from "../models/jsonres.js";
 import { Entities } from "./entities.js";
-import { ResourceSchema } from "../lib/loader/Schema.type.ts";
+import { ResourceSchema } from "../lib/loader/Schema.type.js";
 
 export class EntitySpawner {
 
-  static spawnAtChunk(chunk: ChunkData){
+	static spawnAtChunk(chunk: ChunkData) {
 
 		const biome: ResourceSchema = chunk.biome.reference ? chunk.biome.reference : chunk.biome;
 
-		if(biome.spawn){
+		if (biome.spawn) {
 
 			const rule = Random.pick(...biome.spawn);
 
 			const rarity = rule.rarity;
-	
+
 			const randomThreshold = Random.from(0, rarity);
 
 			let randomPlacement = randomThreshold == Math.floor(rarity / 2);
 
-			if(rule.flags) randomPlacement = randomPlacement && 
-				!rule.flags.map((flag: string) => flag.startsWith('!') ? 
-				!chunk.flags.includes(flag.replace('!', '')) :
-				chunk.flags.includes(flag)
-			).includes(false);
+			if (rule.flags) randomPlacement = randomPlacement &&
+				!rule.flags.map((flag: string) => flag.startsWith('!') ?
+					!chunk.flags.includes(flag.replace('!', '')) :
+					chunk.flags.includes(flag)
+				).includes(false);
 
-			if(randomPlacement){
+			if (randomPlacement) {
 
 				Entities.spawn(
 					rule.entity,
@@ -46,5 +46,5 @@ export class EntitySpawner {
 		}
 
 	}
-	
+
 }

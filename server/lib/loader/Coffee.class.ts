@@ -2,7 +2,7 @@
 import coffee from "coffeescript";
 import fs from 'fs';
 import { Context, createContext, runInContext } from 'vm';
-import CoffeeContext from "./Context.class.ts";
+import CoffeeContext from "./Context.class.js";
 
 export default class Coffee {
   compiled: string;
@@ -10,7 +10,7 @@ export default class Coffee {
 
   context: Context;
 
-  constructor(path, src){
+  constructor(path, src) {
     const coffeeScript = fs.readFileSync(path, 'utf8');
     const compiled = coffee.compile(coffeeScript, { bare: true });
     this.compiled = compiled;
@@ -20,12 +20,12 @@ export default class Coffee {
       print: (...logs: any[]) => console.log(...logs),
       source: src,
       ...new CoffeeContext(src, src.serverData)
-      .context
+        .context
     });
 
   }
 
-  exec(){
+  exec() {
     runInContext(this.compiled, this.context);
   }
 

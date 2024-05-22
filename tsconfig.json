@@ -4,12 +4,11 @@
     "module": "es2020",
     "moduleResolution": "nodenext",
     "jsx": "react",
-
     "strict": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "allowImportingTsExtensions": true
+    "outDir": "dist"
   },
   "include": ["client/scripts/**/*", "server/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]

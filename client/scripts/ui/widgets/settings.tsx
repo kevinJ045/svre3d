@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Settings } from "../../settings/settings.ts"
+import { Settings } from "../../settings/settings.js"
 
 
 export const SettingsUI = () => {
@@ -43,7 +43,7 @@ export const SettingsUI = () => {
     });
     setInputValues(newInputValues);
   }
-  
+
   return (
     <div>
       {Object.keys(Settings.settings).map((key) => (
@@ -62,26 +62,26 @@ export const SettingsUI = () => {
                 checked={inputValues[key] as boolean}
                 onChange={(e) => handleInputChange(key, e.target.checked == true)}
               />
-            ) : Settings.type(key) === 'int' || Settings.type(key) === 'float' ? 
-            Settings.getFull(key).min && Settings.getFull(key).max ? (
-              <input
-                type="range"
-                min={Settings.getFull(key).min}
-                max={Settings.getFull(key).max}
-                step={Settings.type(key) === 'int' ? '1' : '0.1'}
-                value={inputValues[key]}
-                onChange={(e) => handleInputChange(key, e.target.value)}
-              />
-            ) : (
-              <input
-                type="number"
-                step={Settings.type(key) === 'int' ? '1' : '0.1'}
-                value={inputValues[key]}
-                onChange={(e) => handleInputChange(key, e.target.value)}
-              />
-            ) : (
-              <div></div>
-            )}
+            ) : Settings.type(key) === 'int' || Settings.type(key) === 'float' ?
+              Settings.getFull(key).min && Settings.getFull(key).max ? (
+                <input
+                  type="range"
+                  min={Settings.getFull(key).min}
+                  max={Settings.getFull(key).max}
+                  step={Settings.type(key) === 'int' ? '1' : '0.1'}
+                  value={inputValues[key]}
+                  onChange={(e) => handleInputChange(key, e.target.value)}
+                />
+              ) : (
+                <input
+                  type="number"
+                  step={Settings.type(key) === 'int' ? '1' : '0.1'}
+                  value={inputValues[key]}
+                  onChange={(e) => handleInputChange(key, e.target.value)}
+                />
+              ) : (
+                <div></div>
+              )}
           </div>
         </div>
       ))}

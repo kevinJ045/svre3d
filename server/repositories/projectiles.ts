@@ -1,11 +1,11 @@
-import { xyz, xyzTv } from "../../client/scripts/common/xyz.ts";
-import { generateUniqueId } from "../../client/scripts/modules/bid.ts";
-import { EntityData } from "../models/entity.ts";
-import { ProjectileData } from "../models/projectile.ts";
-import { Sockets } from "../ping/sockets.ts";
+import { xyz, xyzTv } from "../../client/scripts/common/xyz.js";
+import { generateUniqueId } from "../../client/scripts/modules/bid.js";
+import { EntityData } from "../models/entity.js";
+import { ProjectileData } from "../models/projectile.js";
+import { Sockets } from "../ping/sockets.js";
 import { Vector3 } from 'three';
-import { pingFrom } from "../ping/ping.ts";
-import { ServerData } from "../models/data.ts";
+import { pingFrom } from "../ping/ping.js";
+import { ServerData } from "../models/data.js";
 
 export default class Projectiles {
   static projectiles: ProjectileData[] = [];
@@ -29,14 +29,14 @@ export default class Projectiles {
         position: projectile.position
       });
 
-      
+
 
       // Check for collision with entities
       const hitEntity = entities.find(entity => entity.id !== projectile.owner && xyzTv(entity.position).distanceTo(projectile.position) < 2);
       if (hitEntity) {
         this.handleProjectileHit(projectile, hitEntity);
-      } else if(projectile.maxDistance){
-        if(projectile.maxDistance > 1 && xyzTv(projectile.startPosition).distanceTo(projectile.position) >= (projectile.maxDistance)) {
+      } else if (projectile.maxDistance) {
+        if (projectile.maxDistance > 1 && xyzTv(projectile.startPosition).distanceTo(projectile.position) >= (projectile.maxDistance)) {
           this.handleProjectileHit(projectile);
         }
       }
@@ -51,7 +51,7 @@ export default class Projectiles {
   }
 
   static handleProjectileHit(projectile: ProjectileData, target?: EntityData) {
-    if(target) this.directDamageEntity(target, projectile.damage);
+    if (target) this.directDamageEntity(target, projectile.damage);
     projectile.hit = true; // Mark projectile for removal
     this.projectiles.splice(this.projectiles.indexOf(projectile), 1);
     Sockets.emit('projectile:hit', {

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Random } from '../../../server/common/rand.ts';
+import { Random } from '../../../server/common/rand.js';
 import { THREE } from 'enable3d';
-import { Noise } from '../../../server/lib/noise/index.ts';
+import { Noise } from '../../../server/lib/noise/index.js';
 
 export const Running2dGoobers = (canvas: HTMLCanvasElement) => {
   const ctx = canvas.getContext('2d')!;
@@ -75,7 +75,7 @@ export const Running2dGoobers = (canvas: HTMLCanvasElement) => {
 
         if (distance < 1) {
           let dies, lives;
-          if(this.size >= square.size && this.size <= (gridSize * 2)) {
+          if (this.size >= square.size && this.size <= (gridSize * 2)) {
             dies = square;
             lives = this;
           } else {
@@ -83,11 +83,11 @@ export const Running2dGoobers = (canvas: HTMLCanvasElement) => {
             lives = square;
           }
           lives.size += Math.min(Math.floor(dies.size / 2), gridSize * 2);
-          if(lives.speed > 0.1) lives.speed -= 0.05;
-          if(lives.size >= (gridSize * 2)) lives.remove();
+          if (lives.speed > 0.1) lives.speed -= 0.05;
+          if (lives.size >= (gridSize * 2)) lives.remove();
           else {
             dies.size /= 2;
-            if(dies.size < 5) dies.remove();
+            if (dies.size < 5) dies.remove();
           }
         } else {
           if (Math.abs(deltaX) > Math.abs(deltaY)) {
@@ -122,8 +122,8 @@ export const Running2dGoobers = (canvas: HTMLCanvasElement) => {
         this.direction = this.getRandomDirection();
       }
 
-      if(this.size < gridSize){
-        if(Random.from(0, 250) == 5) {
+      if (this.size < gridSize) {
+        if (Random.from(0, 250) == 5) {
           this.size = gridSize;
           this.grown = true;
         }
@@ -142,8 +142,8 @@ export const Running2dGoobers = (canvas: HTMLCanvasElement) => {
   const addSquare = (x, y) => {
     let rcolor = `hsl(${Math.random() * 360}, 100%, 50%)`;
     const color = Random.from(0, 30) == 2 ?
-    squares.length ? Random.pick(...squares.map(i => i.color)) : rcolor
-    : rcolor;
+      squares.length ? Random.pick(...squares.map(i => i.color)) : rcolor
+      : rcolor;
     squares.push(new Square(x, y, squareSize, color));
   }
 

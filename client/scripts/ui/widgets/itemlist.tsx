@@ -1,14 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import { Items } from '../../repositories/items';
-import { SlotItem } from './slotitem';
+import { Items } from '../../repositories/items.js';
+import { SlotItem } from './slotitem.js';
 
 export const ItemList = () => {
   return (
     <div className="row">
       {
         Items.all().map(item => (
-          <SlotItem 
+          <SlotItem
             counter={false}
             click={false}
             item={

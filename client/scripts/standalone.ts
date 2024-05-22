@@ -1,15 +1,15 @@
 import { Project, Scene3D, PhysicsLoader, THREE, ExtendedObject3D, PointerLock, PointerDrag, ThirdPersonControls, ExtendedGroup, ExtendedMesh, FLAT } from 'enable3d'
-import { preload } from './modules/preload'
-import { item } from './modules/models/item'
-import { CustomScene } from './modules/models/scene'
-import { Player } from './modules/player'
-import { ChunkSet, updateChunks } from './modules/world'
-import { Item } from './modules/models/item2'
-import { firstPersonControls } from './modules/fpc'
-import { FirstPersonControls } from './lib/FirstPersonControls'
-import { Entities } from './modules/entityman'
-import { Particle, ParticleSystem } from './modules/particle'
-import { ItemMan } from './modules/items'
+import { preload } from './modules/preload.js'
+import { item } from './modules/models/item.js'
+import { CustomScene } from './modules/models/scene.js'
+import { Player } from './modules/player.js'
+import { ChunkSet, updateChunks } from './modules/world.js'
+import { Item } from './modules/models/item2.js'
+import { firstPersonControls } from './modules/fpc.js'
+import { FirstPersonControls } from './lib/FirstPersonControls.js'
+import { Entities } from './modules/entityman.js'
+import { Particle, ParticleSystem } from './modules/particle.js'
+import { ItemMan } from './modules/items.js'
 
 class MainScene extends CustomScene {
 
@@ -36,7 +36,7 @@ class MainScene extends CustomScene {
 
   async create() {
     console.log('create')
-  
+
     // box.body.setPosition()
 
     // console.log(this.loaded['m:base_segment']);
@@ -84,7 +84,7 @@ class MainScene extends CustomScene {
     player.toInventory(horn);
     player.toInventory(brow);
     player.toInventory(this.items.itemFromName('m:rubidium')!);
-    for(let i = 0; i < 100; i++){
+    for (let i = 0; i < 100; i++) {
       player.toInventory(this.items.itemFromName('m:oreon')!);
     }
 
@@ -119,7 +119,7 @@ class MainScene extends CustomScene {
     directionalLight.shadow.camera.right = d;
     directionalLight.shadow.camera.top = d;
     directionalLight.shadow.camera.bottom = - d;
-    
+
     directionalLight.shadow.camera.near = 1;
     directionalLight.shadow.camera.far = 1000000;
 
@@ -154,8 +154,8 @@ class MainScene extends CustomScene {
 
   }
 
-  toggleFirstPersonMode(){
-    if(this.firstPersonMode){
+  toggleFirstPersonMode() {
+    if (this.firstPersonMode) {
       this.cameraPosition.lookat = false;
       this.firstPersonMode = false;
       this.cameraPosition.offset = this.cameraPosition.angles[this.cameraPosition.current];
@@ -168,7 +168,7 @@ class MainScene extends CustomScene {
       this.cameraPosition.offset = new THREE.Vector3(0, 1, -2);
       this.cameraPosition.lookat = new THREE.Vector3(0, 1, -3);
       this.firstPersonMode = true;
-      
+
       this.pointerLock = new PointerLock(this.canvas);
       this.controls = new FirstPersonControls(this.camera, this.player.mesh, {
         offset: new THREE.Vector3(0, 1, 0)
@@ -181,15 +181,15 @@ class MainScene extends CustomScene {
 
   inventoryOpen = false;
 
-  toggleInventory(){
-    if(this.inventoryOpen){
+  toggleInventory() {
+    if (this.inventoryOpen) {
       this.closeInventory();
     } else {
       this.openInventory();
     }
   }
 
-  openInventory(){
+  openInventory() {
     this.inventoryOpen = true;
 
     this.cameraPosition.offset = new THREE.Vector3(4, 2, -8);
@@ -202,7 +202,7 @@ class MainScene extends CustomScene {
     this.UI.show();
   }
 
-  closeInventory(){
+  closeInventory() {
     this.cameraPosition.lookat = false;
     this.inventoryOpen = false;
     this.cameraPosition.offset = this.cameraPosition.angles[this.cameraPosition.current];
@@ -210,9 +210,9 @@ class MainScene extends CustomScene {
     this.UI.hide();
   }
 
-  setupControls(){
+  setupControls() {
     let isClick = 1;
-	  let mousedowninterval: any;
+    let mousedowninterval: any;
 
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -227,7 +227,7 @@ class MainScene extends CustomScene {
 
       const intersectsplayer = raycaster.intersectObjects([this.player.mesh]);
 
-      if(intersectsplayer.length > 0){
+      if (intersectsplayer.length > 0) {
         return this.openInventory();
       }
 
@@ -248,7 +248,7 @@ class MainScene extends CustomScene {
     });
 
     this.canvas.addEventListener('mousedown', (event) => {
-      if(event.button == 0){
+      if (event.button == 0) {
         mousedowninterval = setTimeout(() => isClick = 0, 300);
         pos.x = event.clientX;
         pos.y = event.clientY;
@@ -256,15 +256,15 @@ class MainScene extends CustomScene {
         event.preventDefault();
       }
     });
-  
-  
+
+
     this.canvas.addEventListener('mouseup', (event) => {
-      if(event.button == 0){
+      if (event.button == 0) {
         clearTimeout(mousedowninterval);
-        if(isClick == 0 || (event.clientX !== pos.x && event.clientY !== pos.y)) return isClick = 1;
-  
+        if (isClick == 0 || (event.clientX !== pos.x && event.clientY !== pos.y)) return isClick = 1;
+
         isClick = 1;
-        if(!this.firstPersonMode) onMouseClick(event);
+        if (!this.firstPersonMode) onMouseClick(event);
       } else {
         event.preventDefault();
 
@@ -287,22 +287,22 @@ class MainScene extends CustomScene {
     }
 
     window.addEventListener('keydown', (e) => {
-      if(e.target instanceof HTMLInputElement) return;
+      if (e.target instanceof HTMLInputElement) return;
       e.preventDefault();
       this.keys[e.key.toLowerCase()] = true;
       this.keys.ctrlKey = e.ctrlKey;
-      if(keyEvents['Down'+e.key]) keyEvents['Down'+e.key]();
+      if (keyEvents['Down' + e.key]) keyEvents['Down' + e.key]();
     });
 
     window.addEventListener('keyup', (e) => {
-      if(e.target instanceof HTMLInputElement) return;
+      if (e.target instanceof HTMLInputElement) return;
       e.preventDefault();
       this.keys[e.key.toLowerCase()] = false;
       this.keys.ctrlKey = e.ctrlKey;
-      if(keyEvents['Up'+e.key]) keyEvents['Up'+e.key]();
+      if (keyEvents['Up' + e.key]) keyEvents['Up' + e.key]();
     });
 
-    
+
     const pointerDrag = new PointerDrag(this.canvas);
     pointerDrag.onMove(delta => {
       if (!this.pointerLock) return;
@@ -314,7 +314,7 @@ class MainScene extends CustomScene {
 
   }
 
-  cameraPosition : { offset: THREE.Vector3, diagonal: number, lookat: THREE.Vector3 | false, angles: THREE.Vector3[], current: number } = {
+  cameraPosition: { offset: THREE.Vector3, diagonal: number, lookat: THREE.Vector3 | false, angles: THREE.Vector3[], current: number } = {
     offset: new THREE.Vector3(15, 15, -15),
     diagonal: 10,
     lookat: false,
@@ -329,10 +329,10 @@ class MainScene extends CustomScene {
     current: 0
   };
 
-  changeCameraAngle(){
-    if(this.cameraPosition.lookat) return;
+  changeCameraAngle() {
+    if (this.cameraPosition.lookat) return;
     this.cameraPosition.current++;
-    if(this.cameraPosition.current >= this.cameraPosition.angles.length) this.cameraPosition.current = 0;
+    if (this.cameraPosition.current >= this.cameraPosition.angles.length) this.cameraPosition.current = 0;
     this.cameraPosition.offset = this.cameraPosition.angles[this.cameraPosition.current];
   }
 
@@ -344,14 +344,14 @@ class MainScene extends CustomScene {
 
     // Convert offsets to a Vector3 based on player's rotation
     const offsetVector = this.cameraPosition.offset.clone();
-    if(this.lockCameraToObject) offsetVector.applyEuler(playerRotation);
+    if (this.lockCameraToObject) offsetVector.applyEuler(playerRotation);
 
     // Set camera position
     const cameraPosition = new THREE.Vector3().copy(playerPosition).add(offsetVector);
     this.camera.position.copy(cameraPosition);
 
     // Make the camera look at the player
-    if(this.cameraPosition.lookat) this.camera.lookAt(playerPosition.clone().add(this.cameraPosition.lookat).applyEuler(this.player.mesh.rotation));
+    if (this.cameraPosition.lookat) this.camera.lookAt(playerPosition.clone().add(this.cameraPosition.lookat).applyEuler(this.player.mesh.rotation));
     else this.camera.lookAt(playerPosition);
   }
 
@@ -360,7 +360,7 @@ class MainScene extends CustomScene {
 
     this.entities.think();
 
-    if(this.firstPersonMode) firstPersonControls(this, this.player);
+    if (this.firstPersonMode) firstPersonControls(this, this.player);
     else this.updateCameraLocation();
 
     updateChunks(this.player.mesh, this.world, this.chunkSize, this.maxWorldHeight, this.loadedChunks, this.renderDistance, this.seed);

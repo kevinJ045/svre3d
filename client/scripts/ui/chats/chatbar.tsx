@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react"
 import { Context } from "../data/context.js";
-import GlobalEmitter from "../../misc/globalEmitter.ts";
-import { ping } from "../../socket/socket.ts";
-import { PlayerInfo } from "../../repositories/player.ts";
+import GlobalEmitter from "../../misc/globalEmitter.js";
+import { ping } from "../../socket/socket.js";
+import { PlayerInfo } from "../../repositories/player.js";
 
 export const ChatBar = () => {
   const [messageText, setMessageText] = useState('');
@@ -13,7 +13,7 @@ export const ChatBar = () => {
 
   const sendMessage = () => {
     const msg = messageText.trim();
-    if(!msg) return void 0;
+    if (!msg) return void 0;
     setMessageText('');
     ping('chat:send', {
       message: msg,
@@ -26,11 +26,11 @@ export const ChatBar = () => {
       {
         chats.map((chat, index) => (
           <div key={index} className="message">
-            <div className="title" onClick={(e) => document.getElementById('messageText')?.focus() || setMessageText(t => t + '@' + chat.username+' ')} title={chat.username}>{chat.username}</div>
+            <div className="title" onClick={(e) => document.getElementById('messageText')?.focus() || setMessageText(t => t + '@' + chat.username + ' ')} title={chat.username}>{chat.username}</div>
             <div className="content">{
-              chat.message.text.split(' ').map(i => 
-                i.startsWith('@') ? <a href={"#"+i.split('@')[1]} className="username">{i} </a>
-                : i+' '
+              chat.message.text.split(' ').map(i =>
+                i.startsWith('@') ? <a href={"#" + i.split('@')[1]} className="username">{i} </a>
+                  : i + ' '
               )
             }</div>
           </div>
@@ -39,8 +39,8 @@ export const ChatBar = () => {
     </div>
     <div className="messagebar">
       <input type="text" className="messagetext" id="messageText"
-       value={messageText} onChange={(e) => setMessageText(e.target.value)}
-       onKeyDown={(e) => e.key == 'Enter' && !e.shiftKey ? sendMessage() : ''}/>
+        value={messageText} onChange={(e) => setMessageText(e.target.value)}
+        onKeyDown={(e) => e.key == 'Enter' && !e.shiftKey ? sendMessage() : ''} />
     </div>
   </div>
 }

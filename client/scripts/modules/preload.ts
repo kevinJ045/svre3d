@@ -24,7 +24,7 @@ const loaders = {
 		});
 	},
 	image: async (url: string) => {
-		return new Promise((r,re) => {
+		return new Promise((r, re) => {
 			const playerIcon = new Image();
 			playerIcon.src = url;
 			playerIcon.onload = () => {
@@ -38,38 +38,38 @@ export const preload = async (scene: CustomScene) => {
 
 	const loads = await toload();
 
-	for(let undefinedItem of loads){
+	for (let undefinedItem of loads) {
 		let load: any = null;
 
-		const item = {...undefinedItem};
+		const item = { ...undefinedItem };
 
 		// console.log(undefinedItem.id);
 
-		if(item.resource){
+		if (item.resource) {
 
 			const type = item.resource.type;
-			
-			if(item.type.endsWith("_map")){
+
+			if (item.type.endsWith("_map")) {
 				load = [];
-				for(let src of item.resource.sources!){
+				for (let src of item.resource.sources!) {
 					load.push(await scene.load[type](src));
 				}
-			} else if(type in scene.load) {
+			} else if (type in scene.load) {
 				load = await ((scene.load[type])(item.resource.src));
-			} else if(type in loaders){
+			} else if (type in loaders) {
 				load = await ((loaders[type])(item.resource.src));
 			}
 
 
-			if(type == "texture") {
+			if (type == "texture") {
 				item.texture = load;
-			} else if(type == "gltf" || type == "obj" || type == "fbx") {
+			} else if (type == "gltf" || type == "obj" || type == "fbx") {
 				item.mesh = type == "gltf" ? load.scene : load;
-			} else if(item.type == "shader"){
-				item.id = item.id+'.shader';
-				if(item.resource.sources){
-					if(!item['vertex']) item['vertex'] = await Utils.loadText(item.resource.sources![0]);
-					if(!item['fragment']) item['fragment'] = await Utils.loadText(item.resource.sources![1]);
+			} else if (item.type == "shader") {
+				item.id = item.id + '.shader';
+				if (item.resource.sources) {
+					if (!item['vertex']) item['vertex'] = await Utils.loadText(item.resource.sources![0]);
+					if (!item['fragment']) item['fragment'] = await Utils.loadText(item.resource.sources![1]);
 				}
 			}
 
@@ -79,15 +79,15 @@ export const preload = async (scene: CustomScene) => {
 
 		const group = item.loader ? item.loader.group : item.type;
 
-		if(item.type == "biome"){
+		if (item.type == "biome") {
 			scene.loadedChunks.chunkTypes.push({
 				...item,
 				item: scene.findLoadedResource(item.item, 'textures')
 			} as any);
-		} else if(item.type == 'particle') {
+		} else if (item.type == 'particle') {
 			scene.particleSystem.registerFromJson(item);
 		} else {
-			if(!scene.loaded[group]) scene.loaded[group] = [];
+			if (!scene.loaded[group]) scene.loaded[group] = [];
 			scene.loaded[group].push(item);
 		}
 	}

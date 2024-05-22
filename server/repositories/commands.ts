@@ -3,6 +3,7 @@ import { Sockets } from "../ping/sockets.js";
 import { Entities } from "./entities.js";
 import { Items } from "./items.js";
 import { Players } from "./players.js";
+import { ItemData } from '../models/item.js';
 
 
 
@@ -27,27 +28,38 @@ export default class Commands {
 
 }
 
+type Context = {
+  playerEntity: {
+    position: {
+      x: number,
+      y: number,
+      z: number,
+    }
+    id: string,
+    addToInventory: (item: ItemData) => Promise<Response>
+  }
+  reply: (msg: string) => Promise<Response>
+}
 
-
-Commands.register('summon', (ctx, x, y, z, entity, variant, data) => {
-  if (x == '~') x = ctx.playerEntity.position.x;
-  if (y == '~') y = ctx.playerEntity.position.y;
-  if (z == '~') z = ctx.playerEntity.position.z;
+Commands.register('summon', (ctx: Context, x: number, y: number, z: number, entity: string, variant: string, data) => {
+  if (x.toString() == '~') x = ctx.playerEntity.position.x;
+  if (y.toString() == '~') y = ctx.playerEntity.position.y;
+  if (z.toString() == '~') z = ctx.playerEntity.position.z;
   ctx.reply('Spawned a ' + entity + ' at ' + x + ',' + y + ',' + z);
   Entities.spawn(entity, { x, y, z }, '', variant, []);
 });
 
-Commands.register('tp', (ctx, x, z) => {
-  ctx.playerEntity.position.x = parseInt(x) || 0;
+Commands.register('tp', (ctx: Context, x: number, z: number) => {
+  ctx.playerEntity.position.x = parseInt(x.toString()) || 0;
   ctx.playerEntity.position.y = 5;
-  ctx.playerEntity.position.z = parseInt(z) || 0;
+  ctx.playerEntity.position.z = parseInt(z.toString()) || 0;
   Sockets.emit('entity:setpos', { entity: ctx.playerEntity.id, position: ctx.playerEntity.position });
 });
 
 
-Commands.register('give', (ctx, itemName, quantity = 1) => {
+Commands.register('give', (ctx: Context, itemName: string, quantity = 1) => {
   const item = Items.create(itemName, parseInt(quantity.toString()));
-  ctx.playerEntity.addToInventory(item);
+  ctx.playerEntity.addToInventory(item as ItemData);
   Sockets.emit('entity:inventory', {
     entity: ctx.playerEntity.id,
     type: 'add',

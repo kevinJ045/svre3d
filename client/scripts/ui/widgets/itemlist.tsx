@@ -8,7 +8,7 @@ export const ItemList = () => {
     <div className="row">
       {
         Items.all().map(item => (
-          <SlotItem 
+          <SlotItem
             counter={false}
             click={false}
             item={

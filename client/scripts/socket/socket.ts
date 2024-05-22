@@ -14,7 +14,7 @@ const io = (window as any).io as typeof sio;
 
 let S!: any;
 
-export function ping<T = any, D = any>(action: string, data: D){
+export function ping<T = any, D = any>(action: string, data: D) {
 	return new Promise((r) => {
 		S.emit(action, data, (response: T) => {
 			r(response);
@@ -22,14 +22,14 @@ export function ping<T = any, D = any>(action: string, data: D){
 	});
 }
 
-export function pingFrom<T = any, D = any>(action: string, func: (data: T) => any){
-	if(S) S.on(action, async (data: T) => {
+export function pingFrom<T = any, D = any>(action: string, func: (data: T) => any) {
+	if (S) S.on(action, async (data: T) => {
 		await func(data);
 	});
 }
 
 
-export async function connectSocket(){
+export async function connectSocket() {
 	const token = LocalDB.cookie.get('token');
 
 	let reconnect = false;
@@ -50,7 +50,7 @@ export async function connectSocket(){
 		worldData
 	}) => {
 
-		if(PlayerInfo.player.username) return;
+		if (PlayerInfo.player.username) return;
 
 		PlayerInfo.setPlayer(player);
 		PlayerInfo.setPlayerEntity(playerEntity);
@@ -58,13 +58,13 @@ export async function connectSocket(){
 
 		Seed.setSeed(worldData.seed);
 		WorldData.setData(worldData);
-		
+
 		S = socket;
 
 		initScene();
 	});
 
-	socket.on('unrecognized', ({biomes}) => {
+	socket.on('unrecognized', ({ biomes }) => {
 		Login.init(socket, biomes);
 	});
 

@@ -4,7 +4,7 @@ import { mixColors } from "../../common/colors.js";
 export const Button = ({
   children,
   color = '#f0003c',
-  onClick=() => {}
+  onClick = () => { }
 }) => {
   return (
     <button onClick={onClick} style={{
@@ -15,8 +15,8 @@ export const Button = ({
       <span className="login-button-shadow"></span>
       <span className="login-button-edge"></span>
       <span className="login-button-front text">
-        {children} 
+        {children}
       </span>
-    </button> 
+    </button>
   )
 }

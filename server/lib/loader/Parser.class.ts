@@ -6,7 +6,7 @@ import { ResourceSchema } from './Schema.type.js';
 import Coffee from "./Coffee.class.js";
 
 const floatifyObject = (obj, int) => {
-  for(let i in obj) obj[i] = int ? parseFloat(obj[i]) : parseInt(obj[i]);
+  for (let i in obj) obj[i] = int ? parseFloat(obj[i]) : parseInt(obj[i]);
   return obj;
 }
 const xyz = {
@@ -56,7 +56,7 @@ export default class Parser {
         kind: 'sequence',
         construct: (data) => {
           const vec3 = [0, 0, 0];
-          for(let i in data) vec3[i] = data[i];
+          for (let i in data) vec3[i] = data[i];
           return vec3;
         },
       }),
@@ -77,13 +77,13 @@ export default class Parser {
       }),
       ...(
         STD.getSchemas()
-        .map(schema => new yaml.Type('!'+schema.name, {
-          kind: 'mapping',
-          construct: (data) => ({
-            ...schema.values,
-            ...data
-          }),
-        }))
+          .map(schema => new yaml.Type('!' + schema.name, {
+            kind: 'mapping',
+            construct: (data) => ({
+              ...schema.values,
+              ...data
+            }),
+          }))
       )
     ]);
   }
@@ -97,15 +97,15 @@ export default class Parser {
   }
 
   importFile(filename) {
-    const currentPath = this.context.currentFile; 
+    const currentPath = this.context.currentFile;
     const file = filename.endsWith('.yaml')
-    ? this.parseYAML(this.folderTagHandler(filename))
-    : this.lookUpFile(this.folderTagHandler(filename));
+      ? this.parseYAML(this.folderTagHandler(filename))
+      : this.lookUpFile(this.folderTagHandler(filename));
     this.context.currentFile = currentPath;
-    return file; 
+    return file;
   }
 
-  lookUpFile(filePath){
+  lookUpFile(filePath) {
     this.context.currentFile = filePath;
     return fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf-8') : '';
   }
@@ -125,8 +125,8 @@ export default class Parser {
     return data as ResourceSchema;
   }
 
-  parseCoffee(filePath, src){
+  parseCoffee(filePath, src) {
     new Coffee(filePath, src)
-    .exec();
+      .exec();
   }
 }

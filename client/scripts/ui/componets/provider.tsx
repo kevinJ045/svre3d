@@ -12,47 +12,47 @@ let listening = false;
 
 export const MainUI = ({ children }) => {
 
-  const [tab, setTab] = useState('inventory');
+	const [tab, setTab] = useState('inventory');
 
-  const [inventory, setInventory] = useState([...(PlayerInfo.entity?.inventory || [])]);
-  const [currentItem, setCurrentItem] = React.useState<Item | null>(null)
+	const [inventory, setInventory] = useState([...(PlayerInfo.entity?.inventory || [])]);
+	const [currentItem, setCurrentItem] = React.useState<Item | null>(null)
 
-  const [currentBook, setCurrentBook] = useState<book | null>(null);
-  const [currentPage, setCurrentPage] = useState<bookpage | null>(null);
+	const [currentBook, setCurrentBook] = useState<book | null>(null);
+	const [currentPage, setCurrentPage] = useState<bookpage | null>(null);
 
-  const [chats, setChats] = useState<Chat[]>([]);
+	const [chats, setChats] = useState<Chat[]>([]);
 
-  const addChat = (chat: Chat) => {
-    setChats(prevChats => [...prevChats, chat]);
-  }
+	const addChat = (chat: Chat) => {
+		setChats(prevChats => [...prevChats, chat]);
+	}
 
-  const removeChat = (chat: Chat) => {
-    setChats(chats => chats.filter(c => chat.message.id !== c.message.id));
-  }
+	const removeChat = (chat: Chat) => {
+		setChats(chats => chats.filter(c => chat.message.id !== c.message.id));
+	}
 
-  const editChatContent = (chat: Chat) => {
-    setChats(chats => chats.map(c => {
-      if(chat.message.id !== c.message.id){
-        c.message.text = chat.message.text;
-      }
-      return c;
-    }));
-  }
+	const editChatContent = (chat: Chat) => {
+		setChats(chats => chats.map(c => {
+			if (chat.message.id !== c.message.id) {
+				c.message.text = chat.message.text;
+			}
+			return c;
+		}));
+	}
 
-  const data = {
-    tab, setTab,
-    inventory, setInventory,
-    currentItem, setCurrentItem,
-    currentBook, setCurrentBook,
-    currentPage, setCurrentPage,
-    chats, setChats,
-    addChat, removeChat, editChatContent
-  };
+	const data = {
+		tab, setTab,
+		inventory, setInventory,
+		currentItem, setCurrentItem,
+		currentBook, setCurrentBook,
+		currentPage, setCurrentPage,
+		chats, setChats,
+		addChat, removeChat, editChatContent
+	};
 
-  useEffect(() => {
-    if(listening) return;
-    listening = true;
-    PlayerInfo.entity?.on('inventory', () => {
+	useEffect(() => {
+		if (listening) return;
+		listening = true;
+		PlayerInfo.entity?.on('inventory', () => {
 			setInventory([...PlayerInfo.entity.inventory]);
 		}).on('equip', () => {
 			setInventory([...PlayerInfo.entity.inventory]);
@@ -60,21 +60,21 @@ export const MainUI = ({ children }) => {
 			setInventory([...PlayerInfo.entity.inventory]);
 		});
 
-    pingFrom('chat:send', (msg: Chat) => {
-      addChat(msg);
-    });
+		pingFrom('chat:send', (msg: Chat) => {
+			addChat(msg);
+		});
 
-    GlobalEmitter.on('openChats', () => {
-      setTab('chats');
-    });
-  }, []);
+		GlobalEmitter.on('openChats', () => {
+			setTab('chats');
+		});
+	}, []);
 
 
 	// React.useEffect(() => {
 	// 	Map2D.activeTab = tab;
 	// }, [tab]);
 
-  return <Context.Provider value={data}>
-    {children}
-  </Context.Provider>
+	return <Context.Provider value={data}>
+		{children}
+	</Context.Provider>
 }

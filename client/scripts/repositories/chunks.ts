@@ -106,7 +106,7 @@ export class Chunks {
 		pingFrom('chunk:load', (data) => {
 			if (!Chunks.has(stringifyChunkPosition(data.position))) {
 				Chunks.loadChunk(Chunks.chunkFromData(data));
-				if(!Biomes.firstUpdate) {
+				if (!Biomes.firstUpdate) {
 					Biomes.updateSky(data.position);
 					Biomes.firstUpdate = true;
 				}

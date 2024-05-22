@@ -9,8 +9,8 @@ import { Settings } from "../settings/settings.js";
 import { Random } from "../../../server/common/rand.js";
 
 
-function randomHexColor(){
-	return '#'+Random.from(0, 16777215).toString(16);
+function randomHexColor() {
+  return '#' + Random.from(0, 16777215).toString(16);
 }
 
 
@@ -27,7 +27,7 @@ export default class Markers {
 
   static add(marker: Marker) {
 
-    if(!marker.color) marker.color = randomHexColor();
+    if (!marker.color) marker.color = randomHexColor();
 
     // Create the marker object
     const markerGeometry = new THREE.BoxGeometry(1, 1, 1);

@@ -10,17 +10,17 @@ export default class Commands {
 
   static commands: Record<string, CallableFunction> = {};
 
-  static register(name: string, f: CallableFunction){
+  static register(name: string, f: CallableFunction) {
     this.commands[name] = f;
     return this;
   }
 
-  static has(name: string){
+  static has(name: string) {
     return name in this.commands;
   }
 
-  static execute(name: string, args: string[], ctx = {}){
-    if(this.commands[name]){
+  static execute(name: string, args: string[], ctx = {}) {
+    if (this.commands[name]) {
       return this.commands[name](ctx, ...args);
     }
   }
@@ -30,10 +30,10 @@ export default class Commands {
 
 
 Commands.register('summon', (ctx, x, y, z, entity, variant, data) => {
-  if(x == '~') x = ctx.playerEntity.position.x;
-  if(y == '~') y = ctx.playerEntity.position.y;
-  if(z == '~') z = ctx.playerEntity.position.z;
-  ctx.reply('Spawned a '+entity+' at '+x+','+y+','+z);
+  if (x == '~') x = ctx.playerEntity.position.x;
+  if (y == '~') y = ctx.playerEntity.position.y;
+  if (z == '~') z = ctx.playerEntity.position.z;
+  ctx.reply('Spawned a ' + entity + ' at ' + x + ',' + y + ',' + z);
   Entities.spawn(entity, { x, y, z }, '', variant, []);
 });
 

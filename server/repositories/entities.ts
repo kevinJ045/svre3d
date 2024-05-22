@@ -19,10 +19,10 @@ import Projectiles from "./projectiles.js";
 
 export class Entities {
 
-	static entities : EntityData[] = [];
-	
-	static spawn(type: string, position: xyz, name?: string, variant?: string, inventory?: any[], data?: any, exp?: any){
-		
+	static entities: EntityData[] = [];
+
+	static spawn(type: string, position: xyz, name?: string, variant?: string, inventory?: any[], data?: any, exp?: any) {
+
 		const ref = type == 'item' ? {
 			manifes: {
 				id: 'm:item',
@@ -33,7 +33,7 @@ export class Entities {
 			}
 		} as any : ResourceMap.findResource(type);
 
-		if(!ref) return;
+		if (!ref) return;
 
 		const entity = ServerData.create<EntityData>(EntityData, {
 			position,
@@ -41,7 +41,7 @@ export class Entities {
 			variant,
 			type,
 			inventory: inventory ? inventory.map(item => Items.create(item.id, item.quantity, item.data)) : null,
-			data: {...data},
+			data: { ...data },
 			exp: exp ? exp : {
 				level: 1,
 				current: 1,
@@ -56,33 +56,33 @@ export class Entities {
 
 		let drops = (ref.entity?.drops || []);
 
-		if(ref.base?.health){
+		if (ref.base?.health) {
 			entity.health = { max: ref.base.health, current: ref.base.health }
 		}
-		if(ref.base?.damage) entity.damage = ref.base?.damage;
-		if(ref.base?.defense) entity.defense = ref.base?.defense;
+		if (ref.base?.damage) entity.damage = ref.base?.damage;
+		if (ref.base?.defense) entity.defense = ref.base?.defense;
 
-		if(ref.entity?.flags){
+		if (ref.entity?.flags) {
 			entity.flags.push(...entity.reference.entity.flags);
-		} 
-
-		if(v){
-			if(v.drops){
-				drops.push(...v.drops);
-			}
-			if(v.health){
-				entity.health = { max: v.health, current: v.health }
-			}
-			if(v.damage) entity.damage = v.damage;
-			if(v.defense) entity.defense = v.defense;
-			if(v.flags) entity.flags.push(...v.flags);
 		}
 
-		if(drops.length){
+		if (v) {
+			if (v.drops) {
+				drops.push(...v.drops);
+			}
+			if (v.health) {
+				entity.health = { max: v.health, current: v.health }
+			}
+			if (v.damage) entity.damage = v.damage;
+			if (v.defense) entity.defense = v.defense;
+			if (v.flags) entity.flags.push(...v.flags);
+		}
+
+		if (drops.length) {
 			entity.inventory.push(...drops.map(item => Items.create(item.item, item.quantity, item.data)))
 		}
 
-		if(entity.reference.entity?.neutral) entity.isNeutral = true;
+		if (entity.reference.entity?.neutral) entity.isNeutral = true;
 
 		Entities.entities.push(entity);
 
@@ -95,35 +95,35 @@ export class Entities {
 		return entity;
 	}
 
-	static find(id: string){
+	static find(id: string) {
 		return this.entities.find(e => e.id == id);
 	}
 
-	static despawn(entity: string | EntityData){
-		if(typeof entity == 'string') entity = Entities.find(entity)!;
-		if(!entity) return;
-		if(entity.attackTarget) entity.attackTarget = null;
+	static despawn(entity: string | EntityData) {
+		if (typeof entity == 'string') entity = Entities.find(entity)!;
+		if (!entity) return;
+		if (entity.attackTarget) entity.attackTarget = null;
 		Sockets.emit('entity:despawn', { entity });
 		Entities.entities.splice(Entities.entities.indexOf(entity), 1);
 	}
 
-	static target(id: string, position: xyz | null){
+	static target(id: string, position: xyz | null) {
 		this.entities.forEach(entity => {
-			if(entity.id == id){
+			if (entity.id == id) {
 				entity.targetPosition = position;
 			}
 		});
 	}
 
-	static displace(id: string, position: xyz){
+	static displace(id: string, position: xyz) {
 		this.entities.forEach(entity => {
-			if(entity.id == id){
+			if (entity.id == id) {
 				entity.position = position;
 			}
 		});
 	}
 
-	static spawnItem(item: ItemData, position: xyz){
+	static spawnItem(item: ItemData, position: xyz) {
 		this.spawn(
 			'item',
 			position,
@@ -134,21 +134,21 @@ export class Entities {
 		);
 	}
 
-	static kill(entity: string | EntityData){
-		if(typeof entity == 'string') entity = Entities.find(entity)!;
+	static kill(entity: string | EntityData) {
+		if (typeof entity == 'string') entity = Entities.find(entity)!;
 
-		if(!entity) return;
+		if (!entity) return;
 
 		entity.emit('death');
 
-		if(entity.inventory.length){
+		if (entity.inventory.length) {
 			entity.inventory.forEach(item => {
 				this.spawnItem(item, (entity as EntityData).position);
 			});
 		}
 
 		this.entities.forEach(e => {
-			if(e.attackTarget?.id == (entity as any).id){
+			if (e.attackTarget?.id == (entity as any).id) {
 				e.attackTarget = null;
 				Sockets.emit('entity:attackTarget', {
 					entity: e.id,
@@ -157,64 +157,64 @@ export class Entities {
 			}
 		});
 
-		if(entity.type == 'i:player'){
+		if (entity.type == 'i:player') {
 			entity.inventory = []
 			Entities.hp(entity.id, {
 				max: entity.health.max,
 				current: entity.health.max
 			});
 			Sockets.emit('player:respawn', { entity, position: entity.data.spawnPoint || Chunks.findSafeSpawnPoint(entity.variant) });
-			Sockets.emit('entity:hp', {entity, hp: entity.health});
+			Sockets.emit('entity:hp', { entity, hp: entity.health });
 		} else {
 			this.despawn(entity);
 		}
 	}
 
-	static hp(id, hp){
+	static hp(id, hp) {
 		this.entities.forEach(entity => {
-			if(entity.id == id){
-				if(entity.health.current > hp.current) entity.emit('hurt');
-				else if(entity.health.current < hp.current) entity.emit('heal');
+			if (entity.id == id) {
+				if (entity.health.current > hp.current) entity.emit('hurt');
+				else if (entity.health.current < hp.current) entity.emit('heal');
 				entity.health = hp;
-				if(entity.health.current <= 0){
+				if (entity.health.current <= 0) {
 					this.kill(entity);
 				}
 			}
 		});
 	};
 
-	static startPing(socket: Socket, serverdata){
-		pingFrom(socket, 'entity:move', ({entity,position}) => {
+	static startPing(socket: Socket, serverdata) {
+		pingFrom(socket, 'entity:move', ({ entity, position }) => {
 			Entities.displace(entity, position);
-			socket.broadcast.emit('entity:settarget', {entity, position});
+			socket.broadcast.emit('entity:settarget', { entity, position });
 		});
 
-		pingFrom(socket, 'entity:settarget', ({entity,position}) => {
+		pingFrom(socket, 'entity:settarget', ({ entity, position }) => {
 			Entities.target(entity, position);
-			socket.broadcast.emit('entity:settarget', {entity, position});
+			socket.broadcast.emit('entity:settarget', { entity, position });
 		});
 
-		pingFrom(socket, 'entity:hp', ({entity, hp}) => {
+		pingFrom(socket, 'entity:hp', ({ entity, hp }) => {
 			Entities.hp(entity, hp);
-			socket.broadcast.emit('entity:hp', {entity, hp});
+			socket.broadcast.emit('entity:hp', { entity, hp });
 		});
 
-		pingFrom(socket, 'entity:attack', ({entity: eid, target: tid}) => {
+		pingFrom(socket, 'entity:attack', ({ entity: eid, target: tid }) => {
 			const entity = Entities.find(eid);
 			const target = Entities.find(tid);
-			if(target && entity){
+			if (target && entity) {
 				Entities.attackTarget(entity, target);
 			}
 		});
 
-		pingFrom(socket, 'entity:collectitem', ({entity:eid, player:pid}) => {
+		pingFrom(socket, 'entity:collectitem', ({ entity: eid, player: pid }) => {
 			// Entities.hp(entity, hp);
 			// socket.broadcast.emit('entity:hp', {entity, hp});
 
 			const entity = Entities.find(eid);
 			const player = Entities.find(pid);
-			if(entity && player){
-				if(entity.data.item) {
+			if (entity && player) {
+				if (entity.data.item) {
 					player.addToInventory(entity.data.item);
 					Entities.despawn(entity);
 					Sockets.emit('entity:inventory', {
@@ -237,49 +237,51 @@ export class Entities {
 
 		pingFrom(socket, 'entity:inventory', (
 			{
-				entity:eid,
+				entity: eid,
 				type,
 				item,
 				action,
 				full,
 				inventory
-			} : 
-			{ entity: string, type: 'add' | 'remove', item: {
-				type: string,
-				id: string,
-				quantity: number,
-				data: any
-			}, action: string, 
-			full?: boolean,
-			inventory?: {
-				type: string,
-				id: string,
-				quantity: number,
-				data: any
-			}[] }
+			}:
+				{
+					entity: string, type: 'add' | 'remove', item: {
+						type: string,
+						id: string,
+						quantity: number,
+						data: any
+					}, action: string,
+					full?: boolean,
+					inventory?: {
+						type: string,
+						id: string,
+						quantity: number,
+						data: any
+					}[]
+				}
 		) => {
 			const entity = Entities.find(eid);
-			if(entity){
-				if(full){
+			if (entity) {
+				if (full) {
 					entity.inventory = inventory!.map(item => Items.create(item.type, item.quantity)!
-					.setData({ id: item.id, data: item.data }));
-				} else if(type == 'add'){
+						.setData({ id: item.id, data: item.data }));
+				} else if (type == 'add') {
 					entity.addToInventory(
 						Items.create(item.type, item.quantity)!
-						.setData({ id: item.id, data: item.data }),
+							.setData({ id: item.id, data: item.data }),
 					)
-				} else if(type == 'remove'){
+				} else if (type == 'remove') {
 					entity.removeFromInventory(
 						Items.create(item.type)!
-						.setData({ id: item.id, data: item.data }),
+							.setData({ id: item.id, data: item.data }),
 						item.quantity
 					)
 				}
 				socket.broadcast.emit('entity:inventory', {
-					entity:eid,
+					entity: eid,
 					type,
 					item: item && Object.keys(item).length ? Items.create(item.type, item.quantity)!
-					.setData({ id: item.id, data: item.data }) : null,
+						.setData({ id: item.id, data: item.data }) : null,
 					action,
 					full,
 					inventory: full ? entity.inventory : []
@@ -295,11 +297,11 @@ export class Entities {
 			const targetPosition = new Vector3(entity.targetPosition.x, 0, entity.targetPosition.z);
 			const direction = new Vector3();
 			direction.subVectors(targetPosition, position);
-			direction.y = 0; 
+			direction.y = 0;
 
 			direction.normalize();
 
-			const speed = parseInt(entity.speed as any) || 1; 
+			const speed = parseInt(entity.speed as any) || 1;
 
 			const distanceToTarget = position.distanceTo(targetPosition);
 
@@ -310,46 +312,46 @@ export class Entities {
 					position: entity.position
 				});
 			} else {
-					entity.position.x += direction.x * speed;
-					entity.position.z += direction.z * speed;
+				entity.position.x += direction.x * speed;
+				entity.position.z += direction.z * speed;
 
-					Sockets.emit('entity:move', {
-							direction,
-							position: entity.position,
-							speed,
-							entity: entity.id,
-							attack: entity.attackTarget ? true : false
-					});
+				Sockets.emit('entity:move', {
+					direction,
+					position: entity.position,
+					speed,
+					entity: entity.id,
+					attack: entity.attackTarget ? true : false
+				});
 
 			}
 		}
 	}
 
-	static selectRandomTarget(entity){
+	static selectRandomTarget(entity) {
 		let chunks = Chunks.chunks
-		.filter(chunk => xyzTv(chunk.position).distanceTo(xyzTv(entity.position)) > chunk.chunkSize);
+			.filter(chunk => xyzTv(chunk.position).distanceTo(xyzTv(entity.position)) > chunk.chunkSize);
 		const ai = entity.reference.entity?.ai;
-		if(ai){
-			if(ai.movement?.biome){
+		if (ai) {
+			if (ai.movement?.biome) {
 				chunks = chunks.filter(chunk => (chunk.biome as any).manifest.id == (ai.movement.biome == 'self' ? entity.variant : ai.movement.biome))
 			}
-			if(ai.movement?.flags){
+			if (ai.movement?.flags) {
 				chunks = chunks
-					.filter(chunk => !ai.movement?.flags.map((flag: string) => flag.startsWith('!') ? 
-					!chunk.flags.includes(flag.replace('!', '')) :
-					chunk.flags.includes(flag)
-				).includes(false))
+					.filter(chunk => !ai.movement?.flags.map((flag: string) => flag.startsWith('!') ?
+						!chunk.flags.includes(flag.replace('!', '')) :
+						chunk.flags.includes(flag)
+					).includes(false))
 			}
 		}
-		if(chunks.length) entity.targetPosition = Random.pick(...chunks).position;
+		if (chunks.length) entity.targetPosition = Random.pick(...chunks).position;
 	}
 
 	static attackTarget(entity: EntityData, target: EntityData, timeout = true) {
 		const damage = entity.damage;
 		const finalDamage = damage - (target.defense || 0);
 
-		if(timeout && entity.reference.entity?.ai && entity.attackInfo.current > 0){
-			entity.attackInfo.current  -= 1;
+		if (timeout && entity.reference.entity?.ai && entity.attackInfo.current > 0) {
+			entity.attackInfo.current -= 1;
 			return;
 		}
 
@@ -361,54 +363,54 @@ export class Entities {
 			entity: target.id,
 			hp: target.health
 		});
-		
-		if(timeout) entity.attackInfo.current = entity.attackInfo.cooldown;
-		
-		if(target.reference.entity?.ai?.attack.attackBack){
-			if(target.reference.entity?.ai?.attack.attackBack == 'first'
+
+		if (timeout) entity.attackInfo.current = entity.attackInfo.cooldown;
+
+		if (target.reference.entity?.ai?.attack.attackBack) {
+			if (target.reference.entity?.ai?.attack.attackBack == 'first'
 				? true : !target.attackTarget) {
-					target.attackTarget = entity;
-					Sockets.emit('entity:attackTarget', {
-						entity: target.id,
-						target: entity.id
-					});
-				}
+				target.attackTarget = entity;
+				Sockets.emit('entity:attackTarget', {
+					entity: target.id,
+					target: entity.id
+				});
+			}
 		}
 	}
 
 	static selectAttackTarget(entity: EntityData) {
-    const range = entity.reference.entity?.viewRange || 10;  // Define the attack range here (e.g., 5 units)
-    const possibleTargets = this.entities.filter(
-			target => target.id !== entity.id &&  
-			(entity.reference.entity!.ai.attack?.neutrals ? true : target.isNeutral !== true) && 
-			entity.reference.entity!.ai.attack?.targets.map(i => i.id).includes(target.type) &&
-			(entity.reference.entity!.ai.attack?.targets.find(i => i.id == target.type).variant ? 
-				(
-					entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant == 'self'
-					? target.variant == entity.variant :
+		const range = entity.reference.entity?.viewRange || 10;  // Define the attack range here (e.g., 5 units)
+		const possibleTargets = this.entities.filter(
+			target => target.id !== entity.id &&
+				(entity.reference.entity!.ai.attack?.neutrals ? true : target.isNeutral !== true) &&
+				entity.reference.entity!.ai.attack?.targets.map(i => i.id).includes(target.type) &&
+				(entity.reference.entity!.ai.attack?.targets.find(i => i.id == target.type).variant ?
 					(
-						entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant == '!self'
-						? target.variant !== entity.variant
-						: (
-							target.variant === entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant.startsWith('!')
-							? target.variant !== entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant.split('!')[1]
-							: target.variant ===  entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant 
-						)
+						entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant == 'self'
+							? target.variant == entity.variant :
+							(
+								entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant == '!self'
+									? target.variant !== entity.variant
+									: (
+										target.variant === entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant.startsWith('!')
+											? target.variant !== entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant.split('!')[1]
+											: target.variant === entity.reference.entity!.ai.attack.targets.find(i => i.id == target.type).variant
+									)
+							)
 					)
-				)
-			: true) && 
-			new Vector3(
-				entity.position.x,
-				entity.position.y,
-				entity.position.z
-			).distanceTo(
+					: true) &&
 				new Vector3(
-					target.position.x,
-					target.position.y,
-					target.position.z
-				)
-			) <= range 
-    ).sort((a, b) => new Vector3(
+					entity.position.x,
+					entity.position.y,
+					entity.position.z
+				).distanceTo(
+					new Vector3(
+						target.position.x,
+						target.position.y,
+						target.position.z
+					)
+				) <= range
+		).sort((a, b) => new Vector3(
 			entity.position.x,
 			entity.position.y,
 			entity.position.z
@@ -430,7 +432,7 @@ export class Entities {
 			)
 		));
 
-    if (possibleTargets.length > 0) {
+		if (possibleTargets.length > 0) {
 			const target = possibleTargets[0];
 			entity.attackTarget = target;
 			Sockets.emit('entity:attackTarget', {
@@ -438,8 +440,8 @@ export class Entities {
 				target: target.id
 			});
 			return true;
-    }
-    return false;
+		}
+		return false;
 	}
 
 	static thinkNoAttackTarget(entity): void {
@@ -457,12 +459,12 @@ export class Entities {
 			}
 			Entities.think(entity);
 		}
-	}    
+	}
 
-	static thinkAttackTarget(entity: EntityData){
-		if(entity.attackTarget){
+	static thinkAttackTarget(entity: EntityData) {
+		if (entity.attackTarget) {
 			const reach = entity.reference.entity?.reachRange || 5;  // Define the attack range here (e.g., 5 units)
-    
+
 			const position = new Vector3(
 				entity.position.x,
 				entity.position.y,
@@ -474,8 +476,8 @@ export class Entities {
 				entity.attackTarget.position.z
 			);
 			const distance = position.distanceTo(newPosition);
-			if(distance < reach) {
-				if(entity.targetPosition){
+			if (distance < reach) {
+				if (entity.targetPosition) {
 					entity.targetPosition = null;
 					Sockets.emit('entity:reach', {
 						entity: entity.id,
@@ -483,12 +485,12 @@ export class Entities {
 					});
 				}
 
-				if(entity.reference.entity.ai?.attack?.projectile){
+				if (entity.reference.entity.ai?.attack?.projectile) {
 					// this.attackTarget(entity, entity.attackTarget);
 					const direction = new Vector3();
 					direction.subVectors(xyzTv(entity.attackTarget.position), position);
-					if(entity.data.projectileTimeout == undefined) entity.data.projectileTimeout = 0;
-					if(entity.data.projectileTimeout <= 0){
+					if (entity.data.projectileTimeout == undefined) entity.data.projectileTimeout = 0;
+					if (entity.data.projectileTimeout <= 0) {
 						entity.data.projectileTimeout = entity.reference.entity.ai?.attack?.projectile.timeout || 100;
 						Projectiles.createProjectile(
 							entity,
@@ -498,7 +500,7 @@ export class Entities {
 							entity.reference.entity.ai?.attack?.projectile.object,
 							100
 						).on('hit', ({ target }) => {
-							if(target) this.attackTarget(entity, target, false);
+							if (target) this.attackTarget(entity, target, false);
 						});
 					} else {
 						entity.data.projectileTimeout--;
@@ -506,7 +508,7 @@ export class Entities {
 				} else {
 					this.attackTarget(entity, entity.attackTarget);
 				}
-			} else if(!entity.targetPosition){
+			} else if (!entity.targetPosition) {
 				entity.targetPosition = {
 					x: newPosition.x,
 					y: newPosition.y,
@@ -514,35 +516,35 @@ export class Entities {
 				};
 			} else {
 				Entities.moveTowardsTarget(entity);
-			} 
+			}
 		} else {
-			if(!Entities.selectAttackTarget(entity)){
-				if(entity.targetPosition) Entities.moveTowardsTarget(entity);
+			if (!Entities.selectAttackTarget(entity)) {
+				if (entity.targetPosition) Entities.moveTowardsTarget(entity);
 				else Entities.thinkNoAttackTarget(entity);
 			}
 		}
 	}
 
-	static think(entity: EntityData){
+	static think(entity: EntityData) {
 
 		const ai = entity.reference.entity?.ai || {};
 
-		if(ai.attack){
+		if (ai.attack) {
 			Entities.thinkAttackTarget(entity);
-		} else if(ai.movement.random){
-			if(entity.targetPosition) Entities.moveTowardsTarget(entity);
-			else Entities.thinkNoAttackTarget(entity);   
+		} else if (ai.movement.random) {
+			if (entity.targetPosition) Entities.moveTowardsTarget(entity);
+			else Entities.thinkNoAttackTarget(entity);
 		}
 
-		if(entity.health.current <= 0) {
+		if (entity.health.current <= 0) {
 			this.kill(entity);
 		}
 
 	}
 
-	static directDamageEntity(entity: EntityData, damage: number, timeout = 300){
-		if(entity.data.directDamageTimeout == null) entity.data.directDamageTimeout = timeout;
-		if(entity.data.directDamageTimeout <= 10){
+	static directDamageEntity(entity: EntityData, damage: number, timeout = 300) {
+		if (entity.data.directDamageTimeout == null) entity.data.directDamageTimeout = timeout;
+		if (entity.data.directDamageTimeout <= 10) {
 			entity.data.directDamageTimeout = timeout;
 			Entities.hp(entity.id, {
 				current: entity.health.current - damage,
@@ -557,7 +559,7 @@ export class Entities {
 		}
 	}
 
-	static update(){
+	static update() {
 
 		const entitiesWithAi = this.entities.filter(
 			e => e.reference.entity?.ai && e.data.ai !== false
@@ -570,9 +572,9 @@ export class Entities {
 		this.entities.forEach(entity => {
 			let closest = Chunks.findClose(entity.position);
 			let pos = closest?.position ? stringifyChunkPosition(closest?.position) : "";
-			if(entity.stepOn !== pos && closest) closest.emit('stepStart', { target: entity }); 
+			if (entity.stepOn !== pos && closest) closest.emit('stepStart', { target: entity });
 			entity.stepOn = pos;
-			if(closest) {
+			if (closest) {
 				closest.emit('step', { target: entity });
 			}
 		});

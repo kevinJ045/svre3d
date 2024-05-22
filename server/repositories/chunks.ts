@@ -24,8 +24,8 @@ export class Chunks {
 	static maxHeight = 5;
 	static chunkSize = worldData.chunkSize;
 
-	static async loadChunk(position: xyz){
-		if(this.has(stringifyChunkPosition(position))) return this.find(stringifyChunkPosition(position));
+	static async loadChunk(position: xyz) {
+		if (this.has(stringifyChunkPosition(position))) return this.find(stringifyChunkPosition(position));
 		position.y = generateChunkHeight(position.x, position.z, this.maxHeight, this.chunkSize);
 
 		const flags = [];
@@ -43,62 +43,62 @@ export class Chunks {
 		return chunk;
 	}
 
-	static unloadChunk(position: xyz){
+	static unloadChunk(position: xyz) {
 		this.delete(stringifyChunkPosition(position));
 	}
 
-	static clear(){
+	static clear() {
 		this.chunks = [];
 		return this;
 	}
 
-	static find(key: string){
+	static find(key: string) {
 		return this.chunks.find(i => i.stringify() == key);
 	}
-	
-	static findClose(pos: xyz){
+
+	static findClose(pos: xyz) {
 		const p = xyzTv(pos);
 		return [...this.chunks].sort((a, b) => xyzTv(a.position).distanceTo(p) - xyzTv(b.position).distanceTo(p))[0];
 	}
 
-	static at(index: number){
+	static at(index: number) {
 		return this.chunks.at(index);
 	}
 
-	static index(found: any){
+	static index(found: any) {
 		return this.chunks.indexOf(found);
 	}
 
-	static entries(){
+	static entries() {
 		return [...this.chunks];
 	}
 
-	static has(key: string){
+	static has(key: string) {
 		return this.find(key) ? true : false;
 	}
 
-	static delete(key: string){
+	static delete(key: string) {
 		const found = this.find(key);
-		if(found){
+		if (found) {
 			this.chunks.splice(this.index(found), 1);
 		}
 		return this;
 	}
 
-	
+
 	static loadingChunks: string[] = [];
-	static startPing(socket, serverData){
-		pingFrom(socket, 'chunk:request', async ({position, type}) => {
+	static startPing(socket, serverData) {
+		pingFrom(socket, 'chunk:request', async ({ position, type }) => {
 
 			const pid = stringifyChunkPosition(position); // position ID
-			if(this.loadingChunks.includes(pid)) return;
+			if (this.loadingChunks.includes(pid)) return;
 
 			this.loadingChunks.push(pid);
 
 			const chunk = type == 'load' ? await Chunks.loadChunk(position) : Chunks.unloadChunk(position);
-			
-			socket.broadcast.emit('chunk:'+type, chunk || position);
-			socket.emit('chunk:'+type, chunk || position);
+
+			socket.broadcast.emit('chunk:' + type, chunk || position);
+			socket.emit('chunk:' + type, chunk || position);
 
 			this.loadingChunks.splice(this.loadingChunks.indexOf(pid), 1);
 
@@ -107,14 +107,14 @@ export class Chunks {
 			return chunk;
 		});
 
-		pingFrom(socket, 'structure:loot', async ({chunk: chunkPosition, entity: eid, id}) => {
+		pingFrom(socket, 'structure:loot', async ({ chunk: chunkPosition, entity: eid, id }) => {
 			const chunk = Chunks.find(stringifyChunkPosition(chunkPosition));
-			if(!chunk) return;
+			if (!chunk) return;
 			const structure = chunk.structures.find(i => i.id == id);
-			if(!structure) return;
+			if (!structure) return;
 			const entity = Entities.find(eid);
-			if(!entity) return;
-			const distance = 
+			if (!entity) return;
+			const distance =
 				new Vector3(
 					entity.position.x,
 					entity.position.y,
@@ -126,23 +126,23 @@ export class Chunks {
 						chunk.position.z
 					)
 				);
-			if(distance <= chunk.chunkSize){
+			if (distance <= chunk.chunkSize) {
 				const looted = await Data.collection('loots')
-				.findOne({
-					name: structure.rule.name,
-					position: chunk.position
-				});
-				if(!looted){
-					if( structure.rule.drops){
+					.findOne({
+						name: structure.rule.name,
+						position: chunk.position
+					});
+				if (!looted) {
+					if (structure.rule.drops) {
 						let drops = (
 							structure.rule.randomDrops ?
-							Structures.selectDropsByChance(structure.rule.drops, structure.rule.dropsCount || structure.rule.drops.length)
-							: structure.rule.drops
+								Structures.selectDropsByChance(structure.rule.drops, structure.rule.dropsCount || structure.rule.drops.length)
+								: structure.rule.drops
 						).map(i => Items.create(i.id, Array.isArray(i.quantity) ? (
-							i.quantity.length == 2 && i.quantity[0] < i.quantity[1] ? 
-							Random.from(i.quantity[0], i.quantity[1])
-							: Random.pick(...i.quantity[0])
-							) : i.quantity, i.data)!);
+							i.quantity.length == 2 && i.quantity[0] < i.quantity[1] ?
+								Random.from(i.quantity[0], i.quantity[1])
+								: Random.pick(...i.quantity[0])
+						) : i.quantity, i.data)!);
 						drops.forEach(drop => {
 							Sockets.emit('entity:inventory', {
 								entity: eid,
@@ -154,11 +154,11 @@ export class Chunks {
 						});
 					}
 					await Data.collection('loots')
-					.insertOne({
-						name: structure.rule.name,
-						position: chunk.position,
-						player: entity.data.username
-					});
+						.insertOne({
+							name: structure.rule.name,
+							position: chunk.position,
+							player: entity.data.username
+						});
 					structure.looted = true;
 				}
 				Sockets.emit('structure:loot', {
@@ -192,20 +192,20 @@ export class Chunks {
 				console.log('Found', biome.reference.manifest.id);
 
 				let isSafeSpawnPoint = minDistanceFromBorders;
-				
+
 				for (let dx = -(minDistanceFromBorders * this.chunkSize); dx <= (minDistanceFromBorders * this.chunkSize); dx += this.chunkSize) {
 					for (let dz = -(minDistanceFromBorders * this.chunkSize); dz <= (minDistanceFromBorders * this.chunkSize); dz += this.chunkSize) {
-						
+
 						const surroundingPosition = {
 							x: position.x + dx,
 							z: position.z + dz
 						};
-						
+
 						const surroundingBiome = Biomes.getBiome(surroundingPosition.x, surroundingPosition.z, []);
 
 						if (surroundingBiome.reference.manifest.id === biomeName) {
 							isSafeSpawnPoint--;
-							break; 
+							break;
 						}
 
 						// console.log(surroundingBiome.reference.manifest.id);
@@ -213,20 +213,20 @@ export class Chunks {
 
 					console.log(isSafeSpawnPoint);
 
-					if (isSafeSpawnPoint < minDistanceFromBorders/2) {
+					if (isSafeSpawnPoint < minDistanceFromBorders / 2) {
 						break;
 					}
 				}
 
 				spawnPoint = position;
-				
+
 			}
 		}
 
 		return spawnPoint || (
 			minDistanceFromBorders > 3 ?
-			Chunks.findSafeSpawnPoint(biomeName, minDistanceFromBorders - 1) 
-			: null
+				Chunks.findSafeSpawnPoint(biomeName, minDistanceFromBorders - 1)
+				: null
 		);
 	}
 

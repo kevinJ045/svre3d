@@ -29,14 +29,14 @@ export default class Projectiles {
         position: projectile.position
       });
 
-      
+
 
       // Check for collision with entities
       const hitEntity = entities.find(entity => entity.id !== projectile.owner && xyzTv(entity.position).distanceTo(projectile.position) < 2);
       if (hitEntity) {
         this.handleProjectileHit(projectile, hitEntity);
-      } else if(projectile.maxDistance){
-        if(projectile.maxDistance > 1 && xyzTv(projectile.startPosition).distanceTo(projectile.position) >= (projectile.maxDistance)) {
+      } else if (projectile.maxDistance) {
+        if (projectile.maxDistance > 1 && xyzTv(projectile.startPosition).distanceTo(projectile.position) >= (projectile.maxDistance)) {
           this.handleProjectileHit(projectile);
         }
       }
@@ -51,7 +51,7 @@ export default class Projectiles {
   }
 
   static handleProjectileHit(projectile: ProjectileData, target?: EntityData) {
-    if(target) this.directDamageEntity(target, projectile.damage);
+    if (target) this.directDamageEntity(target, projectile.damage);
     projectile.hit = true; // Mark projectile for removal
     this.projectiles.splice(this.projectiles.indexOf(projectile), 1);
     Sockets.emit('projectile:hit', {

@@ -25,7 +25,7 @@ export function generateWithRule(item, seed, object_rules?: string[], looted?: b
 			const objects = generateObjects(currentRule, item, group, seed, '', looted);
 
 			objects.forEach(object => {
-				if(object) group.add(object);
+				if (object) group.add(object);
 			});
 		}
 	}
@@ -38,9 +38,9 @@ export function generateObjects(rule, item, parent, seed, side = '', looted) {
 	const count = Array.isArray(rule.count) ? Random.from(rule.count[0], rule.count[1], seed) : rule.count;
 	for (let i = 0; i < count; i++) {
 
-		let name = Array.isArray(rule.name) ? rule.name[Random.from(0, rule.name.length-1, seed)] : rule.name;
+		let name = Array.isArray(rule.name) ? rule.name[Random.from(0, rule.name.length - 1, seed)] : rule.name;
 
-		const object = createObject({...rule, name}, item, side, seed, parent, looted);
+		const object = createObject({ ...rule, name }, item, side, seed, parent, looted);
 		objects.push(object);
 
 		// Handle forEach rule
@@ -61,25 +61,25 @@ export function generateObjects(rule, item, parent, seed, side = '', looted) {
 
 function createObject(rule, item, side, seed, parent?: any, looted?: any) {
 	let position = new THREE.Vector3(...rule.position);
-	if(!rule.size.length) rule.size = Array(3).fill(0);
+	if (!rule.size.length) rule.size = Array(3).fill(0);
 	const size = new THREE.Vector3(...rule.size);
 	const rotation = new THREE.Euler(...rule.rotation);
 
 	const name = looted ? rule.looted : rule.name;
 
 	const g = new THREE.Group();
-	
+
 	let o;
 
 	item.resource.mesh.traverse(f => {
-		if(f.name == name) o = f.clone();
+		if (f.name == name) o = f.clone();
 	});
 
-	if(o) {
-		if(side) position = getPositionForKey(side, parent, rule, seed);
+	if (o) {
+		if (side) position = getPositionForKey(side, parent, rule, seed);
 		else if (Array.isArray(rule.position[0])) position = getRandomPos(rule.position, seed);
-		
-		if(!rule.size.includes(0)) o.scale.set(...size);
+
+		if (!rule.size.includes(0)) o.scale.set(...size);
 
 		o.castShadow = o.receiveShadow = true;
 		o.position.copy(position);
@@ -91,7 +91,7 @@ function createObject(rule, item, side, seed, parent?: any, looted?: any) {
 	return o;
 }
 
-function getRandomPos(position, seed){
+function getRandomPos(position, seed) {
 	return new THREE.Vector3(
 		Random.from(position[0][0], position[0][1], seed),
 		Random.from(position[1][0], position[1][1], seed),
@@ -102,9 +102,9 @@ function getRandomPos(position, seed){
 function getPositionForKey(key, parentObject, childRule, seed) {
 	let position;
 	if (Array.isArray(childRule.position[0])) {
-			position = getRandomPos(childRule.position, seed);
+		position = getRandomPos(childRule.position, seed);
 	} else {
-			position = new THREE.Vector3(...childRule.position);
+		position = new THREE.Vector3(...childRule.position);
 	}
 	switch (key) {
 		case 'side':
@@ -127,25 +127,25 @@ function getPositionForKey(key, parentObject, childRule, seed) {
 			parentObject.userData.sides = sides.filter(f => f !== side);
 			break;
 		case 'top':
-				position.add(parentObject.position.clone().add(new THREE.Vector3(0, parentObject.scale.y, 0)));
-				break;
+			position.add(parentObject.position.clone().add(new THREE.Vector3(0, parentObject.scale.y, 0)));
+			break;
 	}
 	return position;
 }
 
 
-export class Structures { 
+export class Structures {
 
-	static createStructureTemplate(structureProps: any, resource: THREE.Texture, chunk: Chunk, variables: any){
+	static createStructureTemplate(structureProps: any, resource: THREE.Texture, chunk: Chunk, variables: any) {
 		const g = new THREE.Group();
 		const heightPercent = structureProps.height || 50;
-		const fullHeight = chunk.chunkSize/2;
+		const fullHeight = chunk.chunkSize / 2;
 
 		const height = (heightPercent / 100) * fullHeight;
 		const object = new THREE.Mesh(new THREE.PlaneGeometry(chunk.chunkSize, chunk.chunkSize), new THREE.MeshBasicMaterial({ color: 0xffffff }));
-		
+
 		object.rotation.x = - Math.PI / 2;
-		
+
 		resource.wrapS = resource.wrapT = THREE.RepeatWrapping;
 
 		var uniforms = {
@@ -204,22 +204,22 @@ export class Structures {
 		waterMaterial.uniforms.tDudv.value = resource;
 		waterMaterial.uniforms.tDepth.value = object.userData.renderTarget.depthTexture;
 
-		
+
 		(object as any).material = waterMaterial;
 
 		g.add(object);
 		g.position.set(0, structureProps.useWorldHeight ? WorldData.get('waterHeight', 3.75) - chunk.position.y : height, 0);
 
-		if(!chunk.data.liquids) chunk.data.liquids = [];
+		if (!chunk.data.liquids) chunk.data.liquids = [];
 		chunk.data.liquids.push(object);
 		return g;
 	}
 
 
-	static loadStrcuture(chunk: Chunk){
+	static loadStrcuture(chunk: Chunk) {
 
-		if(chunk.structures.length){
-			
+		if (chunk.structures.length) {
+
 			chunk.structures.forEach(structureData => {
 				const rule = structureData.rule;
 
@@ -227,8 +227,8 @@ export class Structures {
 					foliage: (structureData.biome.reference || structureData.biome).biome?.foliage?.color || "#00ff00",
 					water: (structureData.biome.reference || structureData.biome).biome?.water?.color || "#0000ff",
 					log: true
-				};		
-				
+				};
+
 				const structureProps = ResourceMap.findLoad(rule.structure.object.manifest.id)!;
 
 
@@ -236,32 +236,33 @@ export class Structures {
 
 				const structure = structureIsLiquid ? this.createStructureTemplate(rule.structure.object.view.object, structureProps!.texture, chunk, variables) : generateWithRule(structureProps, Seed.rng, rule.structure.rule, structureData.looted);
 
-				if(structureProps.view?.animation){
-					Items.initItemAnimation({reference: structureProps} as any, structure);
+				if (structureProps.view?.animation) {
+					Items.initItemAnimation({ reference: structureProps } as any, structure);
 				}
 
 				chunk.object3d.add(structure);
 
-				if(rule.loot){structure
+				if (rule.loot) {
+					structure
 					structure.userData.lootable = true;
 				}
 
 				const materialsRule = structureIsLiquid ? null : structureProps!.view!.material;
 
 				structure.children.forEach(item => {
-					if(item.userData.rule){
-						if(item.userData.rule.physics === true){
+					if (item.userData.rule) {
+						if (item.userData.rule.physics === true) {
 							PhysicsManager.addPhysics(item as any, {
 								shape: 'convex',
 								mass: 0
 							});
 						}
-						if(rule.loot) item.userData.lootable = true;
+						if (rule.loot) item.userData.lootable = true;
 						item.userData.structure = structureData;
 					}
 				});
 
-				if(materialsRule){
+				if (materialsRule) {
 					MaterialManager.applyMaterials(structure, materialsRule, variables);
 				}
 

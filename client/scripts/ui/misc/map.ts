@@ -13,7 +13,7 @@ export class Map2D {
   static canvas: HTMLCanvasElement;
   static pointerLock: PointerLock;
 
-  static getPlayerDirection(){
+  static getPlayerDirection() {
     let m = PlayerInfo.entity.object3d.getWorldDirection(new THREE.Vector3()).multiplyScalar(-1);
     return {
       x: m.x,
@@ -38,10 +38,10 @@ export class Map2D {
     this.canvas = canvas;
     this.pointerLock = new PointerLock(canvas);
 
-    let squares: {x: number, y: number, color: string, col: number, row: number}[] = [];
+    let squares: { x: number, y: number, color: string, col: number, row: number }[] = [];
 
     function drawMap() {
-			ctx.scale(1, 1);
+      ctx.scale(1, 1);
       scaledChunkSize = chunkSize * scale;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -74,36 +74,36 @@ export class Map2D {
 
     function drawArrowCursor(x: number, y: number, size: number, angle: number) {
       const adjustedSize = size / scale;
-    
+
       ctx.save(); // Save the current state
       ctx.translate(x, y); // Move to the (x, y) position
       ctx.rotate(angle); // Rotate by the calculated angle
-    
+
       ctx.fillStyle = Biomes.find(PlayerInfo.entity?.variant)?.biome.colors[0] || '#FF00FF';
       ctx.beginPath();
-    
+
       // Arrowhead coordinates
       ctx.moveTo(0, -adjustedSize); // Top point
       ctx.lineTo(adjustedSize, adjustedSize); // Bottom right
       ctx.lineTo(0, 0); // Center
       ctx.lineTo(-adjustedSize, adjustedSize); // Bottom left
-    
+
       ctx.closePath();
       ctx.fill();
-    
+
       ctx.restore(); // Restore the previous state
-    }     
+    }
 
     function drawMarkers(x, y) {
       Markers.markers.forEach(marker => {
         const markerScreenX = (marker.position.x / (chunkSize * scale)) + offsetX;
         const markerScreenY = (marker.position.z / (chunkSize * scale)) + offsetY;
-  
+
         ctx.fillStyle = marker.color || '#FFFFFF';
         ctx.beginPath();
         ctx.arc(markerScreenX, markerScreenY, 5 / scale, 0, 2 * Math.PI);
         ctx.fill();
-  
+
         ctx.strokeStyle = marker.color || '#FFFFFF';
         ctx.beginPath();
         ctx.moveTo(x, y);
@@ -114,10 +114,10 @@ export class Map2D {
 
     function drawCursor(x: number, y: number) {
       infoDiv.style.setProperty('--cursor-color', '#ffffff');
-      infoDiv.style.left = x+'px';
-      infoDiv.style.top = y+'px';
+      infoDiv.style.left = x + 'px';
+      infoDiv.style.top = y + 'px';
     }
-    
+
 
     function drawCenter() {
       const centerX = canvas.width / 2;
@@ -137,14 +137,14 @@ export class Map2D {
       }
     }
 
-    function setStarts(){
+    function setStarts() {
       startX = Map2D.pointerLock.pointer.x - offsetX;
       startY = Map2D.pointerLock.pointer.y - offsetY;
     }
 
     let downTimeInt;
     function onMouseDown(event) {
-      if(!Map2D.pointerLock.isLocked()) {
+      if (!Map2D.pointerLock.isLocked()) {
         downTime = 200;
         return;
       }
@@ -177,7 +177,7 @@ export class Map2D {
       //   setStarts();
       //   lastPut = true;
       // }
-    }    
+    }
 
     function onMouseMove() {
       const rect = canvas.getBoundingClientRect();
@@ -206,7 +206,7 @@ export class Map2D {
       const mouseY = Map2D.pointerLock.pointer.y;
 
       wrapCursor(mouseX, mouseY, canvas, rect);
-      
+
       drawCursor(mouseX, mouseY);
     }
 
@@ -267,6 +267,6 @@ export class Map2D {
     drawCenter();
   }
 
-  static update() {}
+  static update() { }
 }
 

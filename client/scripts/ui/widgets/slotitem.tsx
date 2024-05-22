@@ -15,10 +15,10 @@ export const SlotItem = ({ item, click = true, counter = true, onClick }: { onCl
   const iconStyle = generateItemIcon(hasIcon);
 
   const onclick = () => {
-    if(onClick) onClick();
-    if(!click) return;
-    if(item?.reference?.equipment){
-      if(item?.data.wid){
+    if (onClick) onClick();
+    if (!click) return;
+    if (item?.reference?.equipment) {
+      if (item?.data.wid) {
         Equipments.unequip(PlayerInfo.entity, item?.reference!.equipment!.type!, item);
       } else {
         Equipments.equip(PlayerInfo.entity, item?.reference!.equipment!.type!, item);

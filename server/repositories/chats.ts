@@ -4,15 +4,15 @@ import Commands from "./commands.js";
 import { Sockets } from "../ping/sockets.js";
 import { Entities } from "./entities.js";
 
-export type ChatMessage = {chatid: string, message: string, reply?: string, username: string};
+export type ChatMessage = { chatid: string, message: string, reply?: string, username: string };
 export class Chats {
 
-  static lookUpCommands(text: string, data: ChatMessage){
-    if(text.startsWith('/')){
+  static lookUpCommands(text: string, data: ChatMessage) {
+    if (text.startsWith('/')) {
       const commandTokens = text.replace('/', '').split(' ');
       const command = commandTokens.shift()!;
 
-      if(Commands.has(command)){
+      if (Commands.has(command)) {
         Commands.execute(command, commandTokens, {
           reply: (text: string) => {
             Sockets.emit('chat:send', this.prepareMessage({
@@ -25,10 +25,10 @@ export class Chats {
           playerEntity: Entities.entities.find(e => e.data.username == data.username)
         });
       }
-    } else {}
+    } else { }
   }
 
-  static prepareMessage(data: ChatMessage){
+  static prepareMessage(data: ChatMessage) {
     return {
       chatid: data.chatid || 'public',
       message: {
@@ -41,9 +41,9 @@ export class Chats {
     };
   }
 
-  static startPing(socket){
+  static startPing(socket) {
     pingFrom(socket, 'chat:send', async (data: ChatMessage) => {
-      if(!data) return;
+      if (!data) return;
       const msg = Chats.prepareMessage(data);
       socket.emit('chat:send', msg);
       socket.broadcast.emit('chat:send', msg);

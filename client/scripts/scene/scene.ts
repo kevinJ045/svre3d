@@ -25,19 +25,19 @@ import Markers from "../objects/markers.js";
 
 export class MainScene extends Scene3D {
 
-  constructor() {
-    super({ key: 'MainScene' })
-  }
+	constructor() {
+		super({ key: 'MainScene' })
+	}
 
-	init(){
-    this.renderer.setPixelRatio(1)
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+	init() {
+		this.renderer.setPixelRatio(1)
+		this.renderer.setSize(window.innerWidth, window.innerHeight);
 
 		SceneManager.scene = this;
 	}
 
 	async preload() {
-		await ResourceMap.loadAll(this);	
+		await ResourceMap.loadAll(this);
 	}
 
 	async create() {
@@ -46,8 +46,8 @@ export class MainScene extends Scene3D {
 		// this.scene.add(lights!.directionalLight)
 
 		Lights
-		.setLights(lights!)
-		.initLights();
+			.setLights(lights!)
+			.initLights();
 
 		Chunks.init();
 		const player = Entities.spawn(PlayerInfo.entity)!;
@@ -56,7 +56,7 @@ export class MainScene extends Scene3D {
 		// this.camera.position.set(25, 25, 25);
 
 		player.on('setTarget', (position) => {
-			ping('entity:settarget', {entity: player.id, position});
+			ping('entity:settarget', { entity: player.id, position });
 		});
 
 		// player.displace(new THREE.Vector3(Utils.randFrom(-10, 10), 0, Utils.randFrom(-10, 10)));
@@ -139,7 +139,7 @@ export class MainScene extends Scene3D {
 		// Items.crafting(...player.inventory.slice(1, 3) as any);
 
 		// this.physics.debug?.enable();
-		
+
 		// this.renderer.shadowMap = THREE.PCFShadowMap;
 
 
@@ -149,7 +149,7 @@ export class MainScene extends Scene3D {
 
 
 		window.addEventListener('resize', () => this.resize());
-		
+
 		setTimeout(() => {
 			ping('chat:send', {
 				message: '/summon ~ ~ ~ i:trader i:grass',
@@ -162,12 +162,12 @@ export class MainScene extends Scene3D {
 	unrealBloomPass!: UnrealBloomPass;
 	composer2!: EffectComposer;
 
-	resize(){
+	resize() {
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		EffectManager.resize(this);
 	}
 
-	update(){
+	update() {
 
 		Entities.update();
 		Projectiles.update();
@@ -177,7 +177,7 @@ export class MainScene extends Scene3D {
 		Chunks.loop(this.clock);
 		Markers.update();
 
-		if(this.composer2){
+		if (this.composer2) {
 			this.composer2.render();
 		}
 

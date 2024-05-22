@@ -151,10 +151,10 @@ export class MainScene extends Scene3D {
 		window.addEventListener('resize', () => this.resize());
 
 		setTimeout(() => {
-			ping('chat:send', {
-				message: '/summon ~ ~ ~ i:trader i:grass',
-				username: PlayerInfo.username
-			});
+			// ping('chat:send', {
+			// 	message: '/summon ~ ~ ~ i:trader i:grass',
+			// 	username: PlayerInfo.username
+			// });
 		}, 1000);
 	}
 

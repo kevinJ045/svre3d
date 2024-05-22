@@ -10,7 +10,7 @@ structures:
     name: ["OreonCluster", "OreonCluster2"]
 view:
   material:
-    - Oreon: !material 'mat(color: #ff7509, transparent: true, roughness: 0, opacity: 0.9)'
+    - Oreon: !material 'mat(color: #ff7a33, transparent: true, roughness: 0, opacity: 0.9)'
 resource:
   loader: obj
   src: !realpath '../../bin/objects/oreon-cluster.obj'

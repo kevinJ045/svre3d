@@ -6,6 +6,7 @@ export const variants = [
 	'i:swamp',
 	'i:grass',
 	'i:lava',
+	'i:magic',
 	// 'arctic',
 	// 'coastal',
 	// 'underground',

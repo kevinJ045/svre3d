@@ -11,7 +11,7 @@ ui:
   icon: !item.ui.icon
     src: !realpath '../../../bin/textures/oreon.png'
 view:
-  material: 'mat(color: #ffa500)'
+  material: 'mat(color: #335640)'
   object:
     position: !xyz
       x: -0.05

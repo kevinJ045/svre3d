@@ -1,0 +1,10 @@
+manifest:
+  id: !id 'dark'
+  type: 'biome'
+biome:
+  ground: !import './segments/dark.i.yaml'
+  colors: [ "#121a35", "#0d324f", "#0d324f" ]
+  foliage:
+    color: "#121a35"
+resource: !biome.resource
+  _: ~

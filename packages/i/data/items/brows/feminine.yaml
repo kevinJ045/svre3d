@@ -1,0 +1,22 @@
+manifest: 
+  id: !id feminine-brow
+  type: item
+item:
+  hidden: true
+  inventory:
+    max: 999
+equipment:
+  type: 'brow'
+view:
+  object:
+    position: !xyz
+      x: 0
+      y: 0
+      z: 0
+    scale: !xyz
+      x: 1
+      y: 1
+      z: 1
+resource: 
+  src: !realpath '../../../bin/objects/feminine-brows.glb'
+  loader: gltf

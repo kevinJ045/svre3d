@@ -11,7 +11,7 @@ structures:
     looted: "Empty"
 view:
   material:
-    - Ore: !material 'mat(color: #ffffff)'
+    - Ore: !material 'mat(color: #ffffff, emissive: #ffffff, emissiveIntensity: 2)'
       Stone: !material 'mat(color: #505050)'
 resource:
   loader: obj

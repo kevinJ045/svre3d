@@ -66,6 +66,10 @@ export class Entities {
 
 		entityMesh.add(refMesh);
 
+		// entityMesh.add(
+		// 	new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1))
+		// );
+
 		entityMesh.position.set(entity.position.x, entity.position.y + 5, entity.position.z);
 
 		entity.object3d = entityMesh;
@@ -87,6 +91,7 @@ export class Entities {
 			const variant = 
 				((ref.entity?.variants || [])
 				.find(i => i.name == entity.variant)?.material || {});
+			const byname = typeof ref.view!.material == "object" && ref.view!.material.byName;
 			if(typeof ref.view!.material == 'string'){
 				const part = Equipments.entityBody('body', entity, '0.0');
 				part.material = MaterialManager.parse(ref.view!.material, {});
@@ -97,8 +102,19 @@ export class Entities {
 				};
 				for(let i in material){
 					if(i == 'variant') continue;
-					const part = Equipments.entityBody(i, entity);
-					part.material = MaterialManager.parse(material[i], {});
+					if(i == 'byName') continue;
+					if(byname){
+						entity.object3d.traverse(o => {
+							if('material' in o){
+								if((o.material as any).name == i){
+									o.material = MaterialManager.parse(material[i], {});
+								}
+							}
+						});
+					} else {
+						const part = Equipments.entityBody(i, entity);
+						part.material = MaterialManager.parse(material[i], {});
+					}
 				}
 			}
 		}

@@ -9,6 +9,7 @@ import { Entities } from "../repositories/entities.js";
 import { UISelectedItem } from "../ui/misc/variables.js";
 import { SceneManager } from "../common/sceneman.js";
 import { ping } from "../socket/socket.js";
+import ControlUtils from "./utils.ts";
 
 export class Mouse {
 
@@ -40,20 +41,7 @@ export class Mouse {
         console.log(PlayerInfo.entity.flags);
       } else if (intersects.length > 0) {
         const intersectionPoint = intersects[0].point;
-        if(PlayerInfo.entity.object3d.position.distanceTo(intersectionPoint) < 3 && intersects[0].object.name !== 'chunk' && intersects[0].object.userData.lootable){
-          const chunkObject = intersects[0].object.parent?.parent;
-          if(chunkObject){
-            const chunk = chunkObject.userData.info.chunk;
-            if(intersects[0].object.userData.structure.looted) return;
-            ping('structure:loot', {
-              chunk: chunk.position,
-              entity: PlayerInfo.entity.id,
-              id: intersects[0].object.userData.structure.id
-            });
-          }
-        } else {
-          PlayerInfo.entity.displace(intersectionPoint, true);
-        }
+        PlayerInfo.entity.displace(intersectionPoint, true);
       }
 
     }
@@ -76,55 +64,6 @@ export class Mouse {
 
     const place = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1, 0.5), new THREE.MeshBasicMaterial({ color: 0x000fff, opacity: 0.5 }));
 
-    const _glowItems: any[] = [];
-    const glowItem = (object, remove) => {
-      const hi = object => {
-        
-        if(Array.isArray((object as any).material)){
-          (object as any).material.forEach(mat => {
-            if(remove){
-              if(mat.userData.originalIntensity) {
-                mat.emissiveIntensity = mat.userData.originalIntensity;
-                delete mat.userData.originalIntensity;
-              }
-            }
-            else
-              if(mat.emissiveIntensity > 0 && !mat.userData.originalIntensity){
-                mat.userData.originalIntensity = mat.emissiveIntensity;
-                mat.emissiveIntensity = 100;
-              }
-          });
-        } else {
-          if(remove)
-            if((object as any).material && (object as any).material.userData.originalIntensity){
-              (object as any).material.emissiveIntensity = (object as any).material.userData.originalIntensity;
-              delete (object as any).material.userData.originalIntensity;
-            }
-          else 
-            if((object as any).material && (object as any).material.emissiveIntensity > 0 && !(object as any).material.userData.originalIntensity){
-              (object as any).material.userData.originalIntensity = (object as any).material.emissiveIntensity;
-              (object as any).material.emissiveIntensity = 100;
-            }
-        }
-
-      };
-      object.traverse(hi);
-    }
-    const glowItems = (intersects) => {
-      if(!intersects) intersects = [];
-      if(intersects[0]?.object.name !== 'chunk' && intersects[0]?.object.userData.lootable){
-        const chunkObject = intersects[0].object.parent?.parent;
-        if(chunkObject){
-          if(_glowItems.indexOf(intersects) < 0) _glowItems.push(intersects);
-          glowItem(chunkObject, false);
-        }
-      }
-      _glowItems.forEach(item => {
-        if(intersects[0]?.object.uuid !== item[0].object.uuid){
-          glowItem(item[0].object.parent?.parent, true);
-        }
-      });
-    }
 
     const itemInfo = (event) => {
       const raycaster = new THREE.Raycaster();
@@ -178,29 +117,6 @@ export class Mouse {
           if(Controls.controlMode) UISelectedItem.unselect();
         } else {
           SceneManager.scene.scene.remove(place);
-          if(intersects[0].object.name !== 'chunk' && intersects[0].object.userData.lootable){
-            const chunkObject = intersects[0].object.parent?.parent;
-            if(chunkObject){
-              chunkObject.userData.originalMaterial = (chunkObject as any).material;
-              
-              const hi = object => {
-                if((object as any).material && (object as any).material.userData.originalIntensity){
-                  (object as any).material.emissiveIntensity = (object as any).material.userData.originalIntensity;
-                  delete (object as any).material.userData.originalIntensity;
-                }
-
-                
-                if(Array.isArray((object as any).material)){
-                  (object as any).material.forEach(mat => {
-                    if(mat.userData.originalIntensity)
-                      mat.emissiveIntensity = mat.userData.originalIntensity;
-                      delete mat.userData.originalIntensity;
-                  });
-                }
-              };
-              chunkObject.traverse(hi);
-            }
-          }
         }
       } else {
         SceneManager.scene.scene.remove(place);
@@ -208,7 +124,7 @@ export class Mouse {
           UISelectedItem.unselect();
         }
       }
-      if(!Controls.controlMode) glowItems(intersects);
+      ControlUtils.glowItems(intersects);
     }
 
     canvas.addEventListener('mousemove', itemInfo);
@@ -221,11 +137,11 @@ export class Mouse {
   
         isClick = 1;
         if(Controls.controlMode == 0) onMouseClick(event);
+        else PlayerInfo.interact();
       } else {
         event.preventDefault();
 
         PlayerInfo.attack();
-
       }
     });
 

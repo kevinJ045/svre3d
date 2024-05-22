@@ -71,7 +71,7 @@ export class Controls {
 		});
 
 		Keyboard.listen(KeyMap.getKey('ui.interact'), () => {
-			PlayerInfo.attack();
+			PlayerInfo.interact();
 		});
 	}
 

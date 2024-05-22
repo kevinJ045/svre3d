@@ -1,0 +1,9 @@
+manifest:
+  id: !id 'dark_texture'
+  type: texture_map
+resource:
+  loader: texture
+  sources: [
+    !realpath '../../../bin/textures/segment_dark_top.png',
+    !realpath '../../../bin/textures/segment_dark_side.png'
+  ]

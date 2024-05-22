@@ -449,7 +449,7 @@ export class Entities {
 		if (entity.restTime.current > entity.restTime.currentMax) {
 			entity.restTime.current = 0;
 			entity.restTime.currentMax = Random.from(entity.restTime.min, entity.restTime.max);
-			if (!entity.targetPosition) {
+			if (!entity.targetPosition && entity.ai.movement?.random) {
 				Entities.selectRandomTarget(entity);
 			}
 		} else {

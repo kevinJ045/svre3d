@@ -5,8 +5,9 @@ biome:
   ground: !import './segments/lava.i.yaml'
   tile:
     multicolor: true
-    keepdefault: true
   colors: [ "#ff0000", "#ff7700", "#ff5100" ]
+  water:
+    color: "#ff7700"
 structures:
   - name: oreon-chunk
     structure: 
@@ -29,12 +30,20 @@ structures:
     drops: 
       - id: !id oreon
         quantity: [2, 5]
+  - name: lava
+    structure: 
+      object: !import '../structures/lava.i.yaml'
+    under: 2
+    random: !bool false
+    allowStructures: []
+    flags: 
+      - lava
 events:
   # on stepped, if not a lava variant, burn them
   step:
     - action: emit
       target: context.trigger.entity()
-      if: context.$target.isVariant('!lava') && context.$target.hasFlag('!fire_resistant')
+      if: context.self.hasFlag('lava') && context.$target.isVariant('!lava') && context.$target.hasFlag('!fire_resistant')
       emit: hurt
       emitData: [5, 100]
 resource: !biome.resource

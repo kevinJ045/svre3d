@@ -4,6 +4,7 @@ import { Entities } from "./entities.js";
 import { Items } from "./items.js";
 import { Players } from "./players.js";
 import { ItemData } from '../models/item.js';
+import { EntityData } from "../models/entity.js";
 
 
 
@@ -29,15 +30,7 @@ export default class Commands {
 }
 
 type Context = {
-  playerEntity: {
-    position: {
-      x: number,
-      y: number,
-      z: number,
-    }
-    id: string,
-    addToInventory: (item: ItemData) => Promise<Response>
-  }
+  playerEntity: EntityData,
   reply: (msg: string) => Promise<Response>
 }
 

@@ -1,5 +1,5 @@
-import { PlayerInfo } from "../repositories/player.ts";
-import { ping } from "../socket/socket.ts";
+import { PlayerInfo } from "../repositories/player.js";
+import { ping } from "../socket/socket.js";
 
 
 

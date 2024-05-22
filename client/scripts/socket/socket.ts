@@ -9,7 +9,7 @@ import { Seed } from "../world/seed.js";
 import { WorldData } from "../world/data.js";
 import { LocalDB } from "../localdb/localdb.js";
 import { Login } from "../login/login.js";
-import GlobalEmitter from "../misc/globalEmitter.ts";
+import GlobalEmitter from "../misc/globalEmitter.js";
 const io = (window as any).io as typeof sio;
 
 let S!: any;

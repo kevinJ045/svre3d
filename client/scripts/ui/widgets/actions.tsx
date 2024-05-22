@@ -1,4 +1,4 @@
-import { Item } from "../../models/item"
+import { Item } from "../../models/item.js"
 import * as React from "react";
 import { Equipments } from "../../repositories/equipments.js";
 import { PlayerInfo } from "../../repositories/player.js";

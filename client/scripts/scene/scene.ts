@@ -14,14 +14,14 @@ import { Lights } from "./lights.js";
 import { Items } from "../repositories/items.js";
 import { ItemData } from "../../../server/models/item.js";
 import { Item } from "../models/item.js";
-import EffectManager from "../repositories/effects.ts";
-import { UnrealBloomPass } from "../lib/UnrealBloomPass.ts";
+import EffectManager from "../repositories/effects.js";
+import { UnrealBloomPass } from "../lib/UnrealBloomPass.js";
 // import { xyz } from "../common/xyz.js";
 import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass.js";
-import { Biomes } from "../repositories/biomes.ts";
-import Projectiles from "../repositories/projectiles.ts";
-import GlobalEmitter from "../misc/globalEmitter.ts";
-import Markers from "../objects/markers.ts";
+import { Biomes } from "../repositories/biomes.js";
+import Projectiles from "../repositories/projectiles.js";
+import GlobalEmitter from "../misc/globalEmitter.js";
+import Markers from "../objects/markers.js";
 
 export class MainScene extends Scene3D {
 

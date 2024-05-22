@@ -9,7 +9,7 @@ import { ServerData } from "../../../server/models/data.js";
 import { Biomes } from "./biomes.js";
 import { WorldData } from "../world/data.js";
 import { Structures } from "./structures.js";
-import { PlayerInfo } from "./player.ts";
+import { PlayerInfo } from "./player.js";
 
 export class Chunks {
 

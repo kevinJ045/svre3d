@@ -3,7 +3,7 @@ import {
 	BufferGeometry,
 	Float32BufferAttribute
 } from 'three';
-import { ConvexHull } from './ConvexHull.ts';
+import { ConvexHull } from "./ConvexHull.js";
 
 class ConvexGeometry extends BufferGeometry {
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Random } from '../../../server/common/rand.ts';
+import { Random } from '../../../server/common/rand.js';
 import { THREE } from 'enable3d';
-import { Noise } from '../../../server/lib/noise/index.ts';
+import { Noise } from '../../../server/lib/noise/index.js';
 
 export const Running2dGoobers = (canvas: HTMLCanvasElement) => {
   const ctx = canvas.getContext('2d')!;

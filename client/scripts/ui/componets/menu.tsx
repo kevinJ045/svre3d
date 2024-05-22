@@ -13,9 +13,9 @@ import BookComponent from "../widgets/books.js";
 import { ResourceMap } from "../../repositories/resources.js";
 import { DefaultBooks } from "../constants/books.js";
 import { Context } from "../data/context.js";
-import { generateItemIcon } from "../misc/itemicon.ts";
-import ChatsUI from "../chats/chats.tsx";
-import { SettingsUI } from "../widgets/settings.tsx";
+import { generateItemIcon } from "../misc/itemicon.js";
+import ChatsUI from "../chats/chats.js";
+import { SettingsUI } from "../widgets/settings.js";
 
 
 export const Menu = () => {

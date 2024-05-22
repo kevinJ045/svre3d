@@ -1,12 +1,12 @@
 import { Random } from "../../../server/common/rand.js";
-import { mixColors } from "../common/colors.ts";
+import { mixColors } from "../common/colors.js";
 import { PhysicsManager } from "../common/physics.js";
-import { SceneManager } from "../common/sceneman.ts";
-import { GPUComputationRenderer } from "../lib/GPUCompRendr.ts";
+import { SceneManager } from "../common/sceneman.js";
+import { GPUComputationRenderer } from "../lib/GPUCompRendr.js";
 import { Chunk } from "../models/chunk.js";
-import { WorldData } from "../world/data.ts";
+import { WorldData } from "../world/data.js";
 import { Seed } from "../world/seed.js";
-import { Items } from "./items.ts";
+import { Items } from "./items.js";
 import { MaterialManager } from "./materials.js";
 import { ResourceMap } from "./resources.js";
 import { THREE } from "enable3d";

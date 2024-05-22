@@ -4,8 +4,8 @@ import { xyz } from "../models/misc.xyz.js";
 import { Entities } from "../repositories/entities.js";
 import { Items } from "../repositories/items.js";
 import { Players } from "../repositories/players.js";
-import { Chats } from "../repositories/chats.ts";
-import Projectiles from "../repositories/projectiles.ts";
+import { Chats } from "../repositories/chats.js";
+import Projectiles from "../repositories/projectiles.js";
 
 export function pingFrom<T = any, D = any>(socket: Socket, action: string, func: (data: T) => any){
 	socket.on(action, async (data: T, callback: (data: D) => any) => {

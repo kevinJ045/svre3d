@@ -1,7 +1,7 @@
-import { ChunkData } from "../models/chunk.ts";
-import { ServerData } from "../models/data.ts";
-import { EntityData } from "../models/entity.ts";
-import { ItemData } from "../models/item.ts";
+import { ChunkData } from "../models/chunk.js";
+import { ServerData } from "../models/data.js";
+import { EntityData } from "../models/entity.js";
+import { ItemData } from "../models/item.js";
 
 
 export const FunctionalData: {[key: string]: (item: any) => Record<string, CallableFunction>} = {};

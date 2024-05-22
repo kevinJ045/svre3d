@@ -1,7 +1,7 @@
-import { ServerData } from "../../models/data.ts";
-import { Entities } from "../../repositories/entities.ts";
-import { ResourceMap } from "../../repositories/resources.ts";
-import { ResourceSchema } from "./Schema.type.ts";
+import { ServerData } from "../../models/data.js";
+import { Entities } from "../../repositories/entities.js";
+import { ResourceMap } from "../../repositories/resources.js";
+import { ResourceSchema } from "./Schema.type.js";
 
 
 

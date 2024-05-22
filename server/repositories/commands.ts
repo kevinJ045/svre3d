@@ -1,8 +1,8 @@
-import { Data } from "../db/db.ts";
-import { Sockets } from "../ping/sockets.ts";
-import { Entities } from "./entities.ts";
-import { Items } from "./items.ts";
-import { Players } from "./players.ts";
+import { Data } from "../db/db.js";
+import { Sockets } from "../ping/sockets.js";
+import { Entities } from "./entities.js";
+import { Items } from "./items.js";
+import { Players } from "./players.js";
 
 
 

@@ -1,5 +1,5 @@
 import { Chunk } from "../models/chunk.js";
-import { Chunks } from "./chunks.ts";
+import { Chunks } from "./chunks.js";
 import { MaterialManager } from "./materials.js";
 import { ResourceMap } from "./resources.js";
 

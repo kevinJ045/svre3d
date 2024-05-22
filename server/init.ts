@@ -3,7 +3,7 @@ import { variants } from "./constant/player_variant.js";
 import { worldData } from "./constant/world.js";
 import { loadAllResources } from "./functions/resources.js";
 import { LoginManager } from "./login/login.js";
-import { ServerData } from "./models/data.ts";
+import { ServerData } from "./models/data.js";
 import { startPing } from "./ping/ping.js";
 import { Sockets } from "./ping/sockets.js";
 import { Biomes } from "./repositories/biomes.js";
@@ -12,7 +12,7 @@ import { Entities } from "./repositories/entities.js";
 import { Items } from "./repositories/items.js";
 import { Mainloop } from "./repositories/mainloop.js";
 import { Players } from "./repositories/players.js";
-import Projectiles from "./repositories/projectiles.ts";
+import Projectiles from "./repositories/projectiles.js";
 import { ResourceMap } from "./repositories/resources.js";
 
 

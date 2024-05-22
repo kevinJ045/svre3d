@@ -1,12 +1,12 @@
-import { ServerData } from "../../../server/models/data.ts";
-import { ProjectileData } from "../../../server/models/projectile.ts";
-import { stringifyChunkPosition } from "../common/chunk.ts";
-import { SceneManager } from "../common/sceneman.ts";
-import { xyzTv } from "../common/xyz.ts";
-import { Projectile } from "../models/projectile.ts";
-import { pingFrom } from "../socket/socket.ts";
+import { ServerData } from "../../../server/models/data.js";
+import { ProjectileData } from "../../../server/models/projectile.js";
+import { stringifyChunkPosition } from "../common/chunk.js";
+import { SceneManager } from "../common/sceneman.js";
+import { xyzTv } from "../common/xyz.js";
+import { Projectile } from "../models/projectile.js";
+import { pingFrom } from "../socket/socket.js";
 import { THREE } from "enable3d";
-import { Entities } from "./entities.ts";
+import { Entities } from "./entities.js";
 
 
 

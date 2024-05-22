@@ -1,4 +1,4 @@
-import { ProjectileData } from "../../../server/models/projectile.ts";
+import { ProjectileData } from "../../../server/models/projectile.js";
 
 
 

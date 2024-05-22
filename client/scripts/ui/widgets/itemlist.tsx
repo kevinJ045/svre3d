@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { Items } from '../../repositories/items';
-import { SlotItem } from './slotitem';
+import { Items } from '../../repositories/items.js';
+import { SlotItem } from './slotitem.js';
 
 export const ItemList = () => {
   return (

@@ -1,11 +1,11 @@
-import { xyz, xyzTv } from "../../client/scripts/common/xyz.ts";
-import { generateUniqueId } from "../../client/scripts/modules/bid.ts";
-import { EntityData } from "../models/entity.ts";
-import { ProjectileData } from "../models/projectile.ts";
-import { Sockets } from "../ping/sockets.ts";
+import { xyz, xyzTv } from "../../client/scripts/common/xyz.js";
+import { generateUniqueId } from "../../client/scripts/modules/bid.js";
+import { EntityData } from "../models/entity.js";
+import { ProjectileData } from "../models/projectile.js";
+import { Sockets } from "../ping/sockets.js";
 import { Vector3 } from 'three';
-import { pingFrom } from "../ping/ping.ts";
-import { ServerData } from "../models/data.ts";
+import { pingFrom } from "../ping/ping.js";
+import { ServerData } from "../models/data.js";
 
 export default class Projectiles {
   static projectiles: ProjectileData[] = [];

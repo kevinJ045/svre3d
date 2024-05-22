@@ -1,7 +1,7 @@
 import { Random } from "../common/rand.js";
 import { noise, seedrng } from "../constant/seed.js";
 import { Data } from "../db/db.js";
-import { ResourceSchema } from "../lib/loader/Schema.type.ts";
+import { ResourceSchema } from "../lib/loader/Schema.type.js";
 import { ChunkData } from "../models/chunk.js";
 import { ServerData } from "../models/data.js";
 import { jsonres } from "../models/jsonres.js";

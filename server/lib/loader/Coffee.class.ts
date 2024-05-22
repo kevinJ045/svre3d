@@ -2,7 +2,7 @@
 import coffee from "coffeescript";
 import fs from 'fs';
 import { Context, createContext, runInContext } from 'vm';
-import CoffeeContext from "./Context.class.ts";
+import CoffeeContext from "./Context.class.js";
 
 export default class Coffee {
   compiled: string;

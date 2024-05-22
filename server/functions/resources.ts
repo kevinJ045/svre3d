@@ -4,7 +4,7 @@ import { ResourceMap } from "../repositories/resources.js";
 import Parser from "../lib/loader/Parser.class.js";
 import STD from "../lib/loader/STD.class.js";
 import Package from "../lib/loader/Package.class.js";
-import { ServerData } from "../models/data.ts";
+import { ServerData } from "../models/data.js";
 
 export function loadAllResources(map: typeof ResourceMap, serverData: ServerData){
 

@@ -4,7 +4,7 @@ import { BiomeData } from "../models/biome.js";
 import { Random } from "../common/rand.js";
 import { jsonres } from "../models/jsonres.js";
 import { Entities } from "./entities.js";
-import { ResourceSchema } from "../lib/loader/Schema.type.ts";
+import { ResourceSchema } from "../lib/loader/Schema.type.js";
 
 export class EntitySpawner {
 

@@ -1,7 +1,7 @@
-import GlobalEmitter from "../../misc/globalEmitter.ts";
-import { PointerLock } from "../../misc/pointerLock.ts";
-import Markers from "../../objects/markers.ts";
-import { Biomes } from "../../repositories/biomes.ts";
+import GlobalEmitter from "../../misc/globalEmitter.js";
+import { PointerLock } from "../../misc/pointerLock.js";
+import Markers from "../../objects/markers.js";
+import { Biomes } from "../../repositories/biomes.js";
 import { PlayerInfo } from "../../repositories/player.js";
 import { ResourceMap } from "../../repositories/resources.js";
 import { getChunkType } from "../../world/chunktype.js";

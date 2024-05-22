@@ -1,8 +1,8 @@
-import { pingFrom } from "../ping/ping.ts";
+import { pingFrom } from "../ping/ping.js";
 import * as uuid from 'uuid';
-import Commands from "./commands.ts";
-import { Sockets } from "../ping/sockets.ts";
-import { Entities } from "./entities.ts";
+import Commands from "./commands.js";
+import { Sockets } from "../ping/sockets.js";
+import { Entities } from "./entities.js";
 
 export type ChatMessage = {chatid: string, message: string, reply?: string, username: string};
 export class Chats {

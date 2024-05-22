@@ -1,5 +1,5 @@
 import React from "react";
-import { mixColors } from "../../common/colors.ts";
+import { mixColors } from "../../common/colors.js";
 
 
 export const Cube = ({

@@ -1,4 +1,4 @@
-import { xyzTv } from "../../client/scripts/common/xyz.ts";
+import { xyzTv } from "../../client/scripts/common/xyz.js";
 import { stringifyChunkPosition } from "../common/chunk.js";
 import { Random } from "../common/rand.js";
 import { worldData } from "../constant/world.js";
@@ -8,7 +8,7 @@ import { xyz } from "../models/misc.xyz.js";
 import { pingFrom } from "../ping/ping.js";
 import { Sockets } from "../ping/sockets.js";
 import { generateChunkHeight } from "../world/chunks.js";
-import { EventEmitter } from "./events.ts";
+import { EventEmitter } from "./events.js";
 import { Biomes } from "./biomes.js";
 import { Entities } from "./entities.js";
 import { Items } from "./items.js";

@@ -2,7 +2,7 @@ import path from "path";
 import Parser from "./Parser.class.js";
 import fs from 'fs';
 import { ResourceSchema } from "./Schema.type.js";
-import { ServerData } from "../../models/data.ts";
+import { ServerData } from "../../models/data.js";
 
 export default class Package {
 

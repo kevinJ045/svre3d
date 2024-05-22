@@ -2,7 +2,7 @@ import { BuffData } from "./buff.js";
 import { ServerData } from "./data.js";
 import { ItemData } from "./item.js";
 import { Random } from "../common/rand.js";
-import { xyz } from "./misc.xyz.ts";
+import { xyz } from "./misc.xyz.js";
 
 
 class EntityData extends ServerData {

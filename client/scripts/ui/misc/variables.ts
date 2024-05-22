@@ -1,4 +1,4 @@
-import { PlayerInfo } from "../../repositories/player"
+import { PlayerInfo } from "../../repositories/player.js"
 
 export const UISelectedItem = (new class ItemSelector extends EventTarget {
     item: any = null;

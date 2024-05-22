@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react"
 import { Context } from "../data/context.js";
-import GlobalEmitter from "../../misc/globalEmitter.ts";
-import { ping } from "../../socket/socket.ts";
-import { PlayerInfo } from "../../repositories/player.ts";
+import GlobalEmitter from "../../misc/globalEmitter.js";
+import { ping } from "../../socket/socket.js";
+import { PlayerInfo } from "../../repositories/player.js";
 
 export const ChatBar = () => {
   const [messageText, setMessageText] = useState('');

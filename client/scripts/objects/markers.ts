@@ -1,12 +1,12 @@
-import { xyz } from "../../../server/models/misc.xyz.ts";
-import { SceneManager } from "../common/sceneman.ts";
-import { Chunk } from "../models/chunk.ts";
+import { xyz } from "../../../server/models/misc.xyz.js";
+import { SceneManager } from "../common/sceneman.js";
+import { Chunk } from "../models/chunk.js";
 import { THREE } from "enable3d";
-import { PlayerInfo } from "../repositories/player.ts";
-// import { randomHexColor } from "../common/colors.ts";
-import { WorldData } from "../world/data.ts";
-import { Settings } from "../settings/settings.ts";
-import { Random } from "../../../server/common/rand.ts";
+import { PlayerInfo } from "../repositories/player.js";
+// import { randomHexColor } from "../common/colors.js";
+import { WorldData } from "../world/data.js";
+import { Settings } from "../settings/settings.js";
+import { Random } from "../../../server/common/rand.js";
 
 
 function randomHexColor(){

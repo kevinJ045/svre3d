@@ -12,9 +12,9 @@ import { Data } from './db/db.js';
 import { env } from './constant/env.js';
 import { ResourceMap } from './repositories/resources.js';
 import { getPropStr } from './common/getpropstr.js';
-import { worldData } from './constant/world.ts';
-import { Biomes } from './repositories/biomes.ts';
-import { ServerData } from './models/data.ts';
+import { worldData } from './constant/world.js';
+import { Biomes } from './repositories/biomes.js';
+import { ServerData } from './models/data.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;

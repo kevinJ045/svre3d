@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Settings } from "../../settings/settings.ts"
+import { Settings } from "../../settings/settings.js"
 
 
 export const SettingsUI = () => {

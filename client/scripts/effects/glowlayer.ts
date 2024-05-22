@@ -1,5 +1,5 @@
 import { EffectComposer, RenderPass, THREE } from "enable3d";
-import { UnrealBloomPass } from "../lib/UnrealBloomPass.ts";
+import { UnrealBloomPass } from "../lib/UnrealBloomPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 
 export class GlowLayer extends EffectComposer {

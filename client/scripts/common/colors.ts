@@ -1,4 +1,4 @@
-import { Random } from "../../../server/common/rand.ts";
+import { Random } from "../../../server/common/rand.js";
 
 export function mixColors(color1, color2, ratio) {
 	var rgb1 = hexToArray(color1);

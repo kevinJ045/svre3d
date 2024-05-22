@@ -4,9 +4,9 @@ import { Context } from "../data/context.js"
 import React, { useEffect, useState } from "react";
 import { Map2D } from "../misc/map.js";
 import { book, bookpage } from "../widgets/books.js";
-import { Chat } from "../../../../server/common/chat.ts";
-import GlobalEmitter from "../../misc/globalEmitter.ts";
-import { pingFrom } from "../../socket/socket.ts";
+import { Chat } from "../../../../server/common/chat.js";
+import GlobalEmitter from "../../misc/globalEmitter.js";
+import { pingFrom } from "../../socket/socket.js";
 
 let listening = false;
 
@@ -70,9 +70,9 @@ export const MainUI = ({ children }) => {
   }, []);
 
 
-	React.useEffect(() => {
-		Map2D.activeTab = tab;
-	}, [tab]);
+	// React.useEffect(() => {
+	// 	Map2D.activeTab = tab;
+	// }, [tab]);
 
   return <Context.Provider value={data}>
     {children}

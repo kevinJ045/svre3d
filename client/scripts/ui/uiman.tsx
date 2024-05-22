@@ -4,10 +4,10 @@ import * as React from "react";
 import { Map2D } from "./misc/map.js";
 import { HUDUi } from "./componets/hud.js";
 import { MainUI } from "./componets/provider.js";
-import ChatsUI from "./chats/chats.tsx";
-import { Context } from "./data/context.ts";
-import { ToggleButton } from "./widgets/toggle.tsx";
-import GlobalEmitter from "../misc/globalEmitter.ts";
+import ChatsUI from "./chats/chats.js";
+import { Context } from "./data/context.js";
+import { ToggleButton } from "./widgets/toggle.js";
+import GlobalEmitter from "../misc/globalEmitter.js";
 
 export default class UI {
 

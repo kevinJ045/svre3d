@@ -12,9 +12,9 @@ import { Chunks } from "./chunks.js";
 import { Random } from "../common/rand.js";
 import { jsonres } from "../models/jsonres.js";
 import { ResourceSchema } from "../lib/loader/Schema.type.js";
-import { stringifyChunkPosition } from "../common/chunk.ts";
-import { xyzTv } from "../../client/scripts/common/xyz.ts";
-import Projectiles from "./projectiles.ts";
+import { stringifyChunkPosition } from "../common/chunk.js";
+import { xyzTv } from "../../client/scripts/common/xyz.js";
+import Projectiles from "./projectiles.js";
 
 
 export class Entities {

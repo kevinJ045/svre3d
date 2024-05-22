@@ -1,7 +1,7 @@
-import InteractionControl from "../controls/interaction.ts";
+import InteractionControl from "../controls/interaction.js";
 import { Entity } from "../models/entity.js";
 import { ping } from "../socket/socket.js";
-import { Chunks } from "./chunks.ts";
+import { Chunks } from "./chunks.js";
 import { Entities } from "./entities.js";
 import { Equipments } from "./equipments.js";
 import { THREE } from "enable3d";

@@ -1,11 +1,11 @@
 import { RenderPass, Scene3D, ShaderPass, THREE } from "enable3d";
 import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass.js";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
-import { UnrealBloomPass } from "../lib/UnrealBloomPass.ts";
-import { RenderPixelatedPass } from "../lib/RenderPixelatedPass.ts";
-import { MainScene } from "../scene/scene.ts";
-import { Settings } from "../settings/settings.ts";
-import { GlowLayer } from "../effects/glowlayer.ts";
+import { UnrealBloomPass } from "../lib/UnrealBloomPass.js";
+import { RenderPixelatedPass } from "../lib/RenderPixelatedPass.js";
+import { MainScene } from "../scene/scene.js";
+import { Settings } from "../settings/settings.js";
+import { GlowLayer } from "../effects/glowlayer.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 
 

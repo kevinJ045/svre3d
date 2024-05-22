@@ -5,7 +5,7 @@ import * as uuid from "uuid";
 import { MaterialManager } from "./materials.js";
 import { cloneGltf } from "../lib/gltfclone.js";
 import { THREE } from "enable3d";
-import { ping } from "../socket/socket.ts";
+import { ping } from "../socket/socket.js";
 
 export class Equipments {
 

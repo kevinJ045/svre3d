@@ -29,7 +29,7 @@ export class EventEmitter {
 
   static itemFunctionalData(item: ServerData | ServerData[]){
     return item instanceof EntityData ? FunctionalData.entity(item) :
-      item instanceof ChunkData ? {} : 
+      item instanceof ChunkData ? FunctionalData.chunk(item) : 
       item instanceof ItemData ? {} : {};
   }
 
@@ -40,7 +40,7 @@ export class EventEmitter {
         if(!target) return;
         const ifState = EventEmitter.evaluateString(action.if, {
           $target: Array.isArray(target) ? {} : this.itemFunctionalData(target),
-          ...data
+          ...data,
         });
         if(ifState){
           Array.isArray(target) ?
@@ -59,7 +59,8 @@ export class EventEmitter {
           EventEmitter.applyActions(chunk, actions, {
             trigger: {
               entity: () => data.target
-            }
+            },
+            self: this.itemFunctionalData(chunk)
           })
         });
       }

@@ -1,6 +1,7 @@
 import { Data } from "../db/db.ts";
 import { Sockets } from "../ping/sockets.ts";
 import { Entities } from "./entities.ts";
+import { Items } from "./items.ts";
 import { Players } from "./players.ts";
 
 
@@ -41,4 +42,16 @@ Commands.register('tp', (ctx, x, z) => {
   ctx.playerEntity.position.y = 5;
   ctx.playerEntity.position.z = parseInt(z) || 0;
   Sockets.emit('entity:setpos', { entity: ctx.playerEntity.id, position: ctx.playerEntity.position });
+});
+
+
+Commands.register('give', (ctx, itemName, quantity = 1) => {
+  const item = Items.create(itemName, parseInt(quantity.toString()));
+  ctx.playerEntity.addToInventory(item);
+  Sockets.emit('entity:inventory', {
+    entity: ctx.playerEntity.id,
+    type: 'add',
+    item: item,
+    action: 'add'
+  });
 });

@@ -1,3 +1,4 @@
+import { Random } from "../../../server/common/rand.ts";
 
 export function mixColors(color1, color2, ratio) {
 	var rgb1 = hexToArray(color1);
@@ -33,3 +34,6 @@ function arrayToHex(rgbArray) {
 	return "#" + rHex + gHex + bHex;
 }
 
+export function randomHexColor(){
+	return '#'+Random.from(0, 16777215).toString(16);
+}

@@ -20,6 +20,8 @@ import { UnrealBloomPass } from "../lib/UnrealBloomPass.ts";
 import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass.js";
 import { Biomes } from "../repositories/biomes.ts";
 import Projectiles from "../repositories/projectiles.ts";
+import GlobalEmitter from "../misc/globalEmitter.ts";
+import Markers from "../objects/markers.ts";
 
 export class MainScene extends Scene3D {
 
@@ -64,6 +66,7 @@ export class MainScene extends Scene3D {
 			Lights.updateLightPosition(PlayerInfo.entity.object3d.position.clone());
 			Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
 			Biomes.updateSky(PlayerInfo.entity.object3d.position);
+			GlobalEmitter.emit('player:move');
 
 			clearTimeout(t);
 			t = setTimeout(() => ping('player:position', { username: PlayerInfo.username, position: PlayerInfo.entity.object3d.position }), 2500);
@@ -166,6 +169,7 @@ export class MainScene extends Scene3D {
 		UI.update();
 
 		Chunks.loop(this.clock);
+		Markers.update();
 
 		if(this.composer2){
 			this.composer2.render();

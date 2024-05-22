@@ -3,6 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 import { spawn } from 'child_process';
+import { watch } from 'chokidar';
 
 const res_path = path.resolve('./packages');
 const server_path = path.resolve('./server');
@@ -23,22 +24,16 @@ const startServer = () => {
 
 };
 
+const restartServer =  (event, filename) => {
+  console.clear();
+  console.log('updated file');
+  startServer();
+}
 
-fs.watch(res_path, 
-	{ recursive: true },	
-	(event, filename) => {
-    console.clear();
-		console.log('updated yaml', filename);
-		startServer();
-	});
-
-// if(process.argv.includes('node')){
-  fs.watch(server_path, 
-    { recursive: true },	
-    (event, filename) => {
-      console.clear();
-      startServer();
-    });
-// }
+watch(res_path, { recursive: true },	
+).on('change',restartServer);
+watch(server_path, { recursive: true })
+.on('change',restartServer);
+process.on('beforeExit', () => childProcess?.kill())
 
 startServer();

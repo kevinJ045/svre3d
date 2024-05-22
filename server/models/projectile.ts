@@ -1,5 +1,5 @@
 import { Vector3 } from 'three';
-import { ServerData } from './data.js';
+import { ServerData } from "./data.js";
 
 export class ProjectileData extends ServerData {
   position: Vector3;

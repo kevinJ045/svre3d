@@ -14,8 +14,8 @@ import { ResourceMap } from "../../repositories/resources.js";
 import { DefaultBooks } from "../constants/books.js";
 import { Context } from "../data/context.js";
 import { generateItemIcon } from "../misc/itemicon.js";
-import ChatsUI from "../chats/chats.jsx";
-import { SettingsUI } from "../widgets/settings.jsx";
+import ChatsUI from "../chats/chats.js";
+import { SettingsUI } from "../widgets/settings.js";
 
 
 export const Menu = () => {

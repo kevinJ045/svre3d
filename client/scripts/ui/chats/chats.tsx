@@ -1,6 +1,6 @@
 import React from "react";
 import { Root } from "react-dom/client";
-import { ChatBar } from "./chatbar.jsx";
+import { ChatBar } from "./chatbar.js";
 
 
 

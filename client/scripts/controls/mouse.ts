@@ -9,7 +9,7 @@ import { Entities } from "../repositories/entities.js";
 import { UISelectedItem } from "../ui/misc/variables.js";
 import { SceneManager } from "../common/sceneman.js";
 import { ping } from "../socket/socket.js";
-import ControlUtils from "./utils.ts";
+import ControlUtils from "./utils.js";
 
 export class Mouse {
 

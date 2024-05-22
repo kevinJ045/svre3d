@@ -70,9 +70,9 @@ export const MainUI = ({ children }) => {
 	}, []);
 
 
-	React.useEffect(() => {
-		Map2D.activeTab = tab;
-	}, [tab]);
+	// React.useEffect(() => {
+	// 	Map2D.activeTab = tab;
+	// }, [tab]);
 
 	return <Context.Provider value={data}>
 		{children}

@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { THREE } from 'enable3d';
-import { Pass } from './Pass.js';
+import {THREE} from 'enable3d';
+import { Pass } from "./Pass.js";
 
 
 const UnrealBloomShader = {

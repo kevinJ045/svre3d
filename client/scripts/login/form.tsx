@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Cube } from '../ui/widgets/cube.jsx';
-import { LoginBackground } from './bg.jsx';
-import { MonotoneBg } from './monotone.jsx';
-import { Button } from '../ui/widgets/button.jsx';
+import { Cube } from '../ui/widgets/cube.js';
+import { LoginBackground } from './bg.js';
+import { MonotoneBg } from './monotone.js';
+import { Button } from '../ui/widgets/button.js';
 import { Biomes } from '../repositories/biomes.js';
 
 const LoginForm = ({ onSubmit, types = [] as any[] }) => {

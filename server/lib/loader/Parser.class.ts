@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import { ResourceSchema } from './Schema.type.js';
-import Coffee from './Coffee.class.js';
+import Coffee from "./Coffee.class.js";
 
 const floatifyObject = (obj, int) => {
   for (let i in obj) obj[i] = int ? parseFloat(obj[i]) : parseInt(obj[i]);

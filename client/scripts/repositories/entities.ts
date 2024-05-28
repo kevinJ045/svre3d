@@ -15,6 +15,7 @@ import { MaterialManager } from "./materials.js";
 import { SkinPlayer } from "../misc/playerskin.js";
 import { Settings } from "../settings/settings.js";
 import { Chunks } from "./chunks.js";
+import { WorldData } from "../world/data.js";
 
 
 export class Entities {
@@ -23,6 +24,8 @@ export class Entities {
 
 
 	static spawn(entityData: EntityData){
+
+		console.log(entityData);
 
 		if(this.entities.find(e => e.data.username == PlayerInfo.username)){
 			if(entityData.data.username == PlayerInfo.username) return;
@@ -70,7 +73,7 @@ export class Entities {
 		// 	new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1))
 		// );
 
-		entityMesh.position.set(entity.position.x, entity.position.y + 5, entity.position.z);
+		entityMesh.position.set(entity.position.x, entity.position.y, entity.position.z);
 
 		entity.object3d = entityMesh;
 
@@ -183,6 +186,7 @@ export class Entities {
 		});
 
 		pingFrom('entity:spawn', ({entity}) => {
+			if(Entities.find(entity)) return;
 			const spawn = Entities.spawn(entity);
 			if(spawn?.type == 'm:player' && spawn?.data.username == PlayerInfo.player.username){
 				PlayerInfo.setPlayerEntity(
@@ -309,6 +313,14 @@ export class Entities {
 
 			if(flags) entity.flags = flags;
 		})
+	}
+
+	static updateEntities(pos: THREE.Vector3, distance: number){
+		Entities.entities.forEach(entity => {
+			if(new THREE.Vector3().clone().set(entity.object3d.position.x, pos.y, entity.object3d.position.z).distanceTo(pos) >= (distance * WorldData.get('chunkSize'))){
+				Entities.despawn(entity);
+			}
+		});
 	}
 
 	static update(){

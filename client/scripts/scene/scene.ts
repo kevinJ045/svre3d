@@ -70,6 +70,18 @@ export class MainScene extends Scene3D {
 
 			clearTimeout(t);
 			t = setTimeout(() => ping('player:position', { username: PlayerInfo.username, position: PlayerInfo.entity.object3d.position }), 2500);
+			ping('entities:getspawned', {
+				position: player.object3d.position,
+				distance: Settings.get('renderDistance'),
+				id: player.id
+			});
+			Entities.updateEntities(player.object3d.position, Settings.get<number>('renderDistance'));
+		});
+
+		ping('entities:getspawned', {
+			position: player.object3d.position,
+			distance: Settings.get('renderDistance'),
+			id: player.id
 		});
 
 		player.on('inventory', () => {

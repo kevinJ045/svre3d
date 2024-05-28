@@ -197,7 +197,7 @@ export class Entity extends EntityData {
 			hasEntity: false
 		};
 
-		const pos = this.object3d.position.clone().add(direction.clone());
+		const pos = this.object3d.position.clone().add(direction.clone()).multiplyScalar(-1);
 		// console.log(pos, position);
 
 		// Perform raycast to detect obstacles in front of the player
@@ -229,9 +229,9 @@ export class Entity extends EntityData {
 			}
 		}
 
-		if(intersectsEntity.length > 0){
-			obstacles.hasEntity = true;
-		}
+		// if(intersectsEntity.length > 0){
+		// 	obstacles.hasEntity = true;
+		// }
 
 		if(this.hasHigherBlocks){
 			this.hasHigherBlocks = false;

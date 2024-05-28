@@ -235,6 +235,13 @@ export class Entities {
 			}, player.username, player.variant, [], { respawn: true, username: player.username, color: player.color, equipment: { brow: player.equipment?.brow || 'i:normal-brow' } })!;
 		});
 
+		pingFrom(socket, 'entities:getspawned', ({ id, position, distance }) => {
+			let entities = this.entities.filter(
+				e => e.id !== id && xyzTv({ x: e.position.x, y: position.y, z: e.position.z }).distanceTo(xyzTv(position)) < distance * Chunks.chunkSize
+			);
+			entities.forEach(entity => socket.emit('entity:spawn', { entity }));
+		});
+
 		pingFrom(socket, 'entity:inventory', (
 			{
 				entity: eid,

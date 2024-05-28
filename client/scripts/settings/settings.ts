@@ -57,8 +57,8 @@ export class Settings {
 		}
 	}
 
-	static get(key: string, defaultValue?: any){
-		return Settings.getFull(key).value ?? defaultValue;
+	static get<T = any>(key: string, defaultValue?: T){
+		return (Settings.getFull(key).value ?? defaultValue) as T;
 	}
 
 	static getFull(key: string){

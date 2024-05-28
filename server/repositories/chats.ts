@@ -9,11 +9,11 @@ export class Chats {
 
   static lookUpCommands(text: string, data: ChatMessage) {
     if (text.startsWith('/')) {
-      const commandTokens = text.replace('/', '').split(' ');
-      const command = commandTokens.shift()!;
+      const command = text.slice(1).split(' ').shift()!;
 
       if (Commands.has(command)) {
-        Commands.execute(command, commandTokens, {
+        const player = Entities.entities.find(e => e.data.username == data.username)!;
+        Commands.execute(command, text.trim(), {
           reply: (text: string) => {
             Sockets.emit('chat:send', this.prepareMessage({
               chatid: data.chatid,
@@ -22,7 +22,8 @@ export class Chats {
             }));
           },
           username: data.username,
-          playerEntity: Entities.entities.find(e => e.data.username == data.username)
+          position: player.position,
+          self: { type: 'id', value: player.id }
         });
       }
     } else { }

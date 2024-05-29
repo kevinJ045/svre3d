@@ -1343,7 +1343,7 @@ body.crosshair #crosshair{
 	clip-path: var(--path);
 }
 
-.trade-modal .trade-list .items-list{
+.trade-modal .trade-list .items-list {
 	width: auto;
 	max-width: 80px;
 	height: 50px;
@@ -1364,18 +1364,65 @@ body.crosshair #crosshair{
 	height: 40px;
 }
 
+.trade-modal .trade-list .trade-items{
+	width: 50%;
+}
+
 .trade-modal .trade-list .trade-items .trade-item{
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
+	background: var(--vp-c-bg-alt);
+	padding: 10px;
+	border-radius: 5px;
 }
 
+.trade-modal .trade-list .trade-items .trade-item:first-child{
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+
+.trade-modal .trade-list .trade-items .trade-item:last-child{
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+.trade-modal .trade-list .trade-items .trade-item.locked{
+	background: var(--vp-c-bg-soft);
+}
 
 .trade-modal .trade-list .main-grid {
 	display: flex;
 
 }
 
-.trade-modal .trade-list .item-review{
-	width: 70%;
+.trade-modal .trade-list .trader-face{
+	width: 50%;
+	position: relative;
+	height: 400px;
+}
+
+.trade-modal .trade-list .trader-face .item{
+	width: 40px;
+	height: 40px;
+}
+
+.trade-modal .trade-list .trader-face .items-list{
+	position: absolute;
+	bottom: 5px;
+	width: calc(100% - 80px);
+	max-width: 100%;
+}
+
+.trade-button{
+	width: 70px;
+	height: 40px;
+	background: teal;
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+	border-radius: 5px;
+	line-height: 40px;
+	text-align: center;
+	cursor: pointer;
 }

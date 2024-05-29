@@ -100,7 +100,7 @@ export class Entities {
 
 		this.entities.push(entity);
 
-		if(ref.entity.type == 'player'){
+		if(ref.entity?.type == 'player'){
 			Equipments.entity(entity);
 			SkinPlayer.skinPlayer(entity);
 		}

@@ -34,6 +34,13 @@ export class ServerData {
 		return this;
 	}
 
+	clone(customprops){
+		return new (this.constructor as any)().setData({
+			...this,
+			...customprops
+		});
+	}
+
 	static from(data: object, args?: any[]) {
 		// @ts-ignore
 		let d = new this(...(args || []));

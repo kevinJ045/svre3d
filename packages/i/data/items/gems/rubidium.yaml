@@ -4,7 +4,7 @@ manifest:
 item:
   name: Rubidium
   inventory:
-    max: 99
+    max: !int 99
   gem: true
   ore: true
 ui:

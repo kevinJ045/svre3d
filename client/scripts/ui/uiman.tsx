@@ -13,9 +13,11 @@ export default class UI {
 
 	static root: Root;
 	static hudRoot: Root;
+	static uiRoot: Element;
 
 	static init() {
-		this.root = createRoot(document.querySelector('#full-ui')!);
+		this.uiRoot = document.querySelector('#full-ui')!;
+		this.root = createRoot(this.uiRoot);
 		this.root.render(<MainUI>
 			<Menu></Menu>
 			<HUDUi></HUDUi>

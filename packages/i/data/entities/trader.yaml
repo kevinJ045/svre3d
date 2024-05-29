@@ -12,7 +12,7 @@ view:
   physics:
     shape: convex
     offset: {
-      y: !float 2,
+      y: !float 1,
     }
   material:
     byName: !bool true
@@ -31,6 +31,17 @@ entity:
     attack:
       attackBack: true
       targets: []
+  interaction: true
+  trade: 
+    - name: 'Normal Trades'
+      id: !id 'trader:normal' 
+      items:
+        - items:
+            - item: !id rubidium
+              quantity: !int 4
+          costs: 
+            - item: !id iron
+              quantity: !int 5
 resource:
   src: !realpath '../../bin/objects/trader.glb'
   loader: gltf

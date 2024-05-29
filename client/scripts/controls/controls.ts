@@ -85,6 +85,7 @@ export class Controls {
 			Controls.pointerLock = null;
 
 			PlayerInfo.entity.object3d.visible = true;
+			document.body.classList.remove('crosshair');
 		} else {
 			CameraManager.cameraPosition.offset = new THREE.Vector3(0, 1, -2);
 			CameraManager.cameraPosition.lookat = new THREE.Vector3(0, 1, -3);
@@ -93,6 +94,8 @@ export class Controls {
 			Controls.pointerLock = new PointerLock(Controls.canvas);
 
 			PlayerInfo.entity.object3d.visible = false;
+
+			document.body.classList.add('crosshair');
 		}
 	}
 

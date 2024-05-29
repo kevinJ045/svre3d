@@ -1,3 +1,6 @@
+import { SceneManager } from "../common/sceneman.js";
+import CommonUtils from "../common/utils.js";
+import { Controls } from "../controls/controls.js";
 import InteractionControl from "../controls/interaction.js";
 import { Entity } from "../models/entity.js";
 import { ping } from "../socket/socket.js";
@@ -140,23 +143,35 @@ export class PlayerInfo {
 
 		const maxDistance = this.entity.data.maxReachDistance || 5;
 
+		// entityDirection.y = 5;
+
 		const raycaster = new THREE.Raycaster(new THREE.Vector3(
 			this.entity.object3d.position.x,
-			this.entity.object3d.position.y + 1,
+			this.entity.object3d.position.y,
 			this.entity.object3d.position.z
 		), entityDirection, 0, maxDistance);
 
 		const interactable: THREE.Object3D[] = [];
 		Chunks.chunkObjects().forEach(chunk => {
 			interactable.push(...chunk.children);
-		})
+		});
+
+		const playerSize = CommonUtils.getObjectSize(this.entity.object3d);
+
+		const hitBoxes: THREE.Mesh[] = [];
+
+		const bodies = Entities.entities.filter(i => i.id !== this.entity.id)
+		.map(i => {
+			return i.object3d.userData.$hitbox;
+		});
+
+		console.log(raycaster.intersectObjects(bodies));
 
 		const intersects = raycaster.intersectObjects(interactable)
 			.filter(i => i.object.userData.lootable)
 			.map(i => { i.object.userData.interactionType = 'structure'; return i; })
-			.concat(raycaster.intersectObjects(Entities.entities.map(i => i.object3d)))
+			.concat(raycaster.intersectObjects(bodies))
 			.sort((a, b) => a.distanceToRay! - b.distanceToRay!);
-
 
 		if (act) {
 			if (intersects.length) {
@@ -165,6 +180,8 @@ export class PlayerInfo {
 
 			this.entity!.attack();
 		}
+
+		// hitBoxes.forEach(hitBox => SceneManager.scene.scene.remove(hitBox));
 
 		return intersects;
 	}

@@ -455,6 +455,16 @@ export class Entity extends EntityData {
 			this.moveTowardsTarget();
 		}
 
+		if(!Chunks.findChunkAtPosition(this.object3d.position)){
+			this.object3d.body.setVelocity(this.runDirection.x, 0, this.runDirection.z);
+		}
+
+		if(this.object3d.position.y < -20){
+			this.rmPhysics();
+			this.object3d.position.set(this.object3d.position.x, 5, this.object3d.position.z);
+			this.addPhysics();
+		}
+
 		if(this.runDirection.x || this.runDirection.z){
 			if(this.hasBlockNextStep()){
 				this.object3d.body.setVelocity(this.runDirection.x, this.object3d.body.velocity.y, this.runDirection.z);
@@ -466,6 +476,10 @@ export class Entity extends EntityData {
 
 		if(this.type == 'player'){
 			this.fixEquipmentLayers();
+		}
+
+		if(this.object3d.userData.$hitboxUpdate){
+			this.object3d.userData.$hitboxUpdate();
 		}
 	}
 

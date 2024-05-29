@@ -66,6 +66,8 @@ export class Entities {
 			entity.flags.push(...entity.reference.entity.flags);
 		}
 
+		const tradeOptions = entity.reference.entity.trade || [];
+
 		if (v) {
 			if (v.drops) {
 				drops.push(...v.drops);
@@ -76,6 +78,10 @@ export class Entities {
 			if (v.damage) entity.damage = v.damage;
 			if (v.defense) entity.defense = v.defense;
 			if (v.flags) entity.flags.push(...v.flags);
+
+			if(v.trade) entity.data.trade = Array.isArray(v.trade) ? tradeOptions[Random.pick(...v.trade)] : tradeOptions[v.trade];
+		} else {
+			entity.data.trade = Random.pick(...tradeOptions);
 		}
 
 		if (drops.length) {

@@ -16,6 +16,7 @@ import { SkinPlayer } from "../misc/playerskin.js";
 import { Settings } from "../settings/settings.js";
 import { Chunks } from "./chunks.js";
 import { WorldData } from "../world/data.js";
+import CommonUtils from "../common/utils.js";
 
 
 export class Entities {
@@ -74,6 +75,19 @@ export class Entities {
 		// );
 
 		entityMesh.position.set(entity.position.x, entity.position.y, entity.position.z);
+
+		const sizeParent = CommonUtils.getObjectSize(entityMesh);
+		const hitBox = new THREE.Mesh(new THREE.BoxGeometry(
+			sizeParent.x,
+			sizeParent.y,
+			sizeParent.z
+		), new THREE.MeshBasicMaterial());
+		// hitBox.position.copy(i.object3d.position);
+		entityMesh.userData.$hitbox = hitBox;
+		entityMesh.userData.$hitboxUpdate = () => {}
+		hitBox.userData.entity = entity;
+		hitBox.visible = false;
+		entityMesh.add(hitBox);
 
 		entity.object3d = entityMesh;
 

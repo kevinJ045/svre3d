@@ -28,6 +28,7 @@ export class Mouse {
 
       raycaster.setFromCamera(mouse, CameraManager.camera);
       const intersects = raycaster.intersectObjects(Chunks.chunkObjects());
+      const intersectsEntities = raycaster.intersectObjects(Entities.entities.map(i => i.object3d));
 
       
 
@@ -38,7 +39,12 @@ export class Mouse {
         //   itemID: 'i:rubidium',
         //   quantity: 1
         // })));
-        console.log(PlayerInfo.entity.flags);
+      } else if(intersectsEntities.length) {
+        const intersectionPoint = intersectsEntities[0].point;
+        const gap = 1;
+        const displacementVector = new THREE.Vector3(gap, gap, gap);
+        intersectionPoint.add(displacementVector);
+        PlayerInfo.entity.displace(intersectionPoint, true);
       } else if (intersects.length > 0) {
         const intersectionPoint = intersects[0].point;
         PlayerInfo.entity.displace(intersectionPoint, true);

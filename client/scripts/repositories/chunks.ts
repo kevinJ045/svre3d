@@ -103,6 +103,7 @@ export class Chunks {
 	}
 
 	static init() {
+		let f = 1;
 		pingFrom('chunk:load', (data) => {
 			if (!Chunks.has(stringifyChunkPosition(data.position))) {
 				Chunks.loadChunk(Chunks.chunkFromData(data));

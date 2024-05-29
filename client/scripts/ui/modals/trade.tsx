@@ -25,13 +25,25 @@ export type TradeListType = {
 export const TradeList = ({ list, close }: { list: TradeListType, close: () => void }) => {
   const [selectedItem, setSelectedItem] = useState<TradeItem | null>(null);
 
-  const hasAllItems = (tradeItem: TradeItem) => tradeItem.costs.every(i => PlayerInfo.entity?.countItemsInInventory({ id: i.item } as any) || 0 >= i.quantity);
+  const hasAllItems = (tradeItem: TradeItem) => tradeItem.costs.every(i => PlayerInfo.entity?.countItemsInInventory({ itemID: i.item } as any) || 0 >= i.quantity);
 
   const trade = () => {
     if(selectedItem){
       const has = hasAllItems(selectedItem);
-      console.log(has);
-      if(has){}
+      if(has){
+        selectedItem.costs.forEach(cost => {
+          PlayerInfo.entity.removeFromInventory(Items.create({
+            itemID: cost.item,
+            quantity: cost.quantity,
+          } as any), cost.quantity)
+        });
+        selectedItem.items.forEach(item => {
+          PlayerInfo.entity.addToInventory(Items.create({
+            itemID: item.item,
+            quantity: item.quantity,
+          } as any))
+        });
+      }
     }
   }
 

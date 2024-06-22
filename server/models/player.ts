@@ -7,7 +7,7 @@ export const PlayerModel = {
 	email: "",
 	position: { x: 0, y: 0, z: 0 },
 	variant: "i:grass",
-	verified: false,
+	verified: true,
 	equipment: { brow: 'i:normal-brow' },
 	inventory: [],
 	settings: {

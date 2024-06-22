@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Map Drawing</title>
+</head>
+
+<body style="margin: 0; overflow: hidden;background: black;">
+
+  <canvas id="canvas"></canvas>
+
+  <script src="/socket.io/socket.io.js"></script>
+	<script type="module">
+    import { PlayerInfo } from "./scripts/repositories/player.ts";
+    import { ResourceMap } from "./scripts/repositories/resources.ts";
+    import { Entities } from "./scripts/repositories/entities.ts";
+    import { Chunks } from "./scripts/repositories/chunks.ts";
+    import { initScene } from "./scripts/scene/init.ts";
+    import { connectSocket, pingFrom, ping } from "./scripts/socket/socket.ts";
+    import { WorldData } from "./scripts/world/data.ts";
+    import { Seed } from "./scripts/world/seed.ts";
+    import { Random } from '../server/common/rand.ts';
+    import { THREE } from 'enable3d';
+
+    const entities = [];
+    const projectiles = [];
+
+    function setupCanvas(){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const ctx = canvas.getContext('2d');
+
+      function updateCanvas(){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        entities.forEach(entity => {
+          const x = entity.position.x + (window.innerWidth/2);
+          const y = entity.position.z + (window.innerHeight/2);
+
+          if(entity.health){
+            const healthBarWidth = entity.size;
+            const healthBarHeight = 5;
+            const healthPercentage = entity.health.current / entity.health.max;
+            const healthBarX = x;
+            const healthBarY = y - healthBarHeight - 2; // Position above the square with a small gap
+
+            // Draw background of health bar (empty part)
+            ctx.fillStyle = 'red';
+            ctx.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+
+            // Draw filled part of health bar
+            ctx.fillStyle = 'green';
+            ctx.fillRect(healthBarX, healthBarY, healthBarWidth * healthPercentage, healthBarHeight);
+          }
+
+
+          ctx.fillStyle = entity.color;
+          ctx.fillRect(x, y, entity.size, entity.size);
+
+          const eyeSize = entity.size * 0.6;
+          const eyeOffset = eyeSize / 3;
+
+          const blink = Random.from(0, 50) == 5;
+          if (blink) {
+            entity.blink = 5;
+          }
+          
+          ctx.fillStyle = entity.blink ? entity.color : 'white';
+          ctx.fillRect(x + eyeOffset, y + eyeOffset, eyeSize, eyeSize);
+          ctx.fillStyle = entity.blink ? entity.color : 'black';
+          ctx.fillRect(x + eyeOffset + eyeSize * 0.25, y + eyeOffset + eyeSize * 0.25, eyeSize * 0.5, eyeSize * 0.5);
+          ctx.fillRect(x + eyeOffset, y + eyeOffset, eyeSize, eyeSize / 3);
+          if (entity.blink) {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(x + eyeOffset, y + eyeOffset + eyeSize / 2, eyeSize, eyeSize / 4);
+          }
+          if (entity.blink > 0) entity.blink--;
+        });
+
+        projectiles.forEach(projectile => {
+          projectile.position.x += projectile.direction.x * projectile.speed;
+          projectile.position.z += projectile.direction.z * projectile.speed;
+
+          ctx.fillStyle =  'white';
+          ctx.fillRect(projectile.position.x + (window.innerWidth/2), projectile.position.z + (window.innerHeight/2), 6, 6);          
+        });
+      }
+
+      function animate(){
+        requestAnimationFrame(animate);
+        updateCanvas();
+      }
+
+      pingFrom('entity:move', ({ entity: id, position, target }) => {
+        const e = entities.find(i => i.id == id);
+        if(e){
+          e.position.x = position.x;
+          e.position.z = position.z; 
+        }
+      });
+
+      pingFrom('entity:hp', ({ entity: id, hp }) => {
+        const e = entities.find(i => i.id == id);
+        if(e){
+          e.health = hp
+        }
+      });
+
+      pingFrom('entity:despawn', ({ entity }) => {
+        const e = entities.find(i => i.id == entity.id);
+        if(e){
+          entities.splice(entities.indexOf(e), 1);
+        }
+      });
+
+      pingFrom('entity:spawn', ({entity}) => {
+        entities.push({
+          ...entity,
+          color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+          size: 20
+        });
+      });
+
+      pingFrom('projectile:create', (projectile) => {
+        projectile.position = entities.find(i => i.id == projectile.owner.id || projectile.owner).position;
+        projectiles.push(projectile);
+      });
+
+      pingFrom('projectile:hit', (projectile) => {
+        projectiles.splice(projectiles.indexOf(projectiles.find(i => i.id = projectile.id)), 1);
+      });
+
+      animate();
+    }
+    
+    connectSocket(({
+      player,
+      resources,
+      playerEntity,
+      worldData
+    }) => {
+
+      if (PlayerInfo.player.username) return;
+
+      entities.push({
+        ...player,
+        color: `#09D0D0`,
+        size: 25,
+        position: {
+          x: 0,
+          y: 5,
+          z: 0
+        }
+      });
+
+      PlayerInfo.setPlayer(player);
+      PlayerInfo.setPlayerEntity(playerEntity);
+      ResourceMap.queue.push(...resources);
+
+      Seed.setSeed(worldData.seed);
+      WorldData.setData(worldData);
+
+      setupCanvas(); 
+      
+      for (let x = -100; x <= 100; x += 5) {
+			for (let z = -100; z <= 100; z += 5) {
+				const pos = new THREE.Vector3(x, 0, z);
+				Chunks.requestLoadChunk(pos);
+			}
+
+      ping('entities:getspawned', {
+				position: { x: 0, y: 5, z: 0 },
+				distance: 100,
+				id: player.id
+			});
+		}
+
+      let len = 4;
+      while(len--) ping('chat:send', {
+        message: `/spawn ${len*20} ${len*20} i:goober i:grass`,
+        username: PlayerInfo.username
+      });
+    });
+
+
+	</script>
+</body>
+
+</html>

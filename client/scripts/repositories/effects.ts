@@ -7,6 +7,7 @@ import { MainScene } from "../scene/scene.js";
 import { Settings } from "../settings/settings.js";
 import { GlowLayer } from "../effects/glowlayer.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
+import { WorldData } from "../world/data.js";
 
 
 
@@ -28,6 +29,37 @@ export default class EffectManager {
     ssaoPass.minDistance = 0.02;
     ssaoPass.maxDistance = Infinity;
     EffectManager.passUpdate(scene, ssaoPass, 'ssao');
+  }
+
+  static fog_getFar(){
+    return (Settings.get<number>('renderDistance') * 2) * WorldData.get('chunkSize');
+  }
+
+  static fog_color = 0xcccccc;
+  static fog_getColor(){
+    return new THREE.Color(this.fog_color);
+  }
+
+  static initFog(scene: MainScene, distance = 0){
+		const fog = new THREE.Fog(this.fog_getColor(), distance || 1, this.fog_getFar() + distance);
+    const add_fog = () => {
+      if (Settings.get('fog') == true) {
+        scene.scene.fog = fog;
+      } else {
+        scene.scene.fog = null;
+      }
+    };
+    Settings.on('change:fog', add_fog);
+    add_fog();
+  }
+
+  static fog_update(scene: MainScene, distance: number){
+    // console.log(this.fog_getColor());
+    if(scene.scene.fog){
+      (scene.scene.fog as THREE.Fog).color = this.fog_getColor();
+      (scene.scene.fog as THREE.Fog).near = distance;
+      (scene.scene.fog as THREE.Fog).far = this.fog_getFar() + distance;
+    }
   }
 
   static bloom(scene: MainScene) {

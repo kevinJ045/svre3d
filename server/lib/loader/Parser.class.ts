@@ -48,6 +48,10 @@ export default class Parser {
         kind: 'scalar',
         construct: (data) => data,
       }),
+      new yaml.Type('!read', {
+        kind: 'scalar',
+        construct: (data) => fs.readFileSync(this.folderTagHandler(data), { encoding: 'utf-8' }),
+      }),
       new yaml.Type('!material', {
         kind: 'mapping',
         construct: (data) => data,

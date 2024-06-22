@@ -61,7 +61,7 @@ export class MainScene extends Scene3D {
 
 		// player.displace(new THREE.Vector3(Utils.randFrom(-10, 10), 0, Utils.randFrom(-10, 10)));
 		Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
-		let t;
+		let t: any = 0;
 		player.on('move', () => {
 			Lights.updateLightPosition(PlayerInfo.entity.object3d.position.clone());
 			Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
@@ -75,6 +75,7 @@ export class MainScene extends Scene3D {
 				distance: Settings.get('renderDistance'),
 				id: player.id
 			});
+			EffectManager.fog_update(this, player.object3d.position.distanceTo(this.camera.position));
 			Entities.updateEntities(player.object3d.position, Settings.get<number>('renderDistance'));
 		});
 
@@ -144,6 +145,7 @@ export class MainScene extends Scene3D {
 		// })));
 		this.composer = new EffectComposer(this.renderer);
 		EffectManager.init(this);
+		EffectManager.initFog(this, player.object3d.position.distanceTo(this.camera.position));
 
 		this.renderer.setClearAlpha(0);
 		document.body.classList.add('sky');

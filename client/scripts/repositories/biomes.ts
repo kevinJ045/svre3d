@@ -1,5 +1,7 @@
+import { mixColors } from "../common/colors.js";
 import { Chunk } from "../models/chunk.js";
 import { Chunks } from "./chunks.js";
+import EffectManager from "./effects.js";
 import { MaterialManager } from "./materials.js";
 import { ResourceMap } from "./resources.js";
 
@@ -37,6 +39,7 @@ export class Biomes {
 		const chunk = Chunks.findChunkAtPosition(v);
 		if (chunk) {
 			const colors = chunk.biome.biome.colors;
+			EffectManager.fog_color = mixColors(colors[0], '#ffffff', 0.4) as any;
 			for (let i in colors) {
 				document.body.style.setProperty('--biome-colors-' + i, colors[i]);
 			}

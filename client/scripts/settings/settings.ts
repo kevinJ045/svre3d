@@ -28,6 +28,9 @@ export class Settings {
 		ssao: {
 			value: false
 		},
+		fog: {
+			value: true
+		}
 	};
 
 	private static _eventListeners: {type:string,f:CallableFunction}[] = [];

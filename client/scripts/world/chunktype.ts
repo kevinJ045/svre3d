@@ -5,6 +5,7 @@ import { Seed } from "./seed.js";
 
 
 export function getChunkType(x, z, scale, offset){
+	
 	const noiseValue = Seed.noise.perlin2((x + offset) * scale, (z + offset) * scale);
 	const types = WorldData.get('biomeColors');
 

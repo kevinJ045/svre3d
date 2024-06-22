@@ -34,12 +34,15 @@ export class MaterialManager {
 
 	static makeObjectMaterial(shader: any, variables = {}){
 	
-		const { fragment, vertex, materialOptions } = shader;
+		let { fragment, vertex, materialOptions } = shader;
 	
 		const uniforms: Record<string, any> = {
-			// textureMap: { value: texture },
-			// shadowMap: { value: scene.lightSet.directionalLight.shadow.map }
+			gc_camRight: { value: new THREE.Vector3(1.0, 0.0, 0.0) },
+			gc_camUp: { value: new THREE.Vector3(0.0, 1.0, 0.0) },
 		};
+
+		if(!fragment && materialOptions.fragment) fragment = ResourceMap.find(parseVariable(materialOptions.fragment, variables)) || materialOptions.fragment;
+		if(!vertex && materialOptions.vertex) vertex = ResourceMap.find(parseVariable(materialOptions.vertex, variables)) || materialOptions.vertex;
 	
 		if(materialOptions.texture){
 			const texture = ResourceMap.find(parseVariable(materialOptions.texture, variables));
@@ -50,7 +53,7 @@ export class MaterialManager {
 			}
 			delete materialOptions.texture;
 		}
-	
+
 		const mat = fragment && vertex ? new THREE.ShaderMaterial({
 			fragmentShader: fragment,
 			vertexShader: vertex,
@@ -58,6 +61,8 @@ export class MaterialManager {
 		}) : new THREE.MeshStandardMaterial({
 			...MaterialManager.parseMaterialOptions(materialOptions, {...variables, ...basicVariables})
 		});
+
+		mat.userData.source = { fragment, vertex, materialOptions };
 		
 		return mat;
 	}
@@ -100,13 +105,15 @@ export class MaterialManager {
 			vertexShader: vertex,
 			uniforms
 		});
+
+		mat.userData.source = { fragment, vertex, materialOptions };
 		
 		return mat;
 	}
 
 	static applyMaterials(obj: any, mat: string | any[], variables = {}){
 		const materialsRule = Array.isArray(mat) ? mat : [mat];
-		const iterate = (child: any, index: number) => {
+		const iterate = (child: any, index: number, parent: any) => {
 			if(child.isGroup || child.isBone) {
 				return child.children.forEach(iterate);
 			}

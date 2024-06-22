@@ -13,11 +13,11 @@
 	<canvas id="mapCanvas"></canvas>
 
 	<script type="module">
-		import { Seed } from "./scripts/world/seed.js";
-		import { WorldData } from "./scripts/world/data.js";
-		import { getChunkType } from "./scripts/world/chunktype.js";
+		import { Seed } from "./scripts/world/seed.ts";
+		import { WorldData } from "./scripts/world/data.ts";
+		import { getChunkType } from "./scripts/world/chunktype.ts";
 
-		Seed.setSeed('joemanss');
+		Seed.setSeed('ssa');
 
 		fetch('/world-data/biomeColors')
 			.then(r => r.json())
@@ -27,7 +27,7 @@
 				});
 
 				const chunkSize = 50;
-				const playerPosition = { x: 125, y: 75 };
+				const playerPosition = { x: 1003, y: 3001 };
 				let offsetX = 0;
 				let offsetY = 0;
 				let scale = 1;
@@ -67,7 +67,7 @@
 					const playerScreenX = playerPosition.x * scale + offsetX;
 					const playerScreenY = playerPosition.y * scale + offsetY;
 
-					ctx.fillStyle = '#FF0000';
+					ctx.fillStyle = '#09D0D0';
 					ctx.beginPath();
 					ctx.arc(playerScreenX, playerScreenY, 5, 0, 2 * Math.PI);
 					ctx.fill();

@@ -1,15 +1,8 @@
 
 
 import sio from "socket.io-client";
-import { initScene } from "../scene/init.js";
-import { ResourceMap } from "../repositories/resources.js";
-import { PlayerInfo } from "../repositories/player.js";
-import { Entities } from "../repositories/entities.js";
-import { Seed } from "../world/seed.js";
-import { WorldData } from "../world/data.js";
 import { LocalDB } from "../localdb/localdb.js";
 import { Login } from "../login/login.js";
-import GlobalEmitter from "../misc/globalEmitter.js";
 const io = (window as any).io as typeof sio;
 
 let S!: any;
@@ -29,7 +22,7 @@ export function pingFrom<T = any, D = any>(action: string, func: (data: T) => an
 }
 
 
-export async function connectSocket() {
+export async function connectSocket(callback: (whatever: Record<string, any>) => void) {
 	const token = LocalDB.cookie.get('token');
 
 	let reconnect = false;
@@ -43,25 +36,9 @@ export async function connectSocket() {
 		reconnect = true;
 	})
 
-	socket.on('recognize', ({
-		player,
-		resources,
-		playerEntity,
-		worldData
-	}) => {
-
-		if (PlayerInfo.player.username) return;
-
-		PlayerInfo.setPlayer(player);
-		PlayerInfo.setPlayerEntity(playerEntity);
-		ResourceMap.queue.push(...resources);
-
-		Seed.setSeed(worldData.seed);
-		WorldData.setData(worldData);
-
+	socket.on('recognize', (whatever) => {
 		S = socket;
-
-		initScene();
+		callback(whatever);
 	});
 
 	socket.on('unrecognized', ({ biomes }) => {

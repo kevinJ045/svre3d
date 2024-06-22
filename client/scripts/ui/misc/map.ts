@@ -1,17 +1,13 @@
 import GlobalEmitter from "../../misc/globalEmitter.js";
-import { PointerLock } from "../../misc/pointerLock.js";
 import Markers from "../../objects/markers.js";
 import { Biomes } from "../../repositories/biomes.js";
 import { PlayerInfo } from "../../repositories/player.js";
-import { ResourceMap } from "../../repositories/resources.js";
 import { getChunkType } from "../../world/chunktype.js";
-import { WorldData } from "../../world/data.js";
 import { THREE } from "enable3d";
 
 export class Map2D {
 
   static canvas: HTMLCanvasElement;
-  static pointerLock: PointerLock;
 
   static getPlayerDirection() {
     let m = PlayerInfo.entity.object3d.getWorldDirection(new THREE.Vector3()).multiplyScalar(-1);
@@ -24,7 +20,7 @@ export class Map2D {
   static create(canvas: HTMLCanvasElement, infoDiv: HTMLDivElement, zoomRange: HTMLInputElement) {
     const ctx = canvas.getContext('2d')!;
     const chunkSize = 5;
-    const playerPosition = { x: PlayerInfo.entity.object3d.position.x, y: PlayerInfo.entity.object3d.position.z };
+    const playerPosition = { x: Math.floor(PlayerInfo.entity.object3d.position.x), y: Math.floor(PlayerInfo.entity.object3d.position.z) };
     let playerDirection = this.getPlayerDirection();
     let offsetX = 0;
     let offsetY = 0;
@@ -36,7 +32,6 @@ export class Map2D {
     let currentSquare: { x: number, y: number, color: string };
 
     this.canvas = canvas;
-    this.pointerLock = new PointerLock(canvas);
 
     let squares: { x: number, y: number, color: string, col: number, row: number }[] = [];
 
@@ -64,22 +59,27 @@ export class Map2D {
         }
       }
 
-      const playerScreenX = (playerPosition.x / scaledChunkSize) * scale + offsetX;
-      const playerScreenY = (playerPosition.y / scaledChunkSize) * scale + offsetY;
+      const playerScreenX = (getPlayerPos().x) * scale + offsetX;
+      const playerScreenY = (getPlayerPos().y) * scale + offsetY;
 
-      drawArrowCursor(playerScreenX, playerScreenY, 10, Math.atan2(playerDirection.y, playerDirection.x) * 0.25);
+      drawArrowCursor(playerScreenX , playerScreenY, 10, Math.atan2(playerDirection.y, playerDirection.x) * 0.25);
 
       drawMarkers(playerScreenX, playerScreenY);
     }
 
     function drawArrowCursor(x: number, y: number, size: number, angle: number) {
-      const adjustedSize = size / scale;
+      const adjustedSize = size;
+
+      // ctx.fillStyle = '#09D0D0';
+      // ctx.beginPath();
+      // ctx.arc(x, y, 5, 0, 2 * Math.PI);
+      // ctx.fill();
 
       ctx.save(); // Save the current state
-      ctx.translate(x, y); // Move to the (x, y) position
+      ctx.translate(x - (adjustedSize/2), y - (adjustedSize/2)); // Move to the (x, y) position
       ctx.rotate(angle); // Rotate by the calculated angle
 
-      ctx.fillStyle = Biomes.find(PlayerInfo.entity?.variant)?.biome.colors[0] || '#FF00FF';
+      ctx.fillStyle = "#FFFFFF" || Biomes.find(PlayerInfo.entity?.variant)?.biome.colors[0] || '#FF00FF';
       ctx.beginPath();
 
       // Arrowhead coordinates
@@ -118,14 +118,21 @@ export class Map2D {
       infoDiv.style.top = y + 'px';
     }
 
+    function getPlayerPos(){
+      return {
+        x: ((playerPosition.x || 1) / canvas.getBoundingClientRect().width) * scaledChunkSize,
+        y: ((playerPosition.y || 1) / canvas.getBoundingClientRect().height) * scaledChunkSize,
+      }
+    }
 
     function drawCenter() {
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
       const scaledChunkSize = chunkSize * scale;
 
-      offsetX = centerX - (playerPosition.x / scaledChunkSize) * scale;
-      offsetY = centerY - (playerPosition.y / scaledChunkSize) * scale;
+
+      offsetX = centerX - (getPlayerPos().x) * scale;
+      offsetY = centerY - (getPlayerPos().y) * scale;
 
       drawMap();
     }
@@ -137,63 +144,31 @@ export class Map2D {
       }
     }
 
-    function setStarts() {
-      startX = Map2D.pointerLock.pointer.x - offsetX;
-      startY = Map2D.pointerLock.pointer.y - offsetY;
+    function setStarts(event) {
+      startX = event.clientX - offsetX;
+      startY = event.clientY - offsetY;
     }
 
     let downTimeInt;
     function onMouseDown(event) {
-      if (!Map2D.pointerLock.isLocked()) {
-        downTime = 200;
-        return;
-      }
       isPanning = true;
-      setStarts();
+      setStarts(event);
       clearTimeout(downTimeInt);
       downTimeInt = setTimeout(() => downTime = 200, 200);
     }
 
-    let lastPut;
-    function wrapCursor(mouseX: number, mouseY: number, canvas: HTMLCanvasElement, rect: DOMRect) {
-      // if(lastPut) {
-      //   lastPut = false;
-      //   return;
-      // }
-      // if (mouseX - 10 < 0) {
-      //   Map2D.pointerLock.movePointer(canvas.width - 11, canvas.height - mouseY);
-      //   setStarts();
-      //   lastPut = true;
-      // } else if (mouseX >= rect.width / 2) {
-      //   Map2D.pointerLock.movePointer(0, mouseY);
-      //   setStarts();
-      //   lastPut = true;
-      // } else if (mouseY - 10 < 0) {
-      //   Map2D.pointerLock.movePointer(canvas.width - mouseX, canvas.height - 11);
-      //   setStarts();
-      //   lastPut = true;
-      // } else if (mouseY >= rect.height / 2) {
-      //   Map2D.pointerLock.movePointer(mouseX, 0);
-      //   setStarts();
-      //   lastPut = true;
-      // }
-    }
-
-    function onMouseMove() {
-      const rect = canvas.getBoundingClientRect();
+    function onMouseMove(event) {
       if (isPanning) {
-        offsetX = Map2D.pointerLock.pointer.x - startX;
-        offsetY = Map2D.pointerLock.pointer.y - startY;
+        offsetX = event.clientX - startX;
+        offsetY = event.clientY - startY;
         drawMap();
       } else {
-
-        const p = Map2D.pointerLock.pointer;
-        const mouseXLock = p.x;
-        const mouseYLock = p.y;
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
 
         const hoveredSquare = squares.find(square => {
-          return mouseXLock >= square.x && mouseXLock <= square.x + chunkSize * scale &&
-            mouseYLock >= square.y && mouseYLock <= square.y + chunkSize * scale;
+          return mouseX >= square.x && mouseX <= square.x + chunkSize * scale &&
+            mouseY >= square.y && mouseY <= square.y + chunkSize * scale;
         });
 
         if (hoveredSquare) {
@@ -202,20 +177,12 @@ export class Map2D {
         }
       }
 
-      const mouseX = Map2D.pointerLock.pointer.x;
-      const mouseY = Map2D.pointerLock.pointer.y;
-
-      wrapCursor(mouseX, mouseY, canvas, rect);
-
-      drawCursor(mouseX, mouseY);
+      // drawCursor(event.clientX, event.clientY);
     }
 
     function onMouseUp(event) {
       if (downTime < 200) {
-        Markers.add({
-          position: { x: currentSquare.x, y: 10, z: currentSquare.y }
-        });
-        drawMap();
+        // Add markers logic if needed
       }
       isPanning = false;
       downTime = 0;
@@ -224,18 +191,16 @@ export class Map2D {
 
     function onWheel(event) {
       event.preventDefault();
-      const rect = canvas.getBoundingClientRect();
 
       const zoomFactor = 1.1;
-
       const wheel = event.deltaY < 0 ? 1 : -1;
       const zoom = wheel > 0 ? zoomFactor : 1 / zoomFactor;
 
       const newScale = Math.max(Math.min(scale * zoom, 1.5), 0.075);
       const scaleChange = newScale - scale;
 
-      const mouseX = event.clientX - rect.left;
-      const mouseY = event.clientY - rect.top;
+      const mouseX = event.clientX - canvas.getBoundingClientRect().left;
+      const mouseY = event.clientY - canvas.getBoundingClientRect().top;
 
       offsetX -= mouseX * scaleChange;
       offsetY -= mouseY * scaleChange;
@@ -248,7 +213,7 @@ export class Map2D {
 
     canvas.addEventListener('dblclick', drawCenter);
     canvas.addEventListener('mousedown', onMouseDown);
-    this.pointerLock.addEventListener('move', onMouseMove);
+    canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('mouseup', onMouseUp);
     canvas.addEventListener('wheel', onWheel);
 
@@ -269,4 +234,3 @@ export class Map2D {
 
   static update() { }
 }
-

@@ -318,6 +318,8 @@ export class Entities {
 
 			const distanceToTarget = position.distanceTo(targetPosition);
 
+			// console.log(distanceToTarget);
+
 			if (distanceToTarget < 1.5) {
 				entity.targetPosition = null;
 				Sockets.emit('entity:reach', {
@@ -335,6 +337,8 @@ export class Entities {
 					entity: entity.id,
 					attack: entity.attackTarget ? true : false
 				});
+
+				// console.log('moved');
 
 			}
 		}
@@ -462,13 +466,13 @@ export class Entities {
 		if (entity.restTime.current > entity.restTime.currentMax) {
 			entity.restTime.current = 0;
 			entity.restTime.currentMax = Random.from(entity.restTime.min, entity.restTime.max);
-			if (!entity.targetPosition && entity.ai.movement?.random) {
+			if (!entity.targetPosition && entity.reference.entity.ai.movement?.random) {
 				Entities.selectRandomTarget(entity);
 			}
 		} else {
 			if (!entity.init) {
 				entity.init = true;
-				if (Random.from(0, 3) === 2) Entities.selectRandomTarget(entity);
+				if (Random.from(0, 3) === 2 && entity.reference.entity.ai.movement?.random) Entities.selectRandomTarget(entity);
 			}
 			Entities.think(entity);
 		}
@@ -572,6 +576,8 @@ export class Entities {
 		}
 	}
 
+	static updateTime = 0;
+	static updateInterval = 2;
 	static update() {
 
 		const entitiesWithAi = this.entities.filter(
@@ -590,8 +596,17 @@ export class Entities {
 			if (closest) {
 				closest.emit('step', { target: entity });
 			}
-		});
 
+			if(this.updateTime > this.updateInterval + 10) Sockets.emit('entity:update', {
+				id: entity.id,
+				position: entity.position,
+				target: entity.targetPosition
+			});
+		});
+		
+
+		if(this.updateTime > this.updateInterval) this.updateTime = 0;
+		else this.updateTime++;
 	}
 
 }

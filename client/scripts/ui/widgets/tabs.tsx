@@ -9,7 +9,7 @@ export const Tab = (
   };
 
   return (
-    <div className={"tab "+(activeTab == tab ? 'active' : '')} onClick={handleClick}>
+    <div className={"sidebar-item tab "+(activeTab == tab ? 'active' : '')} onClick={handleClick}>
       {children}
     </div>
   );
@@ -18,7 +18,7 @@ export const Tab = (
 // Tab pane component
 export const TabPane = ({ tab, activeTab, children, id } : { tab: string, activeTab: string, id?: string, children?: any }) => {
   if (tab === activeTab) {
-    return <div id={id} className={"tab-pane "+(activeTab == tab ? 'active' : '')}>{children}</div>;
+    return <div id={id} className={"tab-content "+(activeTab == tab ? 'active' : '')}>{children}</div>;
   }
   return null;
 };

@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import UI from "../uiman";
 import React, { useEffect, useRef, useState } from "react";
-import { SlotItem } from "../widgets/slotitem";
+import { ItemIcon } from "../widgets/slotitem";
 import { Items } from "../../repositories/items";
 import { InventoryItem } from "../widgets/inventory";
 import { PlayerInfo } from "../../repositories/player";
@@ -55,14 +55,13 @@ export const TradeList = ({ list, close }: { list: TradeListType, close: () => v
           <div className="trader-face">
             {selectedItem && <div className="items-list">
               {selectedItem.items.map((item, index) => (
-                <SlotItem
+                <ItemIcon
                   key={index}
-                  click={false}
                   item={Items.create({
                     itemID: item.item,
                     quantity: item.quantity,
                   } as any)}
-                ></SlotItem>
+                ></ItemIcon>
               ))}  
             </div>}
             {selectedItem && <div className="trade-button" onClick={trade}>Trade</div>}
@@ -72,26 +71,24 @@ export const TradeList = ({ list, close }: { list: TradeListType, close: () => v
               <div key={index} className={"trade-item "+ (hasAllItems(tradeItem) ? '' : 'locked')} onClick={() => hasAllItems(tradeItem) ? setSelectedItem(tradeItem) : {}}>
                 <div className="costs items-list">
                   {tradeItem.costs.map((cost, costIndex) => (
-                    <SlotItem
+                    <ItemIcon
                       key={costIndex}
-                      click={false}
                       item={Items.create({
                         itemID: cost.item,
                         quantity: cost.quantity,
                       } as any)}
-                    ></SlotItem>
+                    ></ItemIcon>
                   ))}
                 </div>
                 <div className="items items-list">
                   {tradeItem.items.map((item, itemIndex) => (
-                    <SlotItem
+                    <ItemIcon
                       key={itemIndex}
-                      click={false}
                       item={Items.create({
                         itemID: item.item,
                         quantity: item.quantity,
                       } as any)}
-                    ></SlotItem>
+                    ></ItemIcon>
                   ))}
                 </div>
               </div>

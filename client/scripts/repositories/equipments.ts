@@ -132,7 +132,7 @@ export class Equipments {
 	static unequip(entity: Entity, type: string, item: Item) {
 		delete entity.data.equipment[type];
 
-		const bodyMesh = Equipments.entityBody('body', entity);
+		const bodyMesh = Equipments.entityBody(entity.reference.view.object.bone ? 'bone' : 'body', entity);
 
 		const equipmentMesh = bodyMesh.children.find(i => i.uuid == item.data.wmeshid)!;
 

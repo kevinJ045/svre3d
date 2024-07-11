@@ -1,0 +1,114 @@
+
+.settings-container {
+  display: flex;
+  
+  .sidebar{
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .settings-tab{
+      width: 100%;
+      font-size: 22px;
+      padding-left: 50px;
+      position: relative;
+      line-height: 20px;
+      transition: .4s;
+
+      .settings-icon{
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        display: block;
+        left: 5px;
+        border: 4px solid white;
+        transition: .25s;
+
+        &::before{
+          content: "";
+          width: 0px;
+          height: 0px;
+          background: white;
+          display: block;
+          top: 50%;
+          left: 50%;
+          position: absolute;
+          transform: translate(-50%, -50%);
+          transition: .25s;
+        }
+      }
+      
+      &.active{
+        line-height: 30px; 
+        .settings-icon{
+          left: 0px;
+          width: 30px;
+          height: 30px;
+          border-width: 8px;
+
+          &::before{
+            width: 7px;
+            height: 7px;
+          }
+        }
+      }
+    }
+  }
+
+  .settings-content{
+    width: calc(100% - 200px);
+
+    .setting-title{
+      font-size: 40px;
+    }
+
+    .setting-group{
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 10px 30px 0 0;
+
+
+      .setting-item{
+        width: 100%;
+        display: flex;
+        gap: 5px;
+        height: 40px;
+        
+        label{
+          line-height: 40px;
+          padding: 0 10px;
+          font-size: 22px;
+          width: calc(80% - 2.5px);
+          background: var(--var-bg-3);
+        }
+
+        .input-wrapper{
+          background: var(--var-bg-2);
+          width: calc(20% - 2.5px);
+
+          select{
+            color: var(--var-fg-1);
+            background: transparent;
+            width: 100%;
+            height: 40px;
+            border: 0;
+            margin: 0;
+          }
+
+          input[type="range"],
+          select,
+          input[type="checkbox"] {
+            width: 100%;
+            height: 40px;
+            accent-color: var(--var-fg-1);
+          }
+        }
+      }
+    }
+
+  }
+
+}

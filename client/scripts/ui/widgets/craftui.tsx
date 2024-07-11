@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import ChooseItemUI from "./chooseite.js";
-import { SlotItem } from "./slotitem.js";
 import { ping } from "../../socket/socket.js";
 import { Items } from "../../repositories/items.js";
 import { Item } from "../../models/item.js";
 import { prompt } from "../componets/prompt.js";
+import { ItemIcon } from "./slotitem.js";
 
 const Tool = ({ tool, activeTool, handleActiveToolChange }) => <div onClick={() => handleActiveToolChange(tool)} className="tool"><div className={tool+" "+(activeTool == tool ? 'active' : 'inactive')}></div></div>
 
@@ -125,19 +125,19 @@ const CraftingUI = () => {
             )}
             <div className="slot-1" onClick={() => handleSlotClick(0)} onContextMenu={(e) => handleSlotContextMenu(0, e)}>
                 <div className="inventory-slot independent">
-                    {slotItems[0] ? <SlotItem click={false} item={slotItems[0]}></SlotItem> : null}
+                    {slotItems[0] ? <ItemIcon item={slotItems[0]}></ItemIcon> : null}
                 </div>
             </div>
             <div className="slot-2" onClick={() => handleSlotClick(1)} onContextMenu={(e) => handleSlotContextMenu(1, e)}>
                 <div className="inventory-slot independent">
-                    {slotItems[1] ? <SlotItem click={false} item={slotItems[1]}></SlotItem> : null}
+                    {slotItems[1] ? <ItemIcon item={slotItems[1]}></ItemIcon> : null}
                 </div>
             </div>
             <div className="slot-result">
                 <div className="inventory-slot independent" onClick={() => resultItem ? craft() : null}>
                     {
                         resultItem ?
-                        <SlotItem click={false} item={resultItem}></SlotItem>
+                        <ItemIcon item={resultItem}></ItemIcon>
                         : null
                     }
                 </div>

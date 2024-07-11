@@ -3,7 +3,7 @@ import { Tab, TabPane } from "../widgets/tabs.js";
 import { Map2D } from "../misc/map.js";
 import { Map2DWidget } from "../widgets/map.js";
 import { PlayerInfo } from "../../repositories/player.js";
-import { SlotItem } from "../widgets/slotitem.js";
+import { ItemIcon } from "../widgets/slotitem.js";
 import Inventory, { InventoryItem } from "../widgets/inventory.js";
 import { Character } from "../widgets/character.js";
 import { Item } from "../../models/item.js";
@@ -16,6 +16,8 @@ import { Context } from "../data/context.js";
 import { generateItemIcon } from "../misc/itemicon.js";
 import ChatsUI from "../chats/chats.js";
 import { SettingsUI } from "../widgets/settings.js";
+import { Separator } from "../widgets/sep.js";
+import { InfoTable } from "../widgets/info-table.js";
 
 
 export const Menu = () => {
@@ -28,81 +30,48 @@ export const Menu = () => {
 		inventory
 	} = React.useContext(Context);
 
-	return (<div className="player-menu" id="full-menu"><div className="menu">
+	return (<div className="player-menu" id="full-menu">
 
-		<div className="tabs">
+		<div className="sidebar">
 			<Tab tab="inventory" setActiveTab={setTab} activeTab={tab}>
-				<b className="inventory-icon"></b>
-			</Tab>
-
-			<Tab tab="crafting" setActiveTab={setTab} activeTab={tab}>
-				<b className="crafting-icon"></b>
+				<b className="icon big icon-bag"></b>
 			</Tab>
 
 			<Tab tab="map" setActiveTab={setTab} activeTab={tab}>
-				<b className="map-icon"></b>
+				<b className="icon big icon-map"></b>
 			</Tab>
 
 			<Tab tab="book" setActiveTab={setTab} activeTab={tab}>
-				<b className="book-icon"></b>
+				<b className="icon big icon-book"></b>
 			</Tab>
 
 			<Tab tab="chats" setActiveTab={setTab} activeTab={tab}>
-				<b className="chats-icon"></b>
+				<b className="icon big icon-mail"></b>
 			</Tab>
 
 			<Tab tab="settings" setActiveTab={setTab} activeTab={tab}>
-				<b className="settings-icon"></b>
+				<b className="icon big icon-settings"></b>
 			</Tab>
 		</div>
 
-		<div className="tab-panes">
+		<div className="menu-content">
 
 			<TabPane tab="inventory" activeTab={tab}>
 
+				<h1>Inventory</h1>
 
-				<div className="inventory">
+				<Separator></Separator>
 
-					{currentItem ? <div className="inventory-item-info">
-						<div className="item-title"><div className="item-icon" style={generateItemIcon(currentItem.reference?.ui?.icon)}></div>{currentItem.reference.item?.name || currentItem.itemID}<span>{currentItem.quantity}</span></div>
-						<p className="item-about">{currentItem.data.content}</p>
-						<ItemActions item={currentItem} />
-					</div> : null}
-
+				<div className="inventory-tab">
 					<Inventory selectItem={
 						(item: Item) => setCurrentItem(item)
 					} unselectItem={
 						() => setCurrentItem(null)
 					} inventory={inventory}></Inventory>
 
-					<div className="inventory-group has-character" style={{ width: "45px" }}>
-
-						{
-							['hat', 'eye', 'armor', 'attachment'].map(
-								type => {
-									return <div key={type} className={"inventory-slot wearable " + type}>
-										{
-											(() => {
-												let item = inventory
-													.find(i => i.data.wid && i.reference?.equipment.type == type);
-
-												return item ? <InventoryItem
-													selectItem={
-														(item: Item) => setCurrentItem(item)
-													} unselectItem={
-														() => setCurrentItem(null)
-													}
-													free={true}
-													item={item as any} /> : null;
-											})()
-										}
-									</div>
-								}
-							)
-						}
-					</div>
-
+					<InfoTable currentItem={currentItem}></InfoTable>
 				</div>
+
 			</TabPane>
 
 			<TabPane id="craft-ui" tab="crafting" activeTab={tab}>
@@ -133,5 +102,5 @@ export const Menu = () => {
 			</TabPane>
 
 		</div>
-	</div></div>);
+	</div>);
 }

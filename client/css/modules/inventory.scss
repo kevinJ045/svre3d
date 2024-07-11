@@ -191,6 +191,15 @@
       background: var(--var-bg-6);
       padding-top: 25px;
 
+      svg{
+        position: absolute;
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 0.19929;
+        top: 100%;
+      }
+
       .tab-pane:not(.active){
         display: none;
       }

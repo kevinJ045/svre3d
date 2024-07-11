@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { SlotItem } from './slotitem.js';
+import { ItemIcon } from './slotitem';
+import { Equipments } from '../../repositories/equipments';
+import { PlayerInfo } from '../../repositories/player';
 
 
 export const InventoryItem = ({
@@ -11,12 +13,26 @@ export const InventoryItem = ({
   click = true,
   counter = true,
 
+  onClick,
+
   secondaryClick = (any: any) => {}
+} : {
+  [key: string]: any
 }) => {
-  return (<div 
-    onClick={
-      () => selectItem(item)
+
+  const onclick = () => {
+    if (onClick) onClick();
+    if (!click) return;
+    if (item?.reference?.equipment) {
+      if (item?.data.wid) {
+        Equipments.unequip(PlayerInfo.entity, item?.reference!.equipment!.type!, item);
+      } else {
+        Equipments.equip(PlayerInfo.entity, item?.reference!.equipment!.type!, item);
+      }
     }
+  }
+  return (<div 
+    onClick={onclick}
     onMouseEnter={
       () => mouse ? selectItem(item) : null
     }
@@ -27,8 +43,22 @@ export const InventoryItem = ({
     // onMouseLeave={
     //   () => unselectItem(item)
     // }
-    className={free ? '' : "inventory-slot"}>
-      {item ? <SlotItem counter={counter} click={click} item={item}></SlotItem> : ""}
+    className={free ? '' : "inventory-item"}>
+      <div className="item-icon">
+        <ItemIcon item={item}></ItemIcon>
+      </div>
+
+      <div className="item-info">
+        <div className="item-name">
+          {item.reference?.item?.name || item.itemID}
+        </div>
+        <div className="item-quantity">
+          {item.data?.wid ? <>
+            <span className="icon c xsm icon-tshirt"></span>
+          </> : item.quantity}
+        </div>
+      </div>
+
     </div>);
 }
 
@@ -37,60 +67,18 @@ const Inventory = ({
   selectItem,
   unselectItem,
 }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = window.innerWidth > 700 ? 40 : 21;
-
-  const totalPages = Math.ceil(inventory.length / itemsPerPage);
-
-  const handleNextPage = () => {
-    setCurrentPage(prevPage => prevPage + 1);
-  };
-
-  const handlePrevPage = () => {
-    setCurrentPage(prevPage => prevPage - 1);
-  };
-
-  const renderInventoryItems = () => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const slicedInventory = inventory.filter(i => !i.data.wid).slice(startIndex, endIndex);
-
-    const filledSlots = slicedInventory.map((item, index) => (
-      <InventoryItem
-      key={index} 
-      selectItem={selectItem}
-      unselectItem={unselectItem}
-      item={item}
-      ></InventoryItem>
-    ));
-
-    // Calculate the number of empty slots to fill
-    const emptySlotsCount = Math.max(0, itemsPerPage - slicedInventory.length);
-    const emptySlots = Array.from({ length: emptySlotsCount }).map((_, index) => (
-      <div
-      onMouseEnter={
-        () => unselectItem()
-      }
-      key={`empty-${index}`} className="inventory-slot">
-        {/* Render whatever you want for empty slots */}
-      </div>
-    ));
-
-    return filledSlots.concat(emptySlots);
-  };
 
   return (
-    <div className="inventory-group">
-      {renderInventoryItems()}
-      { totalPages > 1 ? (<div className="pager-buttons">
-        <button className="button prev" onClick={handlePrevPage} disabled={currentPage === 1}>
-          Prev
-        </button>
-        <span>{`${currentPage}/${totalPages}`}</span>
-        <button className="button next" onClick={handleNextPage} disabled={currentPage === totalPages}>
-          Next
-        </button>
-      </div>) : null }
+    <div className="inventory">
+      {
+        inventory.map((item, index) => 
+          <InventoryItem
+            key={index}
+            selectItem={selectItem}
+            unselectItem={unselectItem}
+            item={item}
+            ></InventoryItem>)
+      }
     </div>
   );
 };

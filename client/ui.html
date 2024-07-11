@@ -11,7 +11,6 @@
 
 <body>
 
-
   <div class="player-menu">
 
     <div class="sidebar">
@@ -40,7 +39,7 @@
 
     <div class="menu-content">
 
-      <div class="tab-content" tab="inventory">
+      <div class="tab-content active" tab="inventory">
 
         <h1>Inventory</h1>
 
@@ -119,6 +118,7 @@
           </div>
 
           <div class="item-info-and-crafting-ui">
+
             <div class="header">
               <!-- <div class="item-icon-image c"
                 style="background-image: url(&quot;http://localhost:3000/resources/i/rubidium/res?prop=ui.icon.src&quot;); background-size: 42px 42px; background-position: 0px 50%; background-repeat: no-repeat;">
@@ -135,6 +135,12 @@
               </div>
             </div>
             <div class="content">
+              <svg version="1.1" viewBox="0 7 210 30" id="svg1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+                <g id="g1">
+                  <path id="rect1230" style="fill:var(--var-bg-6);"
+                    d="M 0,0 V 24.418187 H 5.8112675 V 34.989154 H 12.543873 V 24.418187 h 6.527502 v 5.749394 h 6.12055 v 4.821573 h 6.73152 V 24.418187 h 12.445118 v 5.749394 h 6.73152 v -5.749394 h 7.344661 v 16.320384 h 6.731521 V 24.418187 h 8.363665 v 10.570967 h 6.732607 V 24.418187 h 9.587779 v 16.320384 h 6.732605 6.323489 V 24.418187 h 19.58465 V 39.25509 h 6.73152 V 24.418187 h 6.73261 v 4.265935 h 6.73153 v -4.265935 h 7.95672 v 17.432711 h 6.73151 V 24.418187 h 7.9567 v 10.570967 h 6.73154 V 24.418187 H 183.0891 V 39.25509 h 6.73262 V 24.418187 h 8.36365 v 10.570967 h 6.73261 V 24.418187 H 210 V 0 Z" />
+                </g>
+              </svg>
               <div class="tab-pane info" tab="info">
                 <p>An ore found deep
                   in the depths of the
@@ -184,7 +190,9 @@
                           <div class="guy"></div>
                           <div class="line"></div>
                         </div>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur reprehenderit veniam cum quis doloremque quasi minus adipisci repellat, corporis voluptate, quas inventore alias eum, ipsa ab iste harum repellendus aperiam!</p>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur reprehenderit veniam cum
+                          quis doloremque quasi minus adipisci repellat, corporis voluptate, quas inventore alias eum,
+                          ipsa ab iste harum repellendus aperiam!</p>
                       </div>
                     </div>
                   </div>
@@ -202,11 +210,74 @@
 
       <div class="tab-content" data-tabid="books"></div>
 
-      <div class="tab-content chatui" data-tabid="chats">
+      <div class="tab-content chatui" tab="chats">
         div.
       </div>
 
-      <div class="tab-content" data-tabid="settings"></div>
+      <div class="tab-content" tab="settings">
+
+
+
+        <h1>Settings</h1>
+
+        <div class="separator l">
+          <div class="line"></div>
+          <div class="guy"></div>
+          <div class="line"></div>
+        </div>
+
+
+        <div class="settings-container">
+          
+          <div class="sidebar">
+
+            <div class="settings-tab active">
+              <span class="settings-icon"></span>
+              <span class="settings-title">General</span>
+            </div>
+
+            <div class="settings-tab">
+              <span class="settings-icon"></span>
+              <span class="settings-title">Graphics</span>
+            </div>
+            
+          </div>
+
+          <div class="settings-content">
+            <div class="setting-title">General</div>
+            
+            <div class="separator">
+              <div class="line"></div>
+              <div class="guy"></div>
+              <div class="line"></div>
+            </div>
+
+            <div class="setting-group">
+
+              <div class="setting-item">
+                <label>Theme</label>
+                <div class="input-wrapper">
+                  <select>
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                    <option value="auto">Auto</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="setting-item">
+                <label>Width</label>
+                <div class="input-wrapper">
+                  <input type="range">
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
 
     </div>
 
@@ -229,6 +300,18 @@
       document.querySelector('.tab-content[tab=' + tabTo + ']').classList.add('active');
     });
   }
+
+  const stabs = document.querySelectorAll('.settings-tab');
+  
+  stabs
+    .forEach(tab => {
+      tab.addEventListener('click', () => {
+        stabs.forEach(tab => tab.classList.remove('active'));
+        tab.classList.add('active');
+      })
+    });
+
+
 
 </script>
 

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useContext } from 'react';
-import { SlotItem } from './slotitem.js';
+import { ItemIcon } from './slotitem.js';
 import { Item } from '../../models/item.js';
 import { Items } from '../../repositories/items.js';
 import { InventoryItem } from './inventory.js';
@@ -70,14 +70,12 @@ function PageContent({ children, selectBook, searchQuery = null }: any) {
             <div onClick={navTo(child.link)} className={child.row ? 'row' : 's'}>{child.content}</div>
           )}
           {child.type === 'item' && (
-            <SlotItem
+            <ItemIcon
               item={Items.create({
                 itemID: child.item,
                 quantity: child.quantity || 1,
               } as any)}
               onClick={navTo(child.link)}
-              click={false}
-              counter={child.quantity > 0}
             />
           )}
           {child.type === 'inventory-item' && (

@@ -27,6 +27,7 @@
   @include slot();
   background: #241232;
   position: relative;
+  overflow: hidden;
   
   @include borderedCoolThing(var(--var-bg-3), var(--var-bg-5));
 
@@ -79,6 +80,7 @@
 
     .item-name{
       font-size: 10px;
+      font-weight: 700;
       padding: 2px;
       width: calc(100% - 25px);
       overflow: hidden;
@@ -92,11 +94,11 @@
       right: 0;
       bottom: 0;
       width: 25px;
-      height: 35px;
+      height: 45px;
       background: var(--var-bg-5);
       text-align: center;
-      line-height: 40px;
-
+      line-height: 55px;
+      clip-path: path('M 0,12.5 25,0 V 60 H 0 Z');
       color: var(--var-fg-1);
 
       .icon{
@@ -189,14 +191,14 @@
       background: var(--var-bg-6);
       padding-top: 25px;
 
-      .tab-content:not(.active){
+      .tab-pane:not(.active){
         display: none;
       }
 
       .info{
         padding: 10px;
 
-        p {
+        & > p {
           width: calc(100% - 120px);
           font-size: 20px;
         }
@@ -288,8 +290,7 @@
               gap: 5px;
               
               .liner, .content{
-                background: #FFFDC1;
-                color: #5C4728;
+                @include paperTexture();
               }
               .liner{
                 width: 10px;
@@ -297,6 +298,8 @@
               .content{
                 width: calc(100% - 15px);
                 padding: 5px;
+                overflow-y: auto;
+                max-height: 180px;
               }
             }
           }
@@ -305,13 +308,12 @@
       }
 
       .stats-or-book{
-        background: #FFFDC1;
+        @include paperTexture();
         position: absolute;
         width: 100px;
         height: 100px;
         top: 40px;
         right: 15px;
-        color: #5C4728;
         padding: 5px;
 
         & > span{

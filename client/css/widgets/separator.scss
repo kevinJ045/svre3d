@@ -1,0 +1,32 @@
+
+:root{
+  --separator-color: var(--var-fg-2);
+}
+
+.separator{
+  width: 100%;
+  display: flex;
+  gap: 5px;
+
+  &.l{
+    height: 40px;
+  }
+  &.lm{
+    display: flex;
+    align-items: center;
+  }
+
+  .line{
+    width: calc(50% - 25px);
+    height: 4px;
+    background: var(--separator-color);
+  }
+
+  .guy{
+    background: var(--separator-color);
+    width: 16px;
+    height: 16px;
+    margin-top: -6px;
+    clip-path: path('M 0,0 V 16.000446 H 16 V 0 Z M 4.2815215,4.281529 H 11.71847 v 7.437387 H 4.2815215 Z M 6.183888,6.184332 V 9.8161125 H 9.8156665 V 6.184332 Z');
+  }
+}

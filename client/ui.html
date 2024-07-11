@@ -40,9 +40,15 @@
 
     <div class="menu-content">
 
-      <div class="tab-content" data-tabid="inventory">
+      <div class="tab-content" tab="inventory">
 
         <h1>Inventory</h1>
+
+        <div class="separator l">
+          <div class="line"></div>
+          <div class="guy"></div>
+          <div class="line"></div>
+        </div>
 
         <div class="inventory-tab">
 
@@ -129,7 +135,7 @@
               </div>
             </div>
             <div class="content">
-              <div class="tab-content info" tab="info">
+              <div class="tab-pane info" tab="info">
                 <p>An ore found deep
                   in the depths of the
                   magic forest.</p>
@@ -142,7 +148,7 @@
                 </ul>
 
               </div>
-              <div class="tab-content craftui active">
+              <div class="tab-pane craftui active">
 
                 <div class="slots">
 
@@ -173,6 +179,12 @@
                       <div class="liner"></div>
                       <div class="content">
                         <h3>Assembler</h3>
+                        <div class="separator">
+                          <div class="line"></div>
+                          <div class="guy"></div>
+                          <div class="line"></div>
+                        </div>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur reprehenderit veniam cum quis doloremque quasi minus adipisci repellat, corporis voluptate, quas inventore alias eum, ipsa ab iste harum repellendus aperiam!</p>
                       </div>
                     </div>
                   </div>
@@ -190,7 +202,9 @@
 
       <div class="tab-content" data-tabid="books"></div>
 
-      <div class="tab-content" data-tabid="chats"></div>
+      <div class="tab-content chatui" data-tabid="chats">
+        div.
+      </div>
 
       <div class="tab-content" data-tabid="settings"></div>
 
@@ -209,10 +223,10 @@
   for (let index = 0; index < tabs.length; index++) {
     const tab = tabs.item(index);
     tab.addEventListener('click', () => {
-      const tabTo = tab.getAttribute('tab');
-      document.querySelectorAll('.tab-pane, .tab').forEach(t => t.classList.remove('active'));
+      const tabTo = tab.getAttribute('data-tab');
+      document.querySelectorAll('.tab-content, .tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
-      document.querySelector('.tab-pane[tab=' + tabTo + ']').classList.add('active');
+      document.querySelector('.tab-content[tab=' + tabTo + ']').classList.add('active');
     });
   }
 

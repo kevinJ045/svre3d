@@ -3,3 +3,9 @@
   border-top: 4px solid $border;
   border-bottom: 4px solid $border;
 }
+
+@mixin paperTexture(){
+  background: #FFFDC1;
+  color: #5C4728;
+  --separator-color: #A4846D;
+}

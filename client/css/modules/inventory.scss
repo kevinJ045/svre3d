@@ -1,0 +1,182 @@
+
+@mixin itemIcon(){
+  width: 42px;
+  height: 42px;
+  display: block;
+}
+
+.inventory{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.item-icon-image{
+  @include itemIcon();
+}
+.item-icon-image.c{
+  display: inline-block;
+}
+
+.inventory-item{
+  width: 72px;
+  height: 108px;
+  background: #241232;
+  position: relative;
+  
+  @include borderedCoolThing(var(--var-bg-3), var(--var-bg-5));
+
+  .item-badge{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-top: 35px solid #e74c3c;
+    border-right: 35px solid transparent;
+    color: white;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 0;
+
+    & > *{
+      top: -30px;
+      right: -11.5px;
+      transform-origin: top right;
+      position: absolute;
+    }
+  }
+
+  .item-icon{
+    position: absolute;
+    @include itemIcon();
+    top: calc(50% - 15px);
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .item-icon .item-icon-image{
+    display: block;
+    width: 100%;
+    left: 0;
+    height: 100%;
+    bottom: 0;
+    position: absolute;
+  }
+
+  .item-info{
+    position: absolute;
+    bottom: 0;
+    height: 30px;
+    width: 100%;
+    background: var(--var-bg-4);
+    line-height: 30px;
+
+    .item-name{
+      font-size: 10px;
+      padding: 2px;
+      width: calc(100% - 25px);
+      overflow: hidden;
+      text-wrap: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .item-quantity{
+      font-size: 10px;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 25px;
+      height: 35px;
+      background: var(--var-bg-5);
+      text-align: center;
+      line-height: 40px;
+
+      color: var(--var-fg-1);
+
+      .icon{
+        margin-left: -10px;
+      }
+    }
+  }
+}
+
+.inventory-tab{
+  display: flex;
+  --width-of-craft-ui: 400px;
+
+  .inventory{
+    width: calc(100% - (var(--width-of-craft-ui) + 40px));
+  }
+
+  .item-info-and-crafting-ui{
+    width: var(--width-of-craft-ui);
+    position: relative;
+    z-index: 1;
+
+    .header{
+      position: relative;
+      width: 110%;
+      margin-left: -5%;
+      height: 40px;
+      background: var(--var-bg-7);
+      padding: 0 10px;
+      line-height: 45px;
+      display: flex;
+      gap: 10px;
+
+      .item-icon-image{
+        transform: scale(.8);
+      }
+
+      span {
+        font-weight: 700;
+        font-size: 22px;
+      }
+
+      &::after{
+        content: "";
+        width: 32px;
+        height: 32px;
+        display: block;
+        position: absolute;
+        right: 5%;
+        top: 5px;
+        background: var(--var-bg-8);
+        clip-path: path('M 0,0 V 32.000891 H 32 V 0 Z M 8.5630428,8.5630581 H 23.43694 V 23.437832 H 8.5630428 Z m 3.8047332,3.8056059 v 7.263561 h 7.263557 v -7.263561 z');
+      }
+    }
+
+    .tabs{
+      position: absolute;
+      width: 40px;
+      left: -20px;
+      z-index: -1;
+      top: 70px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      .info-tab{
+        background: var(--var-bg-7);
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: .4s;
+      }
+      .info-tab.active, .info-tab:hover{
+        background: var(--var-bg-6);
+        transform: translate(-20px, 0);
+      }
+    }
+
+    .content{
+      display: block;
+      width: 100%;
+      height: 400px;
+      background: var(--var-bg-6);
+    }
+  }
+}

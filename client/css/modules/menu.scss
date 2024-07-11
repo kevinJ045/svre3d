@@ -1,0 +1,78 @@
+
+.player-menu{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(0, 0, 0, 0.5) 70%, transparent 100%);
+  display: flex;
+  color: white;
+}
+
+.player-menu .sidebar{
+  width: 70px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 14px;
+}
+
+.player-menu .sidebar .sidebar-item{
+  /* box-sizing: content-box; */
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  @include borderedCoolThing(var(--var-bg-2), var(--var-bg-1));
+}
+
+
+.player-menu .sidebar .sidebar-item:hover,
+.player-menu .sidebar .sidebar-item.active{
+  box-shadow: 0px 0px 10px var(--var-fg-1);
+}
+
+.player-menu .sidebar .sidebar-item::before, .player-menu .sidebar .sidebar-item::after{
+  content: "";
+  height: 4px;
+  background: var(--var-fg-1);
+  display: block;
+  position: absolute;
+  width: 0;
+  transition: .4s;
+}
+
+.player-menu .sidebar .sidebar-item::before{
+  top: -4px;
+}
+.player-menu .sidebar .sidebar-item::after{
+  bottom: -4px;
+}
+
+.player-menu .sidebar .sidebar-item:hover::before,
+.player-menu .sidebar .sidebar-item.active::before,
+.player-menu .sidebar .sidebar-item:hover::after,
+.player-menu .sidebar .sidebar-item.active::after{
+  width: 100%;
+}
+
+.player-menu .sidebar .sidebar-item .icon{
+  color: white;
+  transition: .4s;
+}
+
+.player-menu .sidebar .sidebar-item:hover .icon,
+.player-menu .sidebar .sidebar-item.active .icon{
+  color: var(--var-fg-1);
+}
+
+.player-menu .menu-content{
+  width: calc(100% - 70px);
+  padding: 20px; 
+  padding-left: 40px;
+}

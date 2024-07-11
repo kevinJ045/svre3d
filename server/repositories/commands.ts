@@ -5,6 +5,7 @@ import { Items } from "./items.js";
 import { Players } from "./players.js";
 import { ItemData } from '../models/item.js';
 import { EntityData } from "../models/entity.js";
+import { Chunks } from "./chunks.js";
 
 
 type Selector = {
@@ -221,6 +222,13 @@ export default class Commands {
   
 
 }
+
+
+Commands.register('locate', (ctx: Context, name: string) => {
+  const location = Chunks.findSafeSpawnPoint(name);
+  ctx.reply('Located biome ' + name + ' at [' + location.x + ' ' + location.z+']');
+}, 'string');
+
 
 Commands.register('spawn', (ctx: Context, x: number, z: number, type: string, variant: string, name: string) => {
   ctx.reply('Spawned a ' + type + ' at ' + x + ',' + z);

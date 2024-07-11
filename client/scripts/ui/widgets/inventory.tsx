@@ -38,7 +38,7 @@ const Inventory = ({
   unselectItem,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
+  const itemsPerPage = window.innerWidth > 700 ? 40 : 21;
 
   const totalPages = Math.ceil(inventory.length / itemsPerPage);
 

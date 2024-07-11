@@ -1,0 +1,5 @@
+@mixin borderedCoolThing($color, $border) {
+  background: $color;
+  border-top: 4px solid $border;
+  border-bottom: 4px solid $border;
+}

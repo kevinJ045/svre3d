@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <link rel="stylesheet" href="./css/main.scss" />
+</head>
+
+<body>
+
+
+  <div class="player-menu">
+
+    <div class="sidebar">
+
+      <div class="sidebar-item tab active" data-tab="inventory">
+        <div class="icon big icon-bag"></div>
+      </div>
+
+      <div class="sidebar-item tab" data-tab="map">
+        <div class="icon big icon-map"></div>
+      </div>
+
+      <div class="sidebar-item tab" data-tab="books">
+        <div class="icon big icon-book"></div>
+      </div>
+
+      <div class="sidebar-item tab" data-tab="chats">
+        <div class="icon big icon-mail"></div>
+      </div>
+
+      <div class="sidebar-item tab" data-tab="settings">
+        <div class="icon big icon-settings"></div>
+      </div>
+
+    </div>
+
+    <div class="menu-content">
+
+      <div class="tab-content" data-tabid="inventory">
+
+        <h1>Inventory</h1>
+
+        <div class="inventory-tab">
+
+
+          <div class="inventory">
+
+            <div class="inventory-item">
+
+              <div class="item-icon">
+                <div class="item-icon-image"
+                  style="background-image: url(&quot;http://localhost:3000/resources/i/rubidium/res?prop=ui.icon.src&quot;); background-size: 42px 42px; background-position: 0px 50%; background-repeat: no-repeat;">
+                </div>
+              </div>
+
+              <div class="item-info">
+                <div class="item-name">
+                  Rubidium
+                </div>
+                <div class="item-quantity">
+                  12
+                </div>
+              </div>
+
+            </div>
+
+            <div class="inventory-item">
+
+              <div class="item-icon">
+                <div class="item-icon-image"
+                  style="background-image: url(&quot;http://localhost:3000/resources/i/iron_bar/res?prop=ui.icon.src&quot;); background-size: 42px 42px; background-position: 0px 50%; background-repeat: no-repeat;">
+                </div>
+              </div>
+
+              <div class="item-info">
+                <div class="item-name">
+                  Iron Bar
+                </div>
+                <div class="item-quantity">
+                  44
+                </div>
+              </div>
+
+            </div>
+
+            <div class="inventory-item">
+
+              <div class="item-badge">
+                <div class="icon c sm icon-ribbon"></div>
+              </div>
+
+              <div class="item-icon">
+                <div class="item-icon-image"
+                  style="background-image: url(&quot;http://localhost:3000/resources/i/craftsman_hat/res?prop=ui.icon.src&quot;); background-size: 42px 42px; background-position: 0px 50%; background-repeat: no-repeat;">
+                </div>
+              </div>
+
+              <div class="item-info">
+                <div class="item-name">
+                  Craftsman Hat
+                </div>
+                <div class="item-quantity">
+                  <div class="icon c xsm icon-tshirt"></div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="item-info-and-crafting-ui">
+            <div class="header">
+              <div class="item-icon-image c"
+                style="background-image: url(&quot;http://localhost:3000/resources/i/rubidium/res?prop=ui.icon.src&quot;); background-size: 42px 42px; background-position: 0px 50%; background-repeat: no-repeat;">
+              </div>
+
+              <span>Rubidium</span>
+            </div>
+            <div class="tabs">
+              <div class="info-tab active" tab="">
+                <div class="icon c icon-content"></div>
+              </div>
+              <div class="info-tab" tab="">
+                <div class="icon c icon-anvil"></div>
+              </div>
+            </div>
+            <div class="content">
+              <div class="tab-content" tab=""></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="tab-content" data-tabid="map"></div>
+
+      <div class="tab-content" data-tabid="books"></div>
+
+      <div class="tab-content" data-tabid="chats"></div>
+
+      <div class="tab-content" data-tabid="settings"></div>
+
+    </div>
+
+  </div>
+
+
+</body>
+
+
+<script type="module" src="/@vite/client"></script>
+<script id="mock.js">
+  const tabs = document.getElementsByClassName('tab')
+
+  for (let index = 0; index < tabs.length; index++) {
+    const tab = tabs.item(index);
+    tab.addEventListener('click', () => {
+      const tabTo = tab.getAttribute('tab');
+      document.querySelectorAll('.tab-pane, .tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector('.tab-pane[tab=' + tabTo + ']').classList.add('active');
+    });
+  }
+
+</script>
+
+</html>

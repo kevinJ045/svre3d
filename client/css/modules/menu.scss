@@ -11,7 +11,19 @@
   backdrop-filter: blur(4px);
 
   &.active{
+    animation: .3s cubic-bezier(0.075, 0.82, 0.165, 1) in-menu 1;
     display: flex;
+  }
+
+  @keyframes in-menu {
+    0%{
+      transform: scale(5);
+      opacity: 0;
+    }
+    100%{
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 }
 

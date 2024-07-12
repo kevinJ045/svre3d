@@ -17,7 +17,8 @@ const CraftingUI = () => {
         setcrafting_selectItems,
         crafting_slotItems,
         crafting_setSlotItems,
-        crafting_setSlotItemsC,
+        crafting_setItemAtSlot,
+        setCurrentItem,
         inventory
 	} = React.useContext(Context);
 
@@ -26,7 +27,7 @@ const CraftingUI = () => {
     const [activeTool, setActiveTool] = useState<string | null>(null);
     const [brushColor, setBrushColor] = useState<string | null>(null);
 
-    const [currentSlots, setCurrentSlots] = useState<any[]>([]);
+    // const [currentSlots, setCurrentSlots] = useState<any[]>([]);
 
     const handleBrushColor = (color) => {
         setBrushColor(color);
@@ -77,10 +78,11 @@ const CraftingUI = () => {
             });
     }
 
-    useEffect(() => {
-        slotsUpdate();
-        setCurrentSlots(crafting_slotItems);
-    }, [crafting_slotItems]);
+    // useEffect(() => {
+    //     console.log('updated');
+    //     setCurrentSlots(crafting_slotItems);
+    //     slotsUpdate();
+    // }, [crafting_slotItems]);
 
     // useEffect(() => {
     //     GlobalEmitter.on('crafting:slots:update', (items) => {
@@ -91,6 +93,7 @@ const CraftingUI = () => {
     // }, []);
 
     const handleSlotClick = (index: number) => {
+        if(crafting_slotItems[index]) return;
         if(crafting_selectItems > -1){
             setcrafting_selectItems(-1);
         } else {
@@ -98,11 +101,10 @@ const CraftingUI = () => {
         }
     };
 
-    const handleSlotRemove = (index) => {
-        crafting_setSlotItems((slotItems) => {
-            slotItems.splice(index, 1);
-            return slotItems;
-        });
+    const handleSlotRemove = (index, e: any = null) => {
+        if(e) (e as any).preventDefault();
+        crafting_setItemAtSlot(index, null);
+        setCurrentItem(null);
         setResultItem(null);
         slotsUpdate();
     };
@@ -113,7 +115,7 @@ const CraftingUI = () => {
 
     return (
         <div id="craft-ui">
-            <div className="item-content-editor">
+            {/* <div className="item-content-editor">
                 <input
                     type="text"
                     id="item-content-text"
@@ -121,24 +123,18 @@ const CraftingUI = () => {
                     onChange={handleInputChange}
                     placeholder="Item Content"
                 />
-            </div>
+            </div> */}
 
             <div className="slots">
 
-                <div className="slot empty" onClick={() => handleSlotClick(0)}>
-                {currentSlots[0] && inventory.find(i => i.id == currentSlots[0].id) ? <>
-                    <InventoryItem click={false} item={inventory.find(i => i.id == currentSlots[0].id)}></InventoryItem>
-                    <div className="corner-rm" onClick={() => handleSlotRemove(0)}>
-                        <div className="icon xsm c icon-deletesm"></div>
-                    </div>
+                <div className="slot empty" onClick={() => handleSlotClick(0)} onContextMenu={(e) => handleSlotRemove(0, e)}>
+                {crafting_slotItems[0] && inventory.find(i => i.id == crafting_slotItems[0].id) ? <>
+                    <InventoryItem click={false} item={inventory.find(i => i.id == crafting_slotItems[0].id)}></InventoryItem>
                 </> : null}
                 </div>
-                <div className="slot empty" onClick={() => handleSlotClick(1)}>
-                {currentSlots[1] && inventory.find(i => i.id == currentSlots[1].id) ? <>
-                    <InventoryItem click={false} item={inventory.find(i => i.id == currentSlots[1].id)}></InventoryItem>
-                    <div className="corner-rm" onClick={() => handleSlotRemove(1)}>
-                        <div className="icon xsm c icon-deletesm"></div>
-                    </div>
+                <div className="slot empty" onClick={() => handleSlotClick(1)} onContextMenu={(e) => handleSlotRemove(1, e)}>
+                {crafting_slotItems[1] && inventory.find(i => i.id == crafting_slotItems[1].id) ? <>
+                    <InventoryItem click={false} item={inventory.find(i => i.id == crafting_slotItems[1].id)}></InventoryItem>
                 </> : null}
                 </div>
 

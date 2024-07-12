@@ -44,3 +44,35 @@ const numSelections = 10;
 
 const selectedItems = selectMultipleBasedOnChance(drops, numSelections);
 console.log("Selected items:", selectedItems);
+
+import seedrandom from 'seedrandom';
+const rng = seedrandom('ss');
+
+function weightedRandomSelect(weights, seed) {
+  const randomValue = rng()//Math.random();
+  let cumulative = 0;
+
+  for (const [key, weight] of Object.entries(weights)) {
+    cumulative += weight;
+    if (randomValue <= cumulative) {
+      return key;
+    }
+  }
+}
+
+const classes = {
+  a: 0.03,
+  b: 0.77,  // adjusted to ensure the total is 1.00
+  c: 0.20
+};
+
+const results = { a: 0, b: 0, c: 0 };
+const totalRuns = 10000;
+
+for (let i = 0; i < totalRuns; i++) {
+  const seed = -29;
+  const selectedClass = weightedRandomSelect(classes, seed);
+  results[selectedClass]++;
+}
+
+console.log(results);

@@ -2,6 +2,7 @@ import { ResourceSchema } from "../lib/loader/Schema.type.js";
 import { ItemData } from "../models/item.js";
 import { jsonres } from "../models/jsonres.js";
 import { pingFrom } from "../ping/ping.js";
+import { EntityClasses } from "./classes.js";
 import { Entities } from "./entities.js";
 import { ResourceMap } from "./resources.js";
 
@@ -36,7 +37,9 @@ export class Items {
 			}
 
 			if(data) item.data = {...item.data, ...data};
-
+			
+			if(ref.class && !item.data._eclass) EntityClasses.introduce(item);
+			if(item.data._eclass) EntityClasses.setClass(item, item.data._eclass);
 
 			return item;
 		}

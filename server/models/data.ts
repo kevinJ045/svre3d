@@ -10,6 +10,7 @@ export class ServerData {
 	reference!: ResourceSchema;
 
 	flags: string[] = [];
+	data: any;
 
 	constructor() {
 		this.id = uuid.v4();

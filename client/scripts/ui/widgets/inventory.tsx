@@ -74,7 +74,8 @@ const Inventory = ({
   inventory,
   selectItem,
   unselectItem,
-  onClick
+  onClick,
+  className = ''
 } : {
   inventory: Item[],
   onClick: (item: Item) => string | undefined | null | void
@@ -82,7 +83,7 @@ const Inventory = ({
 }) => {
 
   return (
-    <div className="inventory">
+    <div className={"inventory "+className}>
       {
         inventory.map((item, index) => 
           <InventoryItem

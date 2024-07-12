@@ -43,7 +43,9 @@ export const MainUI = ({ children }) => {
 	const [crafting_slotItems, crafting_setSlotItems] = useState<any[]>([]);
 
 	const crafting_setItemAtSlot = (index, item) => {
-		crafting_slotItems[index] = item;
+		if(item == null){
+			crafting_slotItems.splice(index, 1);
+		} else crafting_slotItems[index] = item;
 		crafting_setSlotItems(crafting_slotItems);
 	}
 

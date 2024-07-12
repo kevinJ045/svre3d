@@ -29,11 +29,11 @@ export const Menu = () => {
 		setCurrentItem,
 		inventory,
 		crafting_selectItems,
-		crafting_slotItems,
+		setcrafting_selectItems,
 		crafting_setItemAtSlot
 	} = React.useContext(Context);
 
-	return (<div className="player-menu" id="full-menu">
+	return (<div className="player-menu active" id="full-menu">
 
 		<div className={"sidebar "+ (crafting_selectItems > -1 ? 'disabled' : '')}>
 			<Tab tab="inventory" setActiveTab={setTab} activeTab={tab}>
@@ -57,7 +57,7 @@ export const Menu = () => {
 			</Tab>
 		</div>
 
-		<div className="menu-content">
+		<div className={"menu-content " + (crafting_selectItems > -1 ? "full" : '')}>
 
 			<TabPane tab="inventory" activeTab={tab}>
 
@@ -67,6 +67,7 @@ export const Menu = () => {
 
 				<div className="inventory-tab">
 					<Inventory
+					className={crafting_selectItems > -1 ? "select" : ''}
 					selectItem={
 						(item: Item) => setCurrentItem(item)
 					}
@@ -79,6 +80,7 @@ export const Menu = () => {
 							if(crafting_selectItems > -1){
 								crafting_setItemAtSlot(crafting_selectItems, item);
 								setCurrentItem(item);
+								setcrafting_selectItems(-1);
 								return 'no_aftereffect';
 							}
 						}

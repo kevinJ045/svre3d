@@ -114,6 +114,40 @@
 
   .inventory{
     width: calc(100% - (var(--width-of-craft-ui) + 40px));
+    transition: .4s width;
+
+    &.select{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 100;
+      display: flex;
+      overflow-x: auto;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+
+
+      .inventory-item{
+        float: left;
+        margin: 10px;
+        transition: .2s;
+        &:hover{
+          box-sizing: content-box;
+          border-left: 1px solid var(--var-fg-1);
+          border-right: 1px solid var(--var-fg-1);
+          border-color: var(--var-fg-1);
+
+          .item-icon{
+            transition: .2s;
+            scale: 1.2;
+          }
+        }
+      }
+    }
   }
 
   .item-info-and-crafting-ui{
@@ -207,7 +241,7 @@
       .info{
         padding: 10px;
 
-        & > p {
+        & > .content-data {
           width: calc(100% - 120px);
           font-size: 20px;
         }

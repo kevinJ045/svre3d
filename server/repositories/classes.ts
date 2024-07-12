@@ -17,12 +17,23 @@ function setAt(obj, path, value) {
   current[keys[keys.length - 1]] = value;
 }
 
+enum CLASSES{
+  RARE = 'rare',
+  UNCOMMON = 'uncommon',
+  COMMON = 'common',
+  ELITE = 'elite',
+  PRIME = 'prime',
+  UNIQUE = 'unique'
+}
+
 export class EntityClasses {
+
+  static CLASSES = CLASSES;
 
   static setClass(item, classname){
     const classInfo = item.reference.class;
     if(!item.data._eclass_data){
-      const currentClass = classInfo[classname].value;
+      const currentClass = classInfo[classname || item.data._eclass]?.value;
       if(typeof currentClass == 'object') for(let i in currentClass) if(Array.isArray(currentClass[i])) currentClass[i] = Random.pick(...currentClass[i]);
       item.data._eclass_data = currentClass;
     }

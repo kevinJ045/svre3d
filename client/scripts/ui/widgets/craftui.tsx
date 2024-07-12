@@ -127,12 +127,12 @@ const CraftingUI = () => {
 
             <div className="slots">
 
-                <div className="slot empty" onClick={() => handleSlotClick(0)} onContextMenu={(e) => handleSlotRemove(0, e)}>
+                <div className={"slot empty "+(crafting_selectItems > -1 ? 'x' : '')} onClick={() => handleSlotClick(0)} onContextMenu={(e) => handleSlotRemove(0, e)}>
                 {crafting_slotItems[0] && inventory.find(i => i.id == crafting_slotItems[0].id) ? <>
                     <InventoryItem click={false} item={inventory.find(i => i.id == crafting_slotItems[0].id)}></InventoryItem>
                 </> : null}
                 </div>
-                <div className="slot empty" onClick={() => handleSlotClick(1)} onContextMenu={(e) => handleSlotRemove(1, e)}>
+                <div className={"slot empty "+(crafting_selectItems > -1 ? 'x' : '')} onClick={() => handleSlotClick(1)} onContextMenu={(e) => handleSlotRemove(1, e)}>
                 {crafting_slotItems[1] && inventory.find(i => i.id == crafting_slotItems[1].id) ? <>
                     <InventoryItem click={false} item={inventory.find(i => i.id == crafting_slotItems[1].id)}></InventoryItem>
                 </> : null}

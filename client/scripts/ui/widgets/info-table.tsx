@@ -3,6 +3,9 @@ import { Item } from "../../models/item";
 import { ItemIcon } from "./slotitem";
 import CraftingUI from "./craftui";
 import { parseItemDataText } from "../misc/parsetext.tsx";
+import { ClassText } from "./classtext.tsx";
+import { ColorName } from "./colorname.tsx";
+import { ItemActions } from "./actions.tsx";
 
 
 export function InfoTable({
@@ -41,7 +44,7 @@ export function InfoTable({
           </g>
         </svg>
         <div className={"tab-pane info " + (currentTab == 'info' ? 'active' : '')}>
-          <div className="content-data">{currentItem ? (currentItem?.data?.content ? parseItemDataText(currentItem?.data?.content) : <p>No item data</p>) : <p>No item selected</p>}</div>
+          <div className="content-data">{currentItem ? (currentItem?.data?.content ? parseItemDataText(currentItem?.data?.content) : <p className="mt-4">No item data</p>) : <p className="mt-4">No item selected</p>}</div>
           {currentItem && <div className="stats-or-book">
             <span>Book</span>
             <div className="icon icon-bookmark"></div>
@@ -49,7 +52,7 @@ export function InfoTable({
 
           <div className="flexbox">
 
-            <div className="right">
+            <div className="left">
               <h4><u>Effects:</u></h4>
 
               {
@@ -67,13 +70,16 @@ export function InfoTable({
               }
             </div>
 
-            <div className="left">
-              {currentItem?.data?._eclass && <ul>
-                <li>{currentItem?.data?._eclass} Class</li>
-              </ul>}
+            <div className="right">
+              <ul>
+                {currentItem?.data?._eclass && <li><ClassText classname={currentItem.data._eclass} /> Class</li>}
+                {currentItem?.data?.brush_color && <li>Color <ColorName color={currentItem.data.brush_color} /></li>}
+              </ul>
             </div>
 
           </div>
+
+          {currentItem && <ItemActions item={currentItem}></ItemActions>}
 
         </div>
         <div className={"tab-pane craftui " + (currentTab == 'craft' ? 'active' : '')}>

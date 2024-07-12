@@ -27,8 +27,8 @@
 
   &.disabled{
     opacity: 0.5;
-    width: 0;
-    display: none;
+    // width: 0;
+    // display: none;
     &:before{
       content: "";
       width: 100%;
@@ -100,7 +100,7 @@
   position: relative;
 
   &.full{
-    width: 100%;
-    padding-left: 20px;
+    // width: 100%;
+    // padding-left: 20px;
   }
 }

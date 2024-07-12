@@ -1,0 +1,79 @@
+
+/* == */
+
+:root{
+  --var-class-rare: #007FFF;
+  --var-class-common: #A9A9A9;
+  --var-class-uncommon: #32CD32;
+  --var-class-unique: #FFD700;
+  --var-class-prime: #FF4500;
+  --var-class-elite: #CC00FF;
+}
+
+/*
+ - geen: 75F94C
+ - pur: CC00FF
+ - tel: 27E2AA
+*/
+
+.classtext{
+  font-weight: 700;
+  
+  &.elite{
+    color: var(--var-class-elite);
+  }
+  &.common{
+    color: var(--var-class-common);
+  }
+  &.uncommon{
+    color: var(--var-class-uncommon);
+  }
+  &.rare{
+    color: var(--var-class-rare);
+  }
+  &.prime{
+    color: var(--var-class-prime);
+  }
+  &.unique{
+    color: var(--var-class-unique);
+  }
+}
+
+
+
+
+
+
+
+
+/*       */
+
+.mt-4{
+  margin-top: 24px;
+}
+
+
+/*       */
+
+
+
+
+
+/*       */
+
+
+.color-text{
+  .color{
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    background: currentColor;
+    margin-bottom: -1.5px;
+    margin-right: 5px;
+    border-radius: 2px;
+  }
+}
+
+
+
+/*       */

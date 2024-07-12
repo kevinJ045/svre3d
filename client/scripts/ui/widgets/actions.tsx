@@ -8,7 +8,7 @@ import { Context } from "../data/context.js";
 
 export const ItemActions = (
     { item }:
-        { item: Item }
+    { item: Item }
 ) => {
 
     const {
@@ -26,7 +26,7 @@ export const ItemActions = (
     };
 
     const handleDrop = () => {
-
+        
     };
 
     const handleOpenBook = () => {

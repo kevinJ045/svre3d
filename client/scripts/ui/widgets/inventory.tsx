@@ -10,9 +10,10 @@ export const InventoryItem = ({
   unselectItem,
   item,
   free = false,
-  mouse = true,
+  mouse = false,
   click = true,
   counter = true,
+  selectedItem = {},
 
   onClick,
 
@@ -27,13 +28,14 @@ export const InventoryItem = ({
       if(result == 'no_aftereffect') return;
     }
     if (!click) return;
-    if (item?.reference?.equipment) {
-      if (item?.data.wid) {
-        Equipments.unequip(PlayerInfo.entity, item?.reference!.equipment!.type!, item);
-      } else {
-        Equipments.equip(PlayerInfo.entity, item?.reference!.equipment!.type!, item);
-      }
-    }
+    selectItem?.(item);
+    // if (item?.reference?.equipment) {
+    //   if (item?.data.wid) {
+    //     Equipments.unequip(PlayerInfo.entity, item?.reference!.equipment!.type!, item);
+    //   } else {
+    //     Equipments.equip(PlayerInfo.entity, item?.reference!.equipment!.type!, item);
+    //   }
+    // }
   }
   return (<div 
     onClick={onclick}
@@ -44,7 +46,7 @@ export const InventoryItem = ({
     //   e.preventDefault();
     //   secondaryClick(item);
     // }}
-    className={free ? '' : "inventory-item"}>
+    className={(free ? '' : "inventory-item")+' '+(selectedItem ? (selectedItem.id == item.id ? 'active' : '') : '')}>
 
       {
         item.reference.item.achievement && <div className="item-badge">
@@ -56,7 +58,11 @@ export const InventoryItem = ({
         <ItemIcon item={item}></ItemIcon>
       </div>
 
-      <div className="item-info">
+      <div className="item-info" style={
+        item.data?.brush_color ? {
+          borderLeft: '1px solid '+item.data?.brush_color 
+        } : {}
+      }>
         <div className="item-name">
           {item.reference?.item?.name || item.itemID}
         </div>
@@ -75,7 +81,8 @@ const Inventory = ({
   selectItem,
   unselectItem,
   onClick,
-  className = ''
+  className = '',
+  selectedItem = {}
 } : {
   inventory: Item[],
   onClick: (item: Item) => string | undefined | null | void
@@ -88,6 +95,7 @@ const Inventory = ({
         inventory.map((item, index) => 
           <InventoryItem
             key={index}
+            selectedItem={selectedItem}
             selectItem={selectItem}
             unselectItem={unselectItem}
             item={item}

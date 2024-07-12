@@ -74,6 +74,7 @@ export const Menu = () => {
 					unselectItem={
 						() => setCurrentItem(null)
 					}
+					selectedItem={currentItem}
 					inventory={inventory}
 					onClick={
 						(item) => {

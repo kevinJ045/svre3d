@@ -10,6 +10,13 @@
   height: 108px;
 }
 
+@mixin itemActive(){
+  box-sizing: content-box;
+  border-left: 1px solid var(--var-fg-1);
+  border-right: 1px solid var(--var-fg-1);
+  border-color: var(--var-fg-1);
+}
+
 .inventory{
   display: flex;
   flex-wrap: wrap;
@@ -28,8 +35,13 @@
   background: #241232;
   position: relative;
   overflow: hidden;
+  transition: .2s;
   
   @include borderedCoolThing(var(--var-bg-3), var(--var-bg-5));
+
+  &.active{
+    @include itemActive();
+  }
 
   .item-badge{
     position: absolute;
@@ -57,7 +69,7 @@
     position: absolute;
     @include itemIcon();
     top: calc(50% - 15px);
-    left: 50%;
+    left: calc(50% + 2.5px);
     transform: translate(-50%, -50%);
   }
 
@@ -66,7 +78,7 @@
     width: 100%;
     left: 0;
     height: 100%;
-    bottom: 0;
+    top: 0;
     position: absolute;
   }
 
@@ -117,29 +129,31 @@
     transition: .4s width;
 
     &.select{
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 100;
-      display: flex;
-      overflow-x: auto;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(4px);
-      justify-content: center;
-      align-items: center;
+      // position: absolute;
+      // top: 0;
+      // left: 0;
+      // width: 100%;
+      // height: 100%;
+      // z-index: 100;
+      // display: flex;
+      // overflow-x: auto;
+      // background: rgba(0, 0, 0, 0.4);
+      // backdrop-filter: blur(4px);
+      // justify-content: center;
+      // align-items: center;
 
 
       .inventory-item{
         float: left;
         margin: 10px;
-        transition: .2s;
+        &.active{
+          box-sizing: border-box;
+          border-left: 0px solid var(--var-fg-1);
+          border-right: 0px solid var(--var-fg-1);
+          border-color: var(--var-bg-5);
+        }
         &:hover{
-          box-sizing: content-box;
-          border-left: 1px solid var(--var-fg-1);
-          border-right: 1px solid var(--var-fg-1);
-          border-color: var(--var-fg-1);
+          @include itemActive();
 
           .item-icon{
             transition: .2s;
@@ -244,6 +258,26 @@
         & > .content-data {
           width: calc(100% - 120px);
           font-size: 20px;
+          min-height: 100px;
+          overflow: auto;
+          max-height: 200px;
+        }
+
+        .flexbox{
+          display: flex;
+          .left{
+            width: 55%;
+          }
+          .right{
+            width: 45%;
+          }
+        }
+
+        .item-actions{
+          display: flex;
+          gap: 10px;
+          position: absolute;
+          bottom: 0;
         }
       }
 
@@ -266,6 +300,7 @@
 
             &::before, & > .icon{
               content: "";
+              transition: .1s;
               width: 24px;
               height: 24px;
               display: inline-block;
@@ -275,6 +310,10 @@
 
             &.empty::before{
               clip-path: path('M 10.039664,10.039665 C 8.0665983,10.039665 0,8.8916969 0,12.000001 c 0,3.108304 8.0665983,1.960337 10.039664,1.960337 0,1.973065 -1.147968,10.039663 1.960336,10.039663 3.108303,0 1.960336,-8.066598 1.960336,-10.039663 C 15.933402,13.960338 24,15.108305 24,12.000001 24,8.8916982 15.933406,10.039665 13.960336,10.039665 13.960336,8.0665992 15.108303,0 12,0 8.8916986,0 10.039664,8.0665953 10.039664,10.039665 Z');
+            }
+
+            &.empty.x::before{
+              transform: rotate(45deg);
             }
 
             .inventory-item{

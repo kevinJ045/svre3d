@@ -17,7 +17,8 @@ const CraftingUI = () => {
         setcrafting_selectItems,
         crafting_slotItems,
         crafting_setSlotItems,
-        crafting_setSlotItemsC
+        crafting_setSlotItemsC,
+        inventory
 	} = React.useContext(Context);
 
     const [contentValue, setContentValue] = useState("");
@@ -29,7 +30,7 @@ const CraftingUI = () => {
 
     const handleBrushColor = (color) => {
         setBrushColor(color);
-        crafting_slotItems.forEach(item => item.options.brushColor = color);
+        crafting_slotItems.forEach(item => (item.options = (item.options || {})) && (item.options.brushColor = color));
     }
 
     const handleActiveToolChange = (tool: string) => {
@@ -52,9 +53,10 @@ const CraftingUI = () => {
     }
 
     const finishCraft = () => {
-        crafting_setSlotItems([]);
-        setContentValue("");
-        setResultItem(null);
+        // crafting_setSlotItems([]);
+        // setContentValue("");
+        // setResultItem(null);
+        slotsUpdate();
     };
 
     const slotsUpdate = (tool = activeTool) => {
@@ -76,9 +78,8 @@ const CraftingUI = () => {
     }
 
     useEffect(() => {
-        console.log('updated');
-        setCurrentSlots(crafting_slotItems);
         slotsUpdate();
+        setCurrentSlots(crafting_slotItems);
     }, [crafting_slotItems]);
 
     // useEffect(() => {
@@ -102,6 +103,7 @@ const CraftingUI = () => {
             slotItems.splice(index, 1);
             return slotItems;
         });
+        setResultItem(null);
         slotsUpdate();
     };
 
@@ -124,16 +126,16 @@ const CraftingUI = () => {
             <div className="slots">
 
                 <div className="slot empty" onClick={() => handleSlotClick(0)}>
-                {currentSlots[0] ? <>
-                    <InventoryItem click={false} item={currentSlots[0]}></InventoryItem>
+                {currentSlots[0] && inventory.find(i => i.id == currentSlots[0].id) ? <>
+                    <InventoryItem click={false} item={inventory.find(i => i.id == currentSlots[0].id)}></InventoryItem>
                     <div className="corner-rm" onClick={() => handleSlotRemove(0)}>
                         <div className="icon xsm c icon-deletesm"></div>
                     </div>
                 </> : null}
                 </div>
                 <div className="slot empty" onClick={() => handleSlotClick(1)}>
-                {currentSlots[1] ? <>
-                    <InventoryItem click={false} item={currentSlots[1]}></InventoryItem>
+                {currentSlots[1] && inventory.find(i => i.id == currentSlots[1].id) ? <>
+                    <InventoryItem click={false} item={inventory.find(i => i.id == currentSlots[1].id)}></InventoryItem>
                     <div className="corner-rm" onClick={() => handleSlotRemove(1)}>
                         <div className="icon xsm c icon-deletesm"></div>
                     </div>

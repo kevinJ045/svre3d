@@ -24,6 +24,8 @@ export class MaterialManager {
 			fragment = materialOptions.shader?.fragment;
 			vertex = materialOptions.shader?.vertex;
 		}
+
+		// console.log(mat, materialOptions);
 	
 		return MaterialManager.makeObjectMaterial({
 			fragment,

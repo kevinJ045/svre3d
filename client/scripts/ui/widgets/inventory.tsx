@@ -45,6 +45,13 @@ export const InventoryItem = ({
     //   secondaryClick(item);
     // }}
     className={free ? '' : "inventory-item"}>
+
+      {
+        item.reference.item.achievement && <div className="item-badge">
+          <div className="icon c sm icon-ribbon"></div>
+        </div>
+      }
+
       <div className="item-icon">
         <ItemIcon item={item}></ItemIcon>
       </div>

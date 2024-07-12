@@ -6,6 +6,7 @@ item:
   inventory:
     max: 1
   flags: [ 'craftsman' ]
+  achievement: true
 equipment:
   type: 'hat'
 view:

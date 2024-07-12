@@ -5,6 +5,7 @@ import { Chunks } from "../repositories/chunks.js";
 import { Items } from "../repositories/items.js";
 import { Entities } from "../repositories/entities.js";
 import { Seed } from "../world/seed.js";
+import { PlayerInfo } from "../repositories/player.js";
 
 
 export async function initScene(){
@@ -20,4 +21,6 @@ export async function initScene(){
 	window.Items = Items;
 	// @ts-ignore
 	window.Seed = Seed;
+	// @ts-ignore
+	window.PlayerInfo = PlayerInfo;
 }

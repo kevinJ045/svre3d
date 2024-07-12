@@ -60,8 +60,8 @@ export class Equipments {
 			equipmentMesh
 		]
 
-		if (ref.config?.material) {
-			const mat = ref.config?.material;
+		if (ref.view?.material) {
+			const mat = ref.view?.material;
 			if (typeof mat == 'string') {
 				const material = MaterialManager.parse(mat, { ...entity.data, ...item.data });
 

@@ -27,12 +27,15 @@ export const Menu = () => {
 		setTab,
 		currentItem,
 		setCurrentItem,
-		inventory
+		inventory,
+		crafting_selectItems,
+		crafting_slotItems,
+		crafting_setItemAtSlot
 	} = React.useContext(Context);
 
 	return (<div className="player-menu" id="full-menu">
 
-		<div className="sidebar">
+		<div className={"sidebar "+ (crafting_selectItems > -1 ? 'disabled' : '')}>
 			<Tab tab="inventory" setActiveTab={setTab} activeTab={tab}>
 				<b className="icon big icon-bag"></b>
 			</Tab>
@@ -67,7 +70,17 @@ export const Menu = () => {
 						(item: Item) => setCurrentItem(item)
 					} unselectItem={
 						() => setCurrentItem(null)
-					} inventory={inventory}></Inventory>
+					} inventory={inventory}
+					onClick={
+						(item) => {
+							if(crafting_selectItems > -1){
+								crafting_setItemAtSlot(crafting_selectItems, item);
+								setCurrentItem(item);
+								return 'no_aftereffect';
+							}
+						}
+					}
+					></Inventory>
 
 					<InfoTable currentItem={currentItem}></InfoTable>
 				</div>

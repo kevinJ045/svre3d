@@ -5,35 +5,40 @@ import { Items } from "../../repositories/items.js";
 import { Item } from "../../models/item.js";
 import { prompt } from "../componets/prompt.js";
 import { ItemIcon } from "./slotitem.js";
+import { Context } from "../data/context.js";
+import { InventoryItem } from "./inventory.js";
+import GlobalEmitter from "../../misc/globalEmitter.js";
 
-const Tool = ({ tool, activeTool, handleActiveToolChange }) => <div onClick={() => handleActiveToolChange(tool)} className="tool"><div className={tool+" "+(activeTool == tool ? 'active' : 'inactive')}></div></div>
+const Tool = ({ tool, activeTool, handleActiveToolChange }) => <div onClick={() => handleActiveToolChange(tool)} className={"tool "+tool+' '+(activeTool == tool ? 'active' : '')}></div>
 
 const CraftingUI = () => {
-    const [slotItems, setSlotItems] = useState([] as any[]);
+    const {
+        crafting_selectItems,
+        setcrafting_selectItems,
+        crafting_slotItems,
+        crafting_setSlotItems,
+        crafting_setSlotItemsC
+	} = React.useContext(Context);
+
     const [contentValue, setContentValue] = useState("");
-    const [showChooseItem, setShowChooseItem] = useState(false);
-    const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
     const [resultItem, setResultItem] = useState<Item | null>(null);
     const [activeTool, setActiveTool] = useState<string | null>(null);
     const [brushColor, setBrushColor] = useState<string | null>(null);
 
-    const [rect, setRect] = useState({
-        top: 0,
-        left: 0
-    });
+    const [currentSlots, setCurrentSlots] = useState<any[]>([]);
 
     const handleBrushColor = (color) => {
         setBrushColor(color);
-        slotItems.forEach(item => item.options.brushColor = color);
+        crafting_slotItems.forEach(item => item.options.brushColor = color);
     }
 
     const handleActiveToolChange = (tool: string) => {
-        if(activeTool == tool){
+        if (activeTool == tool) {
             setActiveTool(null);
             slotsUpdate(null);
-            if(brushColor) handleBrushColor(null);
+            if (brushColor) handleBrushColor(null);
         } else {
-            if(tool == 'brush'){
+            if (tool == 'brush') {
                 prompt('Color', (c) => {
                     handleBrushColor(c);
                     setActiveTool(tool);
@@ -47,45 +52,53 @@ const CraftingUI = () => {
     }
 
     const finishCraft = () => {
-        setSlotItems([]);
+        crafting_setSlotItems([]);
         setContentValue("");
         setResultItem(null);
     };
 
     const slotsUpdate = (tool = activeTool) => {
-        if(!slotItems.length) return;
-        Items.crafting(true, tool || '', ...slotItems)
-        .then(i => {
-            setResultItem(i ? Items.create({
-                itemID: i.item.itemID || i.item.manifest.id,
-                quantity: i.quantity
-            } as any) : null);
-        });
+        if (!crafting_slotItems.length) return;
+        Items.crafting(true, tool || '', ...crafting_slotItems)
+            .then(i => {
+                setResultItem(i ? Items.create({
+                    itemID: i.item.itemID || i.item.manifest.id,
+                    quantity: i.quantity
+                } as any) : null);
+            });
     };
 
     const craft = () => {
-        Items.crafting(false, activeTool || '', ...slotItems)
-        .then(i => {
-            finishCraft(); 
-        });
+        Items.crafting(false, activeTool || '', ...crafting_slotItems)
+            .then(i => {
+                finishCraft();
+            });
     }
 
     useEffect(() => {
+        console.log('updated');
+        setCurrentSlots(crafting_slotItems);
         slotsUpdate();
-    }, [slotItems]);
+    }, [crafting_slotItems]);
 
-    const handleSlotClick = (index) => {
-        setSelectedSlotIndex(index);
-        setRect({
-            top: document.querySelector('.slot-'+(index+1))?.getBoundingClientRect().top || 0,
-            left: document.querySelector('.slot-'+(index+1))?.getBoundingClientRect().left || 0
-        });
-        setShowChooseItem(true);
+    // useEffect(() => {
+    //     GlobalEmitter.on('crafting:slots:update', (items) => {
+    //         console.log(items);
+    //         setCurrentSlots(items);
+    //         slotsUpdate();
+    //     });
+    // }, []);
+
+    const handleSlotClick = (index: number) => {
+        if(crafting_selectItems > -1){
+            setcrafting_selectItems(-1);
+        } else {
+            setcrafting_selectItems(index);
+        }
     };
 
-    const handleSlotContextMenu = (index, e) => {
-        e.preventDefault();
-        setSlotItems((slotItems) => {
+    const handleSlotRemove = (index) => {
+        crafting_setSlotItems((slotItems) => {
             slotItems.splice(index, 1);
             return slotItems;
         });
@@ -94,15 +107,6 @@ const CraftingUI = () => {
 
     const handleInputChange = (e) => {
         setContentValue(e.target.value);
-    };
-
-    const handleChooseItem = (item) => {    
-        setSlotItems((slotItems) => {
-            slotItems[selectedSlotIndex!] = { ...item, options: { brushColor } };
-            return slotItems;
-        });
-        setShowChooseItem(false);
-        setTimeout(() => slotsUpdate(), 10);
     };
 
     return (
@@ -116,43 +120,73 @@ const CraftingUI = () => {
                     placeholder="Item Content"
                 />
             </div>
-            {showChooseItem && (
-                <ChooseItemUI
-                    rect={rect}
-                    cb={handleChooseItem}
-                    ignore={slotItems[selectedSlotIndex!]}
-                />
-            )}
-            <div className="slot-1" onClick={() => handleSlotClick(0)} onContextMenu={(e) => handleSlotContextMenu(0, e)}>
-                <div className="inventory-slot independent">
-                    {slotItems[0] ? <ItemIcon item={slotItems[0]}></ItemIcon> : null}
+
+            <div className="slots">
+
+                <div className="slot empty" onClick={() => handleSlotClick(0)}>
+                {currentSlots[0] ? <>
+                    <InventoryItem click={false} item={currentSlots[0]}></InventoryItem>
+                    <div className="corner-rm" onClick={() => handleSlotRemove(0)}>
+                        <div className="icon xsm c icon-deletesm"></div>
+                    </div>
+                </> : null}
                 </div>
-            </div>
-            <div className="slot-2" onClick={() => handleSlotClick(1)} onContextMenu={(e) => handleSlotContextMenu(1, e)}>
-                <div className="inventory-slot independent">
-                    {slotItems[1] ? <ItemIcon item={slotItems[1]}></ItemIcon> : null}
+                <div className="slot empty" onClick={() => handleSlotClick(1)}>
+                {currentSlots[1] ? <>
+                    <InventoryItem click={false} item={currentSlots[1]}></InventoryItem>
+                    <div className="corner-rm" onClick={() => handleSlotRemove(1)}>
+                        <div className="icon xsm c icon-deletesm"></div>
+                    </div>
+                </> : null}
                 </div>
-            </div>
-            <div className="slot-result">
-                <div className="inventory-slot independent" onClick={() => resultItem ? craft() : null}>
+
+                <div className="slot tool">
+                    {activeTool ? <Tool handleActiveToolChange={() => {}} activeTool={''} tool={activeTool}></Tool> : <div className="icon"></div>} 
+                </div>
+
+                <div className="arrow">
+                    <div className="icon icon-arrow-right"></div>
+                </div>
+
+                <div className="slot result" onClick={() => resultItem ? craft() : null}>
                     {
                         resultItem ?
-                        <ItemIcon item={resultItem}></ItemIcon>
-                        : null
+                            <InventoryItem item={resultItem}></InventoryItem>
+                            : null
                     }
                 </div>
+
             </div>
 
-            <div className="craft-tools">
-                <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="hammer"></Tool>
-            
-                <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="press"></Tool>
-            
-                <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="brush"></Tool>
-            
-                <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="melter"></Tool>
-            
-                <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="assembler"></Tool>
+            <div className="tools">
+                <h3>Tools</h3>
+                <div className="tools-grid">
+                    <div className="tool-list">
+                        <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="hammer"></Tool>
+
+                        <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="press"></Tool>
+
+                        <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="brush"></Tool>
+
+                        <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="melter"></Tool>
+
+                        <Tool handleActiveToolChange={handleActiveToolChange} activeTool={activeTool} tool="assembler"></Tool>
+                    </div>
+                    <div className="tool-info">
+                        <div className="liner"></div>
+                        <div className="content">
+                            <h3>Assembler</h3>
+                            <div className="separator">
+                                <div className="line"></div>
+                                <div className="guy"></div>
+                                <div className="line"></div>
+                            </div>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur reprehenderit veniam cum
+                                quis doloremque quasi minus adipisci repellat, corporis voluptate, quas inventore alias eum,
+                                ipsa ab iste harum repellendus aperiam!</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

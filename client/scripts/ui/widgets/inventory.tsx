@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ItemIcon } from './slotitem';
 import { Equipments } from '../../repositories/equipments';
 import { PlayerInfo } from '../../repositories/player';
+import { Item } from '../../models/item';
 
 
 export const InventoryItem = ({
@@ -21,7 +22,10 @@ export const InventoryItem = ({
 }) => {
 
   const onclick = () => {
-    if (onClick) onClick();
+    if (onClick) {
+      const result = onClick(item);
+      if(result == 'no_aftereffect') return;
+    }
     if (!click) return;
     if (item?.reference?.equipment) {
       if (item?.data.wid) {
@@ -33,16 +37,13 @@ export const InventoryItem = ({
   }
   return (<div 
     onClick={onclick}
-    onMouseEnter={
-      () => mouse ? selectItem(item) : null
-    }
-    onContextMenu={(e) => {
-      e.preventDefault();
-      secondaryClick(item);
-    }}
-    // onMouseLeave={
-    //   () => unselectItem(item)
+    // onMouseEnter={
+    //   () => mouse ? selectItem(item) : null
     // }
+    // onContextMenu={(e) => {
+    //   e.preventDefault();
+    //   secondaryClick(item);
+    // }}
     className={free ? '' : "inventory-item"}>
       <div className="item-icon">
         <ItemIcon item={item}></ItemIcon>
@@ -66,6 +67,11 @@ const Inventory = ({
   inventory,
   selectItem,
   unselectItem,
+  onClick
+} : {
+  inventory: Item[],
+  onClick: (item: Item) => string | undefined | null | void
+  [key: string]: any
 }) => {
 
   return (
@@ -77,6 +83,7 @@ const Inventory = ({
             selectItem={selectItem}
             unselectItem={unselectItem}
             item={item}
+            onClick={onClick}
             ></InventoryItem>)
       }
     </div>

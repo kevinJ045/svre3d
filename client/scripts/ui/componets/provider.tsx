@@ -39,6 +39,14 @@ export const MainUI = ({ children }) => {
 		}));
 	}
 
+	const [crafting_selectItems, setcrafting_selectItems] = useState<number>(-1);
+	const [crafting_slotItems, crafting_setSlotItems] = useState<any[]>([]);
+
+	const crafting_setItemAtSlot = (index, item) => {
+		crafting_slotItems[index] = item;
+		crafting_setSlotItems(crafting_slotItems);
+	}
+
 	const data = {
 		tab, setTab,
 		inventory, setInventory,
@@ -46,7 +54,14 @@ export const MainUI = ({ children }) => {
 		currentBook, setCurrentBook,
 		currentPage, setCurrentPage,
 		chats, setChats,
-		addChat, removeChat, editChatContent
+		addChat, removeChat, editChatContent,
+		crafting_slotItems, crafting_setSlotItemsC: (items) => {
+			crafting_setSlotItems(items);
+			GlobalEmitter.emit('crafting:slots:update', items);
+		},
+		crafting_setSlotItems,
+		crafting_setItemAtSlot,
+		crafting_selectItems, setcrafting_selectItems
 	};
 
 	useEffect(() => {

@@ -13,5 +13,12 @@ export const Context = React.createContext<{
   currentPage: any, setCurrentPage: (t) => void,
   chats: Chat[], setChats: (t) => void,
   addChat: (t) => void, removeChat: (t) => void,
-  editChatContent: (t) => void
+  editChatContent: (t) => void,
+
+  crafting_selectItems: number,
+  setcrafting_selectItems: (t) => void
+  crafting_slotItems: any[],
+  crafting_setSlotItems: (t) => void,
+  crafting_setSlotItemsC: (t) => void,
+  crafting_setItemAtSlot: (t, a) => void
 }>({} as any);

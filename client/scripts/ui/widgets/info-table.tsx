@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Item } from "../../models/item";
 import { ItemIcon } from "./slotitem";
+import CraftingUI from "./craftui";
 
 
 export function InfoTable({
@@ -48,47 +49,7 @@ export function InfoTable({
         </div>
         <div className={"tab-pane craftui " + (currentTab == 'craft' ? 'active' : '')}>
 
-          <div className="slots">
-
-            <div className="slot empty"></div>
-            <div className="slot empty"></div>
-
-            <div className="slot tool"></div>
-
-            <div className="arrow">
-              <div className="icon icon-arrow-right"></div>
-            </div>
-
-            <div className="slot result"></div>
-
-          </div>
-
-          <div className="tools">
-            <h3>Tools</h3>
-            <div className="tools-grid">
-              <div className="tool-list">
-                <div className="tool melter"></div>
-                <div className="tool hammer"></div>
-                <div className="tool assembler"></div>
-                <div className="tool brush"></div>
-                <div className="tool press"></div>
-              </div>
-              <div className="tool-info">
-                <div className="liner"></div>
-                <div className="content">
-                  <h3>Assembler</h3>
-                  <div className="separator">
-                    <div className="line"></div>
-                    <div className="guy"></div>
-                    <div className="line"></div>
-                  </div>
-                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur reprehenderit veniam cum
-                    quis doloremque quasi minus adipisci repellat, corporis voluptate, quas inventore alias eum,
-                    ipsa ab iste harum repellendus aperiam!</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <CraftingUI />
 
         </div>
       </div>

@@ -66,11 +66,14 @@ export const Menu = () => {
 				<Separator></Separator>
 
 				<div className="inventory-tab">
-					<Inventory selectItem={
+					<Inventory
+					selectItem={
 						(item: Item) => setCurrentItem(item)
-					} unselectItem={
+					}
+					unselectItem={
 						() => setCurrentItem(null)
-					} inventory={inventory}
+					}
+					inventory={inventory}
 					onClick={
 						(item) => {
 							if(crafting_selectItems > -1){

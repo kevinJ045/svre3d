@@ -1,0 +1,25 @@
+
+
+.player-menu #map{
+  position: absolute;
+	width: calc(100% - 20px);
+	height: calc(100% - 20px);
+  top: 10px;
+  left: 10px;
+}
+
+.player-menu #map .info-area{
+	position: absolute;
+	left: 5px;
+	top: 5px;
+	z-index: 1;
+	color: #000;
+}
+
+.player-menu #map .zoom-range{
+	position: absolute;
+	z-index: 1;
+	right: -40px;
+	top: 50%;
+	rotate: -90deg;
+}

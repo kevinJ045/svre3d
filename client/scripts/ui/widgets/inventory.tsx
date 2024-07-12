@@ -37,9 +37,9 @@ export const InventoryItem = ({
   }
   return (<div 
     onClick={onclick}
-    // onMouseEnter={
-    //   () => mouse ? selectItem(item) : null
-    // }
+    onMouseEnter={
+      () => mouse ? selectItem?.(item) : null
+    }
     // onContextMenu={(e) => {
     //   e.preventDefault();
     //   secondaryClick(item);

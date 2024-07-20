@@ -60,11 +60,11 @@ export class MainScene extends Scene3D {
 		});
 
 		// player.displace(new THREE.Vector3(Utils.randFrom(-10, 10), 0, Utils.randFrom(-10, 10)));
-		Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
+		Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('performance.renderDistance'));
 		let t: any = 0;
 		player.on('move', () => {
 			Lights.updateLightPosition(PlayerInfo.entity.object3d.position.clone());
-			Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
+			Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('performance.renderDistance'));
 			Biomes.updateSky(PlayerInfo.entity.object3d.position);
 			GlobalEmitter.emit('player:move');
 
@@ -72,16 +72,16 @@ export class MainScene extends Scene3D {
 			t = setTimeout(() => ping('player:position', { username: PlayerInfo.username, position: PlayerInfo.entity.object3d.position }), 2500);
 			ping('entities:getspawned', {
 				position: player.object3d.position,
-				distance: Settings.get('renderDistance'),
+				distance: Settings.get('performance.renderDistance'),
 				id: player.id
 			});
 			EffectManager.fog_update(this, player.object3d.position.distanceTo(this.camera.position));
-			Entities.updateEntities(player.object3d.position, Settings.get<number>('renderDistance'));
+			Entities.updateEntities(player.object3d.position, Settings.get<number>('performance.renderDistance'));
 		});
 
 		ping('entities:getspawned', {
 			position: player.object3d.position,
-			distance: Settings.get('renderDistance'),
+			distance: Settings.get('performance.renderDistance'),
 			id: player.id
 		});
 

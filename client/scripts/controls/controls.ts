@@ -37,8 +37,8 @@ export class Controls {
 			if (!this.pointerLock) return;
 			if (!this.pointerLock.isLocked()) return;
 			const { x, y } = delta;
-			Controls.move.y = -y * (Settings.get('sensitivity') as number)
-			Controls.move.x = x * (Settings.get('sensitivity') as number)
+			Controls.move.y = -y * (Settings.get('controls.sensitivity') as number)
+			Controls.move.x = x * (Settings.get('controls.sensitivity') as number)
 		});
 
 		(SceneManager.scene as any).controls = new FirstPersonControls(CameraManager.camera as any, PlayerInfo.entity.object3d, {

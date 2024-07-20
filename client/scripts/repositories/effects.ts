@@ -32,7 +32,7 @@ export default class EffectManager {
   }
 
   static fog_getFar(){
-    return (Settings.get<number>('renderDistance') * 2) * WorldData.get('chunkSize');
+    return (Settings.get<number>('performance.renderDistance') * 2) * WorldData.get('chunkSize');
   }
 
   static fog_color = 0xcccccc;
@@ -43,7 +43,7 @@ export default class EffectManager {
   static initFog(scene: MainScene, distance = 0){
 		const fog = new THREE.Fog(this.fog_getColor(), distance || 1, this.fog_getFar() + distance);
     const add_fog = () => {
-      if (Settings.get('fog') == true) {
+      if (Settings.get('graphics.fog') == true) {
         scene.scene.fog = fog;
       } else {
         scene.scene.fog = null;
@@ -71,7 +71,7 @@ export default class EffectManager {
   }
 
   static pixel(scene: MainScene) {
-    const pass = new RenderPixelatedPass(Settings.get('pixelLevel', 2), scene.scene, scene.camera) as any;
+    const pass = new RenderPixelatedPass(Settings.get('graphics.pixelLevel', 2), scene.scene, scene.camera) as any;
     EffectManager.passUpdate(scene, pass, 'enablePixels', [
       ['pixelLevel', 'pixelSize']
     ]);
@@ -92,12 +92,12 @@ export default class EffectManager {
   }
 
   static passUpdate(scene: MainScene, pass: any, key: string, keymap?: string[][]) {
-    if (Settings.get(key)) {
+    if (Settings.get('graphics.'+key)) {
       scene.composer.addPass(pass);
       (pass as any).added = true;
     }
-    Settings.on('change:' + key, () => {
-      if (Settings.get(key) == true) {
+    Settings.on('change:graphics.' + key, () => {
+      if (Settings.get('graphics.'+key) == true) {
         if ((pass as any).added) return;
         scene.composer.addPass(pass);
         console.log('add');
@@ -111,8 +111,8 @@ export default class EffectManager {
 
     if (keymap) {
       keymap.forEach(([settingKey, setPassOptionKey]) => {
-        Settings.on(settingKey, () => {
-          pass.setPassOptionKey = Settings.get(setPassOptionKey);
+        Settings.on('change:graphics.'+settingKey, () => {
+          pass[setPassOptionKey] = Settings.get('graphics.'+settingKey);
         });
       });
     }

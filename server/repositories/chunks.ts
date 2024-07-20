@@ -110,9 +110,12 @@ export class Chunks {
 		pingFrom(socket, 'structure:loot', async ({ chunk: chunkPosition, entity: eid, id }) => {
 			const chunk = Chunks.find(stringifyChunkPosition(chunkPosition));
 			if (!chunk) return;
+			console.log(chunk);
 			const structure = chunk.structures.find(i => i.id == id);
+			console.log(structure);
 			if (!structure) return;
 			const entity = Entities.find(eid);
+			console.log(entity);
 			if (!entity) return;
 			const distance =
 				new Vector3(
@@ -126,6 +129,7 @@ export class Chunks {
 						chunk.position.z
 					)
 				);
+				console.log(distance);
 			if (distance <= chunk.chunkSize) {
 				const looted = await Data.collection('loots')
 					.findOne({

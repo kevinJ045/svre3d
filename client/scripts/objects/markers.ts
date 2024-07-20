@@ -77,7 +77,7 @@ export default class Markers {
         if (marker.line) {
           const playerPosition = PlayerInfo.entity.object3d.position;
           const direction = new THREE.Vector3().subVectors(marker.object3d.position, playerPosition).normalize();
-          const endPoint = new THREE.Vector3().copy(playerPosition).add(direction.multiplyScalar(WorldData.get('chunkSize') * (Settings.get('renderDistance') as any)));
+          const endPoint = new THREE.Vector3().copy(playerPosition).add(direction.multiplyScalar(WorldData.get('chunkSize') * (Settings.get('performance.renderDistance') as any)));
 
           const positions = marker.line.geometry.attributes.position.array as Float32Array;
           positions[0] = playerPosition.x;

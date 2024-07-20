@@ -9,27 +9,43 @@ export type Setting = {
 };
 export class Settings {
 
-	static settings: Record<string, Setting> = {
-		renderDistance: {
-			value: 4
+	static settings: Record<string, Record<string, Setting>> = {
+		graphics: {
+			_title: { value: 'Graphics' },
+			enablePixels: {
+				value: false
+			},
+			pixelLevel: {
+				title: 'Pixel Size',
+				value: 2,
+				min: 2,
+				max: 10
+			},
+			enableBloom: {
+				value: true
+			},
+			ssao: {
+				value: false
+			},
+			fog: {
+				value: true
+			}
 		},
-		sensitivity: {
-			value: 3
+		performance: {
+			_title: { value: 'Performance' },
+			renderDistance: {
+				value: 4,
+				min: 2,
+				max: 64
+			},
 		},
-		enablePixels: {
-			value: false
-		},
-		pixelLevel: {
-			value: 2
-		},
-		enableBloom: {
-			value: true
-		},
-		ssao: {
-			value: false
-		},
-		fog: {
-			value: true
+		controls: {
+			_title: { value: 'Controls' },
+			sensitivity: {
+				value: 3,
+				min: 2,
+				max: 50
+			},
 		}
 	};
 
@@ -46,7 +62,10 @@ export class Settings {
 	}
 
 	static new(key: string, setting: Setting){
-		this.settings[key] = setting;
+		const group = key.split('.')[0];
+		const name = key.split('.')[1];
+		this.settings[group] = this.settings[group] || {};
+		this.settings[group][name] = setting;
 		this.emit('new', { [key]: setting.value });
 		return this;
 	}
@@ -65,12 +84,16 @@ export class Settings {
 	}
 
 	static getFull(key: string){
-		return Settings.settings[key] || {};
+		const group = key.split('.')[0];
+		const name = key.split('.')[1];
+		return Settings.settings[group][name] || {};
 	}
 
 	static set(key: string, value: any, notify = true){
-		if(!Settings.settings[key]) Settings.settings[key] = { value };
-		else Settings.settings[key].value = value;
+		const group = key.split('.')[0];
+		const name = key.split('.')[1];
+		if(!Settings.settings[group][name]) Settings.settings[group][name] = { value };
+		else Settings.settings[group][name].value = value;
 		// console.log('set', key, value);
 		if(notify){
 			this.emit('change', { [key]: value });

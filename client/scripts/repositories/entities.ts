@@ -227,7 +227,7 @@ export class Entities {
 				PlayerInfo.entity.setInventory([]);
 				PhysicsManager.destroy(PlayerInfo.entity.object3d);
 				PlayerInfo.entity.object3d.position.set(position.x || 0, 10, position.z || 0);
-				Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('renderDistance'));
+				Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('performance.renderDistance'));
 				PlayerInfo.entity.addPhysics();
 			}
 		});

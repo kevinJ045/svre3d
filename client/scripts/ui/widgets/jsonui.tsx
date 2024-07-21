@@ -7,7 +7,7 @@ import { PlayerInfo } from "../../repositories/player.js";
 const elements: Record<string, React.ElementType> = {
     text: ({ widget, children, variables }) => <div className="text">{parseVariable(widget.text, variables)}{children}</div>,
     bar: ({ widget, children, variables }) => <div
-        className="hud-bar"
+        className={"hud-bar "+(widget.class || '')}
         style={{
             '--width': 
             Math.min(Math.max(parseFloat(parseVariable(widget.bar.current, variables)) / parseFloat(parseVariable(widget.bar.max, variables)) * 100, 0), 100) + '%',

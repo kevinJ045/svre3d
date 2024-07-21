@@ -1,0 +1,33 @@
+
+#startpage{
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: linear-gradient(#00266d, #031330);
+
+  .page-background{
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+
+
+  .menu{
+    position: absolute;
+    width: 250px;
+    height: 200px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+
+    .startbutton{
+      width: 100%;
+      height: 180px;
+      background: #131310;
+    }
+  }
+}

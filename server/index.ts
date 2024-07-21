@@ -74,8 +74,22 @@ async function createApp() {
 	});
 
 	app.get("/resources/:package/:id", (req, res) => {
+		let ref = ResourceMap.findResource(req.params.package + ":" + req.params.id);
+		let src = ref?.resource?.src;
+		if (req.query.prop) {
+			ref = getPropStr(ref!, req.query.prop) as any;
+		}
+		if (req.query.res) {
+			src = getPropStr(ref!, req.query.res) as any;
+		}
+
+		if(req.query.res) res.sendFile(src);
+		else res.send(ref);
+	});
+
+	app.get("/resources/:package", (req, res) => {
 		res.send(
-			ResourceMap.findResource(req.params.package + ":" + req.params.id),
+			ResourceMap.all().filter(i => i.manifest.id.startsWith(req.params.package+':'))
 		);
 	});
 

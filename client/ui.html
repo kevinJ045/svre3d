@@ -12,8 +12,12 @@
 <body>
 
   <div class="hud">
-    <div class="hp" style="--active: 80%">
+    <div onclick="(this).style.setProperty('--active', (parseInt((this).style.getPropertyValue('--active')) - 10) + '%')" class="hp bar-icon" style="--active: 100%">
       <div class="inner"></div>
+    </div>
+    <div onclick="(this).style.setProperty('--active', (parseInt((this).style.getPropertyValue('--active')) + 10) + '%')" class="exp vertical bar-icon" style="--active: 0%;">
+      <div class="inner"></div>
+      <span>555</span>
     </div>
   </div>
 

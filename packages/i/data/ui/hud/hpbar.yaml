@@ -4,6 +4,7 @@ manifest:
 ui:
   widgets:
     - type: bar
+      class: bar-icon hp
       bar:
         current: "$(player.health.current)"
         max: "$(player.health.max)"

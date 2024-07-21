@@ -1,3 +1,75 @@
+@mixin bar-icon(){
+  width: 40px;
+  height: 40.2px;
+  // aspect-ratio: 1.0401497815685459;
+  position: absolute;
+  --shadow: 80%;
+  --shadow-margin: 10%;
+
+  &::before, &::after, .inner{
+    content: "";
+    display: block;
+    background: var(--color);
+    position: absolute;
+    transition: 0.4s;
+  }
+
+  &::before{
+    width: var(--shadow);
+    height: var(--shadow);
+    filter: blur(15px);
+    border-radius: 50%;
+    margin: var(--shadow-margin);
+  }
+
+  .inner{
+    background: rgba(209, 209, 209, 0.377);
+  }
+
+  &::after, .inner{
+    width: 100%;
+    height: 100%;
+    margin-top: 5%;
+    clip-path: path(var(--shape));
+    margin-left: 5%;
+  }
+
+  &:not(.vertical)::after{
+    width: var(--active, 100%);
+  }
+  &.vertical::after{
+    height: var(--active, 100%);
+  }
+
+  &::before{
+    opacity: var(--active);
+  }
+
+  span{
+    font-size: 12px;
+    color: var(--color);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: .2s;
+    scale: 0;
+  }
+
+  &:has(span){
+    &:hover{
+  
+      &::after, .inner{
+        scale: 0;
+      }
+  
+      span{
+        scale: 1;
+      }
+    }
+  }
+}
+
 .hud{
   width: 100%;
   height: 100%;
@@ -5,46 +77,28 @@
   top: 0;
   left: 0;
 
-  .hp{
-    width: 60px;
-    height: 57.684px;
-    position: absolute;
-    --color: #e71616;
-    --shape: 'M 9.357835,0 0.44583625,6.2385566 0,21.834416 19.948397,38.456079 40,21.834416 39.554689,6.2385566 30.64269,0 20.000262,4.877995 Z';
-    bottom: 50%;
-    right: 50%;
-
-    &::before, &::after, .inner{
-      content: "";
-      display: block;
-      background: var(--color);
-      position: absolute;
-      aspect-ratio: 1.0401497815685459;
-    }
-
-    &::before{
-      width: 50%;
-      height: 50%;
-      filter: blur(15px);
-      border-radius: 50%;
-      margin: 12.5%;
-    }
-
-    .inner{
-      background: rgba(209, 209, 209, 0.377);
-    }
-
-    &::after, .inner{
-      width: 70%;
-      height: 70%;
-      margin-top: 5%;
-      clip-path: path(var(--shape));
-      margin-left: 5%;
-    }
-
-    &::after{
-      width: var(--active);
-    }
-
+  .bar-icon{
+    @include bar-icon();
   }
+
+  .hp{
+    --color: #e71616;
+    --shape: 'M 9.3578352,-0.00965661 0.44583625,6.2289 0,21.82476 20.644218,40.010494 40,21.82476 39.554689,6.2289 30.64269,-0.00965661 20.000262,4.8683384 Z';
+    bottom: 15px;
+    right: 15px;
+  }
+
+  .exp{
+    --color: #16e7a1;
+    --shape: 'm 13.238846,0.75517191 c 0,3.67696999 -1.755528,13.68345109 1.685746,15.97980809 2.441499,1.629209 7.136343,0.747466 9.950611,0.747466 L 12.511572,40.755172 H 11.7843 c 3e-6,-5.333337 0.347936,-11.193554 0,-16.000011 -1.340648,-8.240466 -7.7575743,0 -11.6363603,0 z';
+    bottom: 15px;
+    left: 15px;
+    --shadow: 50%;
+    --shadow-margin: 30% 20%;
+
+    .inner, &::after{
+      margin-left: 5px;
+    }
+  }
+
 }

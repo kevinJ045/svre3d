@@ -1,0 +1,50 @@
+.hud{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  .hp{
+    width: 60px;
+    height: 57.684px;
+    position: absolute;
+    --color: #e71616;
+    --shape: 'M 9.357835,0 0.44583625,6.2385566 0,21.834416 19.948397,38.456079 40,21.834416 39.554689,6.2385566 30.64269,0 20.000262,4.877995 Z';
+    bottom: 50%;
+    right: 50%;
+
+    &::before, &::after, .inner{
+      content: "";
+      display: block;
+      background: var(--color);
+      position: absolute;
+      aspect-ratio: 1.0401497815685459;
+    }
+
+    &::before{
+      width: 50%;
+      height: 50%;
+      filter: blur(15px);
+      border-radius: 50%;
+      margin: 12.5%;
+    }
+
+    .inner{
+      background: rgba(209, 209, 209, 0.377);
+    }
+
+    &::after, .inner{
+      width: 70%;
+      height: 70%;
+      margin-top: 5%;
+      clip-path: path(var(--shape));
+      margin-left: 5%;
+    }
+
+    &::after{
+      width: var(--active);
+    }
+
+  }
+}

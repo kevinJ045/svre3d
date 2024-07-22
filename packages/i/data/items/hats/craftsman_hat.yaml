@@ -21,6 +21,8 @@ view:
       z: -0.4
     rotateY: 90
   animation: ["GearAction", "Gear.001Action"]
+  preview:
+    rotation: -63rad
 ui:
   icon: !item.ui.icon
     src: !realpath '../../../bin/textures/craftsman_hat.png'

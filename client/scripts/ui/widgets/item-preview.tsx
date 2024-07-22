@@ -32,12 +32,17 @@ function updateCurrentItem(item) {
 
   object.position.setScalar(0);
 
+  object.rotation.y = Math.PI * 1.5;
+
   if (item.reference.view?.preview) {
     const p = item.reference.view?.preview;
     if(p.position){
       object.position.x += p.position.x;
       object.position.y += p.position.y;
       object.position.z += p.position.z;
+    }
+    if(p.rotation){
+      object.rotation.y = typeof p.rotation == "string" && p.rotation.endsWith('rad') ? parseFloat(p.rotation) : THREE.MathUtils.degToRad(parseFloat(p.rotation));
     }
     if (p.scale) {
       object.scale.setScalar(p.scale);
@@ -119,8 +124,12 @@ function previewItem(canvas) {
 
   canvas.addEventListener('resize', onWindowResize);
 
+  let rotationEnabled = false;
+
+  canvas.addEventListener('click', () => rotationEnabled = !rotationEnabled);
+
   function render() {
-    if (previewData.object) {
+    if (previewData.object && rotationEnabled) {
       previewData.object.rotation.y += 0.01;
     }
 

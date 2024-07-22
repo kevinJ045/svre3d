@@ -75,7 +75,7 @@ export class Equipments {
 		}
 
 		if (ref.view.object!.rotateY) {
-			equipmentMesh.rotation.y = THREE.MathUtils.degToRad(ref.view.object!.rotateY);
+			equipmentMesh.rotation.y = typeof ref.view.object!.rotateY == "string" && ref.view.object!.rotateY.endsWith('rad') ? parseFloat(ref.view.object!.rotateY) : THREE.MathUtils.degToRad(parseFloat(ref.view.object!.rotateY));
 		}
 
 		item.data.wmeshid = equipmentMesh.uuid;

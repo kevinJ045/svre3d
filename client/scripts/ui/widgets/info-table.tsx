@@ -6,6 +6,7 @@ import { parseItemDataText } from "../misc/parsetext.tsx";
 import { ClassText } from "./classtext.tsx";
 import { ColorName } from "./colorname.tsx";
 import { ItemActions } from "./actions.tsx";
+import { ItemPreview } from "./item-preview.tsx";
 
 
 export function InfoTable({
@@ -13,7 +14,7 @@ export function InfoTable({
 }: {
   currentItem: Item
 }) {
-  const [currentTab, setCurrentTab] = useState('info');
+  const [currentTab, setCurrentTab] = useState('preview');
 
   return (
 
@@ -25,7 +26,7 @@ export function InfoTable({
             (currentItem ? <>
               <ItemIcon item={currentItem} />
               {currentItem.reference.item?.name || currentItem.itemID}
-            </> : 'About items') : ('Crafting')
+            </> : 'About items') : (currentTab == 'craft' ? 'Crafting' : currentTab == 'preview' ? 'Preview' : '')
         }
       </div>
       <div className="tabs">
@@ -33,6 +34,9 @@ export function InfoTable({
           <div className="icon c icon-content"></div>
         </div>
         <div className={"info-tab " + (currentTab == 'craft' ? 'active' : '')} onClick={() => setCurrentTab('craft')}>
+          <div className="icon c icon-anvil"></div>
+        </div>
+        <div className={"info-tab " + (currentTab == 'preview' ? 'active' : '')} onClick={() => setCurrentTab('preview')}>
           <div className="icon c icon-anvil"></div>
         </div>
       </div>
@@ -87,6 +91,11 @@ export function InfoTable({
           <CraftingUI />
 
         </div>
+        { currentTab == 'preview' && <div className="tab-pane preview-3d active">
+
+          <ItemPreview currentItem={currentItem} />
+
+        </div>}
       </div>
     </div>)
 }

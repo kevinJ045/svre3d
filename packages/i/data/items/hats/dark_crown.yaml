@@ -21,6 +21,12 @@ view:
   material:
     byName: !bool true
     Glow: !material 'mat(color: #02F1FF, emissive: #02F1FF, emissiveIntensity: 2)'
+  preview:
+    position: !xyz
+      x: 0
+      y: -1
+      z: 0
+    scale: !float 0.9
 ui:
   icon: !item.ui.icon
     src: !realpath '../../../bin/textures/dark_crown.png'

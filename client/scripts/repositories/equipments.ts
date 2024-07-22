@@ -61,30 +61,7 @@ export class Equipments {
 		]
 
 		if (ref.view?.material) {
-			const mat = ref.view?.material;
-			if (typeof mat == 'string') {
-				const material = MaterialManager.parse(mat, { ...entity.data, ...item.data });
-
-				equipmentMesh.traverse(i => {
-					equipmentMesh.material = i.material = material;
-				});
-			} else if (typeof mat == 'object') {
-				if(mat.byName == true){
-					delete mat.byName;
-					equipmentMesh.traverse(o => {
-						if(o.material?.name in mat) {
-							o.material = MaterialManager.parse(mat[o.material.name], { ...entity.data, ...item.data })
-						}
-					})
-				} else for (let i in mat) {
-					const material = mat[i];
-					const part = Equipments.entityBody(
-						i,
-						{ ...item, object3d: equipmentMesh } as any,
-					);
-					part.material = MaterialManager.parse(material, { ...entity.data, ...item.data })
-				}
-			}
+			Equipments.applyMaterial(equipmentMesh, item, entity);
 		}
 
 		equipmentMesh.position.x += ref.view.object.position.x;
@@ -133,6 +110,36 @@ export class Equipments {
 				});
 
 			entity.emit('flags');
+		}
+	}
+
+	static applyMaterial(equipmentMesh: THREE.Mesh, item: Item, entity: Entity | { data: {} }){
+		const mat = item.reference.view.material;
+		if (typeof mat == 'string') {
+			const material = MaterialManager.parse(mat, { ...entity.data, ...item.data });
+
+			equipmentMesh.traverse(i => {
+				equipmentMesh.material = (i as THREE.Mesh).material = material;
+			});
+		} else if (typeof mat == 'object') {
+			if(mat.byName == true){
+				const m = {
+					...mat,
+				}
+				delete m.byName;
+				equipmentMesh.traverse(o => {
+					if((o as any).material?.name in m) {
+						(o as THREE.Mesh).material = MaterialManager.parse(m[((o as THREE.Mesh).material as any).name], { ...entity.data, ...item.data })
+					}
+				})
+			} else for (let i in mat) {
+				const material = mat[i];
+				const part = Equipments.entityBody(
+					i,
+					{ ...item, object3d: equipmentMesh } as any,
+				);
+				part.material = MaterialManager.parse(material, { ...entity.data, ...item.data })
+			}
 		}
 	}
 

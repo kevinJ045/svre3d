@@ -1,0 +1,32 @@
+manifest: 
+  id: !id explorer_belt
+  type: item
+data:
+  content: "A belt that only those who sought for the thrill of adventure yield."
+item:
+  name: Explorer Belt
+  inventory:
+    max: 1
+  flags: [ 'explorer' ]
+  achievement: true
+  boost:
+    defense: 5
+equipment:
+  type: 'armor'
+view:
+  object:
+    position: !xyz
+      x: -0.05
+      y: 0.75
+      z: -0.6
+  material:
+    byName: !bool true
+    Brown: 'mat(color: #533122)'
+    DarkBrown: 'mat(color: #200804)'
+    Gold: 'mat(color: #E7BF46)'
+ui:
+  icon: !item.ui.icon
+    src: !realpath '../../../bin/textures/explorer_belt.png'
+resource: !item.resource
+  src: !realpath '../../../bin/objects/explorer_belt.glb'
+  loader: gltf

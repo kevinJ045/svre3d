@@ -26,7 +26,7 @@ export const ItemActions = (
     };
 
     const handleDrop = () => {
-        
+        PlayerInfo.entity.dropItem(item.id);
     };
 
     const handleOpenBook = () => {

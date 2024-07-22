@@ -2,6 +2,7 @@ manifest:
   id: !id 'swamp'
   type: 'biome'
 biome:
+  entities: 'Murkborn'
   ground: !import './segments/swamp.i.yaml'
   tile:
     multicolor: true

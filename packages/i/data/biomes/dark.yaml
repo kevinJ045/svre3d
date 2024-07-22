@@ -2,6 +2,7 @@ manifest:
   id: !id 'dark'
   type: 'biome'
 biome:
+  entities: 'Darkrock'
   ground: !import './segments/dark.i.yaml'
   colors: [ "#121a35", "#0d324f", "#0d324f" ]
   foliage:

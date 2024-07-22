@@ -33,14 +33,17 @@ export default class UI {
 	static toggle() {
 		document.querySelector('#full-menu')?.classList.toggle('active');
 		document.querySelector('#menu-button')?.classList.toggle('menu-open');
+		GlobalEmitter.emit('menu:'+(document.querySelector('#full-menu')?.classList.contains('active') ? 'open' : 'close'), { close: () => this.hide() });
 	}
 
 	static show() {
+		GlobalEmitter.emit('menu:open');
 		document.querySelector('#full-menu')?.classList.add('active');
 		document.querySelector('#menu-button')?.classList.add('menu-open');
 	}
 
 	static hide() {
+		GlobalEmitter.emit('menu:close', { close: () => this.hide() });
 		document.querySelector('#full-menu')?.classList.remove('active');
 		document.querySelector('#menu-button')?.classList.remove('menu-open');
 	}

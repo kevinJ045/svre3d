@@ -193,7 +193,6 @@ export class Chunks {
 
 
 			if (biome.reference.manifest.id === biomeName) {
-				console.log('Found', biome.reference.manifest.id);
 
 				let isSafeSpawnPoint = minDistanceFromBorders;
 
@@ -215,7 +214,7 @@ export class Chunks {
 						// console.log(surroundingBiome.reference.manifest.id);
 					}
 
-					console.log(isSafeSpawnPoint);
+					// console.log(isSafeSpawnPoint);
 
 					if (isSafeSpawnPoint < minDistanceFromBorders / 2) {
 						break;

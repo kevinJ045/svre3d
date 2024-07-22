@@ -1,8 +1,8 @@
 manifest:
   id: !id 'grass'
   type: 'biome'
-  name: Grass
 biome:
+  entities: 'Meadowfolk'
   ground: !import './segments/grass.i.yaml'
   tile:
     multicolor: true

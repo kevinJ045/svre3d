@@ -43,8 +43,6 @@ const LoginForm = ({ onSubmit, types = [] as any[] }) => {
 
   return (
     <div className='login-page'>
-      <div></div>
-      <LoginBackground></LoginBackground>
       <div className="login-form">
         <div className="bg-glow"></div>
         <MonotoneBg></MonotoneBg>
@@ -58,7 +56,7 @@ const LoginForm = ({ onSubmit, types = [] as any[] }) => {
                 <>
                   {variant == ind && <div className='gloom-type'>
                     <Cube gloom={true} size={20} color={i.biome.colors[0]}></Cube>
-                    <p>{i.biome.name || i.manifest.id}</p>
+                    <p>{i.biome.entities || i.manifest.id}</p>
                   </div>}
                 </>
               ))}
@@ -76,7 +74,7 @@ const LoginForm = ({ onSubmit, types = [] as any[] }) => {
               <input type="password" value={password} placeholder='Password' onChange={(e) => setPassword(e.target.value)} />
             </div>
           </div>}
-          <Button onClick={handleLogin} color='#333333'>
+          <Button onClick={handleLogin} color='#082c2a'>
             {register ? 'Sign up' : 'Login'}
           </Button>
         </div>

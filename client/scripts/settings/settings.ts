@@ -28,7 +28,7 @@ export class Settings {
 				value: false
 			},
 			fog: {
-				value: true
+				value: false
 			}
 		},
 		performance: {

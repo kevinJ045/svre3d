@@ -1,9 +1,10 @@
 import { Items } from "../../repositories/items.js";
+import { ResourceMap } from "../../repositories/resources.js";
 
 export const DefaultBooks = () => [
   {
     name: 'Items',
-    icon: 'book-2',
+    icon: ResourceMap.find('i:texture.book-2')?.resource.load,
     id: 'm',
     defaultBook: true,
     isItemsList: true,

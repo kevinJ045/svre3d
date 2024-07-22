@@ -5,6 +5,7 @@ import { UIResources } from "../misc/uires.js";
 import { Root } from "react-dom/client";
 import { UISelectedItem, UIVariables } from "../misc/variables.js";
 import { PlayerInfo } from "../../repositories/player.js";
+import { Cube } from "../widgets/cube.js";
 
 export const HUD = () => {
         
@@ -34,13 +35,13 @@ export const HUD = () => {
                             <div className="title">
                                 {
                                     variables.selectedItem.type == 'entity' ?
-                                    <div className="preview-entity" style={{
-                                        '--color': '#00ff00'
-                                    } as any}></div>
+                                    <div className="preview-entity">
+                                        <Cube size={15} gloom={true} />
+                                    </div>
                                     :
-                                    <div className="preview-chunk" style={{
-                                        '--color': variables.selectedItem.chunk.biome.map.color
-                                    } as any}></div>
+                                    <div className="preview-chunk">
+                                        <Cube size={15} gloom={false} color={variables.selectedItem.chunk.biome.map.color} />
+                                    </div>
                                 }
                                 {
                                     variables.selectedItem.type == 'entity' ?

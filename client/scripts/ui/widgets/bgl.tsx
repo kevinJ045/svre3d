@@ -13,6 +13,8 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import { CopyShader } from 'three/examples/jsm/shaders/CopyShader.js';
 import { BlendShader } from 'three/examples/jsm/shaders/BlendShader.js';
 import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass.js";
+import * as POSTPROCESSING from "postprocessing"
+import { SSGIEffect, TRAAEffect, MotionBlurEffect, VelocityDepthNormalPass } from "realism-effects"
 
 async function doBGL(canvas: HTMLCanvasElement) {
 
@@ -48,6 +50,13 @@ async function doBGL(canvas: HTMLCanvasElement) {
     swamp: await loadTex('/resources/i/swamp/res?prop=biome.ground.texture.resource.sources.0'),
     magic: await loadTex('/resources/i/magic/res?prop=biome.ground.texture.resource.sources.0'),
     lava: await loadTex('/resources/i/lava/res?prop=biome.ground.texture.resource.sources.0'),
+  }
+
+  const sides = {
+    forest: await loadTex('/resources/i/forest/res?prop=biome.ground.texture.resource.sources.1'),
+    swamp: await loadTex('/resources/i/swamp/res?prop=biome.ground.texture.resource.sources.1'),
+    magic: await loadTex('/resources/i/magic/res?prop=biome.ground.texture.resource.sources.1'),
+    lava: await loadTex('/resources/i/lava/res?prop=biome.ground.texture.resource.sources.1'),
   }
 
   const leafTexture = await loadTex('/resources/i/leaf_texture/res');
@@ -86,8 +95,8 @@ async function doBGL(canvas: HTMLCanvasElement) {
   player.scene.position.z = 10; // Adjust the camera position to look down
   // camera.rotation.set(-Math.PI / 2, 0, 0); // Rotate the camera to look straight down
 
-  const light = new THREE.AmbientLight(0xdddddd, 1);
-  scene.add(light);
+  const alight = new THREE.AmbientLight(0xdddddd, 1);
+  scene.add(alight);
 
   const dlight = new THREE.DirectionalLight(0xffffff, 1);
   scene.add(dlight);
@@ -138,19 +147,26 @@ async function doBGL(canvas: HTMLCanvasElement) {
 
     const box = new THREE.Mesh(
       new THREE.BoxGeometry(5, 1, 5),
-      new THREE.MeshStandardMaterial({ opacity: 1, map: groundTextures[type] })
     );
+    box.material = [
+      new THREE.MeshToonMaterial({ opacity: 1, map: sides[type] }),
+      new THREE.MeshToonMaterial({ opacity: 1, map: sides[type] }),
+      new THREE.MeshToonMaterial({ opacity: 1, map: groundTextures[type] }),
+      new THREE.MeshToonMaterial({ opacity: 1, map: sides[type] }),
+      new THREE.MeshToonMaterial({ opacity: 1, map: sides[type] }),
+      new THREE.MeshToonMaterial({ opacity: 1, map: groundTextures[type] })
+    ]
     box.userData.pos = pos;
     box.castShadow = true;
     box.receiveShadow = true;
 
-    const LeafMaterial = (type) => new THREE.MeshStandardMaterial({
+    const LeafMaterial = (type) => new THREE.MeshToonMaterial({
       color: type == 'magic' ? 0x861ac5 : 0x385848,
       map: leafTexture as any,
       emissive: type == 'magic' ? 0x210312 : 0x232324
     });
 
-    const LogMaterial = new THREE.MeshStandardMaterial({
+    const LogMaterial = new THREE.MeshToonMaterial({
       color: 0x660000,
       map: groundTextures.forest as any
     });
@@ -292,10 +308,11 @@ async function doBGL(canvas: HTMLCanvasElement) {
   const composer = new EffectComposer(renderer);
   const renderPass = new RenderPass(scene, camera);
   composer.addPass(renderPass);
-  composer.addPass(new UnrealBloomPass(
+  const bloompass = new UnrealBloomPass(
     new THREE.Vector2(canvas.width, canvas.height),
     0.5, 0.0, 1.01
-  ))
+  );
+  composer.addPass(bloompass)
 
 
   const renderTargetParameters = {
@@ -330,6 +347,7 @@ async function doBGL(canvas: HTMLCanvasElement) {
   ssaoPass.kernelRadius = 16;
   ssaoPass.minDistance = 0.02;
   ssaoPass.maxDistance = Infinity;
+  composer.addPass(ssaoPass);
 
 
   const particles: THREE.Mesh[] = [];
@@ -455,9 +473,6 @@ async function doBGL(canvas: HTMLCanvasElement) {
     const elapsedTime = clock.getElapsedTime() * 1000;
 
     // updateCameraShake(delta);
-    camera.lookAt(
-      player.scene.position
-    )
     // if(Random.from(0, 1000) == 7){
     //   triggerShake(0.5, 1.0);
     // }
@@ -465,6 +480,10 @@ async function doBGL(canvas: HTMLCanvasElement) {
     if(elapsedTime < endTime) {
       renderRow();
       updateLight(elapsedTime);
+      camera.lookAt(
+        player.scene.position
+        .clone().add(new THREE.Vector3(4, 0, 0))
+      )
 
       currentBoxes.forEach(box => {
         if (box.position.distanceTo(camera.position) > 40) {
@@ -480,7 +499,7 @@ async function doBGL(canvas: HTMLCanvasElement) {
       dlight.target.position.z -= pspeed;
       dlight.target.updateMatrixWorld();
       dlight.updateMatrixWorld();
-  
+      blendPass.uniforms["mixRatio"].value = Random.from(5, 9) / 10;
     } else if(!ended){
       player.scene.children[0].rotation.x = 0;
       mixer.timeScale = 1;
@@ -491,34 +510,53 @@ async function doBGL(canvas: HTMLCanvasElement) {
       endTime;
       ended = true;
     } else {
-      if(currentBoxes.length > 1) currentBoxes.forEach(box => {
-        if (box.position.distanceTo(player.scene.position.clone()) > 5) {
-          if (box.position.y < -10){
-            currentBoxes.splice(currentBoxes.indexOf(box), 1);
-            scene.remove(box);
-          } else {
-            box.position.y -= box.userData.speed;
-          }
-        } else {
-          if(currentBoxes.length == 2){
-            scene.remove(currentBoxes.sort((a, b) => {
-              return b.position.distanceTo(player.scene.position.clone()) - a.position.distanceTo(player.scene.position.clone());
-            }).shift()!);
-          }
-        }
-      });
-      else currentBoxes.forEach(box => {
-        if(player.scene.position.z + 5 > box.position.z + 5){
-          box.position.z += 0.1;
-        } else if(player.scene.position.z - 5 < box.position.z + 5){
-          box.position.z -= 0.1;
-        }
-      });
-      if(camera.userData.turned < 1 || !camera.userData.turned){
-        if(!camera.userData.turned) camera.userData.turned = 0;
-        camera.position.x += 1;
-        camera.position.z += 0.05;
-        camera.userData.turned += 0.1;
+      composer.removePass(bloompass);
+      // if(currentBoxes.length > 1) currentBoxes.forEach(box => {
+      //   if (box.position.distanceTo(player.scene.position.clone()) > 5) {
+      //     if (box.position.y < -10){
+      //       currentBoxes.splice(currentBoxes.indexOf(box), 1);
+      //       scene.remove(box);
+      //     } else {
+      //       box.position.y -= box.userData.speed;
+      //     }
+      //   }
+      //   if(currentBoxes.filter(box => box.position.y >= 0).length == 2){
+      //     scene.remove(currentBoxes.sort((a, b) => {
+      //       return b.position.distanceTo(player.scene.position.clone()) - a.position.distanceTo(player.scene.position.clone());
+      //     }).shift()!);
+      //   }
+      // });
+      // else currentBoxes.forEach(box => {
+      //   if(Math.floor(player.scene.position.z + 5) > Math.floor(box.position.z + 5)){
+      //     box.position.z += 0.1;
+      //     box.userData.moveBackward = true;
+      //   } else if(!box.userData.moveBackward && Math.floor(player.scene.position.z - 5) < Math.floor(box.position.z + 5)){
+      //     box.position.z -= 0.1;
+      //   } else {
+      //     if(!camera.userData.turned){
+      //       camera.position.set(0, 4, 20);
+      //       player.scene.position.x -= 3.5 * (canvas.width / canvas.height);
+      //       currentBoxes[0].position.x -= 3.5 * (canvas.width / canvas.height);
+      //       camera.userData.turned = true;
+      //     }
+      //   }
+      // });
+
+      if(!camera.userData.turned){
+        camera.position.set(0, 4, 20);
+        player.scene.position.x -= 3.5 * (canvas.width / canvas.height);
+        currentBoxes[0].position.x -= 3.5 * (canvas.width / canvas.height);
+        camera.userData.turned = true;
+      }
+
+      if(camera.userData.turned){
+        camera.lookAt(
+          new THREE.Vector3(0)
+        )
+      } else {
+        camera.lookAt(
+          player.scene.position
+        )
       }
     }
     mixer.update(delta);

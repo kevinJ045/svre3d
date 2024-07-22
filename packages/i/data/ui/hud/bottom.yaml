@@ -5,5 +5,5 @@ ui:
   widgets:
     - type: "normal"
       children: !id ui.hud.bottom.center
-      class: "hud-bottom-ui"
+      class: "hud-bottom-ui hud"
   parent: "hud"

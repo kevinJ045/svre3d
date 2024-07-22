@@ -1,0 +1,6 @@
+manifest:
+  id: !id 'texture.book-2'
+  type: texture
+resource:
+  loader: texture
+  src: !realpath '../../../bin/textures/book2.png'

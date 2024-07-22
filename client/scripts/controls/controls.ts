@@ -9,6 +9,7 @@ import { KeyMap } from "../settings/keymap.js";
 import { SceneManager } from "../common/sceneman.js";
 import { FirstPersonControls } from "../lib/FirstPersonControls.js";
 import UI from "../ui/uiman.js";
+import GlobalEmitter from "../misc/globalEmitter.js";
 
 
 export class Controls {
@@ -72,6 +73,29 @@ export class Controls {
 
 		Keyboard.listen(KeyMap.getKey('ui.interact'), () => {
 			PlayerInfo.interact();
+		});
+
+		const currentEvents: any = {};
+
+		GlobalEmitter.on('menu:open', (closer: { close: () => void }) => {
+			Controls.pointerLock?.exit();
+			currentEvents.up = (e) => {
+				if(e.key == 'Escape'){
+					closer.close();
+				}
+			};
+			document.addEventListener('keyup', currentEvents.up);
+		});
+
+		GlobalEmitter.on('menu:close', () => {
+			if(Controls.pointerLock){
+				Controls.pointerLock = new PointerLock(Controls.canvas);
+				Controls.pointerLock._request();
+			}
+			if(currentEvents.up){
+				document.removeEventListener('keyup', currentEvents.up);
+				delete currentEvents.up;
+			}
 		});
 	}
 

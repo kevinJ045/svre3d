@@ -2,6 +2,7 @@ manifest:
   id: !id 'rock'
   type: 'biome'
 biome:
+  entities: 'Duneborn'
   ground: !import './segments/rock.i.yaml'
   tile:
     multicolor: true

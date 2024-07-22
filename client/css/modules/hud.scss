@@ -70,12 +70,17 @@
   }
 }
 
+
+.hud-bottom-ui{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+  height: auto;
+	width: 100%;
+}
+
 .hud{
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
+  z-index: 1;
 
   .bar-icon{
     @include bar-icon();
@@ -101,4 +106,106 @@
     }
   }
 
+}
+
+
+.hud-bar{
+	position: relative;
+	text-align: center;
+	width: 200px;
+	max-width: 100%;
+	color: white;
+	border-radius: 5px;
+	height: 4px;
+	overflow: visible;
+}
+
+.hud-bar::before{
+	width: 100%;
+	background: #1a1b1f;
+	display: block;
+	height: inherit;
+	content: "";
+}
+
+.hud-bar::after{
+	width: var(--width);
+	content: "";
+	display: block;
+	height: inherit;
+	background: var(--background);
+	position: absolute;
+	top: 0;
+	left: 0;
+	transition: .4s width;
+}
+
+.hud-bar .text{
+	position: absolute;
+	left: 50%;
+	top: -20px;
+	transform: translate(-50%, 0);
+}
+
+
+.hud-top-left{
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	background: var(--var-bg-1);
+	opacity: .8;
+
+	width: 150px;
+	height: 100px;
+
+	scale: 1;
+
+	padding: 5px;
+}
+
+
+.preview-chunk, .preview-entity{
+	width: 20px;
+	height: 20px;
+	display: inline-block;
+	position: absolute;
+	left: 0px;
+  margin-top: -7px;
+}
+
+.preview-entity::after{
+	width: 4px;
+	height: 4px;
+	background: black;
+}
+
+.hud-top-left .title{
+	height: 30px;
+  color: white;
+	line-height:  30px;
+	text-align: center;
+	position: relative;
+}
+
+.hud-top-left .preview-chunk, .hud-top-left .preview-entity{
+	top: calc(50% - 10px);
+}
+
+
+.space-10{
+	display: block;
+	width: 100%;
+	height: 25px;
+}
+
+
+body.crosshair #crosshair{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 20px;
+	height: 20px;
+	background: white;
+  clip-path: path('M 8.5866598,0 V 8.233234 H 11.41322 V 0 Z m -6.75942,1.827236 v 2.826548 3.57945 h 2.86574 V 4.653784 H 8.23324 V 1.827236 H 4.69298 Z m 9.9395202,0 v 2.826548 h 3.54026 v 3.57945 h 2.86574 V 4.653784 1.827236 H 15.30702 Z M 0,8.578552 V 11.4051 H 8.23324 V 8.578552 Z m 11.76676,0 V 11.4051 H 20 V 8.578552 Z m -9.9395202,3.179982 v 3.540256 2.865742 H 4.6537798 8.23324 V 15.29879 H 4.6537798 v -3.540256 z m 6.75942,0 v 8.233234 H 11.41322 v -8.233234 z m 6.7595602,0 v 3.540256 h -3.57946 v 2.865742 h 3.57946 2.82654 V 15.29879 11.758534 Z');
 }

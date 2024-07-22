@@ -8,6 +8,7 @@ import { PlayerInfo } from "../../repositories/player";
 import { ExtendedMesh, ExtendedObject3D, THREE } from "enable3d";
 import { cloneGltf } from "../../lib/gltfclone";
 import { Entities } from "../../repositories/entities";
+import GlobalEmitter from "../../misc/globalEmitter";
 
 export type ItemIDAndQt = {
   item: string,
@@ -109,10 +110,14 @@ export default class TradeUI {
     const container = document.createElement('div');
     UI.uiRoot.appendChild(container);
     const root = createRoot(container);
+    GlobalEmitter.emit('menu:open', {
+      close: () => removeComponent()
+    });
 
     const removeComponent = () => {
       root.unmount();
       UI.uiRoot.removeChild(container);
+      GlobalEmitter.emit('menu:close');
     };
 
     const list = <TradeList list={tradeMenu} close={removeComponent} />;

@@ -6,17 +6,16 @@ import { PlayerInfo } from "../../repositories/player.js";
 
 const elements: Record<string, React.ElementType> = {
     text: ({ widget, children, variables }) => <div className="text">{parseVariable(widget.text, variables)}{children}</div>,
+    span: ({ widget, children, variables }) => <span className={widget.class ? parseVariable(widget.class, variables) : ''}>{parseVariable(widget.text, variables)}{children}</span>,
     bar: ({ widget, children, variables }) => <div
-        className={"hud-bar "+(widget.class || '')}
+        className={""+(widget.class || '')}
         style={{
-            '--width': 
+            '--active': 
             Math.min(Math.max(parseFloat(parseVariable(widget.bar.current, variables)) / parseFloat(parseVariable(widget.bar.max, variables)) * 100, 0), 100) + '%',
-            '--background':
+            '--accent':
             widget.bar.color ? parseVariable(widget.bar.color, variables) : '#70c70d',
-            'width': 
-            parseVariable(widget.bar.width, variables) || '200px'
         } as React.CSSProperties}
-    >{children}</div>,
+    ><div className="inner"></div>{children}</div>,
     normal: ({ children, widget }) => <div style={
         {
             ...(widget.style || {})

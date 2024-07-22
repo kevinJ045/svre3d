@@ -25,6 +25,8 @@
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.5.0",
+    "postprocessing": "^6.35.6",
+    "realism-effects": "^1.1.2",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
     "uuid": "^9.0.1",

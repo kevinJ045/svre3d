@@ -4,11 +4,11 @@ manifest:
 ui:
   widgets:
     - type: bar
+      class: bar-icon exp vertical
       widgets:
-        - type: text
+        - type: span
           text: $(player.exp.level)
       bar:
         current: "$(player.exp.current)"
         max: "$(player.exp.max)"
-        width: "60px"
   parent: !id ui.hud.bottom.center

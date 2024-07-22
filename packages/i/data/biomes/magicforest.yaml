@@ -2,6 +2,7 @@ manifest:
   id: !id 'magic'
   type: 'biome'
 biome:
+  entities: 'Verdantkin'
   ground: !import './segments/magic.i.yaml'
   tile:
     multicolor: true

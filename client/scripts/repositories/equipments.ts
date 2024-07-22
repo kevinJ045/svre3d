@@ -69,7 +69,14 @@ export class Equipments {
 					equipmentMesh.material = i.material = material;
 				});
 			} else if (typeof mat == 'object') {
-				for (let i in mat) {
+				if(mat.byName == true){
+					delete mat.byName;
+					equipmentMesh.traverse(o => {
+						if(o.material?.name in mat) {
+							o.material = MaterialManager.parse(mat[o.material.name], { ...entity.data, ...item.data })
+						}
+					})
+				} else for (let i in mat) {
 					const material = mat[i];
 					const part = Equipments.entityBody(
 						i,

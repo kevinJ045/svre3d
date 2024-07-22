@@ -16,7 +16,7 @@ export type bookpage = {
 }
 export type book = {
   name: string,
-  icon: string,
+  icon: THREE.Texture | { src: string },
   id: string,
   defaultBook?: boolean,
   isItemsList?: boolean,
@@ -137,7 +137,8 @@ function BookComponent({ books }: { books: book[] }) {
             <ul>
               {filteredBooks.map((book) => (
                 <li key={book.name} onClick={() => handleBookSelection(book)}>
-                  <div className={"book-icon " + (book.icon || 'book-0')}></div>
+                  <div className={"book-icon"} style={{'--icon': book.icon} as any}></div>
+                  <img src={(book.icon as any).image?.src} />
                   {book.name}
                 </li>
               ))}

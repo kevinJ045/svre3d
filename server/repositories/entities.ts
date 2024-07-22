@@ -66,7 +66,7 @@ export class Entities {
 			entity.flags.push(...entity.reference.entity.flags);
 		}
 
-		const tradeOptions = entity.reference.entity.trade || [];
+		const tradeOptions = entity.reference.entity?.trade || [];
 
 		if (v) {
 			if (v.drops) {
@@ -211,6 +211,25 @@ export class Entities {
 			if (target && entity) {
 				Entities.attackTarget(entity, target);
 			}
+		});
+
+		pingFrom(socket, 'entity:drop', ({ entity: eid, direction, item: itemID }) => {
+			const entity = Entities.find(eid);
+			if(!entity) return;
+			const item = entity.inventory.find(i => i.id == itemID);
+			if(!item) return;
+			Sockets.emit('entity:inventory', {
+				entity: eid,
+				type: 'remove',
+				item,
+				action: 'remove'
+			});
+			const pos = {
+				x: (entity as EntityData).position.x + direction.x,
+				y: (entity as EntityData).position.y,
+				z: (entity as EntityData).position.z + direction.z,
+			}
+			this.spawnItem(item, pos);
 		});
 
 		pingFrom(socket, 'entity:collectitem', ({ entity: eid, player: pid }) => {

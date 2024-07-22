@@ -9,11 +9,11 @@ import * as React from "react";
 import { StartPage } from "./ui/componets/startpage.js";
 
 
-const root = createRoot(document.querySelector('#startpage')!);
+const root = createRoot(document.querySelector('#pages')!);
 
 root.render(
   React.createElement(StartPage, {
-    start: () => connectSocket(({
+    start: (setCurrentPage: (a: string) => void) => connectSocket(({
       player,
       resources,
       playerEntity,
@@ -21,6 +21,7 @@ root.render(
     }) => {
     
       if (PlayerInfo.player.username) return;
+      setCurrentPage('game');
     
       PlayerInfo.setPlayer(player);
       PlayerInfo.setPlayerEntity(playerEntity);
@@ -31,6 +32,6 @@ root.render(
     
     
       initScene();
-    })
+    }, () => setCurrentPage('login'))
   })
 );

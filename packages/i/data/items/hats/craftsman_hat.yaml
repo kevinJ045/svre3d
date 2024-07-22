@@ -1,12 +1,16 @@
 manifest: 
   id: !id craftsman_hat
   type: item
+data:
+  content: "A hat those who forge in the flames and work in the deserts only claim, a hat whose wearer's craftsmanship shines in the basking sun."
 item:
   name: Craftsman Hat
   inventory:
     max: 1
   flags: [ 'craftsman' ]
   achievement: true
+  boost:
+    defense: 1
 equipment:
   type: 'hat'
 view:

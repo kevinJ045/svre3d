@@ -7,6 +7,7 @@ export const variants = [
 	'i:grass',
 	'i:lava',
 	'i:magic',
+	'i:dark',
 	// 'arctic',
 	// 'coastal',
 	// 'underground',

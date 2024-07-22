@@ -4,29 +4,10 @@
 	width: 100dvw;
 	height: 100dvh;
 	position: relative;
-	background: url('/res/img/bg.png');
-	background-size: 100% 100%;
-}
-
-.login-bg{
-	display: block;
-	height: 100%;
-	width: 100%;
-	position: absolute;
-}
-
-.login-page::before{
-	content: "";
-	width: 100%;
-	display: block;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.4);
-	position: absolute;
-	backdrop-filter: blur(4px);
 }
 
 .login-form{
-	--background: #111111;
+	--background: #001f1d9d;
 	position: absolute;
 	width: 320px;
 	height: 100%;
@@ -59,7 +40,7 @@
 .login-form input {
 	width: 100%;
 	height: 40px;
-	background-color: rgba(0, 0, 0, 0.5);
+	background-color: #082c2ac7;
 	padding: 5px 10px;
 	outline: 0;
 	color: white;
@@ -69,7 +50,7 @@
 .login-form .form div div:first-child input{
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
-	border-bottom: 1px solid rgba(255, 255, 245, .4);
+	border-bottom: 1px solid rgba(0, 82, 85, 0.4);
 }
 
 .login-form .form div div:last-child input{
@@ -223,9 +204,9 @@
 	top: 0;
 	position: absolute;
 	z-index: -1;
-	background: var(--vp-c-bg-alt);
+	background: #082c2ac7;
 	filter: blur(10px);
-	display: none;
+	opacity: .5;
 }
 
 /* CSS */
@@ -244,6 +225,7 @@
   --edge-color-middle: #a30036;
   --edge-color-end: #52001b;
   --front-bg-color: #f0003c;
+	--var-fg-2: var(--edge-color-end);
 }
 
 .login-button-shadow {
@@ -506,17 +488,6 @@ body.sky{
 	--biome-colors-1: #3e5bff;
 	background: linear-gradient(var(--biome-colors-0), var(--biome-colors-1));
 }
-
-body.crosshair #crosshair{
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 10px;
-	height: 10px;
-	background: red;
-}
-
 
 
 .trade-modal{

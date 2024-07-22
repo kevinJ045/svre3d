@@ -2,6 +2,7 @@ manifest:
   id: !id 'forest'
   type: 'biome'
 biome:
+  entities: 'Groveborn'
   ground: !import './segments/forest.i.yaml'
   tile:
     multicolor: true

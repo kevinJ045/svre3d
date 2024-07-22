@@ -5,6 +5,7 @@ Arborians
 Verdantkin
 Groveborn
 Leafwalkers
+
 Desert Nomads:
 
 Sandstriders
@@ -19,6 +20,7 @@ Peakfolk
 Cliffdwellers
 Summitborn
 Avalanche Nomads
+
 Underground Dwellers:
 
 Deep Delvers
@@ -26,6 +28,7 @@ Cavernborn
 Subterrans
 Tunnelkin
 Darkrock Clan
+
 Coastal Inhabitants:
 
 Tidecallers
@@ -33,6 +36,7 @@ Seafolk
 Coralians
 Saltborn
 Waveborn
+
 Arctic Explorers:
 
 Frostborn
@@ -54,6 +58,7 @@ Meadowfolk
 Savannakin
 Grassland Nomads
 Steppe Wanderers
+
 Swamp Dwellers:
 
 Bogfolk
@@ -61,6 +66,7 @@ Marshwalkers
 Swampkin
 Murkborn
 Fen Nomads
+
 Volcanic Inhabitants:
 
 Magmaforged

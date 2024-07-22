@@ -79,6 +79,8 @@ export class MainScene extends Scene3D {
 			Entities.updateEntities(player.object3d.position, Settings.get<number>('performance.renderDistance'));
 		});
 
+		Settings.on('change:performance.renderDistance', () => player.emit('move'));
+
 		ping('entities:getspawned', {
 			position: player.object3d.position,
 			distance: Settings.get('performance.renderDistance'),

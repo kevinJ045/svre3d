@@ -1,3 +1,4 @@
+@import './bg-stars.scss';
 
 #startpage{
   width: 100%;
@@ -6,7 +7,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  background: linear-gradient(#00266d, #031330);
 
   .page-background{
     content: "";
@@ -15,6 +15,22 @@
     position: absolute;
   }
 
+  & > .start-button{
+    width: 180px;
+    height: 120px;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: #001f1d9d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 24px;
+    color: #09D0D0;
+    font-weight: 700;
+    text-shadow: 0 0 10px #09b3b35e;
+  }
 
   .menu{
     position: absolute;
@@ -23,11 +39,26 @@
     padding: 10px;
     display: flex;
     flex-wrap: wrap;
+    gap: 5px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
-    .startbutton{
-      width: 100%;
+    .start-button, .settings-button{
+      width: calc(50% - 5px);
       height: 180px;
-      background: #131310;
+      background: #001f1d9d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-size: 24px;
+      color: #09D0D0;
+      font-weight: 700;
+      text-shadow: 0 0 10px #09b3b35e;
+    }
+    .settings-button{
+      color: #44ccaa;
     }
   }
 }

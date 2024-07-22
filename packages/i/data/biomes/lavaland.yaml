@@ -2,6 +2,7 @@ manifest:
   id: !id 'lava'
   type: 'biome'
 biome:
+  entities: 'Lavaling'
   ground: !import './segments/lava.i.yaml'
   tile:
     multicolor: true

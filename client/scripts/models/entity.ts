@@ -484,6 +484,18 @@ export class Entity extends EntityData {
 	}
 
 
+	dropItem(item: string){
+		ping('entity:drop', { 
+			entity: this.id,
+			item: item,
+			direction: {
+				x: 0,
+				y: 0,
+				z: 2
+			}
+		});
+	}
+
 	// Method to add an item to the inventory
 	addToInventory(item: Item, send = true): void {
 		const type = super.addToInventory(item);

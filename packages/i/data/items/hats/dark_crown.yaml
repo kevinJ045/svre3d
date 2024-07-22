@@ -1,0 +1,29 @@
+manifest: 
+  id: !id dark_crown
+  type: item
+data:
+  content: "The helmet of the dark lord roaming in the [Abyss]."
+item:
+  name: Dark Crown
+  inventory:
+    max: 1
+  boost:
+    defense: 10
+    health: 10
+equipment:
+  type: 'hat'
+view:
+  object:
+    position: !xyz
+      x: 0
+      y: 0.9
+      z: -0.6
+  material:
+    byName: !bool true
+    Glow: !material 'mat(color: #02F1FF, emissive: #02F1FF, emissiveIntensity: 2)'
+ui:
+  icon: !item.ui.icon
+    src: !realpath '../../../bin/textures/dark_crown.png'
+resource: !item.resource
+  src: !realpath '../../../bin/objects/dark_crown.glb'
+  loader: gltf

@@ -13,6 +13,11 @@ view:
       x: -0.75
       y: 1.75
       z: -1.25
+  preview:
+    position: !xyz
+      x: -0.75
+      y: 0
+      z: 0
 ui:
   icon: !item.ui.icon
     src: !realpath '../../../bin/textures/horn-1.icon.png'

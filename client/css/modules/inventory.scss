@@ -425,14 +425,13 @@
 
       }
 
-      .stats-or-book{
-        @include paperTexture();
+      .item-preview{
         position: absolute;
         width: 100px;
         height: 100px;
         top: 40px;
         right: 15px;
-        padding: 5px;
+        background: var(--var-bg-5);
 
         & > span{
           font-weight: 900;

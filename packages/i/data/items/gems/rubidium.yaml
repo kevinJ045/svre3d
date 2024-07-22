@@ -22,6 +22,8 @@ view:
       x: -0.05
       y: 0.55
       z: -0.05
+  preview:
+    scale: !float 1.5
 resource: !item.resource
   src: !realpath '../../../bin/objects/rubidium.obj'
   loader: obj

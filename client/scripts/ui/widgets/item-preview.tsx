@@ -34,9 +34,11 @@ function updateCurrentItem(item) {
 
   if (item.reference.view?.preview) {
     const p = item.reference.view?.preview;
-    object.position.x += p.position.x;
-    object.position.y += p.position.y;
-    object.position.z += p.position.z;
+    if(p.position){
+      object.position.x += p.position.x;
+      object.position.y += p.position.y;
+      object.position.z += p.position.z;
+    }
     if (p.scale) {
       object.scale.setScalar(p.scale);
     }
@@ -53,7 +55,9 @@ function updateCurrentItem(item) {
 
 function previewItem(canvas) {
   if (!previewData.renderer) {
-    previewData.renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+    previewData.renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    previewData.renderer.setPixelRatio(window.devicePixelRatio);
+    previewData.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
   } else {
     previewData.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     previewData.renderer.setPixelRatio(window.devicePixelRatio);
@@ -69,7 +73,7 @@ function previewItem(canvas) {
   }
 
   const aspect = canvas.clientWidth / canvas.clientHeight;
-  const frustumSize = 6;
+  const frustumSize = 4;
   const camera = new THREE.OrthographicCamera(
     (frustumSize * aspect) / -2,
     (frustumSize * aspect) / 2,
@@ -102,6 +106,18 @@ function previewItem(canvas) {
       ))
     );
   }
+
+  function onWindowResize() {
+    const aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.left = frustumSize * aspect / -2;
+    camera.right = frustumSize * aspect / 2;
+    camera.top = frustumSize / 2;
+    camera.bottom = frustumSize / -2;
+    camera.updateProjectionMatrix();
+    previewData.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  }
+
+  canvas.addEventListener('resize', onWindowResize);
 
   function render() {
     if (previewData.object) {

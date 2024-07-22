@@ -14,7 +14,7 @@ export function InfoTable({
 }: {
   currentItem: Item
 }) {
-  const [currentTab, setCurrentTab] = useState('preview');
+  const [currentTab, setCurrentTab] = useState('info');
 
   return (
 
@@ -36,8 +36,8 @@ export function InfoTable({
         <div className={"info-tab " + (currentTab == 'craft' ? 'active' : '')} onClick={() => setCurrentTab('craft')}>
           <div className="icon c icon-anvil"></div>
         </div>
-        <div className={"info-tab " + (currentTab == 'preview' ? 'active' : '')} onClick={() => setCurrentTab('preview')}>
-          <div className="icon c icon-anvil"></div>
+        <div className={"info-tab " + (currentTab == 'profile' ? 'active' : '')} onClick={() => setCurrentTab('profile')}>
+          <div className="icon c icon-bag"></div>
         </div>
       </div>
       <div className="content">
@@ -49,9 +49,8 @@ export function InfoTable({
         </svg>
         <div className={"tab-pane info " + (currentTab == 'info' ? 'active' : '')}>
           <div className="content-data">{currentItem ? (currentItem?.data?.content ? parseItemDataText(currentItem?.data?.content) : <p className="mt-4">No item data</p>) : <p className="mt-4">No item selected</p>}</div>
-          {currentItem && <div className="stats-or-book">
-            <span>Book</span>
-            <div className="icon icon-bookmark"></div>
+          {currentItem && <div className="item-preview">
+            <ItemPreview currentItem={currentItem} />
           </div>}
 
           <div className="flexbox">
@@ -91,9 +90,9 @@ export function InfoTable({
           <CraftingUI />
 
         </div>
-        { currentTab == 'preview' && <div className="tab-pane preview-3d active">
+        { currentTab == 'profile' && <div className="tab-pane active">
 
-          <ItemPreview currentItem={currentItem} />
+          
 
         </div>}
       </div>

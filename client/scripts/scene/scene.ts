@@ -179,7 +179,9 @@ export class MainScene extends Scene3D {
 	composer2!: EffectComposer;
 
 	resize() {
+		this.setSize(window.innerWidth, window.innerHeight);
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
+		this.composer.setSize(window.innerWidth, window.innerHeight);
 		EffectManager.resize(this);
 	}
 

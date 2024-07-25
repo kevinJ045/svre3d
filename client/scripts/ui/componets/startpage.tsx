@@ -7,7 +7,7 @@ import { LocalDB } from "../../localdb/localdb";
 import { S } from "../../socket/socket";
 let f = 0;
 export function StartPage({ start }) {
-  const [currentPage, setCurentPage] = React.useState('game');
+  const [currentPage, setCurentPage] = React.useState('start');
   const startGame = () => {
     start((page: string) => setCurentPage(page));
   }

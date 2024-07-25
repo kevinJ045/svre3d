@@ -65,6 +65,7 @@ export const loadItem = async (item, scene, suffix = 'res', parent?: ResourceSch
 	} else if (type in scene.load) {
 		load = await ((scene.load[type])(resolvePath(parent || item, suffix ? suffix : undefined)));
 	} else if (type in loaders) {
+		console.log('Loading', type);
 		load = await ((loaders[type])(resolvePath(parent || item, suffix ? suffix : undefined)));
 	}
 

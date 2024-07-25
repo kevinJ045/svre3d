@@ -465,7 +465,7 @@ async function doBGL(canvas: HTMLCanvasElement) {
   const clock = new THREE.Clock();
 
   const pspeed = 0.2;
-  const endTime = 1000;
+  const endTime = 10000;
   let ended = false;
 
   function render() {

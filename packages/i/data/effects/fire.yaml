@@ -1,0 +1,45 @@
+manifest:
+  id: !id 'shader.fire'
+  type: shader
+material:
+  vertex: !import '../../bin/shaders/fire.vertex.glsl'
+  fragment: !import '../../bin/shaders/fire.fragment.glsl'
+  transparent: !bool true
+defines:
+  ITERATIONS: "10"
+  OCTIVES: "3"
+uniforms:
+  shadTex:
+    type: t
+    value: !id texture.firenoise
+  color:
+    type: c
+    value: null
+    o: !bool true
+  seed:
+    type: f
+    value: !float 0.0
+  invModelMatrix:
+    type: m4
+    value: null
+  scale:
+    type: v3
+    value: null
+  noiseScale:
+    type: v4
+    value:
+      - !int 1
+      - !int 2
+      - !int 1
+      - !float 0.3
+  magnitude:
+    type: f
+    value: !float 1.3
+  lacunarity:
+    type: f
+    value: !float 2.0
+  gain:
+    type: f
+    value: !float 0.5
+resource:
+  _: ~

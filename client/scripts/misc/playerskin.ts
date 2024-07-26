@@ -6,6 +6,7 @@ import { Biomes } from "../repositories/biomes.js";
 import { THREE } from "enable3d";
 import { Equipments } from '../repositories/equipments.js';
 import { Random } from '../../../server/common/rand.js';
+import { ResourceMap } from '../repositories/resources.js';
 
 
 export class SkinPlayer {
@@ -79,7 +80,7 @@ export class SkinPlayer {
             map: this.createCanvasImage(player, colors, 110, 150, 400),
             ...settings
         });
-
     }
 
 }
+

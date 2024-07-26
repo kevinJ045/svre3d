@@ -1,0 +1,6 @@
+manifest:
+  id: !id 'texture.firenoise'
+  type: texture
+resource:
+  loader: texture
+  src: !realpath '../../../bin/textures/firenoise.png'

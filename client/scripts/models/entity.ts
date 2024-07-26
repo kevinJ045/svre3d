@@ -448,7 +448,7 @@ export class Entity extends EntityData {
 		return true;
 	}
 
-	update(){
+	update(time){
 		if(this.attackTarget){
 			this.moveTowardsTarget(this.attackTarget.position ? xyzTv(this.attackTarget.position) : (this.attackTarget as Entity).object3d.position);
 		} else if(this.targetLocation) {
@@ -481,6 +481,8 @@ export class Entity extends EntityData {
 		if(this.object3d.userData.$hitboxUpdate){
 			this.object3d.userData.$hitboxUpdate();
 		}
+
+		this.emit('update', time);
 	}
 
 

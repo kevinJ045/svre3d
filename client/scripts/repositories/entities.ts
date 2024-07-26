@@ -337,9 +337,9 @@ export class Entities {
 		});
 	}
 	
-	static update(){
+	static update(time){
 		Entities.entities.forEach(entity => {
-			entity.update();
+			entity.update(time);
 		});
 	}
 

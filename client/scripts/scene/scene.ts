@@ -22,8 +22,10 @@ import { Biomes } from "../repositories/biomes.js";
 import Projectiles from "../repositories/projectiles.js";
 import GlobalEmitter from "../misc/globalEmitter.js";
 import Markers from "../objects/markers.js";
+import { ShaderStructure } from "../objects/shaderObject.js";
 
 export class MainScene extends Scene3D {
+	fire: any;
 
 	constructor() {
 		super({ key: 'MainScene' })
@@ -48,6 +50,8 @@ export class MainScene extends Scene3D {
 		Lights
 			.setLights(lights!)
 			.initLights();
+
+		console.log('Start');
 
 		Chunks.init();
 		const player = Entities.spawn(PlayerInfo.entity)!;
@@ -78,6 +82,18 @@ export class MainScene extends Scene3D {
 			EffectManager.fog_update(this, player.object3d.position.distanceTo(this.camera.position));
 			Entities.updateEntities(player.object3d.position, Settings.get<number>('performance.renderDistance'));
 		});
+
+
+		const fire = new ShaderStructure(
+			{
+				shader: ResourceMap.find('i:shader.fire')!,
+				color: '#000000'
+			}
+		);
+		this.scene.add(fire);
+		fire.position.copy(player.object3d.position);
+		fire.position.y = 1;
+		this.fire = fire;
 
 		Settings.on('change:performance.renderDistance', () => player.emit('move'));
 
@@ -185,9 +201,9 @@ export class MainScene extends Scene3D {
 		EffectManager.resize(this);
 	}
 
-	update() {
+	update(time) {
 
-		Entities.update();
+		Entities.update(time);
 		Projectiles.update();
 		Controls.update();
 		UI.update();
@@ -198,6 +214,8 @@ export class MainScene extends Scene3D {
 		if (this.composer2) {
 			this.composer2.render();
 		}
+
+		this.fire.update(this.clock.elapsedTime * 3.3);
 
 		// // Lights.lights.directionalLight.lookAt()
 	}

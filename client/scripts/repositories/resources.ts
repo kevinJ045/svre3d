@@ -48,7 +48,7 @@ export const resource_types = [
 ];
 
 export const resolvePath = (item: ResourceSchema, suffix = 'res') => {
-	return '/resources/' + item.manifest.id.split(':').join('/') + '/' + suffix;
+	return location.origin + '/resources/' + item.manifest.id.split(':').join('/') + '/' + suffix;
 }
 
 export const loadItem = async (item, scene, suffix = 'res', parent?: ResourceSchema) => {
@@ -63,9 +63,10 @@ export const loadItem = async (item, scene, suffix = 'res', parent?: ResourceSch
 			));
 		}
 	} else if (type in scene.load) {
+		// console.log(parent || item, suffix, resolvePath(parent || item, suffix ? suffix : undefined));
 		load = await ((scene.load[type])(resolvePath(parent || item, suffix ? suffix : undefined)));
 	} else if (type in loaders) {
-		console.log('Loading', type);
+		// console.log('Loading', type);
 		load = await ((loaders[type])(resolvePath(parent || item, suffix ? suffix : undefined)));
 	}
 

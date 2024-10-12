@@ -83,18 +83,6 @@ export class MainScene extends Scene3D {
 			Entities.updateEntities(player.object3d.position, Settings.get<number>('performance.renderDistance'));
 		});
 
-
-		const fire = new ShaderStructure(
-			{
-				shader: ResourceMap.find('i:shader.fire')!,
-				color: '#000000'
-			}
-		);
-		this.scene.add(fire);
-		fire.position.copy(player.object3d.position);
-		fire.position.y = 1;
-		this.fire = fire;
-
 		Settings.on('change:performance.renderDistance', () => player.emit('move'));
 
 		ping('entities:getspawned', {
@@ -214,8 +202,6 @@ export class MainScene extends Scene3D {
 		if (this.composer2) {
 			this.composer2.render();
 		}
-
-		this.fire.update(this.clock.elapsedTime * 3.3);
 
 		// // Lights.lights.directionalLight.lookAt()
 	}

@@ -15,9 +15,10 @@ import { Items } from "./items.js";
 import { EntitySpawner } from "./spawner.js";
 import { Structures } from "./structures.js";
 import { Vector3 } from "three";
+import { EventTrigger } from "./trigger.js";
 
 
-export class Chunks {
+export class Chunks extends EventTrigger<ChunkData>() {
 
 	static chunks: ChunkData[] = [];
 

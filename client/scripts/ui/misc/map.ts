@@ -20,7 +20,6 @@ export class Map2D {
   static create(canvas: HTMLCanvasElement, infoDiv: HTMLDivElement, zoomRange: HTMLInputElement) {
     const ctx = canvas.getContext('2d')!;
     const chunkSize = 5;
-    const playerPosition = { x: Math.floor(PlayerInfo.entity.object3d.position.x), y: Math.floor(PlayerInfo.entity.object3d.position.z) };
     let playerDirection = this.getPlayerDirection();
     let offsetX = 0;
     let offsetY = 0;
@@ -30,10 +29,11 @@ export class Map2D {
     let isPanning = false;
     let startX: number, startY: number;
     let currentSquare: { x: number, y: number, color: string };
+    const playerPosition = { x: Math.floor(PlayerInfo.entity.object3d.position.x), y: Math.floor(PlayerInfo.entity.object3d.position.z) };
 
     this.canvas = canvas;
 
-    let squares: { x: number, y: number, color: string, col: number, row: number }[] = [];
+    let squares: { x: number, y: number, color: string, col: number, row: number, gutX: number, gutY: number }[] = [];
 
     function drawMap() {
       ctx.scale(1, 1);
@@ -42,28 +42,47 @@ export class Map2D {
 
       squares = [];
 
-      const startCol = Math.floor(-offsetX / scaledChunkSize);
-      const endCol = Math.floor((canvas.width - offsetX) / scaledChunkSize);
-      const startRow = Math.floor(-offsetY / scaledChunkSize);
-      const endRow = Math.floor((canvas.height - offsetY) / scaledChunkSize);
+      const middle = getPlayerPos();
 
+      // Calculate how many chunks can be shown in the visible area
+      const halfCanvasWidth = canvas.width / 2 / scaledChunkSize;
+      const halfCanvasHeight = canvas.height / 2 / scaledChunkSize;
+
+      const startCol = Math.floor(-offsetX / scaledChunkSize - halfCanvasWidth);
+      const endCol = Math.ceil((canvas.width - offsetX) / scaledChunkSize + halfCanvasWidth);
+      const startRow = Math.floor(-offsetY / scaledChunkSize - halfCanvasHeight);
+      const endRow = Math.ceil((canvas.height - offsetY) / scaledChunkSize + halfCanvasHeight);
+
+      // Generate chunks starting from the player's chunk (middle) and expand outward
       for (let col = startCol; col <= endCol; col++) {
         for (let row = startRow; row <= endRow; row++) {
-          const x = col * scaledChunkSize + offsetX;
-          const y = row * scaledChunkSize + offsetY;
-          const color = getChunkType(col, row, 0.02, 0);
+          // Calculate the chunk's position in world space
+          const worldX = col * scaledChunkSize + offsetX;
+          const worldY = row * scaledChunkSize + offsetY;
 
+          // Get the chunk's actual coordinates (rounded to multiples of the chunk size)
+          const chunkX = Math.round(col * chunkSize); // Adjust chunkX to world grid
+          const chunkY = Math.round(row * chunkSize); // Adjust chunkY to world grid
+
+
+          // Get the color of the chunk using its chunk coordinates
+          const color = getChunkType(chunkX, chunkY, 0.0001, 0); // Get chunk type/color
+
+          // Draw the chunk rectangle on the map
           ctx.fillStyle = color;
-          ctx.fillRect(x, y, scaledChunkSize, scaledChunkSize);
-          squares.push({ x, y, row, col, color });
+          ctx.fillRect(worldX, worldY, scaledChunkSize, scaledChunkSize);
+
+          // Store the chunk information for interactions (like hover)
+          squares.push({ x: worldX, y: worldY, row, col, color, gutX: chunkX, gutY: chunkY });
         }
       }
 
-      const playerScreenX = (getPlayerPos().x) * scale + offsetX;
-      const playerScreenY = (getPlayerPos().y) * scale + offsetY;
+      // Draw player cursor relative to the current offset and zoom level
+      const playerScreenX = middle.x * scale + offsetX;
+      const playerScreenY = middle.y * scale + offsetY;
+      drawArrowCursor(playerScreenX, playerScreenY, 10, Math.atan2(playerDirection.y, playerDirection.x) + (Math.PI / 2));
 
-      drawArrowCursor(playerScreenX , playerScreenY, 10, Math.atan2(playerDirection.y, playerDirection.x) * 0.25);
-
+      // Draw markers relative to the current offset and zoom level
       drawMarkers(playerScreenX, playerScreenY);
     }
 
@@ -76,9 +95,10 @@ export class Map2D {
       // ctx.fill();
 
       ctx.save(); // Save the current state
-      ctx.translate(x - (adjustedSize/2), y - (adjustedSize/2)); // Move to the (x, y) position
+      ctx.translate(x - (adjustedSize / 2), y - (adjustedSize / 2)); // Move to the (x, y) position
       ctx.rotate(angle); // Rotate by the calculated angle
 
+      // @ts-ignore
       ctx.fillStyle = "#FFFFFF" || Biomes.find(PlayerInfo.entity?.variant)?.biome.colors[0] || '#FF00FF';
       ctx.beginPath();
 
@@ -118,11 +138,16 @@ export class Map2D {
       infoDiv.style.top = y + 'px';
     }
 
-    function getPlayerPos(){
+    function getPlayerPos() {
+      // Get the player's chunk position by dividing their world position by the chunk size (which is 5 in this case)
+      const playerChunkX = Math.floor(playerPosition.x / chunkSize) * chunkSize;
+      const playerChunkZ = Math.floor(playerPosition.y / chunkSize) * chunkSize;
+
+      // Scale the chunk position for rendering in the 2D map, adjusted with the offset and scale
       return {
-        x: ((playerPosition.x || 1) / canvas.getBoundingClientRect().width) * scaledChunkSize,
-        y: ((playerPosition.y || 1) / canvas.getBoundingClientRect().height) * scaledChunkSize,
-      }
+        x: (playerChunkX / chunkSize) * scaledChunkSize,
+        y: (playerChunkZ / chunkSize) * scaledChunkSize,
+      };
     }
 
     function drawCenter() {
@@ -223,13 +248,25 @@ export class Map2D {
     });
 
     GlobalEmitter.on('player:move', () => {
-      playerPosition.x = PlayerInfo.entity.position.x;
-      playerPosition.y = PlayerInfo.entity.position.z;
+      playerPosition.x = Math.floor(PlayerInfo.entity.position.x);
+      playerPosition.y = Math.floor(PlayerInfo.entity.position.z);
       playerDirection = Map2D.getPlayerDirection();
+      // drawMap();
+    });
+
+    GlobalEmitter.on('drawMap', () => {
+      drawMap();
+    });
+
+    GlobalEmitter.on('menu:open', () => {
       drawMap();
     });
 
     drawCenter();
+  }
+
+  static redraw(){
+    GlobalEmitter.emit('drawMap');
   }
 
   static update() { }

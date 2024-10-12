@@ -18,7 +18,7 @@ export const Map2DWidget = (
       createCanvas(canvasRef.current);
     }
   });
-
+  
 	return (
 		<div>
       <div ref={infoRef} className="info-area"></div>

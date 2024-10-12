@@ -84,7 +84,7 @@ async function doBGL(canvas: HTMLCanvasElement) {
   }
 
   Seed.setSeed(Date.now().toString());
-  WorldData.set('biomeColors', Object.keys(groundTextures).map(n => [n]));
+  WorldData.set('biomes', Object.keys(groundTextures).map(n => [n]));
 
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
   renderer.shadowMap.enabled = true;
@@ -143,7 +143,7 @@ async function doBGL(canvas: HTMLCanvasElement) {
       return badBox;
     }
 
-    const type = getChunkType(pos.x, pos.z, 0.01, 0);
+    const type = getChunkType(pos.x, pos.z, 0.01, 0, Object.keys(groundTextures).map(n => [n]));
 
     const box = new THREE.Mesh(
       new THREE.BoxGeometry(5, 1, 5),
@@ -576,7 +576,7 @@ export function BGLogin() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
-      doBGL(canvas);
+      // doBGL(canvas);
     }
   }, []);
 

@@ -25,6 +25,8 @@ export class Entity extends EntityData {
 
 		let anim = this.reference.resource.load.animations.find(anim => anim.name == name);
 
+		// console.log(this.reference.resource.load.animations, anim);
+
 		if(this.object3d.anims.mixer.timeScale != speed) this.object3d.anims.mixer.timeScale = speed;
 		this.object3d.anims.mixer.stopAllAction();
 		if(anim) {
@@ -117,7 +119,10 @@ export class Entity extends EntityData {
 			// if(this.reference.id == 'm:goober') console.log(otherObject.position.y - this.object3d.position.y)
 			// console.log(otherObject.position.y - this.object3d.position.y > -0.5);
 			if(event == 'collision' && otherObject.name == 'chunk'){
-				if(otherObject.position.y - this.object3d.position.y > -0.5){
+				const box = new THREE.Box3().setFromObject(this.object3d);
+				const sizeParent = new THREE.Vector3();
+				box.getSize(sizeParent);
+				if((otherObject.position.y - this.object3d.position.y) + (this.type === "i:player" ? 0 : sizeParent.y) > (this.type == "i:player" ? -0.5 : sizeParent.y / 4)){
 					// console.log('Higher Block');
 					this.hasHigherBlocks = true;
 				} else {
@@ -198,14 +203,13 @@ export class Entity extends EntityData {
 		};
 
 		const pos = this.object3d.position.clone().add(direction.clone()).multiplyScalar(-1);
+		const pos2 = this.object3d.position.clone().sub(direction.clone());
 		// console.log(pos, position);
 
 		// Perform raycast to detect obstacles in front of the player
 		const raycaster = new THREE.Raycaster(pos, position);
 		const intersects = raycaster.intersectObjects(Chunks.chunkObjects(), true);
 		const intersectsEntity = raycaster.intersectObjects(Entities.entities.map(entity => entity.object3d).filter(mesh => mesh.uuid !== this.object3d.uuid), true);
-
-		// console.log(intersects);
 
 		if (intersects.length > 0) {
 			// intersects[0].object.material = new THREE.MeshBasicMaterial({ color: 0x09d0d0 });
@@ -414,17 +418,19 @@ export class Entity extends EntityData {
 
 				const looking = this.rotateTowardsTarget();
 
+				// console.log(obstacles.hasHigherBlocks);
+
 				if(looking) {
 					if (obstacles.hasHigherBlocks) {
 						// console.log(obstacles.hasHigherBlocks);
 						this.addPos(0, 1.5, 0);
 						// this.run({ x: 0, z: 0});
 					} else if (obstacles.hasSolidObject || obstacles.hasEntity) {
-						// const avoidanceDirection = this.avoidObstacles(nextStep, obstacles);
-						// this.run({
-						// 		x: avoidanceDirection.x * speed,
-						// 		z: avoidanceDirection.z * speed
-						// });
+						const avoidanceDirection = this.avoidObstacles(nextStep, obstacles);
+						this.run({
+								x: avoidanceDirection.x * speed,
+								z: avoidanceDirection.z * speed
+						});
 					} else {
 						this.run({
 							x: direction.x * speed,

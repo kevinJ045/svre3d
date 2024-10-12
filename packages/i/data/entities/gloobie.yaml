@@ -1,0 +1,26 @@
+manifest:
+  id: !id 'gloobie'
+  type: 'entity'
+base:
+  health: !int 200
+  speed: 4
+  damage: 3
+view:
+  object:
+    body: 0.0.2
+    eye: 0.0.3
+  physics:
+    shape: box
+    height: 2
+entity:
+  ai: 
+    movement:
+      random: true
+      biome: !id 'magic'
+    attack:
+      attackBack: !bool false
+      escapes: true
+      targets: []
+resource:
+  src: !realpath '../../bin/objects/gloobie.glb'
+  loader: gltf

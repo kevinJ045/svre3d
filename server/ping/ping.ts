@@ -6,6 +6,7 @@ import { Items } from "../repositories/items.js";
 import { Players } from "../repositories/players.js";
 import { Chats } from "../repositories/chats.js";
 import Projectiles from "../repositories/projectiles.js";
+import { WorldMap2D } from "../repositories/worldmap2d.js";
 
 export function pingFrom<T = any, D = any>(socket: Socket, action: string, func: (data: T) => any) {
 	socket.on(action, async (data: T, callback: (data: D) => any) => {
@@ -30,5 +31,6 @@ export function startPing(serverData, socket: Socket) {
 	Players.startPing(socket);
 	Chats.startPing(socket);
 	Projectiles.startPing(socket, Entities.entities);
+	WorldMap2D.startLiveUpdates(socket);
 
 }

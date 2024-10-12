@@ -1,11 +1,11 @@
 # After exam
 
-+ Profile in Inventory Page Info Area
-+ Start menu and login in start menu
-+ Cubed background in login
+* Profile in Inventory Page Info Area
+- [Done 75%] Start menu and login in start menu
++ [Done 40%] Cubed background in login
 + Books Page with custom book styles
 + Chats and private Chats
-+ Settings UI from objects
++ [Done 50%] Settings UI from objects
 + Gamemode switch
 + Trading and stuff
 + Map

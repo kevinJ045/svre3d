@@ -260,3 +260,10 @@ Commands.register('give', (ctx: Context, itemName: string, quantity = 1, selecto
     });
   });
 }, 'string int:1 selector:self');
+
+
+Commands.register('prop', (ctx: Context, propName: string) => {
+  if(propName === 'pos'){
+    ctx.reply("Current Chunk: " + Chunks.findClose(ctx.position).stringify());
+  }
+}, 'string');

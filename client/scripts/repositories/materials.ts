@@ -65,6 +65,7 @@ export class MaterialManager {
 		});
 
 		mat.userData.source = { fragment, vertex, materialOptions };
+		mat.userData.baseColor = materialOptions.baseColor || 0x000000;
 		
 		return mat;
 	}
@@ -109,6 +110,7 @@ export class MaterialManager {
 		});
 
 		mat.userData.source = { fragment, vertex, materialOptions };
+		mat.userData.baseColor = biome.tile.variation_color;
 		
 		return mat;
 	}
@@ -149,6 +151,33 @@ export class MaterialManager {
 			}
 		};
 		obj.children.forEach(iterate);
+	}
+
+	static calculateAverageColor(material: THREE.Material): THREE.Color {
+    const colorAccumulator = new THREE.Color(0, 0, 0);
+
+		const _traverseMaterial = (material) => {
+			if (material.color) {
+				colorAccumulator.add(material.color);
+			} else if(material.userData.baseColor){
+				colorAccumulator.add(new THREE.Color(material.userData.baseColor));
+			}
+		}	
+
+		if (Array.isArray(material)){
+			material.forEach(m => _traverseMaterial(m));
+		} else {
+			_traverseMaterial(material);
+		}
+
+    return colorAccumulator;
+	}
+
+
+
+	static getBaseColorMaterial(material: THREE.Material): THREE.MeshBasicMaterial {
+    const averageColor = MaterialManager.calculateAverageColor(material);
+    return new THREE.MeshBasicMaterial({ color: averageColor });
 	}
 
 }

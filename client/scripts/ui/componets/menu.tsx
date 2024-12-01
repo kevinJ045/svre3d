@@ -33,7 +33,7 @@ export const Menu = () => {
 		crafting_setItemAtSlot
 	} = React.useContext(Context);
 
-	return (<div className="player-menu active" id="full-menu">
+	return (<div className="player-menu" id="full-menu">
 
 		<div className={"sidebar "+ (crafting_selectItems > -1 ? 'disabled' : '')}>
 			<Tab tab="inventory" setActiveTab={setTab} activeTab={tab}>
@@ -106,8 +106,8 @@ export const Menu = () => {
 			<TabPane tab="book" activeTab={tab}>
 				<BookComponent books={
 					ResourceMap.resources.filter(
-						i => i.config?.book
-					).map(i => ({ ...i.config!.book, id: i.id }))
+						i => i?.book
+					).map(i => ({ id: i.book }))
 						.concat(DefaultBooks())
 				} />
 			</TabPane>

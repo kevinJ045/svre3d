@@ -1,0 +1,108 @@
+.items-list, .books-items{
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+}
+
+.books-items{
+  .book-item{
+    background: var(--var-bg-2);
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 10px;
+    gap: 20px;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+
+    img {
+      width: 150px;
+      z-index: 1;
+    }
+
+    .title{
+      width: 100%;
+      font-weight: 700;
+      z-index: 1;
+    }
+
+    &::before{
+      width: 200%;
+      height: 80%;
+      top: 0;
+      left: -50%;
+      z-index: 0;
+      content: "";
+      display: block;
+      position: absolute;
+      background-color: var(--var-bg-1);
+      border-radius: 0 0 50% 50%;
+    }
+
+    &::after{
+      width: 200%;
+      height: 80%;
+      bottom: -60%;
+      left: -50%;
+      z-index: 0;
+      content: "";
+      display: block;
+      position: absolute;
+      background-color: var(--var-bg-2);
+      border-radius: 50% 50% 0 0;
+      transition: .4s;
+    }
+
+    &:nth-child(odd)::after, &:nth-child(even):hover::after{
+      bottom: -50%;
+    }
+
+    &:nth-child(even)::after, &:nth-child(odd):hover::after{
+      bottom: -60%;
+    }
+  }
+}
+
+.search-bar{
+  width: 100%;
+  max-width: 200px;
+  background: var(--var-bg-3);
+  border: 2px solid var(--var-bg-2);
+  position: relative;
+
+  &.absolute {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+
+  .search-icon{
+    width: 16px;
+    height: 16px;
+    background: currentColor;
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -55%);
+    left: 6px;
+    clip-path: path('m 14.875158,15.945066 c -0.07857,-0.03522 -0.74575,-0.671986 -1.658831,-1.583214 L 11.688932,12.83756 11.54521,12.950859 c -0.290449,0.228965 -0.810181,0.544908 -1.222523,0.743168 C 7.0722986,15.256852 3.1559052,14.167863 1.1788123,11.151487 0.06624798,9.4540909 -0.27861028,7.3644655 0.22895325,5.3959379 0.96026474,2.5596281 3.3533785,0.44297918 6.2595699,0.06201081 8.2738054,-0.20203245 10.271645,0.38329238 11.852125,1.7005115 c 2.492554,2.0773681 3.25983,5.6718735 1.840724,8.6233525 -0.19832,0.412469 -0.514214,0.932091 -0.743352,1.222756 l -0.113484,0.143956 1.503943,1.508385 c 0.974788,0.977668 1.531712,1.564013 1.582869,1.666489 0.169914,0.340363 0.05003,0.791854 -0.268967,1.012917 -0.18608,0.128954 -0.567042,0.161584 -0.7787,0.0667 z M 8.3062414,12.700405 c 0.7736647,-0.163814 1.510404,-0.47992 2.1188626,-0.909121 0.419876,-0.296177 1.055315,-0.927497 1.346916,-1.338187 C 12.880429,8.8920186 13.111881,6.8656358 12.385905,5.0784813 12.095148,4.3627173 11.703214,3.778181 11.13715,3.2160685 9.9868859,2.0738333 8.3415246,1.4716826 6.7643387,1.6157568 5.3524526,1.7447312 4.2377438,2.2634788 3.2500226,3.2511995 2.5710348,3.9301876 2.1708992,4.5720555 1.8816348,5.446267 1.5058153,6.5820665 1.5002685,7.7971057 1.8657199,8.9331635 2.0029623,9.359805 2.3653067,10.076916 2.6384461,10.462455 c 0.7983934,1.126944 2.1067547,1.971648 3.460424,2.234117 0.5488661,0.106422 0.5832637,0.109009 1.246873,0.09378 0.4137995,-0.0095 0.7128119,-0.0375 0.9604983,-0.08994 z');
+  }
+
+  .input-search-bar{
+    color: white;
+    padding: 10px 15px 10px 30px;
+    outline: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 0;
+  }
+}
+
+.book-component{
+  .grid-book{
+    display: flex;
+    gap: 10px;
+  }
+}

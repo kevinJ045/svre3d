@@ -29,6 +29,7 @@
     "realism-effects": "^1.1.2",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
+    "stats.js": "^0.17.0",
     "uuid": "^9.0.1",
     "vm": "^0.1.0"
   },

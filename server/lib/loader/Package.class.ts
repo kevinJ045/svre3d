@@ -11,7 +11,8 @@ export default class Package {
   parser: Parser;
   manifest: {
     id: string,
-    name: string
+    name: string,
+    type: string
   };
   serverData: ServerData;
 

@@ -16,4 +16,24 @@ export class SceneManager {
 		this.removeQueue.push(object);
 	}
 
+	static addAnimated(object: THREE.Object3D, cb?: () => any){
+		let posYOriginal = object.position.y;
+		let tenPercent = Math.abs(posYOriginal == 0 ? 0.5 : posYOriginal * 0.5);
+		SceneManager.scene.scene.add(object);
+		let frames = 0;
+
+		object.position.y = posYOriginal - tenPercent;
+		
+		const oneFrame = () => {
+			if(object.position.y === posYOriginal || frames == 60) return cb?.();
+			setTimeout(() => {
+				object.position.y += tenPercent * 0.5;
+				oneFrame();
+				frames++;
+			}, 1);
+		}
+
+		oneFrame();
+	}
+
 }

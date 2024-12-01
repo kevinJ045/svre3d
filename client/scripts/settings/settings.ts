@@ -34,10 +34,15 @@ export class Settings {
 		performance: {
 			_title: { value: 'Performance' },
 			renderDistance: {
-				value: 4,
+				value: 6,
 				min: 2,
 				max: 64
 			},
+			detailsLimit: {
+				value: 100,
+				min: 10,
+				max: 100
+			}
 		},
 		controls: {
 			_title: { value: 'Controls' },

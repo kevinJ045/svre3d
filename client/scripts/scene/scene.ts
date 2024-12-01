@@ -23,9 +23,10 @@ import Projectiles from "../repositories/projectiles.js";
 import GlobalEmitter from "../misc/globalEmitter.js";
 import Markers from "../objects/markers.js";
 import { ShaderStructure } from "../objects/shaderObject.js";
+import Stats from 'stats.js';
 
 export class MainScene extends Scene3D {
-	fire: any;
+	stats: Stats;
 
 	constructor() {
 		super({ key: 'MainScene' })
@@ -36,6 +37,19 @@ export class MainScene extends Scene3D {
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 
 		SceneManager.scene = this;
+
+    this.stats = new Stats();
+    this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild(this.stats.dom); // Attach stats to the DOM
+
+	}
+
+	preRender(){
+		this.stats.begin();
+	}
+
+	postRender(){
+		this.stats.end();
 	}
 
 	async preload() {
@@ -66,6 +80,7 @@ export class MainScene extends Scene3D {
 		// player.displace(new THREE.Vector3(Utils.randFrom(-10, 10), 0, Utils.randFrom(-10, 10)));
 		Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('performance.renderDistance'));
 		let t: any = 0;
+		let t2: any = 0
 		player.on('move', () => {
 			Lights.updateLightPosition(PlayerInfo.entity.object3d.position.clone());
 			Chunks.update(PlayerInfo.entity.object3d.position, Settings.get('performance.renderDistance'));
@@ -81,6 +96,16 @@ export class MainScene extends Scene3D {
 			});
 			EffectManager.fog_update(this, player.object3d.position.distanceTo(this.camera.position));
 			Entities.updateEntities(player.object3d.position, Settings.get<number>('performance.renderDistance'));
+			// clearTimeout(t2);
+			// t2 = setTimeout(() => {
+			// 	Chunks.renderCloseAndFar(player.object3d.position, Settings.get('performance.renderDistance'), Settings.get('performance.detailsLimit'));
+			// }, 10);
+		});
+		GlobalEmitter.on('chunk:loaded', () => {
+			clearTimeout(t2);
+			t2 = setTimeout(() => {
+				Chunks.renderCloseAndFar(player.object3d.position, Settings.get('performance.renderDistance'), Settings.get('performance.detailsLimit'));
+			}, 10);
 		});
 
 		Settings.on('change:performance.renderDistance', () => player.emit('move'));
@@ -117,6 +142,7 @@ export class MainScene extends Scene3D {
 		player.emit('flags');
 
 		CameraManager.setCamera(this.camera);
+		CameraManager.setCanvas(this.canvas);
 		UI.init();
 		Controls.initControls(this.canvas);
 

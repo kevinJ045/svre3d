@@ -35,6 +35,7 @@ export function generateWithRule(item, seed, object_rules?: string[], looted?: b
 
 export function generateObjects(rule, item, parent, seed, side = '', looted) {
 	const objects: any = [];
+	// console.log(rule);
 	const count = Array.isArray(rule.count) ? Random.from(rule.count[0], rule.count[1], seed) : rule.count;
 	for (let i = 0; i < count; i++) {
 
@@ -206,6 +207,7 @@ export class Structures {
 
 
 		(object as any).material = waterMaterial;
+		waterMaterial.userData.baseColor = new THREE.Color(variables.water || '#00aaaa');
 
 		g.add(object);
 		g.position.set(0, structureProps.useWorldHeight ? WorldData.get('waterHeight', 3.75) - chunk.position.y : height, 0);

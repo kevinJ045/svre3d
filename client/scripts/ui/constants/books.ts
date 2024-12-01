@@ -16,7 +16,7 @@ export const DefaultBooks = () => [
             type: "inventory-item",
             item: item.manifest.id,
             quantity: 0,
-            link: item?.book ? item.manifest.id : null
+            link: item?.book || null
           }
         ))
       }

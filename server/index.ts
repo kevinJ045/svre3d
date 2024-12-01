@@ -101,6 +101,17 @@ async function createApp() {
 		res.send(Biomes.biomes.map((i) => i.reference.biome.colors));
 	});
 
+	app.get("/books", (req, res) => {
+		res.send(ResourceMap.resources.flatMap(i => i.data).filter(i => i.manifest.type === 'book').map(i => ({
+			manifest: i.manifest,
+			book: (i as any).book
+		})));
+	});
+
+	app.get("/books/:id", (req, res) => {
+		res.send(ResourceMap.resources.flatMap(i => i.data).filter(i => i.manifest.type === 'book').find(b => b.manifest.id == req.params.id));
+	});
+
 	app.get("/world-data/:key", (req, res) => {
 		res.send(worldData[req.params.key]);
 	});

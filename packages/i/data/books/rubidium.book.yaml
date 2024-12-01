@@ -1,0 +1,17 @@
+manifest:
+  id: !id rubidium-book
+  type: book
+book:
+  icon: !id 'texture.book-2'
+  name: Rubidium
+pages:
+  - title: About
+    children:
+      - type: text
+        content: !import ../../text/books/rubidium.txt
+  - title: More
+    children:
+      - type: text
+        content: !import ../../text/books/rubidium.txt
+
+  

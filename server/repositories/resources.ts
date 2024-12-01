@@ -17,7 +17,7 @@ export class ResourceMap {
 
 	static all(){
 		const res: ResourceSchema[] = [];
-		this.resources.forEach(i => res.push(...i.data));
+		this.resources.forEach(i => res.push(...i.data.filter(i => i.manifest.type !== 'book')));
 		return res;
 	}
 

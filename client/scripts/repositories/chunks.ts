@@ -10,10 +10,97 @@ import { Biomes } from "./biomes.js";
 import { WorldData } from "../world/data.js";
 import { Structures } from "./structures.js";
 import { PlayerInfo } from "./player.js";
+import { xyz } from "../../../server/models/misc.xyz.js";
+import { MaterialManager } from "./materials.js";
+import { Settings } from "../settings/settings.js";
+import GlobalEmitter from "../misc/globalEmitter.js";
 
 export class Chunks {
 
 	static chunks: Chunk[] = [];
+
+	static _isCalculatingRenderDistance = false;
+	static renderCloseAndFar(playerPosition: THREE.Vector3, renderDistance: number, detailsLimit?: number, chunk?: Chunk){
+		if(Chunks._isCalculatingRenderDistance && !chunk) return;
+		if(!chunk) Chunks._isCalculatingRenderDistance = true;
+
+		detailsLimit = Math.max(10, Math.min(detailsLimit || 75, 100));
+
+		const chunkSize = WorldData.get('chunkSize');
+		const renderDistanceScaled = renderDistance * chunkSize;
+    const halfRenderDistance = renderDistanceScaled * (detailsLimit / 100);
+    const farRenderDistance = renderDistanceScaled * ((detailsLimit / 100) + 0.5);
+
+
+    const playerPositionFloored = playerPosition.clone().floor();
+
+		const detailChunk = (chunk: Chunk) => {
+			const chunkPosition = chunk.object3d.position.clone().floor();
+
+			const distance = Math.floor(
+				new THREE.Vector3(
+					playerPositionFloored.x,
+					0,
+					playerPositionFloored.z
+				).distanceTo(new THREE.Vector3(
+					chunkPosition.x,
+					0,
+					chunkPosition.z
+				))
+			);
+
+			const isClose = detailsLimit == 100 || distance < halfRenderDistance;
+			const isMid = distance > halfRenderDistance && distance < farRenderDistance;
+			const isFar = distance >= farRenderDistance;
+
+			if(isClose) {
+				Chunks.setHighDetail(chunk);
+			} else if (isMid) {
+				Chunks.setMediumDetail(chunk);
+			} else if(isFar){
+				Chunks.setMediumDetail(chunk);
+				Chunks.setLowDetail(chunk);
+			}
+		}
+
+
+    if(chunk) detailChunk(chunk);
+		else for (const chunk of Chunks.chunks) {
+			detailChunk(chunk);
+    }
+		if(!chunk) Chunks._isCalculatingRenderDistance = false;
+	}
+
+
+	static setHighDetail(chunk: Chunk) {
+		chunk.object3d.traverse((object) => {
+			object.visible = true;
+			let o: any = object;
+			if(o.userData.__real__material__){
+				o.material = o.userData.__real__material__;
+			}
+		});
+	}
+
+	static setMediumDetail(chunk: Chunk) {
+		chunk.object3d.traverse(object => {
+			object.visible = true;
+			let o: any = object;
+			if(o.material){
+				if(!o.userData.__real__material__) o.userData.__real__material__ = o.material;
+				o.material = Array.isArray(o.userData.__real__material__) ? o.userData.__real__material__.map(m => MaterialManager.getBaseColorMaterial(m)) : MaterialManager.getBaseColorMaterial(o.material);
+				if(o.userData.__real__material__.uniforms){
+					o.material.uniforms = o.userData.__real__material__.uniforms;
+				}
+			}
+		});
+	}
+
+	static setLowDetail(chunk: Chunk) {
+		chunk.object3d.traverse(object => {
+			if(object.userData.info?.type !== 'chunk') object.visible = false;
+		});
+	}
 
 	static chunkFromData(chunk: Record<string, any>) {
 		return ServerData.create(Chunk, chunk).setData({
@@ -32,8 +119,8 @@ export class Chunks {
 		Biomes.applyChunkBiome(chunk);
 		chunkObject.position.set(chunk.position.x, chunk.position.y - 3, chunk.position.z);
 		Structures.loadStrcuture(chunk);
-		SceneManager.scene.scene.add(chunkObject);
-		PhysicsManager.addPhysics(chunkObject, {
+
+		const addPhysics = () => PhysicsManager.addPhysics(chunkObject, {
 			shape: 'box',
 
 			width: chunk.chunkSize,
@@ -42,7 +129,15 @@ export class Chunks {
 
 			mass: 0,
 		});
+
+		if(this.chunks.length > 20) {
+			SceneManager.addAnimated(chunkObject, addPhysics);
+		} else {
+			SceneManager.scene.scene.add(chunkObject);
+			addPhysics();
+		}
 		this.chunks.push(chunk);
+		GlobalEmitter.emit('chunk:loaded', chunk);
 	}
 
 	static chunkObjects() {
@@ -205,8 +300,7 @@ export class Chunks {
 
 			}
 		}
-
-		// Load chunks within the range around the player
+		
 		for (let x = startX; x <= endX; x++) {
 			for (let z = startZ; z <= endZ; z++) {
 				// if(!Chunks.has(stringifyChunkPosition({ x, z })))

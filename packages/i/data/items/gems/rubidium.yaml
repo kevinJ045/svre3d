@@ -3,6 +3,7 @@ manifest:
   type: item
 data:
   content: "An ore found deep in the depths of the magic forest\n\t- Found in: [Magic Forest]"
+book: !id rubidium-book
 item:
   name: Rubidium
   inventory:

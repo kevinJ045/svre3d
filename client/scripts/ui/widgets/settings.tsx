@@ -90,14 +90,17 @@ export const SettingsUI = () => {
                       </div>
                     ) : Settings.type(skey+'.'+key) === 'int' || Settings.type(skey+'.'+key) === 'float' ?
                       Settings.getFull(skey+'.'+key).min && Settings.getFull(skey+'.'+key).max ? (
-                        <input
-                          type="range"
-                          min={Settings.getFull(skey+'.'+key).min}
-                          max={Settings.getFull(skey+'.'+key).max}
-                          step={Settings.type(skey+'.'+key) === 'int' ? '1' : '0.1'}
-                          value={inputValues[skey+'.'+key]}
-                          onChange={(e) => handleInputChange(skey+'.'+key, e.target.value)}
-                        />
+                        <div>
+                          {inputValues[skey+'.'+key]}
+                          <input
+                            type="range"
+                            min={Settings.getFull(skey+'.'+key).min}
+                            max={Settings.getFull(skey+'.'+key).max}
+                            step={Settings.type(skey+'.'+key) === 'int' ? '1' : '0.1'}
+                            value={inputValues[skey+'.'+key]}
+                            onChange={(e) => handleInputChange(skey+'.'+key, e.target.value)}
+                          />
+                        </div>
                       ) : (
                         <input
                           type="number"
